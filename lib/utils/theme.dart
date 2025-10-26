@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
 
 class AppTheme {
@@ -8,7 +9,7 @@ class AppTheme {
       useMaterial3: true,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.white,
-      fontFamily: 'DM Sans',
+      textTheme: GoogleFonts.dmSansTextTheme(),
 
       colorScheme: ColorScheme.light(
         primary: AppColors.primary,
@@ -29,9 +30,7 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
         iconTheme: IconThemeData(color: AppColors.textDark),
-        titleTextStyle: AppTextStyles.heading3.copyWith(
-          fontFamily: 'DM Sans',
-        ),
+        titleTextStyle: AppTextStyles.heading3,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
 
@@ -57,9 +56,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.borderRadiusRound),
           ),
-          textStyle: AppTextStyles.button.copyWith(
-            fontFamily: 'DM Sans',
-          ),
+          textStyle: AppTextStyles.button,
           elevation: 0,
           shadowColor: Colors.transparent,
         ),
@@ -74,7 +71,6 @@ class AppTheme {
           ),
           side: BorderSide(color: AppColors.border, width: 1),
           textStyle: AppTextStyles.button.copyWith(
-            fontFamily: 'DM Sans',
             color: AppColors.textDark,
           ),
         ),
@@ -83,9 +79,7 @@ class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.primary,
-          textStyle: AppTextStyles.link.copyWith(
-            fontFamily: 'DM Sans',
-          ),
+          textStyle: AppTextStyles.link,
         ),
       ),
 
@@ -119,15 +113,12 @@ class AppTheme {
         ),
         hintStyle: AppTextStyles.bodySmall.copyWith(
           color: AppColors.textMedium,
-          fontFamily: 'DM Sans',
         ),
         labelStyle: AppTextStyles.bodySmall.copyWith(
           color: AppColors.textMedium,
-          fontFamily: 'DM Sans',
         ),
         errorStyle: AppTextStyles.caption.copyWith(
           color: AppColors.error,
-          fontFamily: 'DM Sans',
         ),
         prefixIconColor: AppColors.textMedium,
         suffixIconColor: AppColors.textMedium,
@@ -169,20 +160,6 @@ class AppTheme {
         ),
       ),
 
-      // Text theme
-      textTheme: TextTheme(
-        displayLarge: AppTextStyles.heading1.copyWith(fontFamily: 'DM Sans'),
-        displayMedium: AppTextStyles.heading2.copyWith(fontFamily: 'DM Sans'),
-        displaySmall: AppTextStyles.heading3.copyWith(fontFamily: 'DM Sans'),
-        headlineMedium: AppTextStyles.heading4.copyWith(fontFamily: 'DM Sans'),
-        bodyLarge: AppTextStyles.body.copyWith(fontFamily: 'DM Sans'),
-        bodyMedium: AppTextStyles.bodyMedium.copyWith(fontFamily: 'DM Sans'),
-        bodySmall: AppTextStyles.bodySmall.copyWith(fontFamily: 'DM Sans'),
-        labelLarge: AppTextStyles.button.copyWith(fontFamily: 'DM Sans'),
-        labelMedium: AppTextStyles.captionBold.copyWith(fontFamily: 'DM Sans'),
-        labelSmall: AppTextStyles.caption.copyWith(fontFamily: 'DM Sans'),
-      ),
-
       // Floating Action Button theme
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
@@ -199,8 +176,8 @@ class AppTheme {
         unselectedLabelColor: AppColors.textMedium,
         indicatorColor: AppColors.primary,
         indicatorSize: TabBarIndicatorSize.tab,
-        labelStyle: AppTextStyles.heading4.copyWith(fontFamily: 'DM Sans'),
-        unselectedLabelStyle: AppTextStyles.heading4.copyWith(fontFamily: 'DM Sans'),
+        labelStyle: AppTextStyles.heading4,
+        unselectedLabelStyle: AppTextStyles.heading4,
       ),
 
       // Snackbar theme
@@ -208,7 +185,6 @@ class AppTheme {
         backgroundColor: AppColors.textDark,
         contentTextStyle: AppTextStyles.bodySmall.copyWith(
           color: AppColors.white,
-          fontFamily: 'DM Sans',
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
@@ -223,8 +199,8 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
         ),
-        titleTextStyle: AppTextStyles.heading3.copyWith(fontFamily: 'DM Sans'),
-        contentTextStyle: AppTextStyles.body.copyWith(fontFamily: 'DM Sans'),
+        titleTextStyle: AppTextStyles.heading3,
+        contentTextStyle: AppTextStyles.body,
       ),
     );
   }
