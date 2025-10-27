@@ -109,9 +109,7 @@ class _TextFieldPreviewScreenState extends State<TextFieldPreviewScreen> {
             },
           ),
           const SizedBox(height: AppSpacing.md),
-          CustomTextField.search(
-            hint: 'Rechercher un plat...',
-          ),
+          CustomTextField.search(hint: 'Rechercher un plat...'),
           const SizedBox(height: AppSpacing.xl),
 
           // Section 4: Text Fields (Regular)
@@ -190,15 +188,18 @@ class _TextFieldPreviewScreenState extends State<TextFieldPreviewScreen> {
                   onPressed: () {
                     // Validate
                     bool hasError = false;
-                    if (_emailController.text.isEmpty || !_emailController.text.contains('@')) {
+                    if (_emailController.text.isEmpty ||
+                        !_emailController.text.contains('@')) {
                       setState(() {
                         _emailError = 'Veuillez entrer un email valide';
                       });
                       hasError = true;
                     }
-                    if (_passwordController.text.isEmpty || _passwordController.text.length < 8) {
+                    if (_passwordController.text.isEmpty ||
+                        _passwordController.text.length < 8) {
                       setState(() {
-                        _passwordError = 'Le mot de passe doit contenir au moins 8 caractères';
+                        _passwordError =
+                            'Le mot de passe doit contenir au moins 8 caractères';
                       });
                       hasError = true;
                     }
@@ -231,10 +232,7 @@ class _SectionHeader extends StatelessWidget {
   final String title;
   final String subtitle;
 
-  const _SectionHeader({
-    required this.title,
-    required this.subtitle,
-  });
+  const _SectionHeader({required this.title, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -243,16 +241,12 @@ class _SectionHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTextStyles.heading4.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.heading4.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: AppSpacing.xs),
         Text(
           subtitle,
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.textMedium,
-          ),
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.textMedium),
         ),
       ],
     );
