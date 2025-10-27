@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'utils/theme.dart';
+import 'screens/home/navigation_shell.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Ate',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: Scaffold(body: Center(child: Text('Ate App - Setup Complete!'))),
+      home: NavigationShell(),
     );
   }
 }
