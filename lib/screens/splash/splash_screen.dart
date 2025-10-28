@@ -138,7 +138,7 @@ class _SplashScreenState extends State<SplashScreen>
   void _navigateToNextScreen() {
     if (mounted) {
       // TODO: Check authentication status
-      Navigator.of(context).pushReplacementNamed('/home');
+      Navigator.of(context).pushReplacementNamed('/onboarding');
     }
   }
 
