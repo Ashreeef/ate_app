@@ -93,7 +93,7 @@ class _NavBarItem extends StatelessWidget {
         splashColor: AppColors.primary.withOpacity(0.1),
         highlightColor: Colors.transparent,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: EdgeInsets.symmetric(vertical: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -101,18 +101,18 @@ class _NavBarItem extends StatelessWidget {
               // Red indicator line above active icon
               AnimatedContainer(
                 duration: Duration(milliseconds: 200),
-                height: 3,
-                width: isSelected ? 40 : 0,
+                height: 2,
+                width: isSelected ? 32 : 0,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(1),
                 ),
               ),
-              SizedBox(height: AppSpacing.sm),
+              SizedBox(height: 6),
               // Icon - filled when selected, outlined when not
               Icon(
                 isSelected ? iconFilled : icon,
-                size: AppSizes.icon,
+                size: 24,
                 color: isSelected ? AppColors.primary : AppColors.secondary,
               ),
             ],
@@ -142,7 +142,7 @@ class _NavBarItemCenter extends StatelessWidget {
         splashColor: AppColors.primary.withOpacity(0.1),
         highlightColor: Colors.transparent,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+          padding: EdgeInsets.symmetric(vertical: 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -150,27 +150,23 @@ class _NavBarItemCenter extends StatelessWidget {
               // Red indicator line above active icon
               AnimatedContainer(
                 duration: Duration(milliseconds: 200),
-                height: 3,
-                width: isSelected ? 40 : 0,
+                height: 2,
+                width: isSelected ? 32 : 0,
                 decoration: BoxDecoration(
                   color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(1),
                 ),
               ),
-              SizedBox(height: AppSpacing.sm),
+              SizedBox(height: 6),
               // Special square container with plus icon
               Container(
-                width: 40,
-                height: 40,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
                   color: isSelected ? AppColors.primary : AppColors.secondary,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  Icons.add,
-                  size: AppSizes.icon,
-                  color: AppColors.white,
-                ),
+                child: Icon(Icons.add, size: 20, color: AppColors.white),
               ),
             ],
           ),
