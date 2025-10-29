@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'utils/theme.dart';
 import 'screens/home/navigation_shell.dart';
+import 'screens/profile/my_profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
       title: 'Ate',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: NavigationShell(),
+      home: MyProfileScreen(),
     );
   }
 }
