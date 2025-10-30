@@ -30,37 +30,16 @@ class _NavigationShellState extends State<NavigationShell> {
   PreferredSizeWidget? _buildAppBar() {
     switch (_currentIndex) {
       case 0: // Feed/Home
-        return AppBar(
-          title: Text(
-            AppConstants.appName,
-            style: AppTextStyles.heading2.copyWith(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications_outlined),
-              onPressed: () {
-                // TODO: Navigate to notifications
-              },
-            ),
-          ],
-        );
+        return null; // Feed has its own custom header
       case 1: // Search
-        return AppBar(
-          title: Text('Rechercher'),
-        );
+        return AppBar(title: Text('Rechercher'));
       case 2: // Post Creation
         return AppBar(
           leading: TextButton(
             onPressed: () {
               setState(() => _currentIndex = 0); // Go back to feed
             },
-            child: Text(
-              'Annuler',
-              style: AppTextStyles.bodySmall,
-            ),
+            child: Text('Annuler', style: AppTextStyles.bodySmall),
           ),
           leadingWidth: 80,
           title: Text('Nouveau Post'),
@@ -69,17 +48,12 @@ class _NavigationShellState extends State<NavigationShell> {
               onPressed: () {
                 // TODO: Navigate to step 2
               },
-              child: Text(
-                'Next',
-                style: AppTextStyles.link,
-              ),
+              child: Text('Next', style: AppTextStyles.link),
             ),
           ],
         );
       case 3: // Challenges
-        return AppBar(
-          title: Text('Challenges'),
-        );
+        return AppBar(title: Text('Challenges'));
       case 4: // Profile
         return AppBar(
           title: Text('Profile'),
@@ -107,10 +81,7 @@ class _NavigationShellState extends State<NavigationShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
