@@ -5,10 +5,10 @@ import 'package:ate_app/utils/constants.dart';
 import 'package:ate_app/screens/post/post_creation_step2_screen.dart';
 
 class PostCreationStep1Screen extends StatefulWidget {
-  // ADD THIS: GlobalKey so navigation shell can access this screen
+  //  GlobalKey so navigation shell can access this screen
   static final GlobalKey<_PostCreationStep1ScreenState> globalKey = GlobalKey();
   
-  PostCreationStep1Screen({Key? key}) : super(key: key ?? globalKey); // FIXED: Removed const
+  PostCreationStep1Screen({Key? key}) : super(key: key ?? globalKey); 
 
   @override
   State<PostCreationStep1Screen> createState() => _PostCreationStep1ScreenState();
@@ -19,10 +19,10 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   List<XFile> _selectedImages = [];
   final int _maxImages = 3;
 
-  // ADD THIS: Getter for navigation shell to check if images are selected
+  //  Getter for navigation shell to check if images are selected
   bool get hasSelectedImages => _selectedImages.isNotEmpty;
   
-  // ADD THIS: Method for navigation shell to trigger navigation
+  //  Method for navigation shell to trigger navigation
   void navigateToNextStep() {
     _navigateToStep2();
   }
