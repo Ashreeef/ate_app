@@ -81,17 +81,7 @@ class _NavigationShellState extends State<NavigationShell> {
           title: Text('Challenges'),
         );
       case 4: // Profile
-        return AppBar(
-          title: Text('Profile'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.settings_outlined),
-              onPressed: () {
-                // TODO: Navigate to settings
-              },
-            ),
-          ],
-        );
+        return null; // Profile screen has its own app bar
       default:
         return null;
     }
