@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../widgets/restaurant/restaurant_header.dart';
-import '../../widgets/restaurant/post_thumbnail.dart';
 import '../../widgets/restaurant/menu_item_card.dart';
 import '../../data/fake_data.dart';
-import '../home/post_detail_screen.dart';
 
 class RestaurantPage extends StatelessWidget {
   final String restaurantId;
@@ -15,7 +13,6 @@ class RestaurantPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final restaurant = FakeData.getRestaurantById(restaurantId);
-    final posts = FakeData.getPostsByRestaurant(restaurantId);
 
     if (restaurant == null) {
       return Scaffold(
@@ -63,12 +60,6 @@ class RestaurantPage extends StatelessWidget {
               child: Row(
                 children: [
                   _StatItem(
-                    icon: Icons.photo_outlined,
-                    label: 'Posts',
-                    value: '${posts.length}',
-                  ),
-                  SizedBox(width: AppSpacing.lg),
-                  _StatItem(
                     icon: Icons.star_outline,
                     label: 'Note',
                     value: restaurant.rating.toStringAsFixed(1),
@@ -83,68 +74,6 @@ class RestaurantPage extends StatelessWidget {
               ),
             ),
           ),
-          // Posts Grid Section
-          SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Publications', style: AppTextStyles.heading3),
-                  SizedBox(height: AppSpacing.md),
-                ],
-              ),
-            ),
-          ),
-          if (posts.isEmpty)
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.photo_library_outlined,
-                      size: 64,
-                      color: AppColors.textLight,
-                    ),
-                    SizedBox(height: AppSpacing.md),
-                    Text('Aucune publication', style: AppTextStyles.heading4),
-                    SizedBox(height: AppSpacing.xs),
-                    Text(
-                      'Les posts de ce restaurant apparaîtront ici',
-                      style: AppTextStyles.bodySmall,
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            SliverPadding(
-              padding: EdgeInsets.only(bottom: AppSpacing.xl),
-              sliver: SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: AppSpacing.sm,
-                  mainAxisSpacing: AppSpacing.sm,
-                  childAspectRatio: 1,
-                ),
-                delegate: SliverChildBuilderDelegate((context, index) {
-                  final post = posts[index];
-                  return PostThumbnail(
-                    post: post,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              PostDetailScreen(postId: post.id),
-                        ),
-                      );
-                    },
-                  );
-                }, childCount: posts.length),
-              ),
-            ),
         ],
       ),
     );

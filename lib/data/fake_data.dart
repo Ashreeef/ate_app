@@ -1,6 +1,5 @@
 import '../models/restaurant.dart';
 import '../models/challenge.dart';
-import '../models/post.dart';
 
 class FakeData {
   // Fake Restaurants
@@ -184,77 +183,5 @@ class FakeData {
   // Recent searches (mock data)
   static List<String> getRecentSearches() {
     return ['Sushi', 'Pizza', 'Burger', 'Café', 'Italien'];
-  }
-
-  // Fake Posts
-  static List<Post> getPosts() {
-    final now = DateTime.now();
-    return [
-      Post(
-        id: '1',
-        userId: 'user1',
-        restaurantId: '1', // Rimberio
-        imageUrls: ['https://via.placeholder.com/400'],
-        caption: 'Amazing spicy food at Rimberio!',
-        createdAt: now.subtract(Duration(hours: 2)),
-        rating: 4.5,
-        likeCount: 24,
-        commentCount: 5,
-      ),
-      Post(
-        id: '2',
-        userId: 'user2',
-        restaurantId: '1', // Rimberio
-        imageUrls: ['https://via.placeholder.com/400'],
-        caption: 'The best spicy noodles in town!',
-        createdAt: now.subtract(Duration(days: 1)),
-        rating: 5.0,
-        likeCount: 45,
-        commentCount: 8,
-      ),
-      Post(
-        id: '3',
-        userId: 'user3',
-        restaurantId: '1', // Rimberio
-        imageUrls: [
-          'https://via.placeholder.com/400',
-          'https://via.placeholder.com/400',
-        ],
-        caption: 'Delicious meal with friends',
-        createdAt: now.subtract(Duration(days: 2)),
-        rating: 4.7,
-        likeCount: 32,
-        commentCount: 12,
-      ),
-      Post(
-        id: '4',
-        userId: 'user4',
-        restaurantId: '2', // La Piazza
-        imageUrls: ['https://via.placeholder.com/400'],
-        caption: 'Authentic Italian pizza',
-        createdAt: now.subtract(Duration(hours: 5)),
-        rating: 4.8,
-        likeCount: 67,
-        commentCount: 9,
-      ),
-      Post(
-        id: '5',
-        userId: 'user5',
-        restaurantId: '3', // Sushi Paradise
-        imageUrls: ['https://via.placeholder.com/400'],
-        caption: 'Fresh sushi platter',
-        createdAt: now.subtract(Duration(days: 3)),
-        rating: 4.9,
-        likeCount: 89,
-        commentCount: 15,
-      ),
-    ];
-  }
-
-  // Get posts by restaurant ID
-  static List<Post> getPostsByRestaurant(String restaurantId) {
-    return getPosts()
-        .where((post) => post.restaurantId == restaurantId)
-        .toList();
   }
 }
