@@ -126,7 +126,7 @@ class _FeedScreenState extends State<FeedScreen> {
         ),
       ),
     );
-    // TODO: Implement actual navigation to user profile
+    // TODO: Implpement actual navigation to user profile
   }
 
   @override
