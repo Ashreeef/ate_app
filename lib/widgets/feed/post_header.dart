@@ -24,10 +24,22 @@ class PostHeader extends StatelessWidget {
           CircleAvatar(
             backgroundColor: AppColors.primary.withOpacity(0.1),
             radius: AppSizes.avatarSm / 2,
-            child: Text(
-              userAvatar,
-              style: AppTextStyles.bodyMedium.copyWith(fontFamily: 'DM Sans'),
-            ),
+            backgroundImage:
+                (userAvatar.isNotEmpty &&
+                    (userAvatar.startsWith('http') ||
+                        userAvatar.startsWith('https')))
+                ? NetworkImage(userAvatar)
+                : null,
+            child:
+                (userAvatar.isEmpty ||
+                    (!userAvatar.startsWith('http') &&
+                        !userAvatar.startsWith('https')))
+                ? Icon(
+                    Icons.person,
+                    color: AppColors.primary,
+                    size: AppSizes.avatarSm / 2,
+                  )
+                : null,
           ),
           SizedBox(width: AppSpacing.sm),
           Expanded(

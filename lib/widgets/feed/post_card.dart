@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ate_app/utils/constants.dart';
+import '../../utils/constants.dart';
+import 'post_header.dart';
+import 'post_image.dart';
+import 'post_engagement_bar.dart';
+import 'post_caption.dart';
+import 'post_restaurant_info.dart';
 
 class PostCard extends StatelessWidget {
   final Map<String, dynamic> post;
@@ -45,7 +50,7 @@ class PostCard extends StatelessWidget {
                   _showReportDialog(context);
                 },
               ),
-              
+
               // Hide option
               _buildMenuOption(
                 context,
@@ -56,7 +61,7 @@ class PostCard extends StatelessWidget {
                   _showHideConfirmation(context);
                 },
               ),
-              
+
               // Not interested option
               _buildMenuOption(
                 context,
@@ -67,7 +72,7 @@ class PostCard extends StatelessWidget {
                   _showNotInterestedConfirmation(context);
                 },
               ),
-              
+
               // Unfollow user option
               _buildMenuOption(
                 context,
@@ -78,7 +83,7 @@ class PostCard extends StatelessWidget {
                   _showUnfollowConfirmation(context);
                 },
               ),
-              
+
               // Copy link option
               _buildMenuOption(
                 context,
@@ -89,7 +94,7 @@ class PostCard extends StatelessWidget {
                   _copyPostLink(context);
                 },
               ),
-              
+
               // Share to option
               _buildMenuOption(
                 context,
@@ -100,9 +105,9 @@ class PostCard extends StatelessWidget {
                   onShare();
                 },
               ),
-              
+
               const Divider(height: 1),
-              
+
               // Cancel option
               _buildMenuOption(
                 context,
@@ -141,58 +146,136 @@ class PostCard extends StatelessWidget {
   }
 
   void _showReportDialog(BuildContext context) {
+    String? selectedReason;
+    final reasons = [
+      'Spam or misleading',
+      'Harassment or hate speech',
+      'Violence or dangerous content',
+      'Nudity or sexual content',
+      'False information',
+      'Intellectual property violation',
+      'Something else',
+    ];
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: AppColors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
-        ),
-        title: Text(
-          'Report Post',
-          style: AppTextStyles.heading3,
-        ),
-        content: Text(
-          'Why are you reporting this post?',
-          style: AppTextStyles.body,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'Cancel',
-              style: AppTextStyles.link,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          backgroundColor: AppColors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.flag_outlined, color: AppColors.error),
+              SizedBox(width: AppSpacing.sm),
+              Text('Report Post', style: AppTextStyles.heading3),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Why are you reporting this post?',
+                  style: AppTextStyles.body.copyWith(
+                    color: AppColors.textMedium,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.md),
+                ...reasons.map((reason) {
+                  return RadioListTile<String>(
+                    value: reason,
+                    groupValue: selectedReason,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedReason = value;
+                      });
+                    },
+                    title: Text(reason, style: AppTextStyles.bodyMedium),
+                    activeColor: AppColors.primary,
+                    contentPadding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                  );
+                }).toList(),
+              ],
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              _showReportSuccess(context);
-            },
-            child: Text(
-              'Report',
-              style: AppTextStyles.buttonSmall,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(
+                'Cancel',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textMedium,
+                ),
+              ),
             ),
-          ),
-        ],
+            ElevatedButton(
+              onPressed: selectedReason == null
+                  ? null
+                  : () {
+                      Navigator.pop(context);
+                      _showReportSuccess(context, selectedReason!);
+                    },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                disabledBackgroundColor: AppColors.error.withOpacity(0.3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                ),
+              ),
+              child: Text(
+                'Report',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void _showReportSuccess(BuildContext context) {
+  void _showReportSuccess(BuildContext context, String reason) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'Post reported successfully',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.white,
-          ),
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: AppColors.white),
+            SizedBox(width: AppSpacing.sm),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Thanks for reporting',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    'We\'ll review this post and take appropriate action',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.white.withOpacity(0.9),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        backgroundColor: AppColors.textDark,
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         ),
+        duration: Duration(seconds: 4),
       ),
     );
   }
@@ -202,9 +285,7 @@ class PostCard extends StatelessWidget {
       SnackBar(
         content: Text(
           'Post hidden from your feed',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.white,
-          ),
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
         ),
         backgroundColor: AppColors.textDark,
         behavior: SnackBarBehavior.floating,
@@ -227,9 +308,7 @@ class PostCard extends StatelessWidget {
       SnackBar(
         content: Text(
           'We\'ll show less content like this',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.white,
-          ),
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
         ),
         backgroundColor: AppColors.textDark,
         behavior: SnackBarBehavior.floating,
@@ -245,9 +324,7 @@ class PostCard extends StatelessWidget {
       SnackBar(
         content: Text(
           'Unfollowed ${post['userName']}',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.white,
-          ),
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
         ),
         backgroundColor: AppColors.textDark,
         behavior: SnackBarBehavior.floating,
@@ -271,9 +348,7 @@ class PostCard extends StatelessWidget {
       SnackBar(
         content: Text(
           'Link copied to clipboard',
-          style: AppTextStyles.bodySmall.copyWith(
-            color: AppColors.white,
-          ),
+          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
         ),
         backgroundColor: AppColors.textDark,
         behavior: SnackBarBehavior.floating,
@@ -287,301 +362,47 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      elevation: 0,
+      elevation: 2,
+      margin: EdgeInsets.only(bottom: AppSpacing.lg),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
       ),
-      color: AppColors.white,
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header with user info
-            _buildHeader(context),
-            
-            // Post image
-            _buildImage(),
-            
-            // Actions (like, comment, share, save)
-            _buildActions(),
-            
-            // Likes count
-            _buildLikesCount(),
-            
-            // Caption
-            _buildCaption(),
-            
-            // Restaurant and dish info
-            _buildRestaurantInfo(),
-            
-            // Comments preview
-            _buildCommentsPreview(),
-            
-            // Timestamp (placeholder)
-            _buildTimestamp(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: AppSizes.avatar / 2,
-            backgroundColor: AppColors.background,
-            child: post['userAvatar'] != null && post['userAvatar'].isNotEmpty
-                ? ClipOval(
-                    child: Image.network(
-                      post['userAvatar'],
-                      fit: BoxFit.cover,
-                      width: AppSizes.avatar,
-                      height: AppSizes.avatar,
-                    ),
-                  )
-                : Icon(
-                    Icons.person,
-                    color: AppColors.textMedium,
-                    size: AppSizes.icon,
-                  ),
+          PostHeader(
+            userName: post['userName'],
+            userAvatar: post['userAvatar'],
+            onProfileTap: onTap,
+            onMoreTap: () => _showOptionsMenu(context),
           ),
-          const SizedBox(width: AppSpacing.sm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  post['userName'] ?? 'Unknown User',
-                  style: AppTextStyles.username,
-                ),
-                if (post['restaurantName'] != null)
-                  Text(
-                    post['restaurantName'],
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textMedium,
-                    ),
-                  ),
-              ],
-            ),
+          PostImage(imageUrl: post['imageUrl'], onDoubleTap: onLike),
+          PostEngagementBar(
+            isLiked: post['isLiked'] ?? false,
+            isSaved: post['isSaved'] ?? false,
+            onLikeTap: onLike,
+            onCommentTap: onComment,
+            onSaveTap: onSave,
           ),
-          IconButton(
-            icon: Icon(
-              Icons.more_vert,
-              size: AppSizes.icon,
-              color: AppColors.textDark,
-            ),
-            onPressed: () => _showOptionsMenu(context),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImage() {
-    return Container(
-      width: double.infinity,
-      height: AppSizes.postImageHeight,
-      child: Image.network(
-        post['imageUrl'],
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            height: AppSizes.postImageHeight,
-            color: AppColors.background,
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
-                    : null,
-                color: AppColors.primary,
-              ),
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            height: AppSizes.postImageHeight,
-            color: AppColors.background,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.error_outline,
-                  color: AppColors.textMedium,
-                  size: AppSizes.iconXl,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(
-                  'Failed to load image',
-                  style: AppTextStyles.caption,
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildActions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.sm,
-        vertical: AppSpacing.xs,
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(
-              post['isLiked'] == true ? Icons.favorite : Icons.favorite_border,
-              color: post['isLiked'] == true ? AppColors.primary : AppColors.textDark,
-              size: AppSizes.icon,
-            ),
-            onPressed: onLike,
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.comment_outlined,
-              color: AppColors.textDark,
-              size: AppSizes.icon,
-            ),
-            onPressed: onComment,
-          ),
-          IconButton(
-            icon: Icon(
-              Icons.share_outlined,
-              color: AppColors.textDark,
-              size: AppSizes.icon,
-            ),
-            onPressed: onShare,
-          ),
-          const Spacer(),
-          IconButton(
-            icon: Icon(
-              post['isSaved'] == true ? Icons.bookmark : Icons.bookmark_border,
-              color: post['isSaved'] == true ? AppColors.primary : AppColors.textDark,
-              size: AppSizes.icon,
-            ),
-            onPressed: onSave,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLikesCount() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: Text(
-        '${post['likes'] ?? 0} likes',
-        style: AppTextStyles.captionBold,
-      ),
-    );
-  }
-
-  Widget _buildCaption() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.xs,
-        AppSpacing.md,
-        AppSpacing.sm,
-      ),
-      child: RichText(
-        text: TextSpan(
-          style: AppTextStyles.bodySmall,
-          children: [
-            TextSpan(
-              text: '${post['userName']} ',
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: Text(
+              '${post['likes'] ?? 0} likes',
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.textDark,
               ),
             ),
-            TextSpan(text: post['caption'] ?? ''),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRestaurantInfo() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: Row(
-        children: [
-          if (post['dishName'] != null)
-            Expanded(
-              child: Text(
-                post['dishName'],
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          const SizedBox(width: AppSpacing.sm),
-          if (post['rating'] != null)
-            Row(
-              children: [
-                Icon(
-                  Icons.star,
-                  color: AppColors.starActive,
-                  size: AppSizes.iconSm,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  '${post['rating']}.0',
-                  style: AppTextStyles.captionBold,
-                ),
-              ],
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCommentsPreview() {
-    final comments = post['comments'] as List<dynamic>? ?? [];
-    if (comments.isEmpty) return const SizedBox();
-
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        AppSpacing.sm,
-        AppSpacing.md,
-        AppSpacing.sm,
-      ),
-      child: GestureDetector(
-        onTap: onComment,
-        child: Text(
-          'View all ${comments.length} comments',
-          style: AppTextStyles.caption.copyWith(
-            color: AppColors.textMedium,
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTimestamp() {
-    return const Padding(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        0,
-        AppSpacing.md,
-        AppSpacing.md,
-      ),
-      child: Text(
-        '2 hours ago', // Placeholder - you can add timestamp to your data later
-        style: AppTextStyles.timestamp,
+          SizedBox(height: AppSpacing.sm),
+          PostCaption(userName: post['userName'], caption: post['caption']),
+          SizedBox(height: AppSpacing.sm),
+          PostRestaurantInfo(
+            restaurantName: post['restaurantName'],
+            dishName: post['dishName'],
+            rating: post['rating'],
+          ),
+          SizedBox(height: AppSpacing.md),
+        ],
       ),
     );
   }

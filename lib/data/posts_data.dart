@@ -5,7 +5,7 @@ final List<Map<String, dynamic>> postsData = [
   {
     'id': '1',
     'userName': '@foodie_alger',
-    'userAvatar': '',
+    'userAvatar': 'https://i.pravatar.cc/150?img=11',
     'caption': 'Amazing Couscous! The best in Algiers!',
     'restaurantName': 'Hicham cook',
     'dishName': 'Couscous Royal',
