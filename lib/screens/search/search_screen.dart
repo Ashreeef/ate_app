@@ -92,10 +92,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 SizedBox(height: AppSpacing.md),
                 SizedBox(
-                  height: 340,
+                  height: 343,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.only(bottom: AppSpacing.md),
                     itemCount: _trendingRestaurants.length,
                     itemBuilder: (context, index) {
                       final restaurant = _trendingRestaurants[index];
