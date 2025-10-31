@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
-import '../../widgets/navigation/bottom_nav_bar.dart';
+import '../profile/edit_profile_screen.dart';
 
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,184 +13,422 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textDark),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          icon: const Icon(Icons.arrow_back, color: AppColors.textDark),
+          onPressed: () => Navigator.pop(context),
         ),
+        centerTitle: true,
         title: Text(
-          'Modifier Profile',
-          style: AppTextStyles.heading3.copyWith(
-            fontWeight: FontWeight.w500,
-            fontSize: 18,
-          ),
+          'Settings',
+          style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.w600),
         ),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: AppColors.textDark),
-            onPressed: () {},
-          ),
-        ],
       ),
-
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-           
-            Padding(
-              padding: const EdgeInsets.only(
-                top: AppSpacing.xl,
-                bottom: AppSpacing.lg,
-              ),
-              child: Column(
-                children: [
-                  _buildProfileAvatar(
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuB7essqcwpQDWaa2S6u3cMjM6b_AxUXrPcy0xS2AWcqax8wV9l2CvOIgQOaG0BH8ufn-vQgNGIHK9vj3WhKnhUK1so16NdMAEyCRcNvQuP_TS9xNsRjw7_YkCObTqMfxAFYysxBKLTXSR4gCuzMZgAbkqUXJpe65ziUHaab_Zdc6uR0Zte7ol9dJcd3GuDBQauVmBsFpM6HKVgt8b_Gz72LW1m7YVsyZmpLnzBe92LsB7ry0kvUgcbnhnLxs0fi7gRFlVs0-1khdM8f',
-                  ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    '@Arslenee',
-                    style: AppTextStyles.body.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            SizedBox(height: AppSpacing.md),
 
-            // --- Menu Items Section ---
-            _buildMenuItem(
-              icon: Icons.badge_outlined,
-              title: 'Informations',
-              onTap: () {},
+            // Account Section
+            _buildSectionHeader('Account'),
+            _buildSettingsGroup([
+              _buildSettingsTile(
+                icon: Icons.edit_outlined,
+                title: 'Edit Profile',
+                subtitle: 'Update your profile information',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const EditProfileScreen(),
+                    ),
+                  );
+                },
+              ),
+              _buildSettingsTile(
+                icon: Icons.lock_outline,
+                title: 'Privacy & Security',
+                subtitle: 'Manage your account security',
+                onTap: () {
+                  _showComingSoon(context);
+                },
+              ),
+              _buildSettingsTile(
+                icon: Icons.key_outlined,
+                title: 'Change Password',
+                subtitle: 'Update your password',
+                onTap: () {
+                  _showChangePasswordDialog(context);
+                },
+              ),
+            ]),
+
+            SizedBox(height: AppSpacing.lg),
+
+            // Preferences Section
+            _buildSectionHeader('Preferences'),
+            _buildSettingsGroup([
+              _buildSettingsTile(
+                icon: Icons.notifications_outlined,
+                title: 'Notifications',
+                subtitle: 'Manage notification preferences',
+                onTap: () {
+                  _showComingSoon(context);
+                },
+              ),
+              _buildSettingsTile(
+                icon: Icons.language_outlined,
+                title: 'Language',
+                subtitle: 'English',
+                onTap: () {
+                  _showComingSoon(context);
+                },
+              ),
+              _buildSettingsTile(
+                icon: Icons.palette_outlined,
+                title: 'Theme',
+                subtitle: 'Light mode',
+                onTap: () {
+                  _showComingSoon(context);
+                },
+              ),
+            ]),
+
+            SizedBox(height: AppSpacing.lg),
+
+            // Support Section
+            _buildSectionHeader('Support'),
+            _buildSettingsGroup([
+              _buildSettingsTile(
+                icon: Icons.help_outline,
+                title: 'Help & Support',
+                subtitle: 'Get help with Ate',
+                onTap: () {
+                  _showComingSoon(context);
+                },
+              ),
+              _buildSettingsTile(
+                icon: Icons.info_outline,
+                title: 'About',
+                subtitle: 'Learn more about Ate',
+                onTap: () {
+                  _showAboutDialog(context);
+                },
+              ),
+              _buildSettingsTile(
+                icon: Icons.description_outlined,
+                title: 'Terms & Privacy',
+                subtitle: 'Legal information',
+                onTap: () {
+                  _showComingSoon(context);
+                },
+              ),
+            ]),
+
+            SizedBox(height: AppSpacing.lg),
+
+            // Danger Zone
+            _buildSectionHeader('Danger Zone'),
+            _buildSettingsGroup([
+              _buildSettingsTile(
+                icon: Icons.logout,
+                title: 'Logout',
+                subtitle: 'Sign out of your account',
+                onTap: () {
+                  _showLogoutDialog(context);
+                },
+                iconColor: AppColors.error,
+                showTrailing: false,
+              ),
+              _buildSettingsTile(
+                icon: Icons.delete_outline,
+                title: 'Delete Account',
+                subtitle: 'Permanently delete your account',
+                onTap: () {
+                  _showDeleteAccountDialog(context);
+                },
+                iconColor: AppColors.error,
+                showTrailing: false,
+              ),
+            ]),
+
+            SizedBox(height: AppSpacing.xl),
+
+            // App Version
+            Center(
+              child: Text(
+                'Ate v1.0.0',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textMedium,
+                ),
+              ),
             ),
-            const SizedBox(height: AppSpacing.sm), 
-            _buildMenuItem(
-              icon: Icons.key_outlined,
-              title: 'Réinitialiser mot de passe',
-              onTap: () {},
-            ),
-            const SizedBox(height: AppSpacing.sm), 
-            _buildMenuItem(
-              icon: Icons.logout,
-              title: 'Se déconnecter',
-              onTap: () {},
-            ),
-            const SizedBox(height: AppSpacing.sm), 
-            _buildMenuItem(
-              icon: Icons.person_remove_outlined,
-              title: 'Supprimer compte',
-              onTap: () {},
-              
-            ),
-            const SizedBox(height: AppSpacing.xl),
+            SizedBox(height: AppSpacing.xl),
           ],
         ),
       ),
-
-        bottomNavigationBar: BottomNavBar(
-         currentIndex: 1, 
-         onTap: (index) {
-          if (index == 0) {
-            Navigator.pushNamed(context, '/home');
-          } else if (index == 1) {
-            Navigator.pushNamed(context, '/profile');
-          }
-        },
-        ),
     );
   }
 
-  Widget _buildProfileAvatar(String imageUrl) {
-    return Container(
-      width: AppSizes.avatarXl,
-      height: AppSizes.avatarXl,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColors.primary,
-          width: 2.0,
-        ),
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
       ),
-      child: ClipOval(
-        child: Image.network(
-          imageUrl,
-          fit: BoxFit.cover,
-          width: AppSizes.avatarXl,
-          height: AppSizes.avatarXl,
-          errorBuilder: (context, error, stackTrace) =>
-              const Icon(Icons.person, size: 80, color: AppColors.textMedium),
+      child: Text(
+        title.toUpperCase(),
+        style: AppTextStyles.overline.copyWith(
+          color: AppColors.textMedium,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
   }
 
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-    bool hasBorder = true,
-  }) {
+  Widget _buildSettingsGroup(List<Widget> children) {
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.white,
-        border: hasBorder
-            ? const Border(
-                bottom: BorderSide(
-                  color: Color.fromARGB(97, 0, 0, 0),
-                  width: 2,
-                ),
-              )
-            : null,
-        
-        boxShadow: const [
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        boxShadow: [
           BoxShadow(
-            color: Color.fromARGB(15, 0, 0, 0),
-            blurRadius: 4,
+            color: AppColors.shadow.withOpacity(0.05),
+            blurRadius: 10,
             offset: Offset(0, 2),
           ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.lg,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
+      child: Column(children: children),
+    );
+  }
+
+  Widget _buildSettingsTile({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    Color? iconColor,
+    bool showTrailing = true,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        child: Padding(
+          padding: EdgeInsets.all(AppSpacing.md),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(AppSpacing.sm),
+                decoration: BoxDecoration(
+                  color: (iconColor ?? AppColors.primary).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppSizes.borderRadiusSm),
+                ),
+                child: Icon(
+                  icon,
+                  color: iconColor ?? AppColors.primary,
+                  size: AppSizes.icon,
+                ),
+              ),
+              SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      icon,
-                      color: AppColors.textDark,
-                      size: AppSizes.icon,
-                    ),
-                    const SizedBox(width: AppSpacing.md),
                     Text(
                       title,
-                      style: AppTextStyles.body.copyWith(
-                        color: AppColors.textDark,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textMedium,
                       ),
                     ),
                   ],
                 ),
-                const Icon(
+              ),
+              if (showTrailing)
+                Icon(
                   Icons.chevron_right,
-                  color: AppColors.textDark,
+                  color: AppColors.textMedium,
                   size: AppSizes.icon,
                 ),
-              ],
-            ),
+            ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showComingSoon(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Coming soon!'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  void _showAboutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Text(
+              'Ate',
+              style: AppTextStyles.heading2.copyWith(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Version 1.0.0',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textMedium,
+              ),
+            ),
+            SizedBox(height: AppSpacing.md),
+            Text(AppConstants.appTagline, style: AppTextStyles.body),
+            SizedBox(height: AppSpacing.md),
+            Text(
+              '© 2025 Ate. All rights reserved.',
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textMedium,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Logout'),
+        content: Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // TODO: Implement logout
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Logged out successfully')),
+              );
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: Text('Logout'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteAccountDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: AppColors.error),
+            SizedBox(width: AppSpacing.sm),
+            Text('Delete Account'),
+          ],
+        ),
+        content: Text(
+          'This action cannot be undone. All your data will be permanently deleted.',
+          style: AppTextStyles.body,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              // TODO: Implement account deletion
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: Text('Delete'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showChangePasswordDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Change Password'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Current Password',
+                prefixIcon: Icon(Icons.lock_outline),
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: AppSpacing.md),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'New Password',
+                prefixIcon: Icon(Icons.lock_outline),
+              ),
+              obscureText: true,
+            ),
+            SizedBox(height: AppSpacing.md),
+            TextField(
+              decoration: InputDecoration(
+                labelText: 'Confirm New Password',
+                prefixIcon: Icon(Icons.lock_outline),
+              ),
+              obscureText: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Password changed successfully')),
+              );
+            },
+            child: Text('Change'),
+          ),
+        ],
       ),
     );
   }
