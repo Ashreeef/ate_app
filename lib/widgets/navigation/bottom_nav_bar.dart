@@ -14,7 +14,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppSizes.bottomNavHeight,
+      //height: AppSizes.bottomNavHeight,
       decoration: BoxDecoration(
         color: AppColors.white,
         border: Border(top: BorderSide(color: AppColors.border, width: 1)),
