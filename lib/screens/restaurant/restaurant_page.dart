@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../widgets/restaurant/restaurant_header.dart';
 import '../../widgets/restaurant/menu_item_card.dart';
-import '../../data/fake_data.dart';
+import '../../data/fake_restaurants.dart';
 
 class RestaurantPage extends StatelessWidget {
   final String restaurantId;
@@ -24,6 +24,17 @@ class RestaurantPage extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          restaurant.name,
+          style: AppTextStyles.heading3.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       body: CustomScrollView(
         slivers: [
           // Header

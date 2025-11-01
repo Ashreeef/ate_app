@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../widgets/challenges/challenge_card.dart';
-import '../../data/fake_data.dart';
+import '../../data/fake_restaurants.dart';
 import '../../models/challenge.dart';
 
 class ChallengesScreen extends StatefulWidget {

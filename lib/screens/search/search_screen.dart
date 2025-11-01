@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/custom_text_field.dart';
 import '../../widgets/restaurant/restaurant_card.dart';
-import '../../data/fake_data.dart';
+import '../../data/fake_restaurants.dart';
 import '../../models/restaurant.dart';
 import 'search_results_screen.dart';
 import '../restaurant/restaurant_page.dart';
@@ -62,6 +62,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 controller: _searchController,
                 hint: 'Rechercher des restaurants...',
                 onChanged: (value) {},
+                onSubmitted: _handleSearch,
               ),
               SizedBox(height: AppSpacing.lg),
 
