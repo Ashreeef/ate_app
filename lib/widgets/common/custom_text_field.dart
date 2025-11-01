@@ -32,6 +32,7 @@ class CustomTextField extends StatefulWidget {
   final CustomTextFieldType type;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final VoidCallback? onTap;
   final VoidCallback? onEditingComplete;
   final bool enabled;
@@ -52,6 +53,7 @@ class CustomTextField extends StatefulWidget {
     this.type = CustomTextFieldType.text,
     this.controller,
     this.onChanged,
+    this.onSubmitted,
     this.onTap,
     this.onEditingComplete,
     this.enabled = true,
@@ -129,6 +131,7 @@ class CustomTextField extends StatefulWidget {
     String? error,
     TextEditingController? controller,
     ValueChanged<String>? onChanged,
+    ValueChanged<String>? onSubmitted,
     VoidCallback? onTap,
     bool enabled = true,
     FocusNode? focusNode,
@@ -139,6 +142,7 @@ class CustomTextField extends StatefulWidget {
          type: CustomTextFieldType.search,
          controller: controller,
          onChanged: onChanged,
+         onSubmitted: onSubmitted,
          onTap: onTap,
          enabled: enabled,
          focusNode: focusNode,
@@ -291,6 +295,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
           ),
           onChanged: widget.onChanged,
+          onFieldSubmitted: widget.onSubmitted,
           onTap: widget.onTap,
           onEditingComplete: widget.onEditingComplete,
         ),

@@ -49,10 +49,10 @@ class BottomNavBar extends StatelessWidget {
               isSelected: currentIndex == 2,
               onTap: () => onTap(2),
             ),
-            // Tab 4 - Challenges (Heart/Favorites)
+            // Tab 4 - Challenges
             _NavBarItem(
-              icon: Icons.favorite_border,
-              iconFilled: Icons.favorite,
+              icon: Icons.emoji_events_outlined,
+              iconFilled: Icons.emoji_events,
               isSelected: currentIndex == 3,
               onTap: () => onTap(3),
             ),
