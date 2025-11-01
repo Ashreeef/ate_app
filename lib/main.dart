@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'utils/theme.dart';
+import 'screens/splash/splash_screen.dart';
+import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/signup_screen.dart';
+import 'screens/auth/forgot_password_screen.dart';
 import 'screens/home/navigation_shell.dart';
 
 void main() {
@@ -15,7 +20,14 @@ class MyApp extends StatelessWidget {
       title: 'Ate',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: NavigationShell(),
+      home: const SplashScreen(),
+      routes: {
+        '/onboarding': (context) => const OnboardingScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/signup': (context) => const SignupScreen(),
+        '/forgot-password': (context) => const ForgotPasswordScreen(),
+        '/home': (context) => const NavigationShell(),
+      },
     );
   }
 }
