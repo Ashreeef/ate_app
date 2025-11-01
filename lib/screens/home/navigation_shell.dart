@@ -18,10 +18,11 @@ class _NavigationShellState extends State<NavigationShell> {
   int _currentIndex = 0;
 
   // List of screens for each tab
-  final List<Widget> _screens = [  // REMOVED const HERE
+  final List<Widget> _screens = [
+    // REMOVED const HERE
     const FeedScreen(),
     const SearchScreen(),
-    PostCreationStep1Screen(),  // NO const here
+    PostCreationStep1Screen(), // NO const here
     const ChallengesScreen(),
     const MyProfileScreen(),
   ];
@@ -31,12 +32,10 @@ class _NavigationShellState extends State<NavigationShell> {
     switch (_currentIndex) {
       case 0: // Feed/Home
         return null; // Feed has its own custom header
-        
+
       case 1: // Search
-        return AppBar(
-          title: Text('Rechercher'),
-        );
-        
+        return AppBar(title: Text('Rechercher'));
+
       case 2: // Post Creation
         return AppBar(
           leading: TextButton(
@@ -60,25 +59,12 @@ class _NavigationShellState extends State<NavigationShell> {
             ),
           ],
         );
-        
+
       case 3: // Challenges
-        return AppBar(
-          title: Text('Challenges'),
-        );
-        
+        return AppBar(title: Text('Challenges'));
+
       case 4: // Profile
-        return AppBar(
-          title: Text('Profile'),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.settings_outlined),
-              onPressed: () {
-                // TODO: Navigate to settings
-              },
-            ),
-          ],
-        );
-        
+        return null; // Profile screen has its own app bar
       default:
         return null;
     }
@@ -94,10 +80,7 @@ class _NavigationShellState extends State<NavigationShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavBar(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,
