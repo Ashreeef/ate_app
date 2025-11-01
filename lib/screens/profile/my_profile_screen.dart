@@ -5,7 +5,6 @@ import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_posts_grid.dart';
 import 'edit_profile_screen.dart';
 import '../settings/settings_screen.dart';
-import '../post/post_creation_step1_screen.dart';
 
 class MyProfileScreen extends StatelessWidget {
   const MyProfileScreen({Key? key}) : super(key: key);
@@ -28,18 +27,6 @@ class MyProfileScreen extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.add_box_outlined, color: AppColors.textDark),
-            tooltip: 'Add Post',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PostCreationStep1Screen(),
-                ),
-              );
-            },
-          ),
           IconButton(
             icon: Icon(Icons.more_vert, color: AppColors.textDark),
             tooltip: 'More options',

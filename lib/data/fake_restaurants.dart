@@ -13,8 +13,10 @@ class FakeData {
         location: 'Sidi Abdellah, Algiers',
         rating: 4.7,
         reviewCount: 128,
-        imageUrl: null,
-        logoUrl: null,
+        imageUrl:
+            'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&auto=format&fit=crop&q=80',
+        logoUrl:
+            'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=200&auto=format&fit=crop&q=80',
         isTrending: true,
       ),
       Restaurant(
@@ -24,7 +26,10 @@ class FakeData {
         location: 'Hydra, Algiers',
         rating: 4.5,
         reviewCount: 89,
-        imageUrl: null,
+        imageUrl:
+            'https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=800&auto=format&fit=crop&q=80',
+        logoUrl:
+            'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?w=200&auto=format&fit=crop&q=80',
         isTrending: true,
       ),
       Restaurant(
@@ -34,7 +39,10 @@ class FakeData {
         location: 'El Biar, Algiers',
         rating: 4.8,
         reviewCount: 156,
-        imageUrl: null,
+        imageUrl:
+            'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800&auto=format&fit=crop&q=80',
+        logoUrl:
+            'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=200&auto=format&fit=crop&q=80',
         isTrending: true,
       ),
       Restaurant(
@@ -44,7 +52,10 @@ class FakeData {
         location: 'Birkhadem, Algiers',
         rating: 4.3,
         reviewCount: 67,
-        imageUrl: null,
+        imageUrl:
+            'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop&q=80',
+        logoUrl:
+            'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=200&auto=format&fit=crop&q=80',
         isTrending: false,
       ),
       Restaurant(
@@ -54,7 +65,10 @@ class FakeData {
         location: 'Centre-ville, Algiers',
         rating: 4.6,
         reviewCount: 112,
-        imageUrl: null,
+        imageUrl:
+            'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&auto=format&fit=crop&q=80',
+        logoUrl:
+            'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&auto=format&fit=crop&q=80',
         isTrending: false,
       ),
       Restaurant(
@@ -64,7 +78,10 @@ class FakeData {
         location: 'Bouzareah, Algiers',
         rating: 4.4,
         reviewCount: 94,
-        imageUrl: null,
+        imageUrl:
+            'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop&q=80',
+        logoUrl:
+            'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200&auto=format&fit=crop&q=80',
         isTrending: false,
       ),
     ];

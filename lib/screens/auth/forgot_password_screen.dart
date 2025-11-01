@@ -23,7 +23,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   void _handleResetPassword() {
     if (_formKey.currentState?.validate() ?? false) {
       // TODO: Implement password reset logic
-      print('Reset password for: ${_emailController.text}');
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email de réinitialisation envoyé !'),
+          backgroundColor: AppColors.success,
+        ),
+      );
+      // Navigate back to login after a delay
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          Navigator.pop(context);
+        }
+      });
     }
   }
 

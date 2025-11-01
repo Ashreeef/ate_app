@@ -28,10 +28,8 @@ class _SignupScreenState extends State<SignupScreen> {
   void _handleSignUp() {
     if (_formKey.currentState?.validate() ?? false) {
       // TODO: Implement signup logic
-      print('Name: ${_nameController.text}');
-      print('Email: ${_emailController.text}');
-      print('Password: ${_passwordController.text}');
-      print('Remember me: $_rememberMe');
+      // For Now, Navigate to home screen (temporary until authentication is implemented)
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
@@ -41,7 +39,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _handleSocialSignUp(String provider) {
     // TODO: Implement social signup
-    print('Sign up with $provider');
+    // For Now, Navigate to home screen (temporary until social auth is implemented)
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   void _handleLogin() {

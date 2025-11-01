@@ -26,9 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleLogin() {
     if (_formKey.currentState?.validate() ?? false) {
       // TODO: Implement login logic
-      print('Email: ${_emailController.text}');
-      print('Password: ${_passwordController.text}');
-      print('Remember me: $_rememberMe');
+      // For Now, Navigate to home screen (temporary until authentication is implemented)
+      Navigator.pushReplacementNamed(context, '/home');
     }
   }
 
@@ -38,7 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleSocialLogin(String provider) {
     // TODO: Implement social login
-    print('Login with $provider');
+    // For Now, Navigate to home screen (temporary until social auth is implemented)
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   void _handleSignUp() {
