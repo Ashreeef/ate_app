@@ -18,7 +18,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          'Settings',
+          'Paramètres',
           style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
@@ -29,12 +29,12 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.md),
 
             // Account Section
-            _buildSectionHeader('Account'),
+            _buildSectionHeader('Compte'),
             _buildSettingsGroup([
               _buildSettingsTile(
                 icon: Icons.edit_outlined,
-                title: 'Edit Profile',
-                subtitle: 'Update your profile information',
+                title: 'Modifier le profil',
+                subtitle: 'Mettre à jour vos informations',
                 onTap: () {
                   Navigator.push(
                     context,
@@ -46,16 +46,16 @@ class SettingsScreen extends StatelessWidget {
               ),
               _buildSettingsTile(
                 icon: Icons.lock_outline,
-                title: 'Privacy & Security',
-                subtitle: 'Manage your account security',
+                title: 'Confidentialité et sécurité',
+                subtitle: 'Gérer la sécurité de votre compte',
                 onTap: () {
                   _showComingSoon(context);
                 },
               ),
               _buildSettingsTile(
                 icon: Icons.key_outlined,
-                title: 'Change Password',
-                subtitle: 'Update your password',
+                title: 'Changer le mot de passe',
+                subtitle: 'Mettre à jour votre mot de passe',
                 onTap: () {
                   _showChangePasswordDialog(context);
                 },
@@ -65,28 +65,28 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.lg),
 
             // Preferences Section
-            _buildSectionHeader('Preferences'),
+            _buildSectionHeader('Préférences'),
             _buildSettingsGroup([
               _buildSettingsTile(
                 icon: Icons.notifications_outlined,
                 title: 'Notifications',
-                subtitle: 'Manage notification preferences',
+                subtitle: 'Gérer vos préférences de notification',
                 onTap: () {
                   _showComingSoon(context);
                 },
               ),
               _buildSettingsTile(
                 icon: Icons.language_outlined,
-                title: 'Language',
-                subtitle: 'English',
+                title: 'Langue',
+                subtitle: 'Français',
                 onTap: () {
                   _showComingSoon(context);
                 },
               ),
               _buildSettingsTile(
                 icon: Icons.palette_outlined,
-                title: 'Theme',
-                subtitle: 'Light mode',
+                title: 'Thème',
+                subtitle: 'Mode clair',
                 onTap: () {
                   _showComingSoon(context);
                 },
@@ -100,24 +100,24 @@ class SettingsScreen extends StatelessWidget {
             _buildSettingsGroup([
               _buildSettingsTile(
                 icon: Icons.help_outline,
-                title: 'Help & Support',
-                subtitle: 'Get help with Ate',
+                title: 'Aide et support',
+                subtitle: 'Obtenir de l\'aide avec Ate',
                 onTap: () {
                   _showComingSoon(context);
                 },
               ),
               _buildSettingsTile(
                 icon: Icons.info_outline,
-                title: 'About',
-                subtitle: 'Learn more about Ate',
+                title: 'À propos',
+                subtitle: 'En savoir plus sur Ate',
                 onTap: () {
                   _showAboutDialog(context);
                 },
               ),
               _buildSettingsTile(
                 icon: Icons.description_outlined,
-                title: 'Terms & Privacy',
-                subtitle: 'Legal information',
+                title: 'Conditions et confidentialité',
+                subtitle: 'Informations légales',
                 onTap: () {
                   _showComingSoon(context);
                 },
@@ -127,12 +127,12 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.lg),
 
             // Danger Zone
-            _buildSectionHeader('Danger Zone'),
+            _buildSectionHeader('Zone de danger'),
             _buildSettingsGroup([
               _buildSettingsTile(
                 icon: Icons.logout,
-                title: 'Logout',
-                subtitle: 'Sign out of your account',
+                title: 'Déconnexion',
+                subtitle: 'Se déconnecter de votre compte',
                 onTap: () {
                   _showLogoutDialog(context);
                 },
@@ -141,8 +141,8 @@ class SettingsScreen extends StatelessWidget {
               ),
               _buildSettingsTile(
                 icon: Icons.delete_outline,
-                title: 'Delete Account',
-                subtitle: 'Permanently delete your account',
+                title: 'Supprimer le compte',
+                subtitle: 'Supprimer définitivement votre compte',
                 onTap: () {
                   _showDeleteAccountDialog(context);
                 },
@@ -269,7 +269,7 @@ class SettingsScreen extends StatelessWidget {
   void _showComingSoon(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Coming soon!'),
+        content: Text('Bientôt disponible !'),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -304,7 +304,7 @@ class SettingsScreen extends StatelessWidget {
             Text(AppConstants.appTagline, style: AppTextStyles.body),
             SizedBox(height: AppSpacing.md),
             Text(
-              '© 2025 Ate. All rights reserved.',
+              '© 2025 Ate. Tous droits réservés.',
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.textMedium,
               ),
@@ -314,7 +314,7 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Close'),
+            child: Text('Fermer'),
           ),
         ],
       ),
@@ -325,23 +325,23 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Logout'),
-        content: Text('Are you sure you want to logout?'),
+        title: Text('Déconnexion'),
+        content: Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('Annuler'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               // TODO: Implement logout
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Logged out successfully')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Déconnexion réussie')));
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: Text('Logout'),
+            child: Text('Déconnexion'),
           ),
         ],
       ),
@@ -356,17 +356,17 @@ class SettingsScreen extends StatelessWidget {
           children: [
             Icon(Icons.warning_amber_rounded, color: AppColors.error),
             SizedBox(width: AppSpacing.sm),
-            Text('Delete Account'),
+            Text('Supprimer le compte'),
           ],
         ),
         content: Text(
-          'This action cannot be undone. All your data will be permanently deleted.',
+          'Cette action est irréversible. Toutes vos données seront définitivement supprimées.',
           style: AppTextStyles.body,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('Annuler'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -374,7 +374,7 @@ class SettingsScreen extends StatelessWidget {
               // TODO: Implement account deletion
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: Text('Delete'),
+            child: Text('Supprimer'),
           ),
         ],
       ),
@@ -385,13 +385,13 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Change Password'),
+        title: Text('Changer le mot de passe'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               decoration: InputDecoration(
-                labelText: 'Current Password',
+                labelText: 'Mot de passe actuel',
                 prefixIcon: Icon(Icons.lock_outline),
               ),
               obscureText: true,
@@ -399,7 +399,7 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.md),
             TextField(
               decoration: InputDecoration(
-                labelText: 'New Password',
+                labelText: 'Nouveau mot de passe',
                 prefixIcon: Icon(Icons.lock_outline),
               ),
               obscureText: true,
@@ -407,7 +407,7 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.md),
             TextField(
               decoration: InputDecoration(
-                labelText: 'Confirm New Password',
+                labelText: 'Confirmer le nouveau mot de passe',
                 prefixIcon: Icon(Icons.lock_outline),
               ),
               obscureText: true,
@@ -417,16 +417,16 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text('Annuler'),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Password changed successfully')),
+                SnackBar(content: Text('Mot de passe modifié avec succès')),
               );
             },
-            child: Text('Change'),
+            child: Text('Modifier'),
           ),
         ],
       ),

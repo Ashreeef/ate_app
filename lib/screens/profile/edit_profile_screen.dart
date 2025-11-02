@@ -33,7 +33,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _saveProfile() {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Profile updated successfully'),
+        content: Text('Profil mis à jour avec succès'),
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.success,
       ),
@@ -95,7 +95,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         centerTitle: true,
         title: Text(
-          'Edit Profile',
+          'Modifier le profil',
           style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
@@ -103,7 +103,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             onPressed: _saveProfile,
             icon: Icon(Icons.check, size: 20),
             label: Text(
-              'Save',
+              'Enregistrer',
               style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -142,7 +142,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           // TODO: Implement image picker
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Image picker coming soon!'),
+                              content: Text(
+                                'Sélecteur d\'image bientôt disponible !',
+                              ),
                             ),
                           );
                         },
@@ -182,13 +184,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildTextField(
-                    label: 'Full Name',
+                    label: 'Nom complet',
                     controller: _fullNameController,
                     icon: Icons.person_outline,
                   ),
                   SizedBox(height: AppSpacing.lg),
                   _buildTextField(
-                    label: 'Username',
+                    label: 'Nom d\'utilisateur',
                     controller: _usernameController,
                     icon: Icons.alternate_email,
                   ),
@@ -201,7 +203,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   SizedBox(height: AppSpacing.lg),
                   _buildTextField(
-                    label: 'Phone',
+                    label: 'Téléphone',
                     controller: _phoneController,
                     icon: Icons.phone_outlined,
                     keyboardType: TextInputType.phone,

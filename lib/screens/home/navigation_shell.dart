@@ -55,7 +55,7 @@ class _NavigationShellState extends State<NavigationShell> {
                   state.navigateToNextStep();
                 }
               },
-              child: Text('Next', style: AppTextStyles.link),
+              child: Text('Suivant', style: AppTextStyles.link),
             ),
           ],
         );

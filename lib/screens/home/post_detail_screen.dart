@@ -4,10 +4,7 @@ import 'package:ate_app/utils/constants.dart';
 class PostDetailScreen extends StatefulWidget {
   final Map<String, dynamic> post;
 
-  const PostDetailScreen({
-    Key? key,
-    required this.post,
-  }) : super(key: key);
+  const PostDetailScreen({Key? key, required this.post}) : super(key: key);
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -69,10 +66,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        title: Text(
-          'Post',
-          style: AppTextStyles.heading3,
-        ),
+        title: Text('Post', style: AppTextStyles.heading3),
         actions: [
           IconButton(
             icon: Icon(
@@ -104,7 +98,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     margin: const EdgeInsets.all(AppSpacing.md),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                      borderRadius: BorderRadius.circular(
+                        AppSizes.borderRadius,
+                      ),
                     ),
                     color: AppColors.white,
                     child: Column(
@@ -112,32 +108,32 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       children: [
                         // Header
                         _buildHeader(),
-                        
+
                         // Image
                         _buildImage(),
-                        
+
                         // Actions
                         _buildActions(),
-                        
+
                         // Likes count
                         _buildLikesCount(),
-                        
+
                         // Caption
                         _buildCaption(),
-                        
+
                         // Restaurant and dish info
                         _buildRestaurantInfo(),
                       ],
                     ),
                   ),
-                  
+
                   // Comments section
                   _buildCommentsSection(),
                 ],
               ),
             ),
           ),
-          
+
           // Comment input
           _buildCommentInput(),
         ],
@@ -208,7 +204,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               child: CircularProgressIndicator(
                 value: loadingProgress.expectedTotalBytes != null
                     ? loadingProgress.cumulativeBytesLoaded /
-                        loadingProgress.expectedTotalBytes!
+                          loadingProgress.expectedTotalBytes!
                     : null,
                 color: AppColors.primary,
               ),
@@ -229,7 +225,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Failed to load image',
+                  'Échec du chargement de l\'image',
                   style: AppTextStyles.caption,
                 ),
               ],
@@ -343,9 +339,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           if (_post['dishName'] != null)
             Text(
               _post['dishName'],
-              style: AppTextStyles.body.copyWith(
-                fontWeight: FontWeight.w500,
-              ),
+              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w500),
             ),
           const SizedBox(height: AppSpacing.xs),
           if (_post['rating'] != null)
@@ -372,7 +366,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   Widget _buildCommentsSection() {
     final comments = _post['comments'] as List<dynamic>? ?? [];
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
       elevation: 0,
@@ -386,10 +380,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (comments.isNotEmpty)
-              Text(
-                'Comments',
-                style: AppTextStyles.heading4,
-              ),
+              Text('Commentaires', style: AppTextStyles.heading4),
             const SizedBox(height: AppSpacing.md),
             ListView.builder(
               shrinkWrap: true,
@@ -433,7 +424,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             ),
                             const SizedBox(height: AppSpacing.xs),
                             const Text(
-                              '2 hours ago', // Placeholder
+                              'Il y a 2 heures', // Placeholder
                               style: AppTextStyles.timestamp,
                             ),
                           ],
@@ -463,9 +454,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: AppColors.white,
-        border: Border(
-          top: BorderSide(color: AppColors.border, width: 1),
-        ),
+        border: Border(top: BorderSide(color: AppColors.border, width: 1)),
       ),
       child: Row(
         children: [
@@ -516,21 +505,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
         ),
-        title: Text(
-          'Share Post',
-          style: AppTextStyles.heading3,
-        ),
+        title: Text('Partager le post', style: AppTextStyles.heading3),
         content: Text(
-          'Share functionality will be implemented here.',
+          'La fonctionnalité de partage sera implémentée ici.',
           style: AppTextStyles.body,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(
-              'OK',
-              style: AppTextStyles.link,
-            ),
+            child: Text('OK', style: AppTextStyles.link),
           ),
         ],
       ),
@@ -554,10 +537,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             children: [
               ListTile(
                 leading: Icon(Icons.flag_outlined, color: AppColors.textDark),
-                title: Text(
-                  'Report',
-                  style: AppTextStyles.bodyMedium,
-                ),
+                title: Text('Signaler', style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
                   // Implement report logic
@@ -565,16 +545,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
               ListTile(
                 leading: Icon(Icons.link, color: AppColors.textDark),
-                title: Text(
-                  'Copy link',
-                  style: AppTextStyles.bodyMedium,
-                ),
+                title: Text('Copier le lien', style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Link copied to clipboard',
+                        'Lien copié dans le presse-papiers',
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.white,
                         ),
@@ -582,7 +559,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       backgroundColor: AppColors.textDark,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                        borderRadius: BorderRadius.circular(
+                          AppSizes.borderRadius,
+                        ),
                       ),
                     ),
                   );
@@ -591,10 +570,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               const Divider(height: 1),
               ListTile(
                 leading: Icon(Icons.close, color: AppColors.textDark),
-                title: Text(
-                  'Cancel',
-                  style: AppTextStyles.bodyMedium,
-                ),
+                title: Text('Annuler', style: AppTextStyles.bodyMedium),
                 onTap: () => Navigator.pop(context),
               ),
             ],

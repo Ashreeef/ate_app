@@ -85,7 +85,7 @@ class MyProfileScreen extends StatelessWidget {
             children: [
               ListTile(
                 leading: Icon(Icons.settings_outlined),
-                title: Text('Settings', style: AppTextStyles.bodyMedium),
+                title: Text('Paramètres', style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -96,7 +96,10 @@ class MyProfileScreen extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.edit_outlined),
-                title: Text('Edit Profile', style: AppTextStyles.bodyMedium),
+                title: Text(
+                  'Modifier le profil',
+                  style: AppTextStyles.bodyMedium,
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -109,12 +112,17 @@ class MyProfileScreen extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.share_outlined),
-                title: Text('Share Profile', style: AppTextStyles.bodyMedium),
+                title: Text(
+                  'Partager le profil',
+                  style: AppTextStyles.bodyMedium,
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Share feature coming soon!'),
+                      content: Text(
+                        'Fonctionnalité de partage bientôt disponible !',
+                      ),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
