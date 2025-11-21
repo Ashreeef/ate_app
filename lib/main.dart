@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'utils/theme.dart';
 import 'screens/splash/splash_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
@@ -20,6 +22,20 @@ class MyApp extends StatelessWidget {
       title: 'Ate',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
+
+      // Localization configuration
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('ar'), // Arabic
+        Locale('fr'), // French
+      ],
+
       home: const SplashScreen(),
       routes: {
         '/onboarding': (context) => const OnboardingScreen(),
