@@ -6,6 +6,10 @@ class User {
   final String? phone;
   final String? profileImage;
   final String? bio;
+  final int followersCount;
+  final int followingCount;
+  final int points;
+  final String level; // rank (Bronze, Silver, Gold, etc.)
 
   User({
     this.id,
@@ -15,6 +19,10 @@ class User {
     this.phone,
     this.profileImage,
     this.bio,
+    this.followersCount = 0,
+    this.followingCount = 0,
+    this.points = 0,
+    this.level = 'Bronze',
   });
 
   factory User.fromMap(Map<String, dynamic> m) {
@@ -24,9 +32,12 @@ class User {
       email: m['email'] as String? ?? '',
       profileImage: m['profile_image'] as String?,
       bio: m['bio'] as String?,
-      // displayName and phone may not be present in DB
       displayName: m['display_name'] as String?,
       phone: m['phone'] as String?,
+      followersCount: m['followers_count'] as int? ?? 0,
+      followingCount: m['following_count'] as int? ?? 0,
+      points: m['points'] as int? ?? 0,
+      level: m['level'] as String? ?? 'Bronze',
     );
   }
 
@@ -36,6 +47,10 @@ class User {
       'email': email,
       'profile_image': profileImage,
       'bio': bio,
+      'followers_count': followersCount,
+      'following_count': followingCount,
+      'points': points,
+      'level': level,
     };
     if (id != null) map['id'] = id;
     if (displayName != null) map['display_name'] = displayName;

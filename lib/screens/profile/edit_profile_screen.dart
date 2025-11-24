@@ -39,14 +39,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _saveProfile() async {
     final cubit = context.read<ProfileCubit>();
+    final currentUser = cubit.state.user;
     final user = User(
-      id: cubit.state.user?.id,
+      id: currentUser?.id,
       displayName: _fullNameController.text.trim(),
       username: _usernameController.text.trim(),
       email: _emailController.text.trim(),
       phone: _phoneController.text.trim(),
       bio: _bioController.text.trim(),
-      profileImage: cubit.state.user?.profileImage ?? FakeUserData.avatarUrl,
+      profileImage: currentUser?.profileImage ?? FakeUserData.avatarUrl,
+      followersCount: currentUser?.followersCount ?? 0,
+      followingCount: currentUser?.followingCount ?? 0,
+      points: currentUser?.points ?? 0,
+      level: currentUser?.level ?? 'Bronze',
     );
 
     await cubit.saveProfile(user);
@@ -217,6 +222,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ? _bioController.text.trim()
                                   : current?.bio,
                               profileImage: picked.path,
+                              followersCount: current?.followersCount ?? 0,
+                              followingCount: current?.followingCount ?? 0,
+                              points: current?.points ?? 0,
+                              level: current?.level ?? 'Bronze',
                             );
                             if (mounted) {
                               await context.read<ProfileCubit>().saveProfile(

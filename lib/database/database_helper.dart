@@ -22,7 +22,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
@@ -37,6 +37,19 @@ class DatabaseHelper {
       } catch (_) {}
       try {
         await db.execute('ALTER TABLE users ADD COLUMN phone TEXT');
+      } catch (_) {}
+    }
+    if (oldVersion < 3) {
+      // Add followers and following counts
+      try {
+        await db.execute(
+          'ALTER TABLE users ADD COLUMN followers_count INTEGER DEFAULT 0',
+        );
+      } catch (_) {}
+      try {
+        await db.execute(
+          'ALTER TABLE users ADD COLUMN following_count INTEGER DEFAULT 0',
+        );
       } catch (_) {}
     }
   }
@@ -57,6 +70,10 @@ class DatabaseHelper {
         password $textType,
         profile_image TEXT,
         bio TEXT,
+        display_name TEXT,
+        phone TEXT,
+        followers_count INTEGER DEFAULT 0,
+        following_count INTEGER DEFAULT 0,
         points INTEGER DEFAULT 0,
         level TEXT DEFAULT 'Bronze',
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
