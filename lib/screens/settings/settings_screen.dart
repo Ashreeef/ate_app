@@ -2,53 +2,28 @@ import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../database/database_helper.dart';
 import '../../blocs/profile/profile_cubit.dart';
+import '../../blocs/settings/settings_cubit.dart';
+import '../../blocs/settings/settings_state.dart';
 import '../profile/edit_profile_screen.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool _notifications = true;
-  bool _darkTheme = false;
-
-  static const _kNotificationsKey = 'pref_notifications';
-  static const _kDarkThemeKey = 'pref_dark_theme';
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPrefs();
-  }
-
-  Future<void> _loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _notifications = prefs.getBool(_kNotificationsKey) ?? true;
-      _darkTheme = prefs.getBool(_kDarkThemeKey) ?? false;
-    });
-  }
-
-  Future<void> _setNotifications(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kNotificationsKey, v);
-    setState(() => _notifications = v);
-  }
-
-  Future<void> _setDarkTheme(bool v) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_kDarkThemeKey, v);
-    setState(() => _darkTheme = v);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => SettingsCubit()..loadSettings(),
+      child: BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, state) {
+          return _buildScaffold(context, state);
+        },
+      ),
+    );
+  }
+
+  Widget _buildScaffold(BuildContext context, SettingsState state) {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -113,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: SwitchListTile(
-                  value: _notifications,
+                  value: state.notifications,
                   title: Text(
                     'Notifications',
                     style: AppTextStyles.bodyMedium.copyWith(
@@ -126,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: AppColors.textMedium,
                     ),
                   ),
-                  onChanged: (v) => _setNotifications(v),
+                  onChanged: (v) => context.read<SettingsCubit>().setNotifications(v),
                   activeColor: AppColors.primary,
                 ),
               ),
@@ -145,7 +120,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: SwitchListTile(
-                  value: _darkTheme,
+                  value: state.darkTheme,
                   title: Text(
                     'Thème',
                     style: AppTextStyles.bodyMedium.copyWith(
@@ -158,7 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: AppColors.textMedium,
                     ),
                   ),
-                  onChanged: (v) => _setDarkTheme(v),
+                  onChanged: (v) => context.read<SettingsCubit>().setDarkTheme(v),
                   activeColor: AppColors.primary,
                 ),
               ),
