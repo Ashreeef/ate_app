@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'utils/theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'blocs/profile/profile_cubit.dart';
+import 'repositories/profile_repository.dart';
 import 'screens/splash/splash_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -18,32 +21,35 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Ate',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
+    return BlocProvider(
+      create: (_) => ProfileCubit(ProfileRepository())..loadProfile(),
+      child: MaterialApp(
+        title: 'Ate',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
 
-      // Localization configuration
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'), // English
-        Locale('ar'), // Arabic
-        Locale('fr'), // French
-      ],
+        // Localization configuration
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          Locale('ar'), // Arabic
+          Locale('fr'), // French
+        ],
 
-      home: const SplashScreen(),
-      routes: {
-        '/onboarding': (context) => const OnboardingScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/signup': (context) => const SignupScreen(),
-        '/forgot-password': (context) => const ForgotPasswordScreen(),
-        '/home': (context) => const NavigationShell(),
-      },
+        home: const SplashScreen(),
+        routes: {
+          '/onboarding': (context) => const OnboardingScreen(),
+          '/login': (context) => const LoginScreen(),
+          '/signup': (context) => const SignupScreen(),
+          '/forgot-password': (context) => const ForgotPasswordScreen(),
+          '/home': (context) => const NavigationShell(),
+        },
+      ),
     );
   }
 }

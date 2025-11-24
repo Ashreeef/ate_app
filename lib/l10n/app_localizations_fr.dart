@@ -103,4 +103,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get error => 'Une erreur s\'est produite';
+
+  @override
+  String get comingSoon => 'Bientôt disponible !';
+
+  @override
+  String get profileUpdated => 'Profil mis à jour avec succès';
+
+  @override
+  String get deleteAccount => 'Supprimer le compte';
+
+  @override
+  String get logoutSuccess => 'Déconnexion réussie';
+
+  @override
+  String get shareProfile => 'Partager le profil';
 }

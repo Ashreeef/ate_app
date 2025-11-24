@@ -32,4 +32,11 @@
   "submit": "Soumettre",
   "loading": "Chargement...",
   "error": "Une erreur s'est produite"
+  ,
+  "comingSoon": "Bientôt disponible !",
+  "profileUpdated": "Profil mis à jour avec succès"
+  ,
+  "deleteAccount": "Supprimer le compte",
+  "logoutSuccess": "Déconnexion réussie",
+  "shareProfile": "Partager le profil"
 }

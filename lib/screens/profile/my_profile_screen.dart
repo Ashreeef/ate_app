@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 import '../../data/fake_data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/profile/profile_cubit.dart';
 import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_posts_grid.dart';
 import 'edit_profile_screen.dart';
@@ -11,6 +14,12 @@ class MyProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<ProfileCubit>().state;
+    final user = state.user;
+
+    final username = user?.username ?? FakeUserData.username;
+    final avatar = user?.profileImage ?? FakeUserData.avatarUrl;
+
     return Scaffold(
       backgroundColor: AppColors.white,
 
@@ -20,7 +29,7 @@ class MyProfileScreen extends StatelessWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text(
-          '@${FakeUserData.username}',
+          '@$username',
           style: AppTextStyles.heading4.copyWith(
             fontWeight: FontWeight.w600,
             letterSpacing: 0.5,
@@ -47,8 +56,8 @@ class MyProfileScreen extends StatelessWidget {
                 children: [
                   // Profile Header Component
                   ProfileHeader(
-                    avatarUrl: FakeUserData.avatarUrl,
-                    username: FakeUserData.username,
+                    avatarUrl: avatar,
+                    username: username,
                     posts: FakeUserData.postsCount,
                     followers: FakeUserData.followersCount,
                     following: FakeUserData.followingCount,
@@ -85,7 +94,10 @@ class MyProfileScreen extends StatelessWidget {
             children: [
               ListTile(
                 leading: Icon(Icons.settings_outlined),
-                title: Text('Paramètres', style: AppTextStyles.bodyMedium),
+                title: Text(
+                  AppLocalizations.of(context)!.settingsTitle,
+                  style: AppTextStyles.bodyMedium,
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -97,7 +109,7 @@ class MyProfileScreen extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.edit_outlined),
                 title: Text(
-                  'Modifier le profil',
+                  AppLocalizations.of(context)!.editProfile,
                   style: AppTextStyles.bodyMedium,
                 ),
                 onTap: () {
@@ -113,16 +125,14 @@ class MyProfileScreen extends StatelessWidget {
               ListTile(
                 leading: Icon(Icons.share_outlined),
                 title: Text(
-                  'Partager le profil',
+                  AppLocalizations.of(context)!.shareProfile,
                   style: AppTextStyles.bodyMedium,
                 ),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(
-                        'Fonctionnalité de partage bientôt disponible !',
-                      ),
+                      content: Text(AppLocalizations.of(context)!.comingSoon),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );

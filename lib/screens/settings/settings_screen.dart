@@ -1,9 +1,51 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../database/database_helper.dart';
+import '../../blocs/profile/profile_cubit.dart';
 import '../profile/edit_profile_screen.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _notifications = true;
+  bool _darkTheme = false;
+
+  static const _kNotificationsKey = 'pref_notifications';
+  static const _kDarkThemeKey = 'pref_dark_theme';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notifications = prefs.getBool(_kNotificationsKey) ?? true;
+      _darkTheme = prefs.getBool(_kDarkThemeKey) ?? false;
+    });
+  }
+
+  Future<void> _setNotifications(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kNotificationsKey, v);
+    setState(() => _notifications = v);
+  }
+
+  Future<void> _setDarkTheme(bool v) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_kDarkThemeKey, v);
+    setState(() => _darkTheme = v);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
         ),
         centerTitle: true,
         title: Text(
-          'Paramètres',
+          AppLocalizations.of(context)!.settingsTitle,
           style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
@@ -33,7 +75,7 @@ class SettingsScreen extends StatelessWidget {
             _buildSettingsGroup([
               _buildSettingsTile(
                 icon: Icons.edit_outlined,
-                title: 'Modifier le profil',
+                title: AppLocalizations.of(context)!.editProfile,
                 subtitle: 'Mettre à jour vos informations',
                 onTap: () {
                   Navigator.push(
@@ -67,14 +109,29 @@ class SettingsScreen extends StatelessWidget {
             // Preferences Section
             _buildSectionHeader('Préférences'),
             _buildSettingsGroup([
-              _buildSettingsTile(
-                icon: Icons.notifications_outlined,
-                title: 'Notifications',
-                subtitle: 'Gérer vos préférences de notification',
-                onTap: () {
-                  _showComingSoon(context);
-                },
+              // Notifications toggle
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: SwitchListTile(
+                  value: _notifications,
+                  title: Text(
+                    'Notifications',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Gérer vos préférences de notification',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textMedium,
+                    ),
+                  ),
+                  onChanged: (v) => _setNotifications(v),
+                  activeColor: AppColors.primary,
+                ),
               ),
+
+              // Language (kept simple for now)
               _buildSettingsTile(
                 icon: Icons.language_outlined,
                 title: 'Langue',
@@ -83,13 +140,27 @@ class SettingsScreen extends StatelessWidget {
                   _showComingSoon(context);
                 },
               ),
-              _buildSettingsTile(
-                icon: Icons.palette_outlined,
-                title: 'Thème',
-                subtitle: 'Mode clair',
-                onTap: () {
-                  _showComingSoon(context);
-                },
+
+              // Theme toggle
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                child: SwitchListTile(
+                  value: _darkTheme,
+                  title: Text(
+                    'Thème',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'Mode sombre',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textMedium,
+                    ),
+                  ),
+                  onChanged: (v) => _setDarkTheme(v),
+                  activeColor: AppColors.primary,
+                ),
               ),
             ]),
 
@@ -141,7 +212,7 @@ class SettingsScreen extends StatelessWidget {
               ),
               _buildSettingsTile(
                 icon: Icons.delete_outline,
-                title: 'Supprimer le compte',
+                title: AppLocalizations.of(context)!.deleteAccount,
                 subtitle: 'Supprimer définitivement votre compte',
                 onTap: () {
                   _showDeleteAccountDialog(context);
@@ -269,7 +340,7 @@ class SettingsScreen extends StatelessWidget {
   void _showComingSoon(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Bientôt disponible !'),
+        content: Text(AppLocalizations.of(context)!.comingSoon),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -314,7 +385,7 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Fermer'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
         ],
       ),
@@ -325,23 +396,25 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Déconnexion'),
+        title: Text(AppLocalizations.of(context)!.logout),
         content: Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Annuler'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               // TODO: Implement logout
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('Déconnexion réussie')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(AppLocalizations.of(context)!.logoutSuccess),
+                ),
+              );
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: Text('Déconnexion'),
+            child: Text(AppLocalizations.of(context)!.logout),
           ),
         ],
       ),
@@ -356,7 +429,7 @@ class SettingsScreen extends StatelessWidget {
           children: [
             Icon(Icons.warning_amber_rounded, color: AppColors.error),
             SizedBox(width: AppSpacing.sm),
-            Text('Supprimer le compte'),
+            Text(AppLocalizations.of(context)!.deleteAccount),
           ],
         ),
         content: Text(
@@ -366,15 +439,21 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Annuler'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              // TODO: Implement account deletion
+              // Perform local deletion (clears local DB)
+              await DatabaseHelper.instance.clearAllData();
+              // If a ProfileCubit is provided, reload to reflect deletion
+              try {
+                final cubit = context.read<ProfileCubit>();
+                await cubit.loadProfile();
+              } catch (_) {}
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: Text('Supprimer'),
+            child: Text(AppLocalizations.of(context)!.submit),
           ),
         ],
       ),
@@ -417,7 +496,7 @@ class SettingsScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Annuler'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -426,7 +505,7 @@ class SettingsScreen extends StatelessWidget {
                 SnackBar(content: Text('Mot de passe modifié avec succès')),
               );
             },
-            child: Text('Modifier'),
+            child: Text(AppLocalizations.of(context)!.submit),
           ),
         ],
       ),

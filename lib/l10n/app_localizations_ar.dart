@@ -103,4 +103,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get error => 'حدث خطأ';
+
+  @override
+  String get comingSoon => 'قريباً!';
+
+  @override
+  String get profileUpdated => 'تم تحديث الملف الشخصي بنجاح';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get logoutSuccess => 'تم تسجيل الخروج بنجاح';
+
+  @override
+  String get shareProfile => 'مشاركة الملف الشخصي';
 }

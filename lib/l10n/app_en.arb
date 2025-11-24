@@ -32,4 +32,11 @@
   "submit": "Submit",
   "loading": "Loading...",
   "error": "An error occurred"
+  ,
+  "comingSoon": "Coming soon!",
+  "profileUpdated": "Profile updated successfully"
+  ,
+  "deleteAccount": "Delete account",
+  "logoutSuccess": "Logged out successfully",
+  "shareProfile": "Share profile"
 }

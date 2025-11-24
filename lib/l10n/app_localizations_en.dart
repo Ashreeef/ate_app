@@ -103,4 +103,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get error => 'An error occurred';
+
+  @override
+  String get comingSoon => 'Coming soon!';
+
+  @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get logoutSuccess => 'Logged out successfully';
+
+  @override
+  String get shareProfile => 'Share profile';
 }

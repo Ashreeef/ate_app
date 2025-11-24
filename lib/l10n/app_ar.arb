@@ -32,4 +32,11 @@
   "submit": "إرسال",
   "loading": "جاري التحميل...",
   "error": "حدث خطأ"
+  ,
+  "comingSoon": "قريباً!",
+  "profileUpdated": "تم تحديث الملف الشخصي بنجاح"
+  ,
+  "deleteAccount": "حذف الحساب",
+  "logoutSuccess": "تم تسجيل الخروج بنجاح",
+  "shareProfile": "مشاركة الملف الشخصي"
 }
