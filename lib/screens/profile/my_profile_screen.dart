@@ -27,7 +27,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadPosts();
+    _loadProfileAndPosts();
+  }
+
+  Future<void> _loadProfileAndPosts() async {
+    //  reload profile from database
+    final cubit = context.read<ProfileCubit>();
+    await cubit.loadProfile();
+
+    // Then load posts
+    await _loadPosts();
   }
 
   Future<void> _loadPosts() async {
@@ -59,7 +68,29 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
+        // Show loading indicator while profile is being loaded
+        if (state.status == ProfileStatus.loading || _isLoadingPosts) {
+          return Scaffold(
+            backgroundColor: AppColors.white,
+            appBar: AppBar(
+              backgroundColor: AppColors.white,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              centerTitle: true,
+              title: Text('Profile', style: AppTextStyles.heading4),
+            ),
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
         final user = state.user;
+
+        // Debug: print user data
+        print(' MyProfileScreen - User: ${user?.username}, ID: ${user?.id}');
+        print(
+          ' Stats - Followers: ${user?.followersCount}, Points: ${user?.points}',
+        );
+
         final username = user?.username ?? FakeUserData.username;
         final avatar = user?.profileImage ?? FakeUserData.avatarUrl;
 
@@ -183,14 +214,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   AppLocalizations.of(context)!.editProfile,
                   style: AppTextStyles.bodyMedium,
                 ),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => EditProfileScreen(),
                     ),
                   );
+                  // Reload profile and posts after returning from edit screen
+                  if (mounted) {
+                    await _loadProfileAndPosts();
+                  }
                 },
               ),
               ListTile(

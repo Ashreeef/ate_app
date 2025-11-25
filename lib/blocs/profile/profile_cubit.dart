@@ -12,6 +12,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
       final user = await _repo.getCurrentUser();
+      print(' ProfileCubit loaded user: ${user?.username} (ID: ${user?.id})');
+      print(
+        ' User stats - Followers: ${user?.followersCount}, Points: ${user?.points}, Level: ${user?.level}',
+      );
       if (user != null) {
         emit(state.copyWith(status: ProfileStatus.loaded, user: user));
       } else {
@@ -24,12 +28,18 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> saveProfile(User user) async {
     try {
+      print('Saving profile: ${user.username}, ${user.displayName}');
+      print(' Bio: ${user.bio}');
+      print(' Phone: ${user.phone}');
       emit(state.copyWith(status: ProfileStatus.saving));
       await _repo.updateUser(user);
+      print(' Profile saved successfully');
       // re-fetch latest user
       final updated = await _repo.getCurrentUser();
+      print(' Reloaded user: ${updated?.username}');
       emit(state.copyWith(status: ProfileStatus.loaded, user: updated));
     } catch (e) {
+      print(' Error saving profile: $e');
       emit(state.copyWith(status: ProfileStatus.error, message: e.toString()));
     }
   }

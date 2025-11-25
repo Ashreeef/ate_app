@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'utils/theme.dart';
+import 'utils/seed_database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'blocs/profile/profile_cubit.dart';
 import 'repositories/profile_repository.dart';
@@ -12,7 +13,15 @@ import 'screens/auth/signup_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 import 'screens/home/navigation_shell.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Seed database with test data (comment out after testing)
+  await DatabaseSeeder.seedTestData();
+  
+  // Small delay to ensure database operations complete
+  await Future.delayed(Duration(milliseconds: 100));
+  
   runApp(const MyApp());
 }
 
@@ -22,7 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ProfileCubit(ProfileRepository())..loadProfile(),
+      create: (_) => ProfileCubit(ProfileRepository()),
       child: MaterialApp(
         title: 'Ate',
         debugShowCheckedModeBanner: false,

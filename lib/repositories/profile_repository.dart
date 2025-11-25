@@ -13,6 +13,8 @@ class ProfileRepository {
     final db = await _dbHelper.database;
 
     final currentId = prefs.getInt(_kCurrentUserIdKey);
+    print(' Current user ID from prefs: $currentId');
+    
     if (currentId != null) {
       final maps = await db.query(
         'users',
@@ -20,11 +22,19 @@ class ProfileRepository {
         whereArgs: [currentId],
         limit: 1,
       );
-      if (maps.isNotEmpty) return User.fromMap(maps.first);
+      print(' Query result for ID $currentId: ${maps.length} rows');
+      if (maps.isNotEmpty) {
+        print('Found user data: ${maps.first}');
+        return User.fromMap(maps.first);
+      }
       // fallthrough to first user if stored id missing
     }
 
     final maps = await db.query('users', limit: 1);
+    print(' Query all users: ${maps.length} rows');
+    if (maps.isNotEmpty) {
+      print(' First user data: ${maps.first}');
+    }
     if (maps.isEmpty) return null;
     final user = User.fromMap(maps.first);
     // save id for future
