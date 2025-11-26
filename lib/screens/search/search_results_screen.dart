@@ -68,13 +68,15 @@ class SearchResultsScreen extends StatelessWidget {
                 return RestaurantCard(
                   restaurant: restaurant,
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            RestaurantPage(restaurantId: restaurant.id),
-                      ),
-                    );
+                    if (restaurant.id != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RestaurantPage(restaurantId: restaurant.id!),
+                        ),
+                      );
+                    }
                   },
                 );
               },

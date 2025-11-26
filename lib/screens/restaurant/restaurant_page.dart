@@ -5,7 +5,7 @@ import '../../widgets/restaurant/menu_item_card.dart';
 import '../../data/fake_restaurants.dart';
 
 class RestaurantPage extends StatelessWidget {
-  final String restaurantId;
+  final int restaurantId;
 
   const RestaurantPage({Key? key, required this.restaurantId})
     : super(key: key);
@@ -76,8 +76,8 @@ class RestaurantPage extends StatelessWidget {
                   SizedBox(width: AppSpacing.lg),
                   _StatItem(
                     icon: Icons.message_outlined,
-                    label: 'Avis',
-                    value: '${restaurant.reviewCount}',
+                    label: 'Posts',
+                    value: '${restaurant.postsCount}',
                   ),
                 ],
               ),

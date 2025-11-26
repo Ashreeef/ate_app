@@ -14,8 +14,15 @@ import 'screens/home/navigation_shell.dart';
 import 'blocs/auth/auth_bloc.dart';
 import 'blocs/user/user_bloc.dart';
 import 'repositories/user_repository.dart';
+import 'repositories/restaurant_repository.dart';
+import 'repositories/post_repository.dart';
+import 'repositories/comment_repository.dart';
+import 'repositories/like_repository.dart';
+import 'repositories/saved_post_repository.dart';
+import 'repositories/search_history_repository.dart';
 import 'services/auth_service.dart';
 import 'database/seed_data.dart';
+import 'database/quick_validation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,9 +36,27 @@ void main() async {
   // Initialize auth service
   await AuthService.instance.initialize();
 
-  // Seed database with test data (development only)
+  // Seed database with comprehensive test data (development only)
   final userRepository = UserRepository();
-  await SeedData.seedDatabase(userRepository);
+  final restaurantRepository = RestaurantRepository();
+  final postRepository = PostRepository();
+  final commentRepository = CommentRepository();
+  final likeRepository = LikeRepository();
+  final savedPostRepository = SavedPostRepository();
+  final searchHistoryRepository = SearchHistoryRepository();
+
+  await SeedData.seedDatabase(
+    userRepository,
+    restaurantRepository,
+    postRepository,
+    commentRepository,
+    likeRepository,
+    savedPostRepository,
+    searchHistoryRepository,
+  );
+
+  // Validate database seeding (development only)
+  await QuickDatabaseValidation.validate();
 
   runApp(const MyApp());
 }
