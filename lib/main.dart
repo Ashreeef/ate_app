@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'dart:io' show Platform;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'l10n/app_localizations.dart';
 import 'utils/theme.dart';
 import 'screens/splash/splash_screen.dart';
@@ -13,13 +15,24 @@ import 'blocs/auth/auth_bloc.dart';
 import 'blocs/user/user_bloc.dart';
 import 'repositories/user_repository.dart';
 import 'services/auth_service.dart';
+import 'database/seed_data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
+  // Initialize sqflite for desktop platforms (Windows, Linux, macOS)
+  if (Platform.isWindows || Platform.isLinux) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   // Initialize auth service
   await AuthService.instance.initialize();
-  
+
+  // Seed database with test data (development only)
+  final userRepository = UserRepository();
+  await SeedData.seedDatabase(userRepository);
+
   runApp(const MyApp());
 }
 
@@ -34,12 +47,8 @@ class MyApp extends StatelessWidget {
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<UserRepository>(
-          create: (context) => userRepository,
-        ),
-        RepositoryProvider<AuthService>(
-          create: (context) => authService,
-        ),
+        RepositoryProvider<UserRepository>(create: (context) => userRepository),
+        RepositoryProvider<AuthService>(create: (context) => authService),
       ],
       child: MultiBlocProvider(
         providers: [
