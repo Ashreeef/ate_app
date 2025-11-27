@@ -47,14 +47,14 @@ class User {
       'email': email,
       'profile_image': profileImage,
       'bio': bio,
+      'display_name': displayName,
+      'phone': phone,
       'followers_count': followersCount,
       'following_count': followingCount,
       'points': points,
       'level': level,
     };
     if (id != null) map['id'] = id;
-    if (displayName != null) map['display_name'] = displayName;
-    if (phone != null) map['phone'] = phone;
     return map;
   }
 }

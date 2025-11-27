@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/fake_data.dart';
@@ -23,31 +24,83 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   final ProfileRepository _repository = ProfileRepository();
   final PostRepository _postRepository = PostRepository();
   User? _user;
+  User? _currentUser;
   List<Post> _posts = [];
   bool _isLoading = true;
   bool _isLoadingPosts = true;
+  bool _isFollowing = false;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
+    _loadCurrentUser();
     _loadUser();
+    _checkFollowingStatus();
+  }
+
+  Future<void> _checkFollowingStatus() async {
+    if (_currentUser == null || _user == null) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final followingList =
+          prefs.getStringList('following_${_currentUser!.id}') ?? [];
+      final isFollowing = followingList.contains(_user!.id.toString());
+      setState(() => _isFollowing = isFollowing);
+    } catch (e) {
+      print('Error checking follow status: $e');
+    }
+  }
+
+  Future<void> _saveFollowingStatus(int userId, bool isFollowing) async {
+    if (_currentUser == null) return;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'following_${_currentUser!.id}';
+      final followingList = prefs.getStringList(key) ?? [];
+      final userIdStr = userId.toString();
+
+      if (isFollowing && !followingList.contains(userIdStr)) {
+        followingList.add(userIdStr);
+      } else if (!isFollowing && followingList.contains(userIdStr)) {
+        followingList.remove(userIdStr);
+      }
+
+      await prefs.setStringList(key, followingList);
+    } catch (e) {
+      print('Error saving follow status: $e');
+    }
+  }
+
+  Future<void> _loadCurrentUser() async {
+    try {
+      final user = await _repository.getCurrentUser();
+      setState(() => _currentUser = user);
+    } catch (e) {
+      print('Error loading current user: $e');
+    }
   }
 
   Future<void> _loadUser() async {
     try {
+      print('🔍 Loading user with ID: ${widget.userId}');
       setState(() => _isLoading = true);
       final user = await _repository.getUserById(widget.userId);
+      print('✅ User loaded: ${user?.username} (ID: ${user?.id})');
       setState(() {
         _user = user;
         _isLoading = false;
       });
+
+      // Check follow status after user is loaded
+      await _checkFollowingStatus();
 
       // Load posts after user is loaded
       if (user != null) {
         _loadPosts();
       }
     } catch (e) {
+      print('❌ Error loading user: $e');
       setState(() {
         _errorMessage = e.toString();
         _isLoading = false;
@@ -59,7 +112,9 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   Future<void> _loadPosts() async {
     try {
       setState(() => _isLoadingPosts = true);
+      print(' Loading posts for userId: ${widget.userId}');
       final posts = await _postRepository.getPostsByUserId(widget.userId);
+      print(' Posts loaded: ${posts.length} posts found');
       if (mounted) {
         setState(() {
           _posts = posts;
@@ -67,8 +122,118 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
         });
       }
     } catch (e) {
+      print('Error loading posts: $e');
       if (mounted) {
         setState(() => _isLoadingPosts = false);
+      }
+    }
+  }
+
+  Future<void> _toggleFollow() async {
+    if (_currentUser == null || _user == null) return;
+
+    try {
+      final currentUser = _currentUser!;
+      final otherUser = _user!;
+      final newFollowingState = !_isFollowing;
+
+      late User updatedCurrentUser;
+      late User updatedOtherUser;
+
+      if (newFollowingState) {
+        // Follow: increase counts
+        updatedCurrentUser = User(
+          id: currentUser.id,
+          displayName: currentUser.displayName,
+          username: currentUser.username,
+          email: currentUser.email,
+          phone: currentUser.phone,
+          profileImage: currentUser.profileImage,
+          bio: currentUser.bio,
+          followersCount: currentUser.followersCount,
+          followingCount: currentUser.followingCount + 1,
+          points: currentUser.points,
+          level: currentUser.level,
+        );
+
+        updatedOtherUser = User(
+          id: otherUser.id,
+          displayName: otherUser.displayName,
+          username: otherUser.username,
+          email: otherUser.email,
+          phone: otherUser.phone,
+          profileImage: otherUser.profileImage,
+          bio: otherUser.bio,
+          followersCount: otherUser.followersCount + 1,
+          followingCount: otherUser.followingCount,
+          points: otherUser.points,
+          level: otherUser.level,
+        );
+      } else {
+        // Unfollow: decrease counts
+        updatedCurrentUser = User(
+          id: currentUser.id,
+          displayName: currentUser.displayName,
+          username: currentUser.username,
+          email: currentUser.email,
+          phone: currentUser.phone,
+          profileImage: currentUser.profileImage,
+          bio: currentUser.bio,
+          followersCount: currentUser.followersCount,
+          followingCount: (currentUser.followingCount - 1).clamp(0, 999999),
+          points: currentUser.points,
+          level: currentUser.level,
+        );
+
+        updatedOtherUser = User(
+          id: otherUser.id,
+          displayName: otherUser.displayName,
+          username: otherUser.username,
+          email: otherUser.email,
+          phone: otherUser.phone,
+          profileImage: otherUser.profileImage,
+          bio: otherUser.bio,
+          followersCount: (otherUser.followersCount - 1).clamp(0, 999999),
+          followingCount: otherUser.followingCount,
+          points: otherUser.points,
+          level: otherUser.level,
+        );
+      }
+
+      // Save both users and follow state
+      await _repository.updateUser(updatedCurrentUser);
+      await _repository.updateUser(updatedOtherUser);
+      await _saveFollowingStatus(otherUser.id!, newFollowingState);
+
+      setState(() {
+        _currentUser = updatedCurrentUser;
+        _user = updatedOtherUser;
+        _isFollowing = newFollowingState;
+      });
+
+      if (mounted) {
+        final message = newFollowingState
+            ? 'Now following ${_user!.username}'
+            : 'Unfollowed ${_user!.username}';
+        final bgColor = newFollowingState ? AppColors.success : AppColors.error;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: bgColor,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error toggling follow: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error updating follow status'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: AppColors.error,
+          ),
+        );
       }
     }
   }
@@ -166,6 +331,39 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                         // Divider Line
                         Container(height: 1, color: AppColors.divider),
 
+                        // Follow Button
+                        Padding(
+                          padding: EdgeInsets.all(AppSpacing.lg),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _toggleFollow,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: _isFollowing
+                                    ? Colors.grey[300]
+                                    : AppColors.primary,
+                                padding: EdgeInsets.symmetric(
+                                  vertical: AppSpacing.md,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    AppSizes.borderRadius,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                _isFollowing ? 'Followed' : 'Follow',
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: _isFollowing
+                                      ? AppColors.textDark
+                                      : Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
                         // Posts Grid Component
                         _posts.isEmpty
                             ? Padding(
@@ -219,12 +417,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                 title: Text('Follow', style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.comingSoon),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  _toggleFollow();
                 },
               ),
               ListTile(

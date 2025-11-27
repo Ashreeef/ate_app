@@ -15,13 +15,10 @@ import 'screens/home/navigation_shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Seed database with test data (comment out after testing)
+
+  // Seed test data
   await DatabaseSeeder.seedTestData();
-  
-  // Small delay to ensure database operations complete
-  await Future.delayed(Duration(milliseconds: 100));
-  
+
   runApp(const MyApp());
 }
 

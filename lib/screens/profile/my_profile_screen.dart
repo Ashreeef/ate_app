@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/fake_data.dart';
@@ -10,6 +12,7 @@ import '../../repositories/post_repository.dart';
 import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_posts_grid.dart';
 import 'edit_profile_screen.dart';
+import 'other_user_profile_screen.dart';
 import '../settings/settings_screen.dart';
 
 class MyProfileScreen extends StatefulWidget {
@@ -124,6 +127,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             children: [
               // Subtle divider under app bar
               Container(height: 1, color: AppColors.divider.withOpacity(0.5)),
+
               Expanded(
                 child: _isLoadingPosts
                     ? Center(child: CircularProgressIndicator())
@@ -234,14 +238,58 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   AppLocalizations.of(context)!.shareProfile,
                   style: AppTextStyles.bodyMedium,
                 ),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.comingSoon),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  final user = context.read<ProfileCubit>().state.user;
+                  if (user != null) {
+                    final shareText =
+                        'Check out my profile on Ate!\n\nUsername: @${user.username}\nBio: ${user.bio}';
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Share Profile'),
+                        content: SelectableText(shareText),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Close'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // Copy to clipboard
+                              Clipboard.setData(ClipboardData(text: shareText));
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Copied to clipboard'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                            child: Text('Copy'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.person_outline),
+                title: Text('View Other Profile'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final prefs = await SharedPreferences.getInstance();
+                  final otherUserId = prefs.getInt('other_user_id') ?? 2;
+                  if (mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            OtherUserProfileScreen(userId: otherUserId),
+                      ),
+                    );
+                  }
                 },
               ),
             ],
