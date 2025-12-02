@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/auth/auth_bloc.dart';
+import '../../blocs/auth/auth_event.dart';
+import '../../blocs/auth/auth_state.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
@@ -25,9 +29,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _handleLogin() {
     if (_formKey.currentState?.validate() ?? false) {
-      // TODO: Implement login logic
-      // For Now, Navigate to home screen (temporary until authentication is implemented)
-      Navigator.pushReplacementNamed(context, '/home');
+      context.read<AuthBloc>().add(
+            LoginRequested(
+              email: _emailController.text.trim(),
+              password: _passwordController.text,
+            ),
+          );
     }
   }
 
@@ -47,62 +54,90 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: AppSpacing.xl),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
+          // Navigate to home screen on successful login
+          Navigator.pushReplacementNamed(context, '/home');
+        } else if (state is AuthError) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
 
-                          _buildHeader(),
-
-                          const Spacer(flex: 2),
-
-                          _buildLoginForm(),
-
-                          const SizedBox(height: AppSpacing.lg),
-
-                          // Remember me & Forgot password
-                          _buildOptionsRow(),
-
-                          const SizedBox(height: AppSpacing.xl),
-
-                          CustomButton(
-                            text: 'Se connecter',
-                            onPressed: _handleLogin,
+          return Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
                           ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: AppSpacing.xl),
 
-                          const Spacer(flex: 2),
+                                _buildHeader(),
 
-                          _buildSocialLogin(),
+                                const Spacer(flex: 2),
 
-                          const Spacer(flex: 3),
+                                _buildLoginForm(),
 
-                          _buildSignUpLink(),
+                                const SizedBox(height: AppSpacing.lg),
 
-                          const SizedBox(height: AppSpacing.xl),
-                        ],
+                                // Remember me & Forgot password
+                                _buildOptionsRow(),
+
+                                const SizedBox(height: AppSpacing.xl),
+
+                                CustomButton(
+                                  text: isLoading
+                                      ? 'Connexion en cours...'
+                                      : 'Se connecter',
+                                  onPressed: isLoading ? () {} : _handleLogin,
+                                ),
+
+                                const Spacer(flex: 2),
+
+                                _buildSocialLogin(),
+
+                                const Spacer(flex: 3),
+
+                                _buildSignUpLink(),
+
+                                const SizedBox(height: AppSpacing.xl),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -181,7 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (states.contains(WidgetState.selected)) {
                     return AppColors.primary;
                   }
-                  return AppColors.white;
+                  return Colors.transparent;
                 }),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),

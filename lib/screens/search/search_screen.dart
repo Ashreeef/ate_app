@@ -109,13 +109,16 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: RestaurantCard(
                           restaurant: restaurant,
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    RestaurantPage(restaurantId: restaurant.id),
-                              ),
-                            );
+                            if (restaurant.id != null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RestaurantPage(
+                                    restaurantId: restaurant.id!,
+                                  ),
+                                ),
+                              );
+                            }
                           },
                         ),
                       );

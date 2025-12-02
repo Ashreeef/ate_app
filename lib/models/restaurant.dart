@@ -1,89 +1,77 @@
 class Restaurant {
-  final String id;
+  final int? id;
   final String name;
-  final String description;
-  final String location;
-  final String? address;
+  final String? location;
+  final String? cuisineType;
   final double rating;
-  final int reviewCount;
   final String? imageUrl;
-  final String? logoUrl;
-  final List<String>? images;
-  final String? phoneNumber;
-  final String? website;
-  final List<String>? tags;
-  final double? latitude;
-  final double? longitude;
-  final bool isTrending;
+  final int postsCount;
+  final String? createdAt;
 
   Restaurant({
-    required this.id,
+    this.id,
     required this.name,
-    required this.description,
-    required this.location,
-    this.address,
-    required this.rating,
-    required this.reviewCount,
+    this.location,
+    this.cuisineType,
+    this.rating = 0.0,
     this.imageUrl,
-    this.logoUrl,
-    this.images,
-    this.phoneNumber,
-    this.website,
-    this.tags,
-    this.latitude,
-    this.longitude,
-    this.isTrending = false,
+    this.postsCount = 0,
+    this.createdAt,
   });
 
-  // Factory constructor for creating from JSON
-  factory Restaurant.fromJson(Map<String, dynamic> json) {
-    return Restaurant(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String,
-      location: json['location'] as String,
-      address: json['address'] as String?,
-      rating: (json['rating'] as num).toDouble(),
-      reviewCount: json['reviewCount'] as int,
-      imageUrl: json['imageUrl'] as String?,
-      logoUrl: json['logoUrl'] as String?,
-      images: json['images'] != null
-          ? List<String>.from(json['images'] as List)
-          : null,
-      phoneNumber: json['phoneNumber'] as String?,
-      website: json['website'] as String?,
-      tags: json['tags'] != null
-          ? List<String>.from(json['tags'] as List)
-          : null,
-      latitude: json['latitude'] != null
-          ? (json['latitude'] as num).toDouble()
-          : null,
-      longitude: json['longitude'] != null
-          ? (json['longitude'] as num).toDouble()
-          : null,
-      isTrending: json['isTrending'] as bool? ?? false,
-    );
-  }
-
-  // Convert to JSON
-  Map<String, dynamic> toJson() {
+  /// Convert Restaurant to Map for database
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
-      'description': description,
       'location': location,
-      'address': address,
+      'cuisine_type': cuisineType,
       'rating': rating,
-      'reviewCount': reviewCount,
-      'imageUrl': imageUrl,
-      'logoUrl': logoUrl,
-      'images': images,
-      'phoneNumber': phoneNumber,
-      'website': website,
-      'tags': tags,
-      'latitude': latitude,
-      'longitude': longitude,
-      'isTrending': isTrending,
+      'image_url': imageUrl,
+      'posts_count': postsCount,
+      'created_at': createdAt,
     };
+  }
+
+  /// Create Restaurant from database Map
+  factory Restaurant.fromMap(Map<String, dynamic> map) {
+    return Restaurant(
+      id: map['id'] as int?,
+      name: map['name'] as String,
+      location: map['location'] as String?,
+      cuisineType: map['cuisine_type'] as String?,
+      rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
+      imageUrl: map['image_url'] as String?,
+      postsCount: map['posts_count'] as int? ?? 0,
+      createdAt: map['created_at'] as String?,
+    );
+  }
+
+  /// Create a copy with updated fields
+  Restaurant copyWith({
+    int? id,
+    String? name,
+    String? location,
+    String? cuisineType,
+    double? rating,
+    String? imageUrl,
+    int? postsCount,
+    String? createdAt,
+  }) {
+    return Restaurant(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      location: location ?? this.location,
+      cuisineType: cuisineType ?? this.cuisineType,
+      rating: rating ?? this.rating,
+      imageUrl: imageUrl ?? this.imageUrl,
+      postsCount: postsCount ?? this.postsCount,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Restaurant(id: $id, name: $name, location: $location, rating: $rating)';
   }
 }

@@ -289,4 +289,94 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get deleteAccountPermanently =>
       'Supprimer définitivement votre compte';
+  String get pickImages => 'Choisir des images (max 3)';
+
+  @override
+  String get noPosts => 'Pas encore de publications';
+
+  @override
+  String get noPostsDescription =>
+      'Soyez le premier à partager votre expérience culinaire!';
+
+  @override
+  String get selectAtLeastOneImage => 'Sélectionnez au moins une image';
+
+  @override
+  String imageSelectionFailed(Object error) {
+    return 'Échec de la sélection d\'image: $error';
+  }
+
+  @override
+  String get postPublished => 'Publication réussie!';
+
+  @override
+  String postPublishError(Object error) {
+    return 'Erreur lors de la publication: $error';
+  }
+
+  @override
+  String get writeCaption => 'Veuillez écrire une légende';
+
+  @override
+  String get enterRestaurant => 'Veuillez saisir un restaurant';
+
+  @override
+  String get rateExperience => 'Veuillez évaluer votre expérience';
+
+  @override
+  String get caption => 'Légende';
+
+  @override
+  String get captionPlaceholder => 'Partagez votre expérience culinaire...';
+
+  @override
+  String get restaurant => 'Restaurant';
+
+  @override
+  String get restaurantPlaceholder => 'Nom du restaurant...';
+
+  @override
+  String get restaurantHint => 'Tapez le nom du restaurant';
+
+  @override
+  String get dishName => 'Nom du plat';
+
+  @override
+  String get dishNamePlaceholder => 'ex: Couscous Royal, Poisson Grillé...';
+
+  @override
+  String get dishNameOptional => '(Optionnel)';
+
+  @override
+  String get yourRating => 'Votre évaluation';
+
+  @override
+  String get newPost => 'Nouveau post';
+
+  @override
+  String get publish => 'Publier';
+
+  @override
+  String get disappointing => 'Décevant';
+
+  @override
+  String get fair => 'Moyen';
+
+  @override
+  String get good => 'Bien';
+
+  @override
+  String get veryGood => 'Très bien';
+
+  @override
+  String get excellent => 'Excellent!';
+
+  @override
+  String get myFeed => 'Mon fil';
+
+  @override
+  String get friendsFeed => 'Fil des amis';
+
+  @override
+  String get loadMore => 'Charger plus';
 }

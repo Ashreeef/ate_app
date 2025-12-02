@@ -6,90 +6,71 @@ class FakeData {
   static List<Restaurant> getRestaurants() {
     return [
       Restaurant(
-        id: '1',
+        id: 1,
         name: 'Rimberio Spicy Food',
-        description:
-            'Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.',
         location: 'Sidi Abdellah, Algiers',
+        cuisineType: 'Spicy',
         rating: 4.7,
-        reviewCount: 128,
+        postsCount: 128,
         imageUrl:
             'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&auto=format&fit=crop&q=80',
-        logoUrl:
-            'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=200&auto=format&fit=crop&q=80',
-        isTrending: true,
       ),
       Restaurant(
-        id: '2',
+        id: 2,
         name: 'La Piazza Italiana',
-        description: 'Authentic Italian cuisine with fresh ingredients',
         location: 'Hydra, Algiers',
+        cuisineType: 'Italian',
         rating: 4.5,
-        reviewCount: 89,
+        postsCount: 89,
         imageUrl:
             'https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=800&auto=format&fit=crop&q=80',
-        logoUrl:
-            'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?w=200&auto=format&fit=crop&q=80',
-        isTrending: true,
       ),
       Restaurant(
-        id: '3',
+        id: 3,
         name: 'Sushi Paradise',
-        description: 'Best sushi in town with premium ingredients',
         location: 'El Biar, Algiers',
+        cuisineType: 'Japanese',
         rating: 4.8,
-        reviewCount: 156,
+        postsCount: 156,
         imageUrl:
             'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800&auto=format&fit=crop&q=80',
-        logoUrl:
-            'https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=200&auto=format&fit=crop&q=80',
-        isTrending: true,
       ),
       Restaurant(
-        id: '4',
+        id: 4,
         name: 'Burger House',
-        description: 'Gourmet burgers and crispy fries',
         location: 'Birkhadem, Algiers',
+        cuisineType: 'American',
         rating: 4.3,
-        reviewCount: 67,
+        postsCount: 67,
         imageUrl:
             'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop&q=80',
-        logoUrl:
-            'https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?w=200&auto=format&fit=crop&q=80',
-        isTrending: false,
       ),
       Restaurant(
-        id: '5',
+        id: 5,
         name: 'Café Parisien',
-        description: 'French pastries and coffee',
         location: 'Centre-ville, Algiers',
+        cuisineType: 'French',
         rating: 4.6,
-        reviewCount: 112,
+        postsCount: 112,
         imageUrl:
             'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&auto=format&fit=crop&q=80',
-        logoUrl:
-            'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=200&auto=format&fit=crop&q=80',
-        isTrending: false,
       ),
       Restaurant(
-        id: '6',
+        id: 6,
         name: 'Tajine Royale',
-        description: 'Traditional Moroccan dishes',
         location: 'Bouzareah, Algiers',
+        cuisineType: 'Moroccan',
         rating: 4.4,
-        reviewCount: 94,
+        postsCount: 94,
         imageUrl:
             'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&auto=format&fit=crop&q=80',
-        logoUrl:
-            'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=200&auto=format&fit=crop&q=80',
-        isTrending: false,
       ),
     ];
   }
 
   // Get trending restaurants
   static List<Restaurant> getTrendingRestaurants() {
-    return getRestaurants().where((r) => r.isTrending).toList();
+    return getRestaurants().where((r) => r.rating >= 4.7).toList();
   }
 
   // Search restaurants by query
@@ -100,14 +81,14 @@ class FakeData {
         .where(
           (r) =>
               r.name.toLowerCase().contains(lowerQuery) ||
-              r.location.toLowerCase().contains(lowerQuery) ||
-              r.description.toLowerCase().contains(lowerQuery),
+              (r.location?.toLowerCase().contains(lowerQuery) ?? false) ||
+              (r.cuisineType?.toLowerCase().contains(lowerQuery) ?? false),
         )
         .toList();
   }
 
   // Get restaurant by ID
-  static Restaurant? getRestaurantById(String id) {
+  static Restaurant? getRestaurantById(int id) {
     try {
       return getRestaurants().firstWhere((r) => r.id == id);
     } catch (e) {

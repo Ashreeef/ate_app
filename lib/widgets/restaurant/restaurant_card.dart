@@ -40,7 +40,7 @@ class RestaurantCard extends StatelessWidget {
                           )
                         : _buildPlaceholderImage(),
                   ),
-                  if (restaurant.isTrending)
+                  if (restaurant.rating >= 4.2)
                     Positioned(
                       top: AppSpacing.sm,
                       right: AppSpacing.sm,
@@ -89,7 +89,7 @@ class RestaurantCard extends StatelessWidget {
                       SizedBox(width: AppSpacing.xs),
                       Expanded(
                         child: Text(
-                          restaurant.location,
+                          restaurant.location ?? 'Location non spécifiée',
                           style: AppTextStyles.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -114,7 +114,7 @@ class RestaurantCard extends StatelessWidget {
                       ),
                       SizedBox(width: AppSpacing.xs),
                       Text(
-                        '(${restaurant.reviewCount})',
+                        '(${restaurant.postsCount})',
                         style: AppTextStyles.bodySmall,
                       ),
                     ],

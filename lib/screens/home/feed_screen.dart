@@ -1,9 +1,14 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ate_app/utils/constants.dart';
 import '../../widgets/feed/feed_header.dart';
-import '../../widgets/feed/post_card.dart';
-import '../../widgets/feed/comments_sheet.dart';
-import '../../data/posts_data.dart';
+import '../../blocs/feed/feed_bloc.dart';
+import '../../blocs/feed/feed_event.dart';
+import '../../blocs/feed/feed_state.dart';
+import '../../blocs/post/post_bloc.dart';
+import '../../blocs/post/post_event.dart';
+import '../../models/post.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -14,50 +19,34 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   bool _isMonFeedSelected = true;
-  late List<Map<String, dynamic>> _posts;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _posts = List.from(postsData);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+    // Load initial posts
+    context.read<FeedBloc>().add(LoadFeed());
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.atEdge &&
+        _scrollController.position.pixels != 0) {
+      context.read<FeedBloc>().add(LoadMoreFeed());
+    }
   }
 
   // Simulate refreshing the feed
   Future<void> _onRefresh() async {
-    await Future.delayed(const Duration(seconds: 2));
-    setState(() {});
+    context.read<FeedBloc>().add(LoadFeed(refresh: true));
   }
 
-  // Like/unlike a post
-  void _toggleLike(int postIndex) {
-    setState(() {
-      final post = _posts[postIndex];
-      post['isLiked'] = !post['isLiked'];
-      if (post['isLiked']) {
-        post['likes'] = post['likes'] + 1;
-      } else {
-        post['likes'] = post['likes'] - 1;
-      }
-    });
-  }
-
-  // Save/unsave a post
-  void _toggleSave(int postIndex) {
-    setState(() {
-      _posts[postIndex]['isSaved'] = !_posts[postIndex]['isSaved'];
-    });
-  }
-
-  void _sharePost(int postIndex) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Sharing post...', style: AppTextStyles.body)),
-    );
-  }
-
-  void _showComments(int postIndex) {
-    final post = _posts[postIndex];
-    final comments = post['comments'] as List<dynamic>? ?? [];
-    CommentsSheet.show(context, comments);
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -72,29 +61,146 @@ class _FeedScreenState extends State<FeedScreen> {
             onMesAmisTap: () => setState(() => _isMonFeedSelected = false),
           ),
           Expanded(
-            child: RefreshIndicator(
-              onRefresh: _onRefresh,
-              child: ListView.builder(
-                padding: EdgeInsets.all(AppSpacing.md),
-                itemCount: _posts.length,
-                itemBuilder: (context, index) {
-                  final post = _posts[index];
-                  return Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 600),
-                      child: PostCard(
-                        post: post,
-                        onTap: () {},
-                        onLike: () => _toggleLike(index),
-                        onComment: () => _showComments(index),
-                        onShare: () => _sharePost(index),
-                        onSave: () => _toggleSave(index),
-                      ),
+            child: BlocBuilder<FeedBloc, FeedState>(
+              builder: (context, state) {
+                if (state is FeedLoading && state is! FeedLoaded) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                if (state is FeedError) {
+                  return Center(child: Text('Error: ${state.message}'));
+                }
+
+                if (state is FeedLoaded) {
+                  if (state.posts.isEmpty) {
+                    return Center(child: Text('No posts yet'));
+                  }
+
+                  return RefreshIndicator(
+                    onRefresh: _onRefresh,
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: EdgeInsets.all(AppSpacing.md),
+                      itemCount: state.posts.length + (state.hasMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == state.posts.length) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        final post = state.posts[index];
+                        return Center(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 600),
+                            child: _buildPostCard(post),
+                          ),
+                        );
+                      },
                     ),
+                  );
+                }
+
+                return Center(child: Text('No posts available'));
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPostCard(Post post) {
+    final currentUserId =
+        1; // TODO: Replace with actual user ID from AuthService.instance.currentUserId
+    final isLiked = post.likedBy.contains(currentUserId);
+    final isSaved = post.savedBy.contains(currentUserId);
+
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            leading: post.userAvatarPath != null
+                ? CircleAvatar(
+                    backgroundImage: FileImage(File(post.userAvatarPath!)),
+                  )
+                : CircleAvatar(child: Icon(Icons.person)),
+            title: Text(
+              post.username,
+              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+            ),
+            subtitle: Text(post.createdAt.toLocal().toString().split('.')[0]),
+          ),
+          if (post.images.isNotEmpty)
+            Container(
+              height: 200,
+              color: AppColors.backgroundLight,
+              child: PageView(
+                children: post.images
+                    .map(
+                      (imagePath) => Image.file(
+                        File(imagePath),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(child: Icon(Icons.image_not_supported));
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          Padding(
+            padding: EdgeInsets.all(AppSpacing.md),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (post.dishName != null)
+                  Text('Dish: ${post.dishName}', style: AppTextStyles.caption),
+                if (post.restaurantName != null)
+                  Text(
+                    'Restaurant: ${post.restaurantName}',
+                    style: AppTextStyles.caption,
+                  ),
+                if (post.rating != null)
+                  Text(
+                    'Rating: ${post.rating}/5',
+                    style: AppTextStyles.caption,
+                  ),
+                SizedBox(height: AppSpacing.sm),
+                Text(post.caption, style: AppTextStyles.body),
+              ],
+            ),
+          ),
+          ButtonBar(
+            alignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border,
+                      color: isLiked ? Colors.red : AppColors.textMedium,
+                    ),
+                    onPressed: () {
+                      context.read<PostBloc>().add(
+                        ToggleLikeEvent(post.id!, currentUserId),
+                      );
+                    },
+                  ),
+                  Text('${post.likesCount}', style: AppTextStyles.body),
+                ],
+              ),
+              IconButton(
+                icon: Icon(
+                  isSaved ? Icons.bookmark : Icons.bookmark_border,
+                  color: isSaved ? AppColors.primary : AppColors.textMedium,
+                ),
+                onPressed: () {
+                  context.read<PostBloc>().add(
+                    ToggleSaveEvent(post.id!, currentUserId),
                   );
                 },
               ),
-            ),
+            ],
           ),
         ],
       ),

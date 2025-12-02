@@ -29,41 +29,6 @@ class RestaurantHeader extends StatelessWidget {
                     )
                   : _buildPlaceholderImage(),
             ),
-            // Logo overlay (if available)
-            if (restaurant.logoUrl != null)
-              Positioned(
-                bottom: AppSpacing.md,
-                left: AppSpacing.md,
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.primary, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.shadow,
-                        blurRadius: 8,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: Image.network(
-                      restaurant.logoUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.restaurant,
-                          color: AppColors.primary,
-                          size: AppSizes.iconLg,
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
         // Restaurant Info
@@ -80,10 +45,11 @@ class RestaurantHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(restaurant.name, style: AppTextStyles.heading2),
-                        if (restaurant.description.isNotEmpty) ...[
+                        if (restaurant.cuisineType != null &&
+                            restaurant.cuisineType!.isNotEmpty) ...[
                           SizedBox(height: AppSpacing.sm),
                           Text(
-                            restaurant.description,
+                            restaurant.cuisineType!,
                             style: AppTextStyles.bodySmall,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
@@ -113,7 +79,7 @@ class RestaurantHeader extends StatelessWidget {
                   SizedBox(width: AppSpacing.xs),
                   Expanded(
                     child: Text(
-                      restaurant.location,
+                      restaurant.location ?? 'Location non spécifiée',
                       style: AppTextStyles.bodyMedium,
                     ),
                   ),
@@ -137,7 +103,7 @@ class RestaurantHeader extends StatelessWidget {
                   ),
                   SizedBox(width: AppSpacing.xs),
                   Text(
-                    '(${restaurant.reviewCount} avis)',
+                    '(${restaurant.postsCount} posts)',
                     style: AppTextStyles.bodySmall,
                   ),
                 ],

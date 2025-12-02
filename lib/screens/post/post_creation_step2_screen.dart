@@ -1,7 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ate_app/utils/constants.dart';
+import '../../utils/image_utils.dart';
+import '../../blocs/post/post_bloc.dart';
+import '../../blocs/post/post_event.dart';
+import '../../blocs/post/post_state.dart';
+import '../../models/post.dart';
 
 class PostCreationStep2Screen extends StatefulWidget {
   final List<XFile> selectedImages;
@@ -9,18 +15,20 @@ class PostCreationStep2Screen extends StatefulWidget {
   const PostCreationStep2Screen({super.key, required this.selectedImages});
 
   @override
-  State<PostCreationStep2Screen> createState() => _PostCreationStep2ScreenState();
+  State<PostCreationStep2Screen> createState() =>
+      _PostCreationStep2ScreenState();
 }
 
 class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   final TextEditingController _captionController = TextEditingController();
   final TextEditingController _dishNameController = TextEditingController();
   final TextEditingController _restaurantController = TextEditingController();
-  int _rating = 0;
+  double _rating = 0;
   int _currentImageIndex = 0;
   final PageController _pageController = PageController();
+  bool _isSubmitting = false;
 
-  void _publishPost() {
+  Future<void> _publishPost() async {
     if (_captionController.text.isEmpty) {
       _showErrorSnackBar('Veuillez écrire une légende');
       return;
@@ -36,8 +44,44 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
       return;
     }
 
-    _showSuccessSnackBar('Post publié avec succès!');
-    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    setState(() => _isSubmitting = true);
+
+    try {
+      // Compress and save images
+      List<String> compressedImagePaths = [];
+      for (var xfile in widget.selectedImages) {
+        final file = File(xfile.path);
+        final compressed = await ImageUtils.compressAndGetFile(
+          file,
+          quality: 65,
+        );
+        compressedImagePaths.add(compressed.path);
+      }
+
+      // Create post object
+      final post = Post(
+        userId: 1, // TODO: Get from AuthService.instance.currentUserId!
+        username: 'Sondes', // TODO: Get from UserBloc or UserRepository
+        caption: _captionController.text,
+        restaurantId: null,
+        restaurantName: _restaurantController.text,
+        dishName: _dishNameController.text.isNotEmpty
+            ? _dishNameController.text
+            : null,
+        rating: _rating,
+        images: compressedImagePaths,
+        userAvatarPath: null,
+      );
+
+      // Emit create post event
+      context.read<PostBloc>().add(CreatePostEvent(post));
+
+      _showSuccessSnackBar('Post publié avec succès!');
+      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+    } catch (e) {
+      _showErrorSnackBar('Erreur lors de la publication: $e');
+      setState(() => _isSubmitting = false);
+    }
   }
 
   void _showErrorSnackBar(String message) {
@@ -71,43 +115,58 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text('Nouveau post', style: AppTextStyles.heading3),
-        backgroundColor: AppColors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textDark, size: AppSizes.icon),
-          onPressed: () => Navigator.pop(context),
-        ),
-        actions: [
-          TextButton(
-            onPressed: _publishPost,
-            child: Text(
-              'Publier',
-              style: AppTextStyles.link.copyWith(
-                fontSize: 16, 
-                fontWeight: FontWeight.w600
+    return BlocListener<PostBloc, PostState>(
+      listener: (context, state) {
+        if (state is PostSuccess) {
+          _showSuccessSnackBar('Post publié avec succès!');
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+        } else if (state is PostFailure) {
+          _showErrorSnackBar('Erreur: ${state.message}');
+          setState(() => _isSubmitting = false);
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          title: Text('Nouveau post', style: AppTextStyles.heading3),
+          backgroundColor: AppColors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: AppColors.textDark,
+              size: AppSizes.icon,
+            ),
+            onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+          ),
+          actions: [
+            TextButton(
+              onPressed: _isSubmitting ? null : _publishPost,
+              child: Text(
+                'Publier',
+                style: AppTextStyles.link.copyWith(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildImageCarousel(),
-            SizedBox(height: AppSpacing.lg),
-            _buildCaptionInput(),
-            SizedBox(height: AppSpacing.lg),
-            _buildRestaurantInput(),
-            SizedBox(height: AppSpacing.lg),
-            _buildDishNameInput(),
-            SizedBox(height: AppSpacing.lg),
-            _buildRatingInput(),
-            SizedBox(height: AppSpacing.xl * 2),
           ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              _buildImageCarousel(),
+              SizedBox(height: AppSpacing.lg),
+              _buildCaptionInput(),
+              SizedBox(height: AppSpacing.lg),
+              _buildRestaurantInput(),
+              SizedBox(height: AppSpacing.lg),
+              _buildDishNameInput(),
+              SizedBox(height: AppSpacing.lg),
+              _buildRatingInput(),
+              SizedBox(height: AppSpacing.xl * 2),
+            ],
+          ),
         ),
       ),
     );
@@ -132,7 +191,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
                 return Container(
                   margin: EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
+                    borderRadius: BorderRadius.circular(
+                      AppSizes.borderRadiusLg,
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
@@ -169,8 +230,8 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
                     margin: EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      color: _currentImageIndex == index 
-                          ? AppColors.primary 
+                      color: _currentImageIndex == index
+                          ? AppColors.primary
                           : AppColors.textLight,
                     ),
                   ),
@@ -212,10 +273,14 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               style: AppTextStyles.body,
               decoration: InputDecoration(
                 hintText: 'Partagez votre expérience culinaire...',
-                hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: AppColors.textLight,
+                ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(AppSpacing.md),
-                counterStyle: AppTextStyles.caption.copyWith(color: AppColors.textLight),
+                counterStyle: AppTextStyles.caption.copyWith(
+                  color: AppColors.textLight,
+                ),
               ),
             ),
           ),
@@ -250,10 +315,15 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               style: AppTextStyles.body,
               decoration: InputDecoration(
                 hintText: 'Nom du restaurant...',
-                hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: AppColors.textLight,
+                ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(AppSpacing.md),
-                prefixIcon: Icon(Icons.location_on, color: AppColors.textMedium),
+                prefixIcon: Icon(
+                  Icons.location_on,
+                  color: AppColors.textMedium,
+                ),
               ),
             ),
           ),
@@ -262,7 +332,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             padding: EdgeInsets.only(left: AppSpacing.sm),
             child: Text(
               'Tapez le nom du restaurant',
-              style: AppTextStyles.caption.copyWith(color: AppColors.textMedium),
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textMedium,
+              ),
             ),
           ),
         ],
@@ -282,7 +354,12 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               SizedBox(width: AppSpacing.xs),
               Text('Nom du plat', style: AppTextStyles.heading4),
               SizedBox(width: AppSpacing.xs),
-              Text('(Optionnel)', style: AppTextStyles.caption.copyWith(color: AppColors.textMedium)),
+              Text(
+                '(Optionnel)',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textMedium,
+                ),
+              ),
             ],
           ),
           SizedBox(height: AppSpacing.sm),
@@ -297,7 +374,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               style: AppTextStyles.body,
               decoration: InputDecoration(
                 hintText: 'ex: Couscous Royal, Poisson Grillé...',
-                hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: AppColors.textLight,
+                ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(AppSpacing.md),
               ),
@@ -336,14 +415,16 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      _rating = index + 1;
+                      _rating = (index + 1).toDouble();
                     });
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     child: Icon(
                       index < _rating ? Icons.star : Icons.star_border,
-                      color: index < _rating ? AppColors.starActive : AppColors.textLight,
+                      color: index < _rating
+                          ? AppColors.starActive
+                          : AppColors.textLight,
                       size: 40,
                     ),
                   ),
@@ -355,7 +436,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             SizedBox(height: AppSpacing.sm),
             Center(
               child: Text(
-                _getRatingText(_rating),
+                _getRatingText(_rating.toInt()),
                 style: AppTextStyles.body.copyWith(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,
