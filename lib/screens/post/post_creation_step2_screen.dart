@@ -48,7 +48,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
     try {
       // Compress and save images
       List<String> compressedImagePaths = [];
-      for (var xfile in selectedImages) {
+      for (var xfile in widget.selectedImages) {
         final file = File(xfile.path);
         final compressed = await ImageUtils.compressAndGetFile(file, quality: 65);
         compressedImagePaths.add(compressed.path);
@@ -171,7 +171,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           Expanded(
             child: PageView.builder(
               controller: _pageController,
-              itemCount: selectedImages.length,
+              itemCount: widget.selectedImages.length,
               onPageChanged: (index) {
                 setState(() {
                   _currentImageIndex = index;
@@ -190,7 +190,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
                       ),
                     ],
                     image: DecorationImage(
-                      image: FileImage(File(selectedImages[index].path)),
+                      image: FileImage(File(widget.selectedImages[index].path)),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -198,11 +198,11 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               },
             ),
           ),
-          if (selectedImages.length > 1) ...[
+          if (widget.selectedImages.length > 1) ...[
             SizedBox(height: AppSpacing.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(selectedImages.length, (index) {
+              children: List.generate(widget.selectedImages.length, (index) {
                 return GestureDetector(
                   onTap: () {
                     _pageController.animateToPage(

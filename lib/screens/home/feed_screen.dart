@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ate_app/utils/constants.dart';
 import '../../widgets/feed/feed_header.dart';
-import '../../widgets/feed/post_card.dart';
-import '../../widgets/feed/comments_sheet.dart';
-import '../../data/posts_data.dart';
 import '../../blocs/feed/feed_bloc.dart';
 import '../../blocs/feed/feed_event.dart';
 import '../../blocs/feed/feed_state.dart';
@@ -42,18 +39,6 @@ class _FeedScreenState extends State<FeedScreen> {
   // Simulate refreshing the feed
   Future<void> _onRefresh() async {
     context.read<FeedBloc>().add(LoadFeed(refresh: true));
-  }
-
-  void _sharePost(int postIndex) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Sharing post...', style: AppTextStyles.body)),
-    );
-  }
-
-  void _showComments(int postIndex) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Comments feature coming soon...', style: AppTextStyles.body)),
-    );
   }
 
   @override

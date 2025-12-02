@@ -291,6 +291,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'An error occurred'**
   String get error;
+
+  /// No description provided for @pickImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick images (max 3)'**
+  String get pickImages;
+
+  /// No description provided for @noPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet'**
+  String get noPosts;
+
+  /// No description provided for @noPostsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Be the first to share your culinary experience!'**
+  String get noPostsDescription;
+
+  /// No description provided for @selectAtLeastOneImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one image'**
+  String get selectAtLeastOneImage;
+
+  /// No description provided for @imageSelectionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to select image: {error}'**
+  String imageSelectionFailed(Object error);
+
+  /// No description provided for @postPublished.
+  ///
+  /// In en, this message translates to:
+  /// **'Post published successfully!'**
+  String get postPublished;
+
+  /// No description provided for @postPublishError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error publishing post: {error}'**
+  String postPublishError(Object error);
+
+  /// No description provided for @writeCaption.
+  ///
+  /// In en, this message translates to:
+  /// **'Please write a caption'**
+  String get writeCaption;
+
+  /// No description provided for @enterRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a restaurant'**
+  String get enterRestaurant;
+
+  /// No description provided for @rateExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Please rate your experience'**
+  String get rateExperience;
+
+  /// No description provided for @caption.
+  ///
+  /// In en, this message translates to:
+  /// **'Caption'**
+  String get caption;
+
+  /// No description provided for @captionPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your culinary experience...'**
+  String get captionPlaceholder;
+
+  /// No description provided for @restaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant'**
+  String get restaurant;
+
+  /// No description provided for @restaurantPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant name...'**
+  String get restaurantPlaceholder;
+
+  /// No description provided for @restaurantHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type the restaurant name'**
+  String get restaurantHint;
+
+  /// No description provided for @dishName.
+  ///
+  /// In en, this message translates to:
+  /// **'Dish Name'**
+  String get dishName;
+
+  /// No description provided for @dishNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Couscous Royal, Grilled Fish...'**
+  String get dishNamePlaceholder;
+
+  /// No description provided for @dishNameOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'(Optional)'**
+  String get dishNameOptional;
+
+  /// No description provided for @yourRating.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Rating'**
+  String get yourRating;
+
+  /// No description provided for @newPost.
+  ///
+  /// In en, this message translates to:
+  /// **'New Post'**
+  String get newPost;
+
+  /// No description provided for @publish.
+  ///
+  /// In en, this message translates to:
+  /// **'Publish'**
+  String get publish;
+
+  /// No description provided for @disappointing.
+  ///
+  /// In en, this message translates to:
+  /// **'Disappointing'**
+  String get disappointing;
+
+  /// No description provided for @fair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get fair;
+
+  /// No description provided for @good.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get good;
+
+  /// No description provided for @veryGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Very Good'**
+  String get veryGood;
+
+  /// No description provided for @excellent.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent!'**
+  String get excellent;
+
+  /// No description provided for @myFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'My Feed'**
+  String get myFeed;
+
+  /// No description provided for @friendsFeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Friends Feed'**
+  String get friendsFeed;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load More'**
+  String get loadMore;
 }
 
 class _AppLocalizationsDelegate
