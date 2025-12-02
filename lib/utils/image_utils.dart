@@ -8,12 +8,23 @@ class ImageUtils {
     final dir = await getApplicationDocumentsDirectory();
     final targetPath = p.join(dir.path, 'images', '${DateTime.now().millisecondsSinceEpoch}${p.extension(file.path)}');
     await Directory(p.join(dir.path, 'images')).create(recursive: true);
-    var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      targetPath,
-      quality: quality,
-      keepExif: false,
-    );
-    return result ?? file;
+    
+    try {
+      final result = await FlutterImageCompress.compressAndGetFile(
+        file.absolute.path,
+        targetPath,
+        quality: quality,
+        keepExif: false,
+      );
+      
+      if (result != null) {
+        return File(result.path);
+      } else {
+        return file;
+      }
+    } catch (e) {
+      print('Image compression error: $e');
+      return file;
+    }
   }
 }
