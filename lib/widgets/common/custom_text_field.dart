@@ -45,7 +45,7 @@ class CustomTextField extends StatefulWidget {
   final Widget? suffixIcon;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     this.label,
     this.hint,
     this.error,
@@ -64,7 +64,7 @@ class CustomTextField extends StatefulWidget {
     this.focusNode,
     this.prefixIcon,
     this.suffixIcon,
-  }) : super(key: key);
+  });
 
   // Named constructor for email input
   const CustomTextField.email({

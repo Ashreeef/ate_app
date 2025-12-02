@@ -3,6 +3,7 @@ class User {
   final String? displayName;
   final String username;
   final String email;
+  final String? password;
   final String? phone;
   final String? profileImage;
   final String? bio;
@@ -16,6 +17,7 @@ class User {
     this.displayName,
     required this.username,
     required this.email,
+    this.password,
     this.phone,
     this.profileImage,
     this.bio,
@@ -30,6 +32,7 @@ class User {
       id: m['id'] as int?,
       username: m['username'] as String? ?? '',
       email: m['email'] as String? ?? '',
+      password: m['password'] as String?,
       profileImage: m['profile_image'] as String?,
       bio: m['bio'] as String?,
       displayName: m['display_name'] as String?,
@@ -45,6 +48,7 @@ class User {
     final map = <String, dynamic>{
       'username': username,
       'email': email,
+      'password': password,
       'profile_image': profileImage,
       'bio': bio,
       'display_name': displayName,

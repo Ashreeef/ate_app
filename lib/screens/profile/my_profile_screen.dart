@@ -16,7 +16,7 @@ import 'other_user_profile_screen.dart';
 import '../settings/settings_screen.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({Key? key}) : super(key: key);
+  const MyProfileScreen({super.key});
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -114,7 +114,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
             actions: [
               IconButton(
-                icon: Icon(Icons.more_vert, color: AppColors.textDark),
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 tooltip: 'More options',
                 onPressed: () {
                   _showOptionsMenu(context);
@@ -154,9 +157,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     padding: EdgeInsets.all(AppSpacing.xl),
                                     child: Text(
                                       'No posts yet',
-                                      style: AppTextStyles.bodyMedium.copyWith(
-                                        color: AppColors.textMedium,
-                                      ),
+                                      style: AppTextStyles.bodyMedium,
                                     ),
                                   )
                                 : ProfilePostsGrid(
@@ -199,7 +200,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.settings_outlined),
+                leading: Icon(
+                  Icons.settings_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 title: Text(
                   AppLocalizations.of(context)!.settingsTitle,
                   style: AppTextStyles.bodyMedium,
@@ -213,7 +217,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.edit_outlined),
+                leading: Icon(
+                  Icons.edit_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 title: Text(
                   AppLocalizations.of(context)!.editProfile,
                   style: AppTextStyles.bodyMedium,

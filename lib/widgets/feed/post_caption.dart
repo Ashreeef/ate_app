@@ -5,8 +5,7 @@ class PostCaption extends StatelessWidget {
   final String userName;
   final String caption;
 
-  const PostCaption({Key? key, required this.userName, required this.caption})
-    : super(key: key);
+  const PostCaption({super.key, required this.userName, required this.caption});
 
   @override
   Widget build(BuildContext context) {

@@ -118,4 +118,175 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get shareProfile => 'Partager le profil';
+
+  @override
+  String get changePassword => 'Changer le mot de passe';
+
+  @override
+  String get currentPassword => 'Mot de passe actuel';
+
+  @override
+  String get newPassword => 'Nouveau mot de passe';
+
+  @override
+  String get confirmPassword => 'Confirmer le nouveau mot de passe';
+
+  @override
+  String get passwordsDoNotMatch => 'Les mots de passe ne correspondent pas';
+
+  @override
+  String get passwordTooShort =>
+      'Le mot de passe doit contenir au moins 6 caractères';
+
+  @override
+  String get passwordChangedSuccess => 'Mot de passe modifié avec succès';
+
+  @override
+  String get passwordChangeError =>
+      'Erreur lors de la modification du mot de passe';
+
+  @override
+  String get incorrectPassword => 'Le mot de passe actuel est incorrect';
+
+  @override
+  String get chooseLanguage => 'Choisir la langue';
+
+  @override
+  String get privacySecurity => 'Confidentialité et sécurité';
+
+  @override
+  String get privateAccount => 'Compte privé';
+
+  @override
+  String get privateAccountDesc =>
+      'Votre profil ne sera visible que par vos abonnés';
+
+  @override
+  String get showOnlineStatus => 'Afficher le statut en ligne';
+
+  @override
+  String get showOnlineStatusDesc =>
+      'Les autres peuvent voir quand vous êtes en ligne';
+
+  @override
+  String get close => 'Fermer';
+
+  @override
+  String get helpSupport => 'Aide et support';
+
+  @override
+  String get needHelp => 'Besoin d\'aide ?';
+
+  @override
+  String get phone => 'Téléphone';
+
+  @override
+  String get frequentlyAsked => 'Questions fréquentes';
+
+  @override
+  String get howToEditProfile => 'Comment modifier mon profil ?';
+
+  @override
+  String get howToFollowUsers => 'Comment suivre d\'autres utilisateurs ?';
+
+  @override
+  String get howToPostPhoto => 'Comment publier une photo ?';
+
+  @override
+  String get howToReportContent => 'Comment signaler un contenu ?';
+
+  @override
+  String get about => 'À propos';
+
+  @override
+  String get version => 'Version 1.0.0';
+
+  @override
+  String get allRightsReserved => '© 2025 Ate. Tous droits réservés.';
+
+  @override
+  String get termsPrivacy => 'Conditions et confidentialité';
+
+  @override
+  String get termsOfUse => 'Conditions d\'utilisation';
+
+  @override
+  String get termsOfUseDesc =>
+      'En utilisant Ate, vous acceptez nos conditions d\'utilisation et notre politique de confidentialité.';
+
+  @override
+  String get privacyPolicy => 'Politique de confidentialité';
+
+  @override
+  String get privacyPolicyDesc =>
+      'Vos données personnelles sont protégées et ne seront jamais partagées avec des tiers sans votre consentement.';
+
+  @override
+  String get dataCollection => 'Collecte de données';
+
+  @override
+  String get dataCollectionDesc =>
+      '• Informations de profil\n• Photos et publications\n• Données d\'interaction';
+
+  @override
+  String get accountDeleted => 'Compte supprimé avec succès';
+
+  @override
+  String get logoutConfirm => 'Êtes-vous sûr de vouloir vous déconnecter ?';
+
+  @override
+  String get deleteAccountConfirm =>
+      'Cette action est irréversible. Toutes vos données seront définitivement supprimées.';
+
+  @override
+  String get account => 'Compte';
+
+  @override
+  String get updateYourInfo => 'Mettre à jour vos informations';
+
+  @override
+  String get manageAccountSecurity => 'Gérer la sécurité de votre compte';
+
+  @override
+  String get updateYourPassword => 'Mettre à jour votre mot de passe';
+
+  @override
+  String get preferences => 'Préférences';
+
+  @override
+  String get manageNotifications => 'Gérer vos préférences de notification';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get language => 'Langue';
+
+  @override
+  String get theme => 'Thème';
+
+  @override
+  String get darkMode => 'Mode sombre';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get getHelpWithApp => 'Obtenir de l\'aide avec Ate';
+
+  @override
+  String get learnMoreAboutApp => 'En savoir plus sur Ate';
+
+  @override
+  String get legalInfo => 'Informations légales';
+
+  @override
+  String get dangerZone => 'Zone de danger';
+
+  @override
+  String get logoutFromAccount => 'Se déconnecter de votre compte';
+
+  @override
+  String get deleteAccountPermanently =>
+      'Supprimer définitivement votre compte';
 }

@@ -8,7 +8,7 @@ import '../../blocs/profile/profile_cubit.dart';
 import '../../models/user.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -140,7 +140,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         elevation: 0,
         backgroundColor: AppColors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textDark),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).iconTheme.color,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -178,20 +181,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         shape: BoxShape.circle,
                         border: Border.all(color: AppColors.primary, width: 3),
                       ),
-                          child: CircleAvatar(
-                          radius: 60,
-                          backgroundColor: AppColors.backgroundLight,
-                          backgroundImage:
-                              (user != null &&
-                                  (user.profileImage?.isNotEmpty ?? false))
-                              ? (user.profileImage!.startsWith('http')
-                                    ? NetworkImage(user.profileImage!) as ImageProvider
-                                    : FileImage(File(user.profileImage!)))
-                              : null,
-                          child: (user?.profileImage == null || user!.profileImage!.isEmpty)
-                              ? Icon(Icons.person, size: 60, color: AppColors.textMedium)
-                              : null,
-                        ),
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundColor: AppColors.backgroundLight,
+                        backgroundImage:
+                            (user != null &&
+                                (user.profileImage?.isNotEmpty ?? false))
+                            ? (user.profileImage!.startsWith('http')
+                                  ? NetworkImage(user.profileImage!)
+                                        as ImageProvider
+                                  : FileImage(File(user.profileImage!)))
+                            : null,
+                        child:
+                            (user?.profileImage == null ||
+                                user!.profileImage!.isEmpty)
+                            ? Icon(
+                                Icons.person,
+                                size: 60,
+                                color: AppColors.textMedium,
+                              )
+                            : null,
+                      ),
                     ),
                     Positioned(
                       bottom: 0,

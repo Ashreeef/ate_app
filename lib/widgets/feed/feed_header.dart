@@ -8,11 +8,11 @@ class FeedHeader extends StatelessWidget {
   final VoidCallback onMesAmisTap;
 
   const FeedHeader({
-    Key? key,
+    super.key,
     required this.isMonFeedSelected,
     required this.onMonFeedTap,
     required this.onMesAmisTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class FeedHeader extends StatelessWidget {
         vertical: AppSpacing.md,
       ),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardTheme.color,
         border: Border(bottom: BorderSide(color: AppColors.divider, width: 1)),
       ),
       child: SafeArea(

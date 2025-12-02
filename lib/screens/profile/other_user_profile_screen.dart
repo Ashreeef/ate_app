@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
@@ -13,8 +14,7 @@ import '../../widgets/profile/profile_posts_grid.dart';
 class OtherUserProfileScreen extends StatefulWidget {
   final int userId;
 
-  const OtherUserProfileScreen({Key? key, required this.userId})
-    : super(key: key);
+  const OtherUserProfileScreen({super.key, required this.userId});
 
   @override
   State<OtherUserProfileScreen> createState() => _OtherUserProfileScreenState();
@@ -36,7 +36,6 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     super.initState();
     _loadCurrentUser();
     _loadUser();
-    _checkFollowingStatus();
   }
 
   Future<void> _checkFollowingStatus() async {
@@ -46,9 +45,14 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       final followingList =
           prefs.getStringList('following_${_currentUser!.id}') ?? [];
       final isFollowing = followingList.contains(_user!.id.toString());
+      print(
+        '🔍 Checking follow status: Current user ${_currentUser!.id} -> Other user ${_user!.id}',
+      );
+      print('   Following list: $followingList');
+      print('   Is following: $isFollowing');
       setState(() => _isFollowing = isFollowing);
     } catch (e) {
-      print('Error checking follow status: $e');
+      print('❌ Error checking follow status: $e');
     }
   }
 
@@ -67,8 +71,9 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       }
 
       await prefs.setStringList(key, followingList);
+      print('💾 Saved follow status: $key = $followingList');
     } catch (e) {
-      print('Error saving follow status: $e');
+      print('❌ Error saving follow status: $e');
     }
   }
 
@@ -76,6 +81,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     try {
       final user = await _repository.getCurrentUser();
       setState(() => _currentUser = user);
+      // Check follow status after current user is loaded
+      if (_user != null) {
+        await _checkFollowingStatus();
+      }
     } catch (e) {
       print('Error loading current user: $e');
     }
@@ -93,7 +102,9 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       });
 
       // Check follow status after user is loaded
-      await _checkFollowingStatus();
+      if (_currentUser != null) {
+        await _checkFollowingStatus();
+      }
 
       // Load posts after user is loaded
       if (user != null) {
@@ -141,12 +152,13 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       late User updatedOtherUser;
 
       if (newFollowingState) {
-        // Follow: increase counts
+        // Follow: current user's following +1, other user's followers +1
         updatedCurrentUser = User(
           id: currentUser.id,
           displayName: currentUser.displayName,
           username: currentUser.username,
           email: currentUser.email,
+          password: currentUser.password,
           phone: currentUser.phone,
           profileImage: currentUser.profileImage,
           bio: currentUser.bio,
@@ -161,6 +173,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           displayName: otherUser.displayName,
           username: otherUser.username,
           email: otherUser.email,
+          password: otherUser.password,
           phone: otherUser.phone,
           profileImage: otherUser.profileImage,
           bio: otherUser.bio,
@@ -170,12 +183,13 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           level: otherUser.level,
         );
       } else {
-        // Unfollow: decrease counts
+        // Unfollow: current user's following -1, other user's followers -1
         updatedCurrentUser = User(
           id: currentUser.id,
           displayName: currentUser.displayName,
           username: currentUser.username,
           email: currentUser.email,
+          password: currentUser.password,
           phone: currentUser.phone,
           profileImage: currentUser.profileImage,
           bio: currentUser.bio,
@@ -190,6 +204,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           displayName: otherUser.displayName,
           username: otherUser.username,
           email: otherUser.email,
+          password: otherUser.password,
           phone: otherUser.phone,
           profileImage: otherUser.profileImage,
           bio: otherUser.bio,
@@ -247,8 +262,11 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           backgroundColor: AppColors.white,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColors.textDark),
-            onPressed: () => Navigator.pop(context),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ),
         body: Center(child: CircularProgressIndicator()),
@@ -262,7 +280,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           backgroundColor: AppColors.white,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColors.textDark),
+            icon: Icon(
+              Icons.arrow_back,
+              color: Theme.of(context).iconTheme.color,
+            ),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -285,7 +306,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
         backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textDark),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).iconTheme.color,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -298,7 +322,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert, color: AppColors.textDark),
+            icon: Icon(
+              Icons.more_vert,
+              color: Theme.of(context).iconTheme.color,
+            ),
             tooltip: 'More options',
             onPressed: () {
               _showOptionsMenu(context);
@@ -370,9 +397,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                                 padding: EdgeInsets.all(AppSpacing.xl),
                                 child: Text(
                                   'No posts yet',
-                                  style: AppTextStyles.bodyMedium.copyWith(
-                                    color: AppColors.textMedium,
-                                  ),
+                                  style: AppTextStyles.bodyMedium,
                                 ),
                               )
                             : ProfilePostsGrid(
@@ -413,7 +438,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.person_add_outlined),
+                leading: Icon(
+                  Icons.person_add_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 title: Text('Follow', style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
@@ -421,37 +449,46 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.share_outlined),
+                leading: Icon(
+                  Icons.share_outlined,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 title: Text(
                   AppLocalizations.of(context)!.shareProfile,
                   style: AppTextStyles.bodyMedium,
                 ),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.comingSoon),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.block_outlined, color: AppColors.error),
-                title: Text(
-                  'Block User',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.error,
-                  ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocalizations.of(context)!.comingSoon),
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  if (_user != null) {
+                    final shareText =
+                        'Check out @${_user!.username} on Ate!\n\n${_user!.bio ?? ""}';
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Share ${_user!.username}\'s Profile'),
+                        content: SelectableText(shareText),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Close'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: shareText));
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Copied to clipboard'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                            child: Text('Copy'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
                 },
               ),
             ],

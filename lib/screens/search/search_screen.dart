@@ -8,7 +8,7 @@ import 'search_results_screen.dart';
 import '../restaurant/restaurant_page.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  const SearchScreen({super.key});
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();

@@ -8,11 +8,11 @@ class ChallengeCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const ChallengeCard({
-    Key? key,
+    super.key,
     required this.challenge,
     this.onJoinTap,
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

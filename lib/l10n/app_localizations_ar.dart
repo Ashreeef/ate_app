@@ -118,4 +118,171 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shareProfile => 'مشاركة الملف الشخصي';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get currentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور الجديدة';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمات المرور غير متطابقة';
+
+  @override
+  String get passwordTooShort =>
+      'يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل';
+
+  @override
+  String get passwordChangedSuccess => 'تم تغيير كلمة المرور بنجاح';
+
+  @override
+  String get passwordChangeError => 'خطأ في تغيير كلمة المرور';
+
+  @override
+  String get incorrectPassword => 'كلمة المرور الحالية غير صحيحة';
+
+  @override
+  String get chooseLanguage => 'اختر اللغة';
+
+  @override
+  String get privacySecurity => 'الخصوصية والأمان';
+
+  @override
+  String get privateAccount => 'حساب خاص';
+
+  @override
+  String get privateAccountDesc => 'سيكون ملفك الشخصي مرئيًا فقط لمتابعيك';
+
+  @override
+  String get showOnlineStatus => 'إظهار حالة الاتصال';
+
+  @override
+  String get showOnlineStatusDesc => 'يمكن للآخرين رؤية متى تكون متصلاً';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get helpSupport => 'المساعدة والدعم';
+
+  @override
+  String get needHelp => 'هل تحتاج إلى مساعدة؟';
+
+  @override
+  String get phone => 'الهاتف';
+
+  @override
+  String get frequentlyAsked => 'الأسئلة الشائعة';
+
+  @override
+  String get howToEditProfile => 'كيف أعدل ملفي الشخصي؟';
+
+  @override
+  String get howToFollowUsers => 'كيف أتابع مستخدمين آخرين؟';
+
+  @override
+  String get howToPostPhoto => 'كيف أنشر صورة؟';
+
+  @override
+  String get howToReportContent => 'كيف أبلغ عن محتوى؟';
+
+  @override
+  String get about => 'حول';
+
+  @override
+  String get version => 'الإصدار 1.0.0';
+
+  @override
+  String get allRightsReserved => '© 2025 أكل. جميع الحقوق محفوظة.';
+
+  @override
+  String get termsPrivacy => 'الشروط والخصوصية';
+
+  @override
+  String get termsOfUse => 'شروط الاستخدام';
+
+  @override
+  String get termsOfUseDesc =>
+      'باستخدام أكل، فإنك توافق على شروط الاستخدام وسياسة الخصوصية الخاصة بنا.';
+
+  @override
+  String get privacyPolicy => 'سياسة الخصوصية';
+
+  @override
+  String get privacyPolicyDesc =>
+      'بياناتك الشخصية محمية ولن يتم مشاركتها مع أطراف ثالثة دون موافقتك.';
+
+  @override
+  String get dataCollection => 'جمع البيانات';
+
+  @override
+  String get dataCollectionDesc =>
+      '• معلومات الملف الشخصي\n• الصور والمنشورات\n• بيانات التفاعل';
+
+  @override
+  String get accountDeleted => 'تم حذف الحساب بنجاح';
+
+  @override
+  String get logoutConfirm => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
+
+  @override
+  String get deleteAccountConfirm =>
+      'هذا الإجراء لا رجعة فيه. سيتم حذف جميع بياناتك نهائيًا.';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get updateYourInfo => 'تحديث معلوماتك';
+
+  @override
+  String get manageAccountSecurity => 'إدارة أمان حسابك';
+
+  @override
+  String get updateYourPassword => 'تحديث كلمة المرور';
+
+  @override
+  String get preferences => 'التفضيلات';
+
+  @override
+  String get manageNotifications => 'إدارة تفضيلات الإشعارات';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get theme => 'المظهر';
+
+  @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get support => 'الدعم';
+
+  @override
+  String get getHelpWithApp => 'احصل على المساعدة مع أكل';
+
+  @override
+  String get learnMoreAboutApp => 'معرفة المزيد عن أكل';
+
+  @override
+  String get legalInfo => 'المعلومات القانونية';
+
+  @override
+  String get dangerZone => 'منطقة الخطر';
+
+  @override
+  String get logoutFromAccount => 'تسجيل الخروج من حسابك';
+
+  @override
+  String get deleteAccountPermanently => 'حذف حسابك نهائيًا';
 }

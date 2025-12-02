@@ -1,5 +1,4 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import '../database/database_helper.dart';
 import '../models/post.dart';
 
@@ -9,7 +8,7 @@ class DatabaseSeeder {
       final db = await DatabaseHelper.instance.database;
       final prefs = await SharedPreferences.getInstance();
 
-      // Check if already seeded (don't force reseed anymore)
+      // Check if already seeded
       final seeded = prefs.getBool('database_seeded') ?? false;
       if (seeded) {
         print(' Database already seeded, skipping.');

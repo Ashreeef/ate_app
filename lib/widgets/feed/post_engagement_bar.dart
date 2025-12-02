@@ -9,13 +9,13 @@ class PostEngagementBar extends StatelessWidget {
   final VoidCallback onSaveTap;
 
   const PostEngagementBar({
-    Key? key,
+    super.key,
     required this.isLiked,
     required this.isSaved,
     required this.onLikeTap,
     required this.onCommentTap,
     required this.onSaveTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -108,7 +108,14 @@ class ProfileRepository {
       print('✓ Verification - User in DB: ${updated.first}');
     }
 
-    await setCurrentUserId(user.id);
+    // Don't change current_user_id when updating other users
+    // Only update if this is the current user
+    final prefs = await SharedPreferences.getInstance();
+    final currentId = prefs.getInt(_kCurrentUserIdKey);
+    if (currentId == user.id) {
+      await setCurrentUserId(user.id);
+    }
+
     return count;
   }
 

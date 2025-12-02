@@ -5,9 +5,9 @@ class PostImageCarousel extends StatefulWidget {
   final List<String> images;
 
   const PostImageCarousel({
-    Key? key,
+    super.key,
     required this.images,
-  }) : super(key: key);
+  });
 
   @override
   State<PostImageCarousel> createState() => _PostImageCarouselState();

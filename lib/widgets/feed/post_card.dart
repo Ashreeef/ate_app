@@ -15,19 +15,19 @@ class PostCard extends StatelessWidget {
   final VoidCallback onSave;
 
   const PostCard({
-    Key? key,
+    super.key,
     required this.post,
     required this.onTap,
     required this.onLike,
     required this.onComment,
     required this.onShare,
     required this.onSave,
-  }) : super(key: key);
+  });
 
   void _showOptionsMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppSizes.borderRadiusLg),
@@ -161,7 +161,7 @@ class PostCard extends StatelessWidget {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          backgroundColor: AppColors.white,
+          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
           ),
@@ -198,7 +198,7 @@ class PostCard extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     visualDensity: VisualDensity.compact,
                   );
-                }).toList(),
+                }),
               ],
             ),
           ),

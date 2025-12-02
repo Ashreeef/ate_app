@@ -8,12 +8,12 @@ class PostHeader extends StatelessWidget {
   final VoidCallback onMoreTap;
 
   const PostHeader({
-    Key? key,
+    super.key,
     required this.userName,
     required this.userAvatar,
     required this.onProfileTap,
     required this.onMoreTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

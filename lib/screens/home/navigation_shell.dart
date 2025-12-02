@@ -8,7 +8,7 @@ import '../challenges/challenges_screen.dart';
 import '../profile/my_profile_screen.dart';
 
 class NavigationShell extends StatefulWidget {
-  const NavigationShell({Key? key}) : super(key: key);
+  const NavigationShell({super.key});
 
   @override
   State<NavigationShell> createState() => _NavigationShellState();

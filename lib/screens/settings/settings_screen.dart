@@ -2,35 +2,34 @@ import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../database/database_helper.dart';
-import '../../blocs/profile/profile_cubit.dart';
 import '../../blocs/settings/settings_cubit.dart';
 import '../../blocs/settings/settings_state.dart';
 import '../profile/edit_profile_screen.dart';
+import 'settings_dialogs.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SettingsCubit()..loadSettings(),
-      child: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return _buildScaffold(context, state);
-        },
-      ),
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return _buildScaffold(context, state);
+      },
     );
   }
 
   Widget _buildScaffold(BuildContext context, SettingsState state) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: AppColors.textDark),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).iconTheme.color,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
@@ -46,12 +45,13 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.md),
 
             // Account Section
-            _buildSectionHeader('Compte'),
-            _buildSettingsGroup([
+            _buildSectionHeader(context, AppLocalizations.of(context)!.account),
+            _buildSettingsGroup(context, [
               _buildSettingsTile(
+                context: context,
                 icon: Icons.edit_outlined,
                 title: AppLocalizations.of(context)!.editProfile,
-                subtitle: 'Mettre à jour vos informations',
+                subtitle: AppLocalizations.of(context)!.updateYourInfo,
                 onTap: () {
                   Navigator.push(
                     context,
@@ -62,19 +62,21 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
               _buildSettingsTile(
+                context: context,
                 icon: Icons.lock_outline,
-                title: 'Confidentialité et sécurité',
-                subtitle: 'Gérer la sécurité de votre compte',
+                title: AppLocalizations.of(context)!.privacySecurity,
+                subtitle: AppLocalizations.of(context)!.manageAccountSecurity,
                 onTap: () {
-                  _showComingSoon(context);
+                  SettingsDialogs.showPrivacy(context, state);
                 },
               ),
               _buildSettingsTile(
+                context: context,
                 icon: Icons.key_outlined,
-                title: 'Changer le mot de passe',
-                subtitle: 'Mettre à jour votre mot de passe',
+                title: AppLocalizations.of(context)!.changePassword,
+                subtitle: AppLocalizations.of(context)!.updateYourPassword,
                 onTap: () {
-                  _showChangePasswordDialog(context);
+                  SettingsDialogs.showChangePassword(context);
                 },
               ),
             ]),
@@ -82,37 +84,43 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.lg),
 
             // Preferences Section
-            _buildSectionHeader('Préférences'),
-            _buildSettingsGroup([
+            _buildSectionHeader(
+              context,
+              AppLocalizations.of(context)!.preferences,
+            ),
+            _buildSettingsGroup(context, [
               // Notifications toggle
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: SwitchListTile(
                   value: state.notifications,
                   title: Text(
-                    'Notifications',
+                    AppLocalizations.of(context)!.notifications ??
+                        'Notifications',
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   subtitle: Text(
-                    'Gérer vos préférences de notification',
+                    AppLocalizations.of(context)!.manageNotifications,
                     style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textMedium,
+                      color: Theme.of(context).textTheme.bodySmall?.color,
                     ),
                   ),
-                  onChanged: (v) => context.read<SettingsCubit>().setNotifications(v),
+                  onChanged: (v) =>
+                      context.read<SettingsCubit>().setNotifications(v),
                   activeColor: AppColors.primary,
                 ),
               ),
 
               // Language (kept simple for now)
               _buildSettingsTile(
+                context: context,
                 icon: Icons.language_outlined,
-                title: 'Langue',
-                subtitle: 'Français',
+                title: AppLocalizations.of(context)!.language,
+                subtitle: SettingsDialogs.getLanguageName(state.language),
                 onTap: () {
-                  _showComingSoon(context);
+                  SettingsDialogs.showLanguage(context, state.language);
                 },
               ),
 
@@ -122,18 +130,19 @@ class SettingsScreen extends StatelessWidget {
                 child: SwitchListTile(
                   value: state.darkTheme,
                   title: Text(
-                    'Thème',
+                    AppLocalizations.of(context)!.theme,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   subtitle: Text(
-                    'Mode sombre',
+                    AppLocalizations.of(context)!.darkMode,
                     style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textMedium,
+                      color: Theme.of(context).textTheme.bodySmall?.color,
                     ),
                   ),
-                  onChanged: (v) => context.read<SettingsCubit>().setDarkTheme(v),
+                  onChanged: (v) =>
+                      context.read<SettingsCubit>().setDarkTheme(v),
                   activeColor: AppColors.primary,
                 ),
               ),
@@ -142,30 +151,33 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.lg),
 
             // Support Section
-            _buildSectionHeader('Support'),
-            _buildSettingsGroup([
+            _buildSectionHeader(context, AppLocalizations.of(context)!.support),
+            _buildSettingsGroup(context, [
               _buildSettingsTile(
+                context: context,
                 icon: Icons.help_outline,
-                title: 'Aide et support',
-                subtitle: 'Obtenir de l\'aide avec Ate',
+                title: AppLocalizations.of(context)!.helpSupport,
+                subtitle: AppLocalizations.of(context)!.getHelpWithApp,
                 onTap: () {
-                  _showComingSoon(context);
+                  SettingsDialogs.showHelp(context);
                 },
               ),
               _buildSettingsTile(
+                context: context,
                 icon: Icons.info_outline,
-                title: 'À propos',
-                subtitle: 'En savoir plus sur Ate',
+                title: AppLocalizations.of(context)!.about,
+                subtitle: AppLocalizations.of(context)!.learnMoreAboutApp,
                 onTap: () {
-                  _showAboutDialog(context);
+                  SettingsDialogs.showAbout(context);
                 },
               ),
               _buildSettingsTile(
+                context: context,
                 icon: Icons.description_outlined,
-                title: 'Conditions et confidentialité',
-                subtitle: 'Informations légales',
+                title: AppLocalizations.of(context)!.termsPrivacy,
+                subtitle: AppLocalizations.of(context)!.legalInfo,
                 onTap: () {
-                  _showComingSoon(context);
+                  SettingsDialogs.showTerms(context);
                 },
               ),
             ]),
@@ -173,12 +185,16 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.lg),
 
             // Danger Zone
-            _buildSectionHeader('Zone de danger'),
-            _buildSettingsGroup([
+            _buildSectionHeader(
+              context,
+              AppLocalizations.of(context)!.dangerZone,
+            ),
+            _buildSettingsGroup(context, [
               _buildSettingsTile(
+                context: context,
                 icon: Icons.logout,
-                title: 'Déconnexion',
-                subtitle: 'Se déconnecter de votre compte',
+                title: AppLocalizations.of(context)!.logout,
+                subtitle: AppLocalizations.of(context)!.logoutFromAccount,
                 onTap: () {
                   _showLogoutDialog(context);
                 },
@@ -186,9 +202,12 @@ class SettingsScreen extends StatelessWidget {
                 showTrailing: false,
               ),
               _buildSettingsTile(
+                context: context,
                 icon: Icons.delete_outline,
                 title: AppLocalizations.of(context)!.deleteAccount,
-                subtitle: 'Supprimer définitivement votre compte',
+                subtitle: AppLocalizations.of(
+                  context,
+                )!.deleteAccountPermanently,
                 onTap: () {
                   _showDeleteAccountDialog(context);
                 },
@@ -204,7 +223,7 @@ class SettingsScreen extends StatelessWidget {
               child: Text(
                 'Ate v1.0.0',
                 style: AppTextStyles.caption.copyWith(
-                  color: AppColors.textMedium,
+                  color: Theme.of(context).textTheme.bodySmall?.color,
                 ),
               ),
             ),
@@ -215,7 +234,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
+  Widget _buildSectionHeader(BuildContext context, String title) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -224,18 +243,18 @@ class SettingsScreen extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: AppTextStyles.overline.copyWith(
-          color: AppColors.textMedium,
+          color: Theme.of(context).textTheme.bodySmall?.color,
           fontWeight: FontWeight.w700,
         ),
       ),
     );
   }
 
-  Widget _buildSettingsGroup(List<Widget> children) {
+  Widget _buildSettingsGroup(BuildContext context, List<Widget> children) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         boxShadow: [
           BoxShadow(
@@ -254,6 +273,7 @@ class SettingsScreen extends StatelessWidget {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
+    required BuildContext context,
     Color? iconColor,
     bool showTrailing = true,
   }) {
@@ -293,7 +313,7 @@ class SettingsScreen extends StatelessWidget {
                     Text(
                       subtitle,
                       style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textMedium,
+                        color: Theme.of(context).textTheme.bodySmall?.color,
                       ),
                     ),
                   ],
@@ -302,21 +322,12 @@ class SettingsScreen extends StatelessWidget {
               if (showTrailing)
                 Icon(
                   Icons.chevron_right,
-                  color: AppColors.textMedium,
+                  color: Theme.of(context).iconTheme.color,
                   size: AppSizes.icon,
                 ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showComingSoon(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.comingSoon),
-        behavior: SnackBarBehavior.floating,
       ),
     );
   }
@@ -379,14 +390,16 @@ class SettingsScreen extends StatelessWidget {
             child: Text(AppLocalizations.of(context)!.cancel),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(context);
-              // TODO: Implement logout
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(AppLocalizations.of(context)!.logoutSuccess),
-                ),
-              );
+              await context.read<SettingsCubit>().logout();
+
+              if (context.mounted) {
+                // Navigate to login screen and remove all previous routes
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil('/login', (route) => false);
+              }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
             child: Text(AppLocalizations.of(context)!.logout),
@@ -419,67 +432,18 @@ class SettingsScreen extends StatelessWidget {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(context);
-              // Perform local deletion (clears local DB)
-              await DatabaseHelper.instance.clearAllData();
-              // If a ProfileCubit is provided, reload to reflect deletion
-              try {
-                final cubit = context.read<ProfileCubit>();
-                await cubit.loadProfile();
-              } catch (_) {}
+              final success = await context
+                  .read<SettingsCubit>()
+                  .deleteAccount();
+
+              if (context.mounted && success) {
+                // Navigate to login screen and remove all previous routes
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil('/login', (route) => false);
+              }
             },
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
-            child: Text(AppLocalizations.of(context)!.submit),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showChangePasswordDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Changer le mot de passe'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Mot de passe actuel',
-                prefixIcon: Icon(Icons.lock_outline),
-              ),
-              obscureText: true,
-            ),
-            SizedBox(height: AppSpacing.md),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Nouveau mot de passe',
-                prefixIcon: Icon(Icons.lock_outline),
-              ),
-              obscureText: true,
-            ),
-            SizedBox(height: AppSpacing.md),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Confirmer le nouveau mot de passe',
-                prefixIcon: Icon(Icons.lock_outline),
-              ),
-              obscureText: true,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Mot de passe modifié avec succès')),
-              );
-            },
             child: Text(AppLocalizations.of(context)!.submit),
           ),
         ],
