@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../blocs/auth/auth_bloc.dart';
+import '../../blocs/auth/auth_event.dart';
+import '../../blocs/auth/auth_state.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
@@ -27,9 +31,13 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _handleSignUp() {
     if (_formKey.currentState?.validate() ?? false) {
-      // TODO: Implement signup logic
-      // For Now, Navigate to home screen (temporary until authentication is implemented)
-      Navigator.pushReplacementNamed(context, '/home');
+      context.read<AuthBloc>().add(
+        SignupRequested(
+          username: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
@@ -50,62 +58,103 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: AppSpacing.xl),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is SignupSuccess) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          // Navigate to login screen
+          Future.delayed(const Duration(seconds: 2), () {
+            if (context.mounted) {
+              Navigator.pop(context);
+            }
+          });
+        } else if (state is AuthError) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
 
-                          _buildHeader(),
-
-                          const Spacer(flex: 2),
-
-                          _buildSignupForm(),
-
-                          const SizedBox(height: AppSpacing.lg),
-
-                          // Remember me & Forgot password row
-                          _buildOptionsRow(),
-
-                          const SizedBox(height: AppSpacing.xl),
-
-                          CustomButton(
-                            text: 'S\'inscrire',
-                            onPressed: _handleSignUp,
+          return Scaffold(
+            backgroundColor: AppColors.white,
+            body: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
                           ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: AppSpacing.xl),
 
-                          const Spacer(flex: 2),
+                                _buildHeader(),
 
-                          _buildSocialSignUp(),
+                                const Spacer(flex: 2),
 
-                          const Spacer(flex: 3),
+                                _buildSignupForm(),
 
-                          _buildLoginLink(),
+                                const SizedBox(height: AppSpacing.lg),
 
-                          const SizedBox(height: AppSpacing.xl),
-                        ],
+                                // Remember me & Forgot password row
+                                _buildOptionsRow(),
+
+                                const SizedBox(height: AppSpacing.xl),
+
+                                CustomButton(
+                                  text: isLoading
+                                      ? 'Inscription en cours...'
+                                      : 'S\'inscrire',
+                                  onPressed: isLoading ? () {} : _handleSignUp,
+                                ),
+
+                                const Spacer(flex: 2),
+
+                                _buildSocialSignUp(),
+
+                                const Spacer(flex: 3),
+
+                                _buildLoginLink(),
+
+                                const SizedBox(height: AppSpacing.xl),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
