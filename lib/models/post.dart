@@ -1,89 +1,120 @@
+import 'dart:convert';
+
 class Post {
   final int? id;
-  final int userId;
-  final String? caption;
+  final String userId;
+  final String username;
+  final String? userAvatarPath;
+  final String caption;
   final int? restaurantId;
+  final String? restaurantName;
   final String? dishName;
   final double? rating;
-  final String? images; // JSON string of image URLs
+  final List<String> images;
   final int likesCount;
   final int commentsCount;
-  final String? createdAt;
+  final List<String> likedBy;
+  final List<String> savedBy;
+  final DateTime createdAt;
 
   Post({
     this.id,
     required this.userId,
-    this.caption,
+    required this.username,
+    this.userAvatarPath,
+    required this.caption,
     this.restaurantId,
+    this.restaurantName,
     this.dishName,
     this.rating,
-    this.images,
+    required this.images,
     this.likesCount = 0,
     this.commentsCount = 0,
-    this.createdAt,
-  });
+    List<String>? likedBy,
+    List<String>? savedBy,
+    DateTime? createdAt,
+  })  : likedBy = likedBy ?? [],
+        savedBy = savedBy ?? [],
+        createdAt = createdAt ?? DateTime.now();
 
-  /// Convert Post to Map for database
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'user_id': userId,
+      'username': username,
+      'user_avatar_path': userAvatarPath,
       'caption': caption,
       'restaurant_id': restaurantId,
-      'dish_name': dishName,
+      'restaurant_name': restaurantName,
+      'dish_name': dishName, 
       'rating': rating,
-      'images': images,
+      'images': jsonEncode(images),
       'likes_count': likesCount,
-      'comments_count': commentsCount,
-      'created_at': createdAt,
+      'comments_count': commentsCount, 
+      'liked_by': jsonEncode(likedBy),
+      'saved_by': jsonEncode(savedBy), 
+      'created_at': createdAt.toIso8601String(), 
     };
   }
 
-  /// Create Post from database Map
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
       id: map['id'] as int?,
-      userId: map['user_id'] as int,
-      caption: map['caption'] as String?,
+      userId: map['user_id'] as String,
+      username: map['username'] as String,
+      userAvatarPath: map['user_avatar_path'] as String?, 
+      caption: map['caption'] as String? ?? '',
       restaurantId: map['restaurant_id'] as int?,
-      dishName: map['dish_name'] as String?,
-      rating: map['rating'] as double?,
-      images: map['images'] as String?,
-      likesCount: map['likes_count'] as int? ?? 0,
-      commentsCount: map['comments_count'] as int? ?? 0,
-      createdAt: map['created_at'] as String?,
+      restaurantName: map['restaurant_name'] as String?,
+      dishName: map['dish_name'] as String?, 
+      rating: map['rating'] != null ? (map['rating'] as num).toDouble() : null,
+      images: map['images'] != null ? List<String>.from(jsonDecode(map['images'])) : [],
+      likesCount: map['likes_count'] ?? 0,  
+      commentsCount: map['comments_count'] ?? 0, 
+      likedBy: map['liked_by'] != null ? List<String>.from(jsonDecode(map['liked_by'])) : [], 
+      savedBy: map['saved_by'] != null ? List<String>.from(jsonDecode(map['saved_by'])) : [], 
+      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : DateTime.now(),  
     );
   }
-
-  /// Create a copy with updated fields
+  
   Post copyWith({
     int? id,
-    int? userId,
+    String? userId,
+    String? username,
+    String? userAvatarPath,
     String? caption,
     int? restaurantId,
+    String? restaurantName,
     String? dishName,
     double? rating,
-    String? images,
+    List<String>? images,
     int? likesCount,
     int? commentsCount,
-    String? createdAt,
+    List<String>? likedBy,
+    List<String>? savedBy,
+    DateTime? createdAt,
   }) {
     return Post(
       id: id ?? this.id,
       userId: userId ?? this.userId,
+      username: username ?? this.username,
+      userAvatarPath: userAvatarPath ?? this.userAvatarPath,
       caption: caption ?? this.caption,
       restaurantId: restaurantId ?? this.restaurantId,
+      restaurantName: restaurantName ?? this.restaurantName,
       dishName: dishName ?? this.dishName,
       rating: rating ?? this.rating,
       images: images ?? this.images,
       likesCount: likesCount ?? this.likesCount,
       commentsCount: commentsCount ?? this.commentsCount,
+      likedBy: likedBy ?? this.likedBy,
+      savedBy: savedBy ?? this.savedBy,
       createdAt: createdAt ?? this.createdAt,
     );
   }
 
   @override
   String toString() {
-    return 'Post(id: $id, userId: $userId, caption: $caption, dishName: $dishName, rating: $rating)';
+    return 'Post(id: $id, userId: $userId, username: $username, caption: $caption, dishName: $dishName, rating: $rating)';
   }
 }

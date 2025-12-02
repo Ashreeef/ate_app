@@ -11,6 +11,9 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 import 'screens/home/navigation_shell.dart';
+import 'repositories/post_repository.dart';
+import 'blocs/feed/feed_bloc.dart';
+import 'blocs/post/post_bloc.dart';
 import 'blocs/auth/auth_bloc.dart';
 import 'blocs/user/user_bloc.dart';
 import 'repositories/user_repository.dart';
@@ -66,6 +69,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<PostRepository>(
+          create: (_) => PostRepository(),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<FeedBloc>(
+            create: (context) => FeedBloc(repo: context.read<PostRepository>()),
+          ),
+          BlocProvider<PostBloc>(
+            create: (context) => PostBloc(
+              repo: context.read<PostRepository>(),
+              feedBloc: context.read<FeedBloc>(),
     // Create repositories
     final userRepository = UserRepository();
     final authService = AuthService.instance;
