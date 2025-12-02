@@ -4,6 +4,7 @@ import 'auth_state.dart';
 import '../../repositories/user_repository.dart';
 import '../../models/user.dart';
 import '../../services/auth_service.dart';
+import '../../utils/password_helper.dart';
 
 /// Bloc for handling authentication logic
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -13,9 +14,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required UserRepository userRepository,
     required AuthService authService,
-  })  : _userRepository = userRepository,
-        _authService = authService,
-        super(const AuthInitial()) {
+  }) : _userRepository = userRepository,
+       _authService = authService,
+       super(const AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<SignupRequested>(_onSignupRequested);
     on<LogoutRequested>(_onLogoutRequested);
@@ -77,19 +78,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return;
       }
 
+      // Hash password before storing
+      final hashedPassword = PasswordHelper.hashPassword(event.password);
+
       // Create new user
       final newUser = User(
         username: event.username,
         email: event.email,
-        password: event.password,
+        password: hashedPassword,
       );
 
       final userId = await _userRepository.createUser(newUser);
 
       if (userId > 0) {
-        emit(const SignupSuccess(
-          message: 'Account created successfully! Please login.',
-        ));
+        emit(
+          const SignupSuccess(
+            message: 'Account created successfully! Please login.',
+          ),
+        );
       } else {
         emit(const AuthError(message: 'Failed to create account'));
       }

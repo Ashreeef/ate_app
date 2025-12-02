@@ -289,6 +289,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get deleteAccountPermanently =>
       'Supprimer définitivement votre compte';
+
+  @override
   String get pickImages => 'Choisir des images (max 3)';
 
   @override

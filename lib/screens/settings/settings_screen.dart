@@ -96,8 +96,7 @@ class SettingsScreen extends StatelessWidget {
                 child: SwitchListTile(
                   value: state.notifications,
                   title: Text(
-                    AppLocalizations.of(context)!.notifications ??
-                        'Notifications',
+                    AppLocalizations.of(context)!.notifications,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -329,52 +328,6 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _showAboutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          children: [
-            Text(
-              'Ate',
-              style: AppTextStyles.heading2.copyWith(
-                color: AppColors.primary,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Version 1.0.0',
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textMedium,
-              ),
-            ),
-            SizedBox(height: AppSpacing.md),
-            Text(AppConstants.appTagline, style: AppTextStyles.body),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              '© 2025 Ate. Tous droits réservés.',
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textMedium,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-        ],
       ),
     );
   }

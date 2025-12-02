@@ -37,11 +37,7 @@ class _PostThumbnail extends StatelessWidget {
   final String imageUrl;
   final int likes;
 
-  const _PostThumbnail({
-    super.key,
-    required this.imageUrl,
-    required this.likes,
-  });
+  const _PostThumbnail({required this.imageUrl, required this.likes});
 
   @override
   Widget build(BuildContext context) {

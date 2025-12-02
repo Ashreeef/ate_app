@@ -285,6 +285,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteAccountPermanently => 'حذف حسابك نهائيًا';
+
+  @override
   String get pickImages => 'اختر الصور (بحد أقصى 3)';
 
   @override

@@ -414,7 +414,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
 
   List<Map<String, dynamic>> _convertPostsToFakeFormat() {
     return _posts.map((post) {
-      final images = post.getImageList();
+      final images = post.images;
       return {
         'id': post.id,
         'imageUrl': images.isNotEmpty ? images.first : FakeUserData.avatarUrl,

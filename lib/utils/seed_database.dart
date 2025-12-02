@@ -1,6 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import '../database/database_helper.dart';
 import '../models/post.dart';
+import 'password_helper.dart';
 
 class DatabaseSeeder {
   static Future<void> seedTestData() async {
@@ -25,7 +26,7 @@ class DatabaseSeeder {
       final user1Map = {
         'username': 'amina_food',
         'email': 'amina@example.com',
-        'password': 'password123',
+        'password': PasswordHelper.hashPassword('password123'),
         'display_name': 'Amina Test',
         'phone': '+1234567890',
         'bio':
@@ -45,8 +46,8 @@ class DatabaseSeeder {
       final user2Map = {
         'username': 'chef_omar',
         'email': 'omar@example.com',
-        'password': 'password123',
-        'display_name': 'Omar Ali',
+        'password': PasswordHelper.hashPassword('password123'),
+        'display_name': 'Omar Chef',
         'phone': '+1987654321',
         'bio': 'Professional chef 👨‍🍳 | Sharing my culinary adventures',
         'profile_image':
@@ -64,30 +65,36 @@ class DatabaseSeeder {
       final aminaPosts = [
         Post(
           userId: userId1,
+          username: 'amina_food',
           caption: 'Best pizza in town! 🍕 The crust was perfectly crispy.',
           dishName: 'Margherita Pizza',
           rating: 4.5,
-          images:
-              'https://images.unsplash.com/photo-1513104890138-7c749659a591,https://images.unsplash.com/photo-1574071318508-1cdbab80d002',
+          images: [
+            'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+            'https://images.unsplash.com/photo-1574071318508-1cdbab80d002',
+          ],
           likesCount: 45,
           commentsCount: 12,
         ),
         Post(
           userId: userId1,
+          username: 'amina_food',
           caption: 'Amazing sushi experience! Fresh and delicious 🍣',
           dishName: 'Sushi Platter',
           rating: 5.0,
-          images:
-              'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351',
+          images: [
+            'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351',
+          ],
           likesCount: 78,
           commentsCount: 23,
         ),
         Post(
           userId: userId1,
+          username: 'amina_food',
           caption: 'Burger heaven! 🍔 Juicy and flavorful.',
           dishName: 'Classic Burger',
           rating: 4.0,
-          images: 'https://images.unsplash.com/photo-1550547660-d9450f859349',
+          images: ['https://images.unsplash.com/photo-1550547660-d9450f859349'],
           likesCount: 34,
           commentsCount: 8,
         ),
@@ -97,20 +104,23 @@ class DatabaseSeeder {
       final omarPosts = [
         Post(
           userId: userId2,
+          username: 'chef_omar',
           caption: 'Homemade pasta perfection 🍝',
           dishName: 'Carbonara',
           rating: 4.8,
-          images:
-              'https://images.unsplash.com/photo-1612874742237-6526221588e3',
+          images: [
+            'https://images.unsplash.com/photo-1612874742237-6526221588e3',
+          ],
           likesCount: 120,
           commentsCount: 35,
         ),
         Post(
           userId: userId2,
+          username: 'chef_omar',
           caption: 'Fresh seafood catch of the day 🦞',
           dishName: 'Grilled Lobster',
           rating: 5.0,
-          images: 'https://images.unsplash.com/photo-1559339352-11d035aa65de',
+          images: ['https://images.unsplash.com/photo-1559339352-11d035aa65de'],
           likesCount: 156,
           commentsCount: 42,
         ),

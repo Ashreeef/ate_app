@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'settings_state.dart';
 import '../../repositories/profile_repository.dart';
 import '../../models/user.dart';
+import '../../utils/password_helper.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
   static const _kNotificationsKey = 'pref_notifications';
@@ -143,8 +144,22 @@ class SettingsCubit extends Cubit<SettingsState> {
         return false;
       }
 
-      // Verify current password
-      if (currentUser.password != currentPassword) {
+      // Check if user has a password set
+      if (currentUser.password == null || currentUser.password!.isEmpty) {
+        emit(
+          state.copyWith(
+            status: SettingsStatus.error,
+            errorMessage: 'No password set for this account',
+          ),
+        );
+        return false;
+      }
+
+      // Verify current password using secure comparison
+      if (!PasswordHelper.verifyPassword(
+        currentPassword,
+        currentUser.password!,
+      )) {
         emit(
           state.copyWith(
             status: SettingsStatus.error,
@@ -154,12 +169,15 @@ class SettingsCubit extends Cubit<SettingsState> {
         return false;
       }
 
+      // Hash new password before storing
+      final hashedPassword = PasswordHelper.hashPassword(newPassword);
+
       // Update password
       final updatedUser = User(
         id: currentUser.id,
         username: currentUser.username,
         email: currentUser.email,
-        password: newPassword,
+        password: hashedPassword,
         displayName: currentUser.displayName,
         phone: currentUser.phone,
         profileImage: currentUser.profileImage,

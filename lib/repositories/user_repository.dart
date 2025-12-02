@@ -1,5 +1,6 @@
 import '../models/user.dart';
 import '../database/database_helper.dart';
+import '../utils/password_helper.dart';
 
 /// Repository for user data operations
 class UserRepository {
@@ -59,14 +60,25 @@ class UserRepository {
   /// Authenticate user (login)
   Future<User?> authenticate(String email, String password) async {
     final db = await _databaseHelper.database;
+
+    // Get user by email first
     final maps = await db.query(
       'users',
-      where: 'email = ? AND password = ?',
-      whereArgs: [email, password],
+      where: 'email = ?',
+      whereArgs: [email],
     );
 
     if (maps.isEmpty) return null;
-    return User.fromMap(maps.first);
+
+    final user = User.fromMap(maps.first);
+
+    // Verify password using secure comparison
+    if (user.password != null &&
+        PasswordHelper.verifyPassword(password, user.password!)) {
+      return user;
+    }
+
+    return null;
   }
 
   /// Get all users

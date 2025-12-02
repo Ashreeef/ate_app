@@ -56,6 +56,9 @@ dependencies:
   image_picker: ^1.0.7
   flutter_image_compress: ^2.1.0
   carousel_slider: ^4.2.1
+  
+  # Security
+  crypto: ^3.0.3
 
   # UI extras
   flutter_svg: ^2.0.9
