@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
@@ -8,11 +6,14 @@ class DatabaseHelper {
   factory DatabaseHelper() => _instance;
   DatabaseHelper._internal();
 
+  // Singleton instance getter
+  static DatabaseHelper get instance => _instance;
+
   static Database? _db;
 
-  Future<Database> get db async {
+  Future<Database> get database async {
     if (_db != null) return _db!;
-    _db = await _initDb();
+    _db = await _initDB('ate_app.db');
     return _db!;
   }
 
@@ -25,7 +26,7 @@ class DatabaseHelper {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: _createDB,
+      onCreate: _onCreate,
       onConfigure: (db) async {
         // Enable foreign key constraints
         await db.execute('PRAGMA foreign_keys = ON');
@@ -34,33 +35,114 @@ class DatabaseHelper {
   }
 
   Future _onCreate(Database db, int version) async {
+    // Create users table
+    await db.execute('''
+      CREATE TABLE users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        email TEXT NOT NULL UNIQUE,
+        password TEXT,
+        profile_image TEXT,
+        bio TEXT,
+        points INTEGER DEFAULT 0,
+        level TEXT DEFAULT 'Bronze',
+        created_at TEXT
+      )
+    ''');
+
+    // Create restaurants table
+    await db.execute('''
+      CREATE TABLE restaurants (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        location TEXT,
+        cuisine_type TEXT,
+        rating REAL DEFAULT 0.0,
+        image_url TEXT,
+        posts_count INTEGER DEFAULT 0,
+        created_at TEXT
+      )
+    ''');
+
+    // Create posts table
     await db.execute('''
       CREATE TABLE posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        userId TEXT,
-        username TEXT,
-        userAvatarPath TEXT,
-        caption TEXT,
-        restaurantId INTEGER,
-        restaurantName TEXT,
-        dishName TEXT,
+        user_id INTEGER NOT NULL,
+        username TEXT NOT NULL,
+        user_avatar_path TEXT,
+        caption TEXT NOT NULL,
+        restaurant_id INTEGER,
+        restaurant_name TEXT,
+        dish_name TEXT,
         rating REAL,
         images TEXT,
-        likesCount INTEGER DEFAULT 0,
-        commentsCount INTEGER DEFAULT 0,
-        likedBy TEXT,
-        savedBy TEXT,
-        createdAt TEXT
-      );
+        likes_count INTEGER DEFAULT 0,
+        comments_count INTEGER DEFAULT 0,
+        liked_by TEXT,
+        saved_by TEXT,
+        created_at TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE SET NULL
+      )
     ''');
-    // Optionally create users or restaurants tables if needed
+
+    // Create comments table
+    await db.execute('''
+      CREATE TABLE comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        post_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        content TEXT NOT NULL,
+        created_at TEXT,
+        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // Create likes table
+    await db.execute('''
+      CREATE TABLE likes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        post_id INTEGER NOT NULL,
+        created_at TEXT,
+        UNIQUE(user_id, post_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // Create saved_posts table
+    await db.execute('''
+      CREATE TABLE saved_posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        post_id INTEGER NOT NULL,
+        created_at TEXT,
+        UNIQUE(user_id, post_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // Create search_history table
+    await db.execute('''
+      CREATE TABLE search_history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        query TEXT NOT NULL,
+        created_at TEXT,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
   }
 
   /// Close database connection
   Future<void> close() async {
     final db = await database;
     await db.close();
-    _database = null;
+    _db = null;
   }
 
   /// Delete database (for testing/reset)
@@ -68,7 +150,7 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, 'ate_app.db');
     await databaseFactory.deleteDatabase(path);
-    _database = null;
+    _db = null;
   }
 
   /// Clear all data (for testing)
@@ -213,7 +295,7 @@ class DatabaseHelper {
 
   /// Create a batch for multiple operations
   Batch batch() {
-    return _database!.batch();
+    return _db!.batch();
   }
 
   /// Commit a batch operation

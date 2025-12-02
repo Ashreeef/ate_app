@@ -31,7 +31,8 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.atEdge && _scrollController.position.pixels != 0) {
+    if (_scrollController.position.atEdge &&
+        _scrollController.position.pixels != 0) {
       context.read<FeedBloc>().add(LoadMoreFeed());
     }
   }
@@ -107,7 +108,8 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Widget _buildPostCard(Post post) {
-    final currentUserId = 'current_user_id'; // Replace with actual user ID from auth
+    final currentUserId =
+        1; // TODO: Replace with actual user ID from AuthService.instance.currentUserId
     final isLiked = post.likedBy.contains(currentUserId);
     final isSaved = post.savedBy.contains(currentUserId);
 
@@ -122,7 +124,10 @@ class _FeedScreenState extends State<FeedScreen> {
                     backgroundImage: FileImage(File(post.userAvatarPath!)),
                   )
                 : CircleAvatar(child: Icon(Icons.person)),
-            title: Text(post.username, style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
+            title: Text(
+              post.username,
+              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+            ),
             subtitle: Text(post.createdAt.toLocal().toString().split('.')[0]),
           ),
           if (post.images.isNotEmpty)
@@ -131,13 +136,15 @@ class _FeedScreenState extends State<FeedScreen> {
               color: AppColors.backgroundLight,
               child: PageView(
                 children: post.images
-                    .map((imagePath) => Image.file(
-                          File(imagePath),
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Center(child: Icon(Icons.image_not_supported));
-                          },
-                        ))
+                    .map(
+                      (imagePath) => Image.file(
+                        File(imagePath),
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(child: Icon(Icons.image_not_supported));
+                        },
+                      ),
+                    )
                     .toList(),
               ),
             ),
@@ -146,11 +153,18 @@ class _FeedScreenState extends State<FeedScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (post.dishName != null) Text('Dish: ${post.dishName}', style: AppTextStyles.caption),
+                if (post.dishName != null)
+                  Text('Dish: ${post.dishName}', style: AppTextStyles.caption),
                 if (post.restaurantName != null)
-                  Text('Restaurant: ${post.restaurantName}', style: AppTextStyles.caption),
+                  Text(
+                    'Restaurant: ${post.restaurantName}',
+                    style: AppTextStyles.caption,
+                  ),
                 if (post.rating != null)
-                  Text('Rating: ${post.rating}/5', style: AppTextStyles.caption),
+                  Text(
+                    'Rating: ${post.rating}/5',
+                    style: AppTextStyles.caption,
+                  ),
                 SizedBox(height: AppSpacing.sm),
                 Text(post.caption, style: AppTextStyles.body),
               ],
@@ -167,7 +181,9 @@ class _FeedScreenState extends State<FeedScreen> {
                       color: isLiked ? Colors.red : AppColors.textMedium,
                     ),
                     onPressed: () {
-                      context.read<PostBloc>().add(ToggleLikeEvent(post.id!, currentUserId));
+                      context.read<PostBloc>().add(
+                        ToggleLikeEvent(post.id!, currentUserId),
+                      );
                     },
                   ),
                   Text('${post.likesCount}', style: AppTextStyles.body),
@@ -179,7 +195,9 @@ class _FeedScreenState extends State<FeedScreen> {
                   color: isSaved ? AppColors.primary : AppColors.textMedium,
                 ),
                 onPressed: () {
-                  context.read<PostBloc>().add(ToggleSaveEvent(post.id!, currentUserId));
+                  context.read<PostBloc>().add(
+                    ToggleSaveEvent(post.id!, currentUserId),
+                  );
                 },
               ),
             ],

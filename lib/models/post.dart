@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class Post {
   final int? id;
-  final String userId;
+  final int userId;
   final String username;
   final String? userAvatarPath;
   final String caption;
@@ -13,8 +13,8 @@ class Post {
   final List<String> images;
   final int likesCount;
   final int commentsCount;
-  final List<String> likedBy;
-  final List<String> savedBy;
+  final List<int> likedBy;
+  final List<int> savedBy;
   final DateTime createdAt;
 
   Post({
@@ -30,12 +30,12 @@ class Post {
     required this.images,
     this.likesCount = 0,
     this.commentsCount = 0,
-    List<String>? likedBy,
-    List<String>? savedBy,
+    List<int>? likedBy,
+    List<int>? savedBy,
     DateTime? createdAt,
-  })  : likedBy = likedBy ?? [],
-        savedBy = savedBy ?? [],
-        createdAt = createdAt ?? DateTime.now();
+  }) : likedBy = likedBy ?? [],
+       savedBy = savedBy ?? [],
+       createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
@@ -46,40 +46,48 @@ class Post {
       'caption': caption,
       'restaurant_id': restaurantId,
       'restaurant_name': restaurantName,
-      'dish_name': dishName, 
+      'dish_name': dishName,
       'rating': rating,
       'images': jsonEncode(images),
       'likes_count': likesCount,
-      'comments_count': commentsCount, 
+      'comments_count': commentsCount,
       'liked_by': jsonEncode(likedBy),
-      'saved_by': jsonEncode(savedBy), 
-      'created_at': createdAt.toIso8601String(), 
+      'saved_by': jsonEncode(savedBy),
+      'created_at': createdAt.toIso8601String(),
     };
   }
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
       id: map['id'] as int?,
-      userId: map['user_id'] as String,
+      userId: map['user_id'] as int,
       username: map['username'] as String,
-      userAvatarPath: map['user_avatar_path'] as String?, 
+      userAvatarPath: map['user_avatar_path'] as String?,
       caption: map['caption'] as String? ?? '',
       restaurantId: map['restaurant_id'] as int?,
       restaurantName: map['restaurant_name'] as String?,
-      dishName: map['dish_name'] as String?, 
+      dishName: map['dish_name'] as String?,
       rating: map['rating'] != null ? (map['rating'] as num).toDouble() : null,
-      images: map['images'] != null ? List<String>.from(jsonDecode(map['images'])) : [],
-      likesCount: map['likes_count'] ?? 0,  
-      commentsCount: map['comments_count'] ?? 0, 
-      likedBy: map['liked_by'] != null ? List<String>.from(jsonDecode(map['liked_by'])) : [], 
-      savedBy: map['saved_by'] != null ? List<String>.from(jsonDecode(map['saved_by'])) : [], 
-      createdAt: map['created_at'] != null ? DateTime.parse(map['created_at']) : DateTime.now(),  
+      images: map['images'] != null
+          ? List<String>.from(jsonDecode(map['images']))
+          : [],
+      likesCount: map['likes_count'] ?? 0,
+      commentsCount: map['comments_count'] ?? 0,
+      likedBy: map['liked_by'] != null
+          ? List<int>.from(jsonDecode(map['liked_by']))
+          : [],
+      savedBy: map['saved_by'] != null
+          ? List<int>.from(jsonDecode(map['saved_by']))
+          : [],
+      createdAt: map['created_at'] != null
+          ? DateTime.parse(map['created_at'])
+          : DateTime.now(),
     );
   }
-  
+
   Post copyWith({
     int? id,
-    String? userId,
+    int? userId,
     String? username,
     String? userAvatarPath,
     String? caption,
@@ -90,8 +98,8 @@ class Post {
     List<String>? images,
     int? likesCount,
     int? commentsCount,
-    List<String>? likedBy,
-    List<String>? savedBy,
+    List<int>? likedBy,
+    List<int>? savedBy,
     DateTime? createdAt,
   }) {
     return Post(

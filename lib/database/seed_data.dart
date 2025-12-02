@@ -485,16 +485,15 @@ class SeedData {
 
       final post = Post(
         userId: user.id!,
+        username: user.username,
         caption: data['caption'] as String,
         restaurantId: restaurant.id,
         dishName: data['dishName'] as String,
         rating: data['rating'] as double,
-        images: data['images'] as String,
+        images: (data['images'] as String).split(','),
         likesCount: (i * 7) % 100, // Varied likes count
         commentsCount: (i * 3) % 50, // Varied comments count
-        createdAt: DateTime.now()
-            .subtract(Duration(days: i ~/ 2))
-            .toIso8601String(),
+        createdAt: DateTime.now().subtract(Duration(days: i ~/ 2)),
       );
 
       final postId = await postRepository.createPost(post);

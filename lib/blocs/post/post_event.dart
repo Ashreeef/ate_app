@@ -9,12 +9,12 @@ class CreatePostEvent extends PostEvent {
 
 class ToggleLikeEvent extends PostEvent {
   final int postId;
-  final String userId;
+  final int userId;
   ToggleLikeEvent(this.postId, this.userId);
 }
 
 class ToggleSaveEvent extends PostEvent {
   final int postId;
-  final String userId;
+  final int userId;
   ToggleSaveEvent(this.postId, this.userId);
 }

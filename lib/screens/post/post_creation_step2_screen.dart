@@ -15,7 +15,8 @@ class PostCreationStep2Screen extends StatefulWidget {
   const PostCreationStep2Screen({super.key, required this.selectedImages});
 
   @override
-  State<PostCreationStep2Screen> createState() => _PostCreationStep2ScreenState();
+  State<PostCreationStep2Screen> createState() =>
+      _PostCreationStep2ScreenState();
 }
 
 class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
@@ -50,18 +51,23 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
       List<String> compressedImagePaths = [];
       for (var xfile in widget.selectedImages) {
         final file = File(xfile.path);
-        final compressed = await ImageUtils.compressAndGetFile(file, quality: 65);
+        final compressed = await ImageUtils.compressAndGetFile(
+          file,
+          quality: 65,
+        );
         compressedImagePaths.add(compressed.path);
       }
 
       // Create post object
       final post = Post(
-        userId: 'current_user_id', // Replace with actual user ID from auth
-        username: 'Sondes', // Replace with actual username
+        userId: 1, // TODO: Get from AuthService.instance.currentUserId!
+        username: 'Sondes', // TODO: Get from UserBloc or UserRepository
         caption: _captionController.text,
         restaurantId: null,
         restaurantName: _restaurantController.text,
-        dishName: _dishNameController.text.isNotEmpty ? _dishNameController.text : null,
+        dishName: _dishNameController.text.isNotEmpty
+            ? _dishNameController.text
+            : null,
         rating: _rating,
         images: compressedImagePaths,
         userAvatarPath: null,
@@ -126,7 +132,11 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           backgroundColor: AppColors.white,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: AppColors.textDark, size: AppSizes.icon),
+            icon: Icon(
+              Icons.arrow_back,
+              color: AppColors.textDark,
+              size: AppSizes.icon,
+            ),
             onPressed: _isSubmitting ? null : () => Navigator.pop(context),
           ),
           actions: [
@@ -181,7 +191,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
                 return Container(
                   margin: EdgeInsets.all(AppSpacing.md),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
+                    borderRadius: BorderRadius.circular(
+                      AppSizes.borderRadiusLg,
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
@@ -218,7 +230,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
                     margin: EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      color: _currentImageIndex == index ? AppColors.primary : AppColors.textLight,
+                      color: _currentImageIndex == index
+                          ? AppColors.primary
+                          : AppColors.textLight,
                     ),
                   ),
                 );
@@ -259,10 +273,14 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               style: AppTextStyles.body,
               decoration: InputDecoration(
                 hintText: 'Partagez votre expérience culinaire...',
-                hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: AppColors.textLight,
+                ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(AppSpacing.md),
-                counterStyle: AppTextStyles.caption.copyWith(color: AppColors.textLight),
+                counterStyle: AppTextStyles.caption.copyWith(
+                  color: AppColors.textLight,
+                ),
               ),
             ),
           ),
@@ -297,10 +315,15 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               style: AppTextStyles.body,
               decoration: InputDecoration(
                 hintText: 'Nom du restaurant...',
-                hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: AppColors.textLight,
+                ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(AppSpacing.md),
-                prefixIcon: Icon(Icons.location_on, color: AppColors.textMedium),
+                prefixIcon: Icon(
+                  Icons.location_on,
+                  color: AppColors.textMedium,
+                ),
               ),
             ),
           ),
@@ -309,7 +332,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             padding: EdgeInsets.only(left: AppSpacing.sm),
             child: Text(
               'Tapez le nom du restaurant',
-              style: AppTextStyles.caption.copyWith(color: AppColors.textMedium),
+              style: AppTextStyles.caption.copyWith(
+                color: AppColors.textMedium,
+              ),
             ),
           ),
         ],
@@ -329,7 +354,12 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               SizedBox(width: AppSpacing.xs),
               Text('Nom du plat', style: AppTextStyles.heading4),
               SizedBox(width: AppSpacing.xs),
-              Text('(Optionnel)', style: AppTextStyles.caption.copyWith(color: AppColors.textMedium)),
+              Text(
+                '(Optionnel)',
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textMedium,
+                ),
+              ),
             ],
           ),
           SizedBox(height: AppSpacing.sm),
@@ -344,7 +374,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               style: AppTextStyles.body,
               decoration: InputDecoration(
                 hintText: 'ex: Couscous Royal, Poisson Grillé...',
-                hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: AppColors.textLight,
+                ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(AppSpacing.md),
               ),
@@ -390,7 +422,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                     child: Icon(
                       index < _rating ? Icons.star : Icons.star_border,
-                      color: index < _rating ? AppColors.starActive : AppColors.textLight,
+                      color: index < _rating
+                          ? AppColors.starActive
+                          : AppColors.textLight,
                       size: 40,
                     ),
                   ),

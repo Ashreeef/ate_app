@@ -185,7 +185,7 @@ class ComprehensiveDatabaseTest {
     if (posts.isNotEmpty) {
       final post = posts.first;
       print('   Sample post: ${post.dishName}');
-      print('   - Caption: ${post.caption?.substring(0, 50)}...');
+      print('   - Caption: ${post.caption.substring(0, 50)}...');
       print('   - Rating: ${post.rating}');
       print('   - Likes: ${post.likesCount}, Comments: ${post.commentsCount}');
       results['sample_post'] = post.toMap();

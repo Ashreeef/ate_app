@@ -11,7 +11,6 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 import 'screens/home/navigation_shell.dart';
-import 'repositories/post_repository.dart';
 import 'blocs/feed/feed_bloc.dart';
 import 'blocs/post/post_bloc.dart';
 import 'blocs/auth/auth_bloc.dart';
@@ -69,28 +68,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<PostRepository>(
-          create: (_) => PostRepository(),
-        ),
-      ],
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<FeedBloc>(
-            create: (context) => FeedBloc(repo: context.read<PostRepository>()),
-          ),
-          BlocProvider<PostBloc>(
-            create: (context) => PostBloc(
-              repo: context.read<PostRepository>(),
-              feedBloc: context.read<FeedBloc>(),
     // Create repositories
     final userRepository = UserRepository();
+    final postRepository = PostRepository();
     final authService = AuthService.instance;
 
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<UserRepository>(create: (context) => userRepository),
+        RepositoryProvider<PostRepository>(create: (context) => postRepository),
         RepositoryProvider<AuthService>(create: (context) => authService),
       ],
       child: MultiBlocProvider(
@@ -105,6 +91,15 @@ class MyApp extends StatelessWidget {
             create: (context) => UserBloc(
               userRepository: userRepository,
               authService: authService,
+            ),
+          ),
+          BlocProvider<FeedBloc>(
+            create: (context) => FeedBloc(repo: postRepository),
+          ),
+          BlocProvider<PostBloc>(
+            create: (context) => PostBloc(
+              repo: postRepository,
+              feedBloc: context.read<FeedBloc>(),
             ),
           ),
         ],

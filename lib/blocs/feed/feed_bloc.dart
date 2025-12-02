@@ -19,7 +19,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     try {
       emit(FeedLoading());
       _page = 1;
-      final posts = await repo.getPosts(page: _page, pageSize: _pageSize);
+      final offset = (_page - 1) * _pageSize;
+      final posts = await repo.getRecentPosts(limit: _pageSize, offset: offset);
       _posts = posts;
       emit(FeedLoaded(_posts, hasMore: posts.length == _pageSize));
     } catch (e) {
@@ -31,7 +32,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     if (state is FeedLoading) return;
     try {
       _page++;
-      final posts = await repo.getPosts(page: _page, pageSize: _pageSize);
+      final offset = (_page - 1) * _pageSize;
+      final posts = await repo.getRecentPosts(limit: _pageSize, offset: offset);
       _posts.addAll(posts);
       emit(FeedLoaded(_posts, hasMore: posts.length == _pageSize));
     } catch (e) {
