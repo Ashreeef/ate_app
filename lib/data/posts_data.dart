@@ -4,6 +4,7 @@
 final List<Map<String, dynamic>> postsData = [
   {
     'id': '1',
+    'userId': 2, // User ID for fetching user profile
     'userName': '@foodie_alger',
     'userAvatar': 'https://i.pravatar.cc/150?img=11',
     'caption': 'Amazing Couscous! The best in Algiers!',
@@ -22,6 +23,7 @@ final List<Map<String, dynamic>> postsData = [
   },
   {
     'id': '2',
+    'userId': 2,
     'userName': '@foodie_doodie',
     'userAvatar': '',
     'caption': 'Fresh seafood by the port today!',
@@ -39,6 +41,7 @@ final List<Map<String, dynamic>> postsData = [
   },
   {
     'id': '3',
+    'userId': 2,
     'userName': '@El_moustghanmia',
     'userAvatar': '',
     'caption': 'Tasty traditional dishes are waiting for you here :)',
@@ -57,6 +60,7 @@ final List<Map<String, dynamic>> postsData = [
   },
   {
     'id': '4',
+    'userId': 2,
     'userName': '@chicken_lover',
     'userAvatar': '',
     'caption': 'Best fried chicken in town! Crispy and juicy ',
@@ -75,6 +79,7 @@ final List<Map<String, dynamic>> postsData = [
   },
   {
     'id': '5',
+    'userId': 2,
     'userName': '@pasta_enthusiast',
     'userAvatar': '',
     'caption': 'Authentic Italian carbonara made right! 🇮🇹',
@@ -92,6 +97,7 @@ final List<Map<String, dynamic>> postsData = [
   },
   {
     'id': '6',
+    'userId': 2,
     'userName': '@parisian_vibes',
     'userAvatar': '',
     'caption': 'Brunch goals! Fresh croissants and coffee ☕',
@@ -110,6 +116,7 @@ final List<Map<String, dynamic>> postsData = [
   },
   {
     'id': '8',
+    'userId': 2,
     'userName': '@naan_stop',
     'userAvatar': '',
     'caption': 'Butter chicken with fresh naan bread',

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/fake_data.dart';
@@ -12,7 +11,6 @@ import '../../repositories/post_repository.dart';
 import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_posts_grid.dart';
 import 'edit_profile_screen.dart';
-import 'other_user_profile_screen.dart';
 import '../settings/settings_screen.dart';
 
 class MyProfileScreen extends StatefulWidget {
@@ -276,24 +274,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             child: Text('Copy'),
                           ),
                         ],
-                      ),
-                    );
-                  }
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.person_outline),
-                title: Text('View Other Profile'),
-                onTap: () async {
-                  Navigator.pop(context);
-                  final prefs = await SharedPreferences.getInstance();
-                  final otherUserId = prefs.getInt('other_user_id') ?? 2;
-                  if (mounted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            OtherUserProfileScreen(userId: otherUserId),
                       ),
                     );
                   }

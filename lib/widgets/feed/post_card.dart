@@ -371,6 +371,7 @@ class PostCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PostHeader(
+            userId: post['userId'] as int?,
             userName: post['userName'],
             userAvatar: post['userAvatar'],
             onProfileTap: onTap,
