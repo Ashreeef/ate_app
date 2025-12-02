@@ -44,6 +44,7 @@ dependencies:
   # Local Database
   sqflite: ^2.3.3+1
   path: ^1.9.0
+  shared_preferences: ^2.2.3
   
   # Google Fonts for DM Sans
   google_fonts: ^6.1.0
