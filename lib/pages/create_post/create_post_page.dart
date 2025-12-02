@@ -12,15 +12,13 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   // ----- STEP 1: VARIABLES -----
-  List<File> _pickedImages = [];
+  final List<File> _pickedImages = [];
   final TextEditingController _captionController = TextEditingController();
 
   // ----- STEP 2: IMAGE PICK FUNCTION -----
   Future<void> _pickImages() async {
     final ImagePicker picker = ImagePicker();
-    final List<XFile>? images = await picker.pickMultiImage(imageQuality: 80);
-
-    if (images == null) return;
+    final List<XFile> images = await picker.pickMultiImage(imageQuality: 80);
 
     // Limit to 3 images + compress each one
     for (var x in images.take(3)) {

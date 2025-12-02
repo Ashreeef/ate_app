@@ -170,7 +170,7 @@ class _FeedScreenState extends State<FeedScreen> {
               ],
             ),
           ),
-          ButtonBar(
+          OverflowBar(
             alignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(

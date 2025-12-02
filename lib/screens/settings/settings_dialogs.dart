@@ -65,7 +65,8 @@ class SettingsDialogs {
                 return;
               }
 
-              if (newPasswordController.text.length < 6) {
+              if (newPasswordController.text.length <
+                  AppConstants.minPasswordLength) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(

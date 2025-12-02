@@ -89,7 +89,9 @@ class _NavBarItem extends StatelessWidget {
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        splashColor: AppColors.primary.withOpacity(0.1),
+        splashColor: AppColors.primary.withValues(
+          alpha: AppConstants.opacityOverlay,
+        ),
         highlightColor: Colors.transparent,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 8),
@@ -114,7 +116,9 @@ class _NavBarItem extends StatelessWidget {
                 size: 24,
                 color: isSelected
                     ? AppColors.primary
-                    : Theme.of(context).iconTheme.color?.withOpacity(0.6),
+                    : Theme.of(context).iconTheme.color?.withValues(
+                        alpha: AppConstants.opacityHigh,
+                      ),
               ),
             ],
           ),
@@ -129,17 +133,16 @@ class _NavBarItemCenter extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _NavBarItemCenter({
-    required this.isSelected,
-    required this.onTap,
-  });
+  const _NavBarItemCenter({required this.isSelected, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: InkWell(
         onTap: onTap,
-        splashColor: AppColors.primary.withOpacity(0.1),
+        splashColor: AppColors.primary.withValues(
+          alpha: AppConstants.opacityOverlay,
+        ),
         highlightColor: Colors.transparent,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 8),

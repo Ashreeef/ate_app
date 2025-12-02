@@ -191,6 +191,22 @@ class AppConstants {
   // Rating
   static const int maxRating = 5;
 
+  // Validation
+  static const int minPasswordLength = 8;
+  static const int maxPasswordLength = 128;
+  static const int minUsernameLength = 3;
+  static const int maxUsernameLength = 30;
+  static const int maxBioLength = 200;
+  static const int maxPhoneLength = 20;
+
+  // Opacity values
+  static const double opacityDisabled = 0.3;
+  static const double opacityMedium = 0.5;
+  static const double opacityHigh = 0.6;
+  static const double opacityLight = 0.05;
+  static const double opacityOverlay = 0.1;
+  static const double opacityStrong = 0.9;
+
   // Animation durations
   static const Duration shortAnimation = Duration(milliseconds: 200);
   static const Duration mediumAnimation = Duration(milliseconds: 300);

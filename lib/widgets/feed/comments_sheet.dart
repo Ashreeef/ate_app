@@ -54,8 +54,8 @@ class CommentsSheet {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CircleAvatar(
-                                backgroundColor: AppColors.primary.withOpacity(
-                                  0.1,
+                                backgroundColor: AppColors.primary.withValues(
+                                  alpha: AppConstants.opacityOverlay,
                                 ),
                                 radius: 16,
                                 backgroundImage:

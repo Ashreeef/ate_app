@@ -258,7 +258,9 @@ class SettingsScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         boxShadow: [
           BoxShadow(
-            color: AppColors.shadow.withOpacity(0.05),
+            color: AppColors.shadow.withValues(
+              alpha: AppConstants.opacityLight,
+            ),
             blurRadius: 10,
             offset: Offset(0, 2),
           ),
@@ -289,7 +291,9 @@ class SettingsScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(AppSpacing.sm),
                 decoration: BoxDecoration(
-                  color: (iconColor ?? AppColors.primary).withOpacity(0.1),
+                  color: (iconColor ?? AppColors.primary).withValues(
+                    alpha: AppConstants.opacityOverlay,
+                  ),
                   borderRadius: BorderRadius.circular(AppSizes.borderRadiusSm),
                 ),
                 child: Icon(

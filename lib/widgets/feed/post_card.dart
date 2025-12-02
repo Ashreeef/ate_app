@@ -221,7 +221,9 @@ class PostCard extends StatelessWidget {
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.error,
-                disabledBackgroundColor: AppColors.error.withOpacity(0.3),
+                disabledBackgroundColor: AppColors.error.withValues(
+                  alpha: AppConstants.opacityDisabled,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSizes.borderRadius),
                 ),
@@ -262,7 +264,9 @@ class PostCard extends StatelessWidget {
                   Text(
                     'We\'ll review this post and take appropriate action',
                     style: AppTextStyles.caption.copyWith(
-                      color: AppColors.white.withOpacity(0.9),
+                      color: AppColors.white.withValues(
+                        alpha: AppConstants.opacityStrong,
+                      ),
                     ),
                   ),
                 ],

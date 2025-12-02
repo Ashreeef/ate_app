@@ -54,7 +54,9 @@ class PostHeader extends StatelessWidget {
           GestureDetector(
             onTap: () => _navigateToProfile(context),
             child: CircleAvatar(
-              backgroundColor: AppColors.primary.withOpacity(0.1),
+              backgroundColor: AppColors.primary.withValues(
+                alpha: AppConstants.opacityOverlay,
+              ),
               radius: AppSizes.avatarSm / 2,
               backgroundImage:
                   (userAvatar.isNotEmpty &&

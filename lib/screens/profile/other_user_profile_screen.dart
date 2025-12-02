@@ -337,7 +337,12 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       body: Column(
         children: [
           // Subtle divider under app bar
-          Container(height: 1, color: AppColors.divider.withOpacity(0.5)),
+          Container(
+            height: 1,
+            color: AppColors.divider.withValues(
+              alpha: AppConstants.opacityMedium,
+            ),
+          ),
           Expanded(
             child: _isLoadingPosts
                 ? Center(child: CircularProgressIndicator())

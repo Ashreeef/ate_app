@@ -281,8 +281,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadiusRound),
               borderSide: BorderSide(
-                color: AppColors.border.withOpacity(0.5),
-                width: 1,
+                color: AppColors.border.withValues(
+                  alpha: AppConstants.opacityMedium,
+                ),
+                width: 1.5,
               ),
             ),
             errorBorder: OutlineInputBorder(
