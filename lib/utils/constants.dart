@@ -92,73 +92,51 @@ class AppSizes {
 }
 
 class AppTextStyles {
-  // Headings
+  // Headings - colors inherited from theme
   static const heading1 = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.bold,
-    color: AppColors.textDark,
     letterSpacing: -0.5,
   );
 
   static const heading2 = TextStyle(
     fontSize: 24,
     fontWeight: FontWeight.bold,
-    color: AppColors.textDark,
     letterSpacing: -0.3,
   );
 
-  static const heading3 = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-    color: AppColors.textDark,
-  );
+  static const heading3 = TextStyle(fontSize: 20, fontWeight: FontWeight.w700);
 
-  static const heading4 = TextStyle(
-    fontSize: 18,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textDark,
-  );
+  static const heading4 = TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
 
-  // Body text
-  static const body = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.normal,
-    color: AppColors.textDark,
-  );
+  // Body text - colors inherited from theme
+  static const body = TextStyle(fontSize: 16, fontWeight: FontWeight.normal);
 
   static const bodyMedium = TextStyle(
     fontSize: 15,
     fontWeight: FontWeight.normal,
-    color: AppColors.textDark,
   );
 
   static const bodySmall = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.normal,
-    color: AppColors.textMedium,
   );
 
-  // Caption and labels
-  static const caption = TextStyle(
-    fontSize: 12,
-    fontWeight: FontWeight.normal,
-    color: AppColors.textMedium,
-  );
+  // Caption and labels - colors inherited from theme
+  static const caption = TextStyle(fontSize: 12, fontWeight: FontWeight.normal);
 
   static const captionBold = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w600,
-    color: AppColors.textDark,
   );
 
   static const overline = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w600,
-    color: AppColors.textMedium,
     letterSpacing: 0.5,
   );
 
-  // Button text
+  // Button text - keep white for buttons
   static const button = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
@@ -172,17 +150,12 @@ class AppTextStyles {
     color: AppColors.white,
   );
 
-  // Special text styles
-  static const username = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w600,
-    color: AppColors.textDark,
-  );
+  // Special text styles - inherit from theme except links
+  static const username = TextStyle(fontSize: 14, fontWeight: FontWeight.w600);
 
   static const timestamp = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.normal,
-    color: AppColors.textMedium,
   );
 
   static const link = TextStyle(

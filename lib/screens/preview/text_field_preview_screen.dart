@@ -3,7 +3,7 @@ import '../../widgets/common/custom_text_field.dart';
 import '../../utils/constants.dart';
 
 class TextFieldPreviewScreen extends StatefulWidget {
-  const TextFieldPreviewScreen({Key? key}) : super(key: key);
+  const TextFieldPreviewScreen({super.key});
 
   @override
   State<TextFieldPreviewScreen> createState() => _TextFieldPreviewScreenState();

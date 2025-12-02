@@ -5,6 +5,10 @@ import 'dart:io' show Platform;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'l10n/app_localizations.dart';
 import 'utils/theme.dart';
+import 'blocs/profile/profile_cubit.dart';
+import 'blocs/settings/settings_cubit.dart';
+import 'blocs/settings/settings_state.dart';
+import 'repositories/profile_repository.dart';
 import 'screens/splash/splash_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -64,7 +68,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +76,7 @@ class MyApp extends StatelessWidget {
     final userRepository = UserRepository();
     final postRepository = PostRepository();
     final authService = AuthService.instance;
+    final profileRepository = ProfileRepository();
 
     return MultiRepositoryProvider(
       providers: [
@@ -82,6 +87,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<SavedPostRepository>(
           create: (context) => SavedPostRepository(),
+        ),
+        RepositoryProvider<ProfileRepository>(
+          create: (context) => profileRepository,
         ),
         RepositoryProvider<AuthService>(create: (context) => authService),
       ],
@@ -110,32 +118,47 @@ class MyApp extends StatelessWidget {
               feedBloc: context.read<FeedBloc>(),
             ),
           ),
+          BlocProvider<ProfileCubit>(
+            create: (context) => ProfileCubit(profileRepository),
+          ),
+          BlocProvider<SettingsCubit>(
+            create: (context) => SettingsCubit()..loadSettings(),
+          ),
         ],
-        child: MaterialApp(
-          title: 'Ate',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
+        child: BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, settingsState) {
+            return MaterialApp(
+              title: 'Ate',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: settingsState.darkTheme
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
 
-          // Localization configuration
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en'), // English
-            Locale('ar'), // Arabic
-            Locale('fr'), // French
-          ],
+              // Localization configuration
+              locale: Locale(settingsState.language),
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en'), // English
+                Locale('ar'), // Arabic
+                Locale('fr'), // French
+              ],
 
-          home: const SplashScreen(),
-          routes: {
-            '/onboarding': (context) => const OnboardingScreen(),
-            '/login': (context) => const LoginScreen(),
-            '/signup': (context) => const SignupScreen(),
-            '/forgot-password': (context) => const ForgotPasswordScreen(),
-            '/home': (context) => const NavigationShell(),
+              home: const SplashScreen(),
+              routes: {
+                '/onboarding': (context) => const OnboardingScreen(),
+                '/login': (context) => const LoginScreen(),
+                '/signup': (context) => const SignupScreen(),
+                '/forgot-password': (context) => const ForgotPasswordScreen(),
+                '/home': (context) => const NavigationShell(),
+              },
+            );
           },
         ),
       ),

@@ -105,6 +105,186 @@ class AppLocalizationsEn extends AppLocalizations {
   String get error => 'An error occurred';
 
   @override
+  String get comingSoon => 'Coming soon!';
+
+  @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get logoutSuccess => 'Logged out successfully';
+
+  @override
+  String get shareProfile => 'Share profile';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get currentPassword => 'Current password';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get confirmPassword => 'Confirm new password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get passwordTooShort => 'Password must be at least 6 characters';
+
+  @override
+  String get passwordChangedSuccess => 'Password changed successfully';
+
+  @override
+  String get passwordChangeError => 'Error changing password';
+
+  @override
+  String get incorrectPassword => 'Current password is incorrect';
+
+  @override
+  String get chooseLanguage => 'Choose Language';
+
+  @override
+  String get privacySecurity => 'Privacy & Security';
+
+  @override
+  String get privateAccount => 'Private Account';
+
+  @override
+  String get privateAccountDesc =>
+      'Your profile will only be visible to your followers';
+
+  @override
+  String get showOnlineStatus => 'Show Online Status';
+
+  @override
+  String get showOnlineStatusDesc => 'Others can see when you are online';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get helpSupport => 'Help & Support';
+
+  @override
+  String get needHelp => 'Need help?';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get frequentlyAsked => 'Frequently Asked Questions';
+
+  @override
+  String get howToEditProfile => 'How to edit my profile?';
+
+  @override
+  String get howToFollowUsers => 'How to follow other users?';
+
+  @override
+  String get howToPostPhoto => 'How to post a photo?';
+
+  @override
+  String get howToReportContent => 'How to report content?';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get version => 'Version 1.0.0';
+
+  @override
+  String get allRightsReserved => '© 2025 Ate. All rights reserved.';
+
+  @override
+  String get termsPrivacy => 'Terms & Privacy';
+
+  @override
+  String get termsOfUse => 'Terms of Use';
+
+  @override
+  String get termsOfUseDesc =>
+      'By using Ate, you accept our terms of use and privacy policy.';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyDesc =>
+      'Your personal data is protected and will never be shared with third parties without your consent.';
+
+  @override
+  String get dataCollection => 'Data Collection';
+
+  @override
+  String get dataCollectionDesc =>
+      '• Profile information\n• Photos and posts\n• Interaction data';
+
+  @override
+  String get accountDeleted => 'Account deleted successfully';
+
+  @override
+  String get logoutConfirm => 'Are you sure you want to log out?';
+
+  @override
+  String get deleteAccountConfirm =>
+      'This action is irreversible. All your data will be permanently deleted.';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get updateYourInfo => 'Update your information';
+
+  @override
+  String get manageAccountSecurity => 'Manage your account security';
+
+  @override
+  String get updateYourPassword => 'Update your password';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get manageNotifications => 'Manage your notification preferences';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get darkMode => 'Dark mode';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get getHelpWithApp => 'Get help with Ate';
+
+  @override
+  String get learnMoreAboutApp => 'Learn more about Ate';
+
+  @override
+  String get legalInfo => 'Legal information';
+
+  @override
+  String get dangerZone => 'Danger Zone';
+
+  @override
+  String get logoutFromAccount => 'Log out from your account';
+
+  @override
+  String get deleteAccountPermanently => 'Permanently delete your account';
   String get pickImages => 'Pick images (max 3)';
 
   @override

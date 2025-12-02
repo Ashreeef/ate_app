@@ -18,7 +18,7 @@ class CustomButton extends StatelessWidget {
   final double? width;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.variant = CustomButtonVariant.primary,
@@ -27,11 +27,11 @@ class CustomButton extends StatelessWidget {
     this.iconRight = false,
     this.isLoading = false,
     this.width,
-  }) : super(key: key);
+  });
 
   // Named constructors for convenience
   const CustomButton.secondary({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.size = CustomButtonSize.large,
@@ -39,11 +39,10 @@ class CustomButton extends StatelessWidget {
     this.iconRight = false,
     this.isLoading = false,
     this.width,
-  }) : variant = CustomButtonVariant.secondary,
-       super(key: key);
+  }) : variant = CustomButtonVariant.secondary;
 
   const CustomButton.text({
-    Key? key,
+    super.key,
     required this.text,
     this.onPressed,
     this.size = CustomButtonSize.medium,
@@ -51,11 +50,10 @@ class CustomButton extends StatelessWidget {
     this.iconRight = false,
     this.isLoading = false,
     this.width,
-  }) : variant = CustomButtonVariant.text,
-       super(key: key);
+  }) : variant = CustomButtonVariant.text;
 
   const CustomButton.icon({
-    Key? key,
+    super.key,
     required this.text,
     required this.icon,
     this.onPressed,
@@ -63,8 +61,7 @@ class CustomButton extends StatelessWidget {
     this.iconRight = false,
     this.isLoading = false,
     this.width,
-  }) : variant = CustomButtonVariant.primary,
-       super(key: key);
+  }) : variant = CustomButtonVariant.primary;
 
   @override
   Widget build(BuildContext context) {

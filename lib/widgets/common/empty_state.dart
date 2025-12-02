@@ -8,12 +8,12 @@ class EmptyState extends StatelessWidget {
   final VoidCallback? onRetry;
 
   const EmptyState({
-    Key? key,
+    super.key,
     required this.title,
     required this.message,
     required this.icon,
     this.onRetry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

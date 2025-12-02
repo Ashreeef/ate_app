@@ -10,14 +10,14 @@ class MenuItemCard extends StatelessWidget {
   final VoidCallback? onReviewsTap;
 
   const MenuItemCard({
-    Key? key,
+    super.key,
     required this.name,
     this.imageUrl,
     required this.rating,
     required this.reviewCount,
     this.onTap,
     this.onReviewsTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,10 @@ class User {
   final String? password;
   final String? profileImage;
   final String? bio;
+  final String? displayName;
+  final String? phone;
+  final int followersCount;
+  final int followingCount;
   final int points;
   final String level;
   final String? createdAt;
@@ -16,6 +20,10 @@ class User {
     this.password,
     this.profileImage,
     this.bio,
+    this.displayName,
+    this.phone,
+    this.followersCount = 0,
+    this.followingCount = 0,
     this.points = 0,
     this.level = 'Bronze',
     this.createdAt,
@@ -30,6 +38,10 @@ class User {
       'password': password,
       'profile_image': profileImage,
       'bio': bio,
+      'display_name': displayName,
+      'phone': phone,
+      'followers_count': followersCount,
+      'following_count': followingCount,
       'points': points,
       'level': level,
       'created_at': createdAt,
@@ -40,11 +52,15 @@ class User {
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'] as int?,
-      username: map['username'] as String,
-      email: map['email'] as String,
+      username: map['username'] as String? ?? '',
+      email: map['email'] as String? ?? '',
       password: map['password'] as String?,
       profileImage: map['profile_image'] as String?,
       bio: map['bio'] as String?,
+      displayName: map['display_name'] as String?,
+      phone: map['phone'] as String?,
+      followersCount: map['followers_count'] as int? ?? 0,
+      followingCount: map['following_count'] as int? ?? 0,
       points: map['points'] as int? ?? 0,
       level: map['level'] as String? ?? 'Bronze',
       createdAt: map['created_at'] as String?,
@@ -59,6 +75,10 @@ class User {
     String? password,
     String? profileImage,
     String? bio,
+    String? displayName,
+    String? phone,
+    int? followersCount,
+    int? followingCount,
     int? points,
     String? level,
     String? createdAt,
@@ -70,9 +90,18 @@ class User {
       password: password ?? this.password,
       profileImage: profileImage ?? this.profileImage,
       bio: bio ?? this.bio,
+      displayName: displayName ?? this.displayName,
+      phone: phone ?? this.phone,
+      followersCount: followersCount ?? this.followersCount,
+      followingCount: followingCount ?? this.followingCount,
       points: points ?? this.points,
       level: level ?? this.level,
       createdAt: createdAt ?? this.createdAt,
     );
+  }
+
+  @override
+  String toString() {
+    return 'User(id: $id, username: $username, email: $email, displayName: $displayName, followers: $followersCount, following: $followingCount)';
   }
 }

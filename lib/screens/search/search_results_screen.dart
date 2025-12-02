@@ -10,10 +10,10 @@ class SearchResultsScreen extends StatelessWidget {
   final bool showAll;
 
   const SearchResultsScreen({
-    Key? key,
+    super.key,
     required this.searchQuery,
     this.showAll = false,
-  }) : super(key: key);
+  });
 
   List<Restaurant> _getResults() {
     if (showAll) {

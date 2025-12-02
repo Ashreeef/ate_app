@@ -5,7 +5,7 @@ import '../../utils/constants.dart';
 /// Preview screen to showcase all CustomButton variants and states
 /// Access via: NavigationShell or direct navigation
 class ButtonPreviewScreen extends StatelessWidget {
-  const ButtonPreviewScreen({Key? key}) : super(key: key);
+  const ButtonPreviewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

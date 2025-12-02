@@ -5,8 +5,7 @@ import '../../utils/constants.dart';
 class RestaurantHeader extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantHeader({Key? key, required this.restaurant})
-    : super(key: key);
+  const RestaurantHeader({super.key, required this.restaurant});
 
   @override
   Widget build(BuildContext context) {

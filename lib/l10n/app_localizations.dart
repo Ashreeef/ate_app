@@ -292,6 +292,359 @@ abstract class AppLocalizations {
   /// **'An error occurred'**
   String get error;
 
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon!'**
+  String get comingSoon;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated successfully'**
+  String get profileUpdated;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get deleteAccount;
+
+  /// No description provided for @logoutSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Logged out successfully'**
+  String get logoutSuccess;
+
+  /// No description provided for @shareProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Share profile'**
+  String get shareProfile;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePassword;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm new password'**
+  String get confirmPassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @passwordTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters'**
+  String get passwordTooShort;
+
+  /// No description provided for @passwordChangedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed successfully'**
+  String get passwordChangedSuccess;
+
+  /// No description provided for @passwordChangeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error changing password'**
+  String get passwordChangeError;
+
+  /// No description provided for @incorrectPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password is incorrect'**
+  String get incorrectPassword;
+
+  /// No description provided for @chooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Language'**
+  String get chooseLanguage;
+
+  /// No description provided for @privacySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get privacySecurity;
+
+  /// No description provided for @privateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Private Account'**
+  String get privateAccount;
+
+  /// No description provided for @privateAccountDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile will only be visible to your followers'**
+  String get privateAccountDesc;
+
+  /// No description provided for @showOnlineStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Online Status'**
+  String get showOnlineStatus;
+
+  /// No description provided for @showOnlineStatusDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Others can see when you are online'**
+  String get showOnlineStatusDesc;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupport;
+
+  /// No description provided for @needHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Need help?'**
+  String get needHelp;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phone;
+
+  /// No description provided for @frequentlyAsked.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get frequentlyAsked;
+
+  /// No description provided for @howToEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'How to edit my profile?'**
+  String get howToEditProfile;
+
+  /// No description provided for @howToFollowUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'How to follow other users?'**
+  String get howToFollowUsers;
+
+  /// No description provided for @howToPostPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'How to post a photo?'**
+  String get howToPostPhoto;
+
+  /// No description provided for @howToReportContent.
+  ///
+  /// In en, this message translates to:
+  /// **'How to report content?'**
+  String get howToReportContent;
+
+  /// No description provided for @about.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get about;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version 1.0.0'**
+  String get version;
+
+  /// No description provided for @allRightsReserved.
+  ///
+  /// In en, this message translates to:
+  /// **'© 2025 Ate. All rights reserved.'**
+  String get allRightsReserved;
+
+  /// No description provided for @termsPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms & Privacy'**
+  String get termsPrivacy;
+
+  /// No description provided for @termsOfUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get termsOfUse;
+
+  /// No description provided for @termsOfUseDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'By using Ate, you accept our terms of use and privacy policy.'**
+  String get termsOfUseDesc;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// No description provided for @privacyPolicyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal data is protected and will never be shared with third parties without your consent.'**
+  String get privacyPolicyDesc;
+
+  /// No description provided for @dataCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Collection'**
+  String get dataCollection;
+
+  /// No description provided for @dataCollectionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'• Profile information\n• Photos and posts\n• Interaction data'**
+  String get dataCollectionDesc;
+
+  /// No description provided for @accountDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deleted successfully'**
+  String get accountDeleted;
+
+  /// No description provided for @logoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to log out?'**
+  String get logoutConfirm;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This action is irreversible. All your data will be permanently deleted.'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @updateYourInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your information'**
+  String get updateYourInfo;
+
+  /// No description provided for @manageAccountSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your account security'**
+  String get manageAccountSecurity;
+
+  /// No description provided for @updateYourPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your password'**
+  String get updateYourPassword;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @manageNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your notification preferences'**
+  String get manageNotifications;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get language;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get theme;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get darkMode;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @getHelpWithApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Get help with Ate'**
+  String get getHelpWithApp;
+
+  /// No description provided for @learnMoreAboutApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn more about Ate'**
+  String get learnMoreAboutApp;
+
+  /// No description provided for @legalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal information'**
+  String get legalInfo;
+
+  /// No description provided for @dangerZone.
+  ///
+  /// In en, this message translates to:
+  /// **'Danger Zone'**
+  String get dangerZone;
+
+  /// No description provided for @logoutFromAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Log out from your account'**
+  String get logoutFromAccount;
+
+  /// No description provided for @deleteAccountPermanently.
+  ///
+  /// In en, this message translates to:
+  /// **'Permanently delete your account'**
+  String get deleteAccountPermanently;
   /// No description provided for @pickImages.
   ///
   /// In en, this message translates to:

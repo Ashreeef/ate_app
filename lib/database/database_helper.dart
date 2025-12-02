@@ -22,20 +22,46 @@ class DatabaseHelper {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    // Initialize the database factory
     return await openDatabase(
       path,
-      version: 1,
+      version: 3, // Keep version 3 from feature branch
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade, // Keep upgrade logic from feature branch
       onConfigure: (db) async {
-        // Enable foreign key constraints
+        // Keep foreign key constraints from develop
         await db.execute('PRAGMA foreign_keys = ON');
       },
     );
   }
 
+  /// Handle database upgrades/migrations
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      // Add columns that may be missing in older DB versions
+      try {
+        await db.execute('ALTER TABLE users ADD COLUMN display_name TEXT');
+      } catch (_) {}
+      try {
+        await db.execute('ALTER TABLE users ADD COLUMN phone TEXT');
+      } catch (_) {}
+    }
+    if (oldVersion < 3) {
+      // Add followers and following counts
+      try {
+        await db.execute(
+          'ALTER TABLE users ADD COLUMN followers_count INTEGER DEFAULT 0',
+        );
+      } catch (_) {}
+      try {
+        await db.execute(
+          'ALTER TABLE users ADD COLUMN following_count INTEGER DEFAULT 0',
+        );
+      } catch (_) {}
+    }
+  }
+
   Future _onCreate(Database db, int version) async {
-    // Create users table
+    // Create users table with ALL fields from both branches
     await db.execute('''
       CREATE TABLE users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -44,6 +70,10 @@ class DatabaseHelper {
         password TEXT,
         profile_image TEXT,
         bio TEXT,
+        display_name TEXT,
+        phone TEXT,
+        followers_count INTEGER DEFAULT 0,
+        following_count INTEGER DEFAULT 0,
         points INTEGER DEFAULT 0,
         level TEXT DEFAULT 'Bronze',
         created_at TEXT

@@ -7,11 +7,11 @@ class PostRestaurantInfo extends StatelessWidget {
   final int rating;
 
   const PostRestaurantInfo({
-    Key? key,
+    super.key,
     required this.restaurantName,
     required this.dishName,
     required this.rating,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

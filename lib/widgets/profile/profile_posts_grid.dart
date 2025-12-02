@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 
+/// Grid layout displaying user's posts with like/comment counts
 class ProfilePostsGrid extends StatelessWidget {
   final List<Map<String, dynamic>> posts;
 
-  const ProfilePostsGrid({Key? key, required this.posts}) : super(key: key);
+  const ProfilePostsGrid({super.key, required this.posts});
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +37,11 @@ class _PostThumbnail extends StatelessWidget {
   final String imageUrl;
   final int likes;
 
-  const _PostThumbnail({Key? key, required this.imageUrl, required this.likes})
-    : super(key: key);
+  const _PostThumbnail({
+    super.key,
+    required this.imageUrl,
+    required this.likes,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,10 +60,10 @@ class _PostThumbnail extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  color: AppColors.backgroundLight,
+                  color: Theme.of(context).cardTheme.color,
                   child: Icon(
                     Icons.image_outlined,
-                    color: AppColors.textMedium,
+                    color: Theme.of(context).iconTheme.color?.withOpacity(0.5),
                     size: AppSizes.iconXl,
                   ),
                 );

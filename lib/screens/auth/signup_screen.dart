@@ -8,7 +8,7 @@ import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  const SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -32,12 +32,12 @@ class _SignupScreenState extends State<SignupScreen> {
   void _handleSignUp() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-        SignupRequested(
-          username: _nameController.text.trim(),
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        ),
-      );
+            SignupRequested(
+              username: _nameController.text.trim(),
+              email: _emailController.text.trim(),
+              password: _passwordController.text,
+            ),
+          );
     }
   }
 
@@ -52,7 +52,6 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   void _handleLogin() {
-    // TODO: Navigate to login screen
     Navigator.pop(context);
   }
 
@@ -93,7 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
           final isLoading = state is AuthLoading;
 
           return Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             body: SafeArea(
               child: LayoutBuilder(
                 builder: (context, constraints) {
@@ -242,11 +241,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 side: const BorderSide(color: AppColors.primary, width: 2),
-                fillColor: MaterialStateProperty.resolveWith((states) {
-                  if (states.contains(MaterialState.selected)) {
+                fillColor: WidgetStateProperty.resolveWith((states) {
+                  if (states.contains(WidgetState.selected)) {
                     return AppColors.primary;
                   }
-                  return AppColors.white;
+                  return Colors.transparent;
                 }),
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),

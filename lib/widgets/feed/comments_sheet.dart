@@ -15,7 +15,7 @@ class CommentsSheet {
           builder: (context, scrollController) {
             return Container(
               decoration: BoxDecoration(
-                color: AppColors.white,
+                color: Theme.of(context).cardTheme.color,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(AppSizes.borderRadiusLg),
                   topRight: Radius.circular(AppSizes.borderRadiusLg),

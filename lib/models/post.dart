@@ -33,9 +33,9 @@ class Post {
     List<int>? likedBy,
     List<int>? savedBy,
     DateTime? createdAt,
-  }) : likedBy = likedBy ?? [],
-       savedBy = savedBy ?? [],
-       createdAt = createdAt ?? DateTime.now();
+  })  : likedBy = likedBy ?? [],
+        savedBy = savedBy ?? [],
+        createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
@@ -61,7 +61,7 @@ class Post {
     return Post(
       id: map['id'] as int?,
       userId: map['user_id'] as int,
-      username: map['username'] as String,
+      username: map['username'] as String? ?? '',
       userAvatarPath: map['user_avatar_path'] as String?,
       caption: map['caption'] as String? ?? '',
       restaurantId: map['restaurant_id'] as int?,

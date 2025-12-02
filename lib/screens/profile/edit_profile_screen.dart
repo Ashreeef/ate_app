@@ -1,24 +1,52 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
-import '../../data/fake_data.dart';
+import '../../l10n/app_localizations.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import '../../blocs/profile/profile_cubit.dart';
+import '../../models/user.dart';
 
+/// Screen for editing user profile (bio, display name, phone, avatar)
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  final _fullNameController = TextEditingController(
-    text: FakeUserData.displayName,
-  );
-  final _usernameController = TextEditingController(
-    text: FakeUserData.username,
-  );
-  final _emailController = TextEditingController(text: FakeUserData.email);
-  final _phoneController = TextEditingController(text: FakeUserData.phone);
-  final _bioController = TextEditingController(text: FakeUserData.bio);
+  final _fullNameController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _bioController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Load profile data after frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUserData();
+    });
+  }
+
+  /// Load current user data from cubit and populate form fields
+  Future<void> _loadUserData() async {
+    final cubit = context.read<ProfileCubit>();
+    await cubit.loadProfile();
+
+    final user = cubit.state.user;
+    if (user != null && mounted) {
+      setState(() {
+        _fullNameController.text = user.displayName ?? '';
+        _usernameController.text = user.username;
+        _emailController.text = user.email;
+        _phoneController.text = user.phone ?? '';
+        _bioController.text = user.bio ?? '';
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -30,15 +58,36 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
-  void _saveProfile() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Profil mis à jour avec succès'),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.success,
-      ),
+  /// Save profile changes to database and show success message
+  Future<void> _saveProfile() async {
+    final cubit = context.read<ProfileCubit>();
+    final currentUser = cubit.state.user;
+    final user = User(
+      id: currentUser?.id,
+      displayName: _fullNameController.text.trim(),
+      username: _usernameController.text.trim(),
+      email: _emailController.text.trim(),
+      phone: _phoneController.text.trim(),
+      bio: _bioController.text.trim(),
+      profileImage: currentUser?.profileImage,
+      followersCount: currentUser?.followersCount ?? 0,
+      followingCount: currentUser?.followingCount ?? 0,
+      points: currentUser?.points ?? 0,
+      level: currentUser?.level ?? 'Bronze',
     );
-    Navigator.pop(context);
+
+    await cubit.saveProfile(user);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.profileUpdated),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.success,
+        ),
+      );
+      Navigator.pop(context);
+    }
   }
 
   Widget _buildTextField({
@@ -84,18 +133,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.watch<ProfileCubit>();
+    final state = cubit.state;
+    final user = state.user;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: AppColors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.textDark),
+          icon: Icon(
+            Icons.arrow_back,
+            color: Theme.of(context).iconTheme.color,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         centerTitle: true,
         title: Text(
-          'Modifier le profil',
+          AppLocalizations.of(context)!.editProfile,
           style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.w600),
         ),
         actions: [
@@ -103,7 +159,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             onPressed: _saveProfile,
             icon: Icon(Icons.check, size: 20),
             label: Text(
-              'Enregistrer',
+              AppLocalizations.of(context)!.submit,
               style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -130,23 +186,71 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       child: CircleAvatar(
                         radius: 60,
-                        backgroundImage: NetworkImage(FakeUserData.avatarUrl),
                         backgroundColor: AppColors.backgroundLight,
+                        backgroundImage:
+                            (user != null &&
+                                (user.profileImage?.isNotEmpty ?? false))
+                            ? (user.profileImage!.startsWith('http')
+                                  ? NetworkImage(user.profileImage!)
+                                        as ImageProvider
+                                  : FileImage(File(user.profileImage!)))
+                            : null,
+                        child:
+                            (user?.profileImage == null ||
+                                user!.profileImage!.isEmpty)
+                            ? Icon(
+                                Icons.person,
+                                size: 60,
+                                color: AppColors.textMedium,
+                              )
+                            : null,
                       ),
                     ),
                     Positioned(
                       bottom: 0,
                       right: 0,
                       child: GestureDetector(
-                        onTap: () {
-                          // TODO: Implement image picker
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Sélecteur d\'image bientôt disponible !',
-                              ),
-                            ),
+                        onTap: () async {
+                          final picker = ImagePicker();
+                          final picked = await picker.pickImage(
+                            source: ImageSource.gallery,
+                            imageQuality: 80,
                           );
+                          if (picked == null) return;
+
+                          final current = context
+                              .read<ProfileCubit>()
+                              .state
+                              .user;
+                          final updatedUser = User(
+                            id: current?.id,
+                            displayName:
+                                _fullNameController.text.trim().isNotEmpty
+                                ? _fullNameController.text.trim()
+                                : current?.displayName,
+                            username: _usernameController.text.trim().isNotEmpty
+                                ? _usernameController.text.trim()
+                                : current?.username ?? '',
+                            email: _emailController.text.trim().isNotEmpty
+                                ? _emailController.text.trim()
+                                : current?.email ?? '',
+                            phone: _phoneController.text.trim().isNotEmpty
+                                ? _phoneController.text.trim()
+                                : current?.phone,
+                            bio: _bioController.text.trim().isNotEmpty
+                                ? _bioController.text.trim()
+                                : current?.bio,
+                            profileImage: picked.path,
+                            followersCount: current?.followersCount ?? 0,
+                            followingCount: current?.followingCount ?? 0,
+                            points: current?.points ?? 0,
+                            level: current?.level ?? 'Bronze',
+                          );
+                          if (mounted) {
+                            await context.read<ProfileCubit>().saveProfile(
+                              updatedUser,
+                            );
+                          }
                         },
                         child: Container(
                           padding: EdgeInsets.all(AppSpacing.sm),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 
+/// Profile header displaying avatar, stats, rank, and points
 class ProfileHeader extends StatelessWidget {
   final String avatarUrl;
   final String username;
@@ -11,7 +12,7 @@ class ProfileHeader extends StatelessWidget {
   final int points;
 
   const ProfileHeader({
-    Key? key,
+    super.key,
     required this.avatarUrl,
     required this.username,
     required this.posts,
@@ -19,12 +20,12 @@ class ProfileHeader extends StatelessWidget {
     required this.following,
     required this.rank,
     required this.points,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.white,
+      color: Theme.of(context).cardTheme.color,
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
         vertical: AppSpacing.lg,
@@ -50,7 +51,7 @@ class ProfileHeader extends StatelessWidget {
           // Stats Line (Posts | Followers | Following)
           Text(
             '$posts Posts | $followers Followers | $following Following',
-            style: AppTextStyles.bodySmall.copyWith(color: AppColors.textDark),
+            style: AppTextStyles.bodySmall,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: AppSpacing.sm),
@@ -68,12 +69,7 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(width: AppSpacing.xs),
-              Text(
-                '$rank - $points Points',
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textDark,
-                ),
-              ),
+              Text('$rank - $points Points', style: AppTextStyles.bodySmall),
             ],
           ),
         ],

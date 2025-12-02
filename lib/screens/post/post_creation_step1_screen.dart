@@ -16,7 +16,7 @@ class PostCreationStep1Screen extends StatefulWidget {
 
 class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   final ImagePicker _imagePicker = ImagePicker();
-  List<XFile> _selectedImages = [];
+  final List<XFile> _selectedImages = [];
   final int _maxImages = 3;
 
   //  Getter for navigation shell to check if images are selected

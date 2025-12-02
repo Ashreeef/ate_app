@@ -30,8 +30,14 @@ class PostRepository {
   Future<List<Post>> getAllPosts({
     String? orderBy = 'created_at DESC',
     int? limit,
+    int? offset,
   }) async {
-    final maps = await _db.query('posts', orderBy: orderBy, limit: limit);
+    final maps = await _db.query(
+      'posts',
+      orderBy: orderBy,
+      limit: limit,
+      offset: offset,
+    );
     return maps.map((map) => Post.fromMap(map)).toList();
   }
 

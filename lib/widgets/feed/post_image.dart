@@ -5,14 +5,13 @@ class PostImage extends StatelessWidget {
   final String imageUrl;
   final VoidCallback onDoubleTap;
 
-  const PostImage({Key? key, required this.imageUrl, required this.onDoubleTap})
-    : super(key: key);
+  const PostImage({super.key, required this.imageUrl, required this.onDoubleTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: onDoubleTap,
-      child: Container(
+      child: SizedBox(
         height: AppSizes.postImageHeight,
         width: double.infinity,
         child: Image.network(

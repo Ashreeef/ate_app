@@ -4,7 +4,7 @@ import 'package:ate_app/utils/constants.dart';
 class PostDetailScreen extends StatefulWidget {
   final Map<String, dynamic> post;
 
-  const PostDetailScreen({Key? key, required this.post}) : super(key: key);
+  const PostDetailScreen({super.key, required this.post});
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -189,7 +189,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget _buildImage() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 400,
       child: Image.network(

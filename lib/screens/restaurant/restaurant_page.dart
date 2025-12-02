@@ -7,8 +7,7 @@ import '../../data/fake_restaurants.dart';
 class RestaurantPage extends StatelessWidget {
   final int restaurantId;
 
-  const RestaurantPage({Key? key, required this.restaurantId})
-    : super(key: key);
+  const RestaurantPage({super.key, required this.restaurantId});
 
   @override
   Widget build(BuildContext context) {
@@ -95,11 +94,11 @@ class _StatItem extends StatelessWidget {
   final String value;
 
   const _StatItem({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

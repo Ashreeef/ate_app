@@ -5,7 +5,7 @@ import '../../data/fake_restaurants.dart';
 import '../../models/challenge.dart';
 
 class ChallengesScreen extends StatefulWidget {
-  const ChallengesScreen({Key? key}) : super(key: key);
+  const ChallengesScreen({super.key});
 
   @override
   State<ChallengesScreen> createState() => _ChallengesScreenState();
