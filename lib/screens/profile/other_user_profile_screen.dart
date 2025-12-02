@@ -424,6 +424,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     }).toList();
   }
 
+  /// Show menu with follow and share options
   void _showOptionsMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,

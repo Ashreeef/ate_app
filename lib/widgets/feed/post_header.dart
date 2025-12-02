@@ -4,11 +4,12 @@ import '../../screens/profile/other_user_profile_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/profile/profile_cubit.dart';
 
+/// Post header showing user info with clickable profile navigation
 class PostHeader extends StatelessWidget {
-  final int? userId;
+  final int? userId; // User ID for profile navigation
   final String userName;
   final String userAvatar;
-  final VoidCallback onProfileTap;
+  final VoidCallback onProfileTap; // Legacy callback, kept for compatibility
   final VoidCallback onMoreTap;
 
   const PostHeader({
@@ -20,21 +21,21 @@ class PostHeader extends StatelessWidget {
     required this.onMoreTap,
   });
 
+  /// Navigate to user profile when tapping avatar or username
   Future<void> _navigateToProfile(BuildContext context) async {
+    // Fallback to legacy callback if no userId provided
     if (userId == null) {
-      // If no userId, just call the onProfileTap callback
       onProfileTap();
       return;
     }
 
-    // Check if this is the current user's profile
+    // Don't navigate if viewing own post (already on own profile)
     final currentUser = context.read<ProfileCubit>().state.user;
     if (currentUser != null && currentUser.id == userId) {
-      // Don't navigate - user is viewing their own post, they're already on their profile
       return;
     }
 
-    // Navigate to other user's profile
+    // Open other user's profile with full info and features
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -49,6 +50,7 @@ class PostHeader extends StatelessWidget {
       padding: EdgeInsets.all(AppSpacing.md),
       child: Row(
         children: [
+          // Clickable avatar - navigates to user profile
           GestureDetector(
             onTap: () => _navigateToProfile(context),
             child: CircleAvatar(
@@ -73,6 +75,7 @@ class PostHeader extends StatelessWidget {
             ),
           ),
           SizedBox(width: AppSpacing.sm),
+          // Clickable username - navigates to user profile
           Expanded(
             child: GestureDetector(
               onTap: () => _navigateToProfile(context),

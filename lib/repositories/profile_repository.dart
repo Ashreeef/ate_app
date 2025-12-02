@@ -3,11 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../database/database_helper.dart';
 import '../models/user.dart';
 
+/// Repository for user profile database operations
 class ProfileRepository {
   final DatabaseHelper _dbHelper = DatabaseHelper.instance;
   static const _kCurrentUserIdKey = 'current_user_id';
 
-  /// Get the current user (by stored id) or the first one if no id is stored.
+  /// Get the current logged-in user from stored preferences or first user
   Future<User?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
     final db = await _dbHelper.database;
@@ -42,6 +43,7 @@ class ProfileRepository {
     return user;
   }
 
+  /// Fetch user by ID from database (for viewing other profiles)
   Future<User?> getUserById(int id) async {
     final db = await _dbHelper.database;
 
@@ -76,6 +78,7 @@ class ProfileRepository {
     return id;
   }
 
+  /// Update existing user or create if doesn't exist
   Future<int> updateUser(User user) async {
     final db = await _dbHelper.database;
     if (user.id == null) {

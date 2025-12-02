@@ -3,11 +3,13 @@ import 'profile_state.dart';
 import '../../repositories/profile_repository.dart';
 import '../../models/user.dart';
 
+/// Cubit managing user profile state and operations
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository _repo;
 
   ProfileCubit(this._repo) : super(const ProfileState());
 
+  /// Load current user profile from database
   Future<void> loadProfile() async {
     try {
       emit(state.copyWith(status: ProfileStatus.loading));
@@ -26,6 +28,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
+  /// Save updated profile to database
   Future<void> saveProfile(User user) async {
     try {
       print('Saving profile: ${user.username}, ${user.displayName}');

@@ -4,7 +4,7 @@
 final List<Map<String, dynamic>> postsData = [
   {
     'id': '1',
-    'userId': 2, // User ID for fetching user profile
+    'userId': 2, // Links post to user for profile navigation
     'userName': '@foodie_alger',
     'userAvatar': 'https://i.pravatar.cc/150?img=11',
     'caption': 'Amazing Couscous! The best in Algiers!',

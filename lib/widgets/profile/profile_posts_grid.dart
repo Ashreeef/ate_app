@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 
+/// Grid layout displaying user's posts with like/comment counts
 class ProfilePostsGrid extends StatelessWidget {
   final List<Map<String, dynamic>> posts;
 

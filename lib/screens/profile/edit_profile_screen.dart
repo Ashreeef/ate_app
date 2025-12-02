@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../blocs/profile/profile_cubit.dart';
 import '../../models/user.dart';
 
+/// Screen for editing user profile (bio, display name, phone, avatar)
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -30,6 +31,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     });
   }
 
+  /// Load current user data from cubit and populate form fields
   Future<void> _loadUserData() async {
     final cubit = context.read<ProfileCubit>();
     await cubit.loadProfile();
@@ -56,6 +58,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.dispose();
   }
 
+  /// Save profile changes to database and show success message
   Future<void> _saveProfile() async {
     final cubit = context.read<ProfileCubit>();
     final currentUser = cubit.state.user;

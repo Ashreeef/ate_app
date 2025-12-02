@@ -13,6 +13,7 @@ import '../../widgets/profile/profile_posts_grid.dart';
 import 'edit_profile_screen.dart';
 import '../settings/settings_screen.dart';
 
+/// Current user's profile screen with posts and profile management
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
 
@@ -31,15 +32,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     _loadProfileAndPosts();
   }
 
+  /// Reload user profile and their posts from database
   Future<void> _loadProfileAndPosts() async {
-    //  reload profile from database
+    // Refresh profile data from database
     final cubit = context.read<ProfileCubit>();
     await cubit.loadProfile();
 
-    // Then load posts
+    // Load user's posts
     await _loadPosts();
   }
 
+  /// Fetch posts for current user from database
   Future<void> _loadPosts() async {
     final cubit = context.read<ProfileCubit>();
     final userId = cubit.state.user?.id;
@@ -172,6 +175,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
+  /// Convert database posts to grid display format
   List<Map<String, dynamic>> _convertPostsToFakeFormat() {
     return _posts.map((post) {
       final images = post.getImageList();
@@ -184,6 +188,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     }).toList();
   }
 
+  /// Show profile options menu (settings, edit, share)
   void _showOptionsMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,

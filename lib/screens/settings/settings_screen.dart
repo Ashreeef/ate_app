@@ -7,6 +7,7 @@ import '../../blocs/settings/settings_state.dart';
 import '../profile/edit_profile_screen.dart';
 import 'settings_dialogs.dart';
 
+/// Settings screen for theme, language, notifications, and password
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 

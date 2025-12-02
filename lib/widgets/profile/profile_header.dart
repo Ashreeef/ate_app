@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 
+/// Profile header displaying avatar, stats, rank, and points
 class ProfileHeader extends StatelessWidget {
   final String avatarUrl;
   final String username;
