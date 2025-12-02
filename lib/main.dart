@@ -77,6 +77,12 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider<UserRepository>(create: (context) => userRepository),
         RepositoryProvider<PostRepository>(create: (context) => postRepository),
+        RepositoryProvider<LikeRepository>(
+          create: (context) => LikeRepository(),
+        ),
+        RepositoryProvider<SavedPostRepository>(
+          create: (context) => SavedPostRepository(),
+        ),
         RepositoryProvider<AuthService>(create: (context) => authService),
       ],
       child: MultiBlocProvider(
@@ -99,6 +105,8 @@ class MyApp extends StatelessWidget {
           BlocProvider<PostBloc>(
             create: (context) => PostBloc(
               repo: postRepository,
+              likeRepo: context.read<LikeRepository>(),
+              savedPostRepo: context.read<SavedPostRepository>(),
               feedBloc: context.read<FeedBloc>(),
             ),
           ),
