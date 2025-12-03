@@ -547,4 +547,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restaurantPosts => 'Restaurant Posts';
+
+  @override
+  String get timeToEat => 'Time to eat!';
+
+  @override
+  String get loginSubtitle =>
+      'Connect to find your friends, discover new dishes and share your delicious moments.';
+
+  @override
+  String get rememberMe => 'Remember me';
+
+  @override
+  String get loggingIn => 'Logging in...';
+
+  @override
+  String get signInButton => 'Sign in';
 }

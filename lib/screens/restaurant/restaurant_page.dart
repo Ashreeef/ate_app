@@ -77,10 +77,32 @@ class RestaurantPage extends StatelessWidget {
                           rating: 4.0,
                           reviewCount: 15,
                           onTap: () {
-                            // TODO: Navigate to dish detail
+                            // TODO: Create DishDetailScreen and navigate
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  l10n.dishDetail,
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                backgroundColor: AppColors.textDark,
+                              ),
+                            );
                           },
                           onReviewsTap: () {
-                            // TODO: Show reviews
+                            // TODO: Create ReviewsScreen and navigate
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  l10n.reviews,
+                                  style: AppTextStyles.bodySmall.copyWith(
+                                    color: AppColors.white,
+                                  ),
+                                ),
+                                backgroundColor: AppColors.textDark,
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -99,10 +121,39 @@ class RestaurantPage extends StatelessWidget {
                           value: restaurant.rating.toStringAsFixed(1),
                         ),
                         SizedBox(width: AppSpacing.lg),
-                        _StatItem(
-                          icon: Icons.message_outlined,
-                          label: l10n.posts,
-                          value: '${restaurant.postsCount}',
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              // TODO: Create RestaurantPostsScreen and navigate
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    l10n.restaurantPosts,
+                                    style: AppTextStyles.bodySmall.copyWith(
+                                      color: AppColors.white,
+                                    ),
+                                  ),
+                                  backgroundColor: AppColors.textDark,
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.message_outlined,
+                                  size: AppSizes.iconLg,
+                                  color: AppColors.primary,
+                                ),
+                                SizedBox(height: AppSpacing.xs),
+                                Text(
+                                  '${restaurant.postsCount}',
+                                  style: AppTextStyles.heading4,
+                                ),
+                                SizedBox(height: AppSpacing.xs / 2),
+                                Text(l10n.posts, style: AppTextStyles.caption),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),

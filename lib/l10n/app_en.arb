@@ -172,6 +172,13 @@
   "hoursAgo": "{hours} hours ago",
   "dishDetail": "Dish Detail",
   "reviews": "Reviews",
-  "restaurantPosts": "Restaurant Posts"
+  "restaurantPosts": "Restaurant Posts",
+  "timeToEat": "Time to eat!",
+  "loginSubtitle": "Connect to find your friends, discover new dishes and share your delicious moments.",
+  "rememberMe": "Remember me",
+  "loggingIn": "Logging in...",
+  "signInButton": "Sign in",
+  "myFeed": "My Feed",
+  "friendsFeed": "Friends Feed"
 }
 

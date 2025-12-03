@@ -172,6 +172,13 @@
   "hoursAgo": "Il y a {hours} heures",
   "dishDetail": "Détail du plat",
   "reviews": "Avis",
-  "restaurantPosts": "Posts du restaurant"
+  "restaurantPosts": "Posts du restaurant",
+  "timeToEat": "Heure de passer à table !",
+  "loginSubtitle": "Connecte-toi pour retrouver tes amis, découvrir de nouveaux plats et partager tes moments gourmands.",
+  "rememberMe": "Se souvenir de moi",
+  "loggingIn": "Connexion en cours...",
+  "signInButton": "Se connecter",
+  "myFeed": "Mon Feed",
+  "friendsFeed": "Mes Amis"
 }
 

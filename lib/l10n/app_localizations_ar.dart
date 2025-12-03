@@ -369,10 +369,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get excellent => 'ممتاز!';
 
   @override
-  String get myFeed => 'خيطي';
+  String get myFeed => 'تغذيتي';
 
   @override
-  String get friendsFeed => 'خيط الأصدقاء';
+  String get friendsFeed => 'الأصدقاء';
 
   @override
   String get loadMore => 'تحميل المزيد';
@@ -545,4 +545,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get restaurantPosts => 'منشورات المطعم';
+
+  @override
+  String get timeToEat => 'حان وقت الأكل!';
+
+  @override
+  String get loginSubtitle =>
+      'قم بتسجيل الدخول للعثور على أصدقائك واكتشاف أطباق جديدة ومشاركة لحظاتك اللذيذة.';
+
+  @override
+  String get rememberMe => 'تذكرني';
+
+  @override
+  String get loggingIn => 'جاري تسجيل الدخول...';
+
+  @override
+  String get signInButton => 'تسجيل الدخول';
 }

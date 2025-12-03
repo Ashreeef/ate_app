@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class FeedHeader extends StatelessWidget {
   final bool isMonFeedSelected;
@@ -16,6 +17,7 @@ class FeedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.lg,
@@ -36,7 +38,7 @@ class FeedHeader extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _FeedToggleButton(
-                      text: 'Mon Feed',
+                      text: l10n.myFeed,
                       isSelected: isMonFeedSelected,
                       onTap: onMonFeedTap,
                     ),
@@ -44,7 +46,7 @@ class FeedHeader extends StatelessWidget {
                   const SizedBox(width: AppSpacing.sm),
                   Expanded(
                     child: _FeedToggleButton(
-                      text: 'Mes Amis',
+                      text: l10n.friendsFeed,
                       isSelected: !isMonFeedSelected,
                       onTap: onMesAmisTap,
                     ),

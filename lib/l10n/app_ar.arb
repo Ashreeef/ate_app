@@ -172,6 +172,13 @@
   "hoursAgo": "منذ {hours} ساعة",
   "dishDetail": "تفاصيل الطبق",
   "reviews": "التقييمات",
-  "restaurantPosts": "منشورات المطعم"
+  "restaurantPosts": "منشورات المطعم",
+  "timeToEat": "حان وقت الأكل!",
+  "loginSubtitle": "قم بتسجيل الدخول للعثور على أصدقائك واكتشاف أطباق جديدة ومشاركة لحظاتك اللذيذة.",
+  "rememberMe": "تذكرني",
+  "loggingIn": "جاري تسجيل الدخول...",
+  "signInButton": "تسجيل الدخول",
+  "myFeed": "تغذيتي",
+  "friendsFeed": "الأصدقاء"
 }
 

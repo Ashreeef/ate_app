@@ -6,6 +6,7 @@ import '../../blocs/auth/auth_state.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
+import '../../l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -30,11 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleLogin() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-            LoginRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+        LoginRequested(
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
@@ -80,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
             body: SafeArea(
               child: LayoutBuilder(
                 builder: (context, constraints) {
+                  final l10n = AppLocalizations.of(context)!;
                   return SingleChildScrollView(
                     child: ConstrainedBox(
                       constraints: BoxConstraints(
@@ -112,8 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 CustomButton(
                                   text: isLoading
-                                      ? 'Connexion en cours...'
-                                      : 'Se connecter',
+                                      ? l10n.loggingIn
+                                      : l10n.signInButton,
                                   onPressed: isLoading ? () {} : _handleLogin,
                                 ),
 
@@ -143,11 +145,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Heure de passer à table !',
+          l10n.timeToEat,
           style: AppTextStyles.heading1.copyWith(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -155,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Connecte-toi pour retrouver tes amis, découvrir de nouveaux plats et partager tes moments gourmands.',
+          l10n.loginSubtitle,
           style: AppTextStyles.bodySmall.copyWith(
             color: AppColors.textLight,
             height: 1.5,
@@ -166,11 +169,12 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildLoginForm() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         CustomTextField(
           controller: _emailController,
-          hint: 'Email',
+          hint: l10n.emailLabel,
           type: CustomTextFieldType.email,
           textInputAction: TextInputAction.next,
           prefixIcon: const Icon(
@@ -181,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
         const SizedBox(height: AppSpacing.md),
         CustomTextField(
           controller: _passwordController,
-          hint: 'Mot de passe',
+          hint: l10n.passwordLabel,
           type: CustomTextFieldType.password,
           textInputAction: TextInputAction.done,
           onEditingComplete: _handleLogin,
@@ -192,6 +196,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildOptionsRow() {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -223,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
-              'Se souvenir de moi',
+              l10n.rememberMe,
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textDark,
               ),
@@ -234,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
         GestureDetector(
           onTap: _handleForgotPassword,
           child: Text(
-            'Mot de passe oublié ?',
+            l10n.forgotPassword,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w600,

@@ -1137,6 +1137,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restaurant Posts'**
   String get restaurantPosts;
+
+  /// No description provided for @timeToEat.
+  ///
+  /// In en, this message translates to:
+  /// **'Time to eat!'**
+  String get timeToEat;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to find your friends, discover new dishes and share your delicious moments.'**
+  String get loginSubtitle;
+
+  /// No description provided for @rememberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember me'**
+  String get rememberMe;
+
+  /// No description provided for @loggingIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Logging in...'**
+  String get loggingIn;
+
+  /// No description provided for @signInButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInButton;
 }
 
 class _AppLocalizationsDelegate

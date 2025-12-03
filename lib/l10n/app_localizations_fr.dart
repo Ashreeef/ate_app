@@ -374,10 +374,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get excellent => 'Excellent!';
 
   @override
-  String get myFeed => 'Mon fil';
+  String get myFeed => 'Mon Feed';
 
   @override
-  String get friendsFeed => 'Fil des amis';
+  String get friendsFeed => 'Mes Amis';
 
   @override
   String get loadMore => 'Charger plus';
@@ -552,4 +552,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get restaurantPosts => 'Posts du restaurant';
+
+  @override
+  String get timeToEat => 'Heure de passer à table !';
+
+  @override
+  String get loginSubtitle =>
+      'Connecte-toi pour retrouver tes amis, découvrir de nouveaux plats et partager tes moments gourmands.';
+
+  @override
+  String get rememberMe => 'Se souvenir de moi';
+
+  @override
+  String get loggingIn => 'Connexion en cours...';
+
+  @override
+  String get signInButton => 'Se connecter';
 }
