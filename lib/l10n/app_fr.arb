@@ -163,6 +163,15 @@
   "french": "Français",
   "english": "Anglais",
   "arabic": "Arabe",
-  "emailSupport": "📧 Email: support@ate-app.com"
+  "emailSupport": "📧 Email: support@ate-app.com",
+  "addComment": "Ajouter un commentaire...",
+  "imageLoadFailed": "Échec du chargement de l'image",
+  "sharePostDescription": "La fonctionnalité de partage sera implémentée ici.",
+  "reportAction": "Signaler",
+  "linkCopied": "Lien copié dans le presse-papiers",
+  "hoursAgo": "Il y a {hours} heures",
+  "dishDetail": "Détail du plat",
+  "reviews": "Avis",
+  "restaurantPosts": "Posts du restaurant"
 }
 

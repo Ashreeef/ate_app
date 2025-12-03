@@ -1083,6 +1083,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'📧 Email: support@ate-app.com'**
   String get emailSupport;
+
+  /// No description provided for @addComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a comment...'**
+  String get addComment;
+
+  /// No description provided for @imageLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load image'**
+  String get imageLoadFailed;
+
+  /// No description provided for @sharePostDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Share functionality will be implemented here.'**
+  String get sharePostDescription;
+
+  /// No description provided for @reportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get reportAction;
+
+  /// No description provided for @linkCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Link copied to clipboard'**
+  String get linkCopied;
+
+  /// No description provided for @hoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours ago'**
+  String hoursAgo(Object hours);
+
+  /// No description provided for @dishDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Dish Detail'**
+  String get dishDetail;
+
+  /// No description provided for @reviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Reviews'**
+  String get reviews;
+
+  /// No description provided for @restaurantPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant Posts'**
+  String get restaurantPosts;
 }
 
 class _AppLocalizationsDelegate

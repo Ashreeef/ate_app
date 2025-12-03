@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class MenuItemCard extends StatelessWidget {
   final String name;
@@ -85,7 +86,7 @@ class MenuItemCard extends StatelessWidget {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         ),
                         child: Text(
-                          'Avis',
+                          AppLocalizations.of(context)!.reviews,
                           style: AppTextStyles.link.copyWith(fontSize: 12),
                         ),
                       ),

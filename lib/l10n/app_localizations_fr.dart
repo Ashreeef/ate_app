@@ -522,4 +522,34 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get emailSupport => '📧 Email: support@ate-app.com';
+
+  @override
+  String get addComment => 'Ajouter un commentaire...';
+
+  @override
+  String get imageLoadFailed => 'Échec du chargement de l\'image';
+
+  @override
+  String get sharePostDescription =>
+      'La fonctionnalité de partage sera implémentée ici.';
+
+  @override
+  String get reportAction => 'Signaler';
+
+  @override
+  String get linkCopied => 'Lien copié dans le presse-papiers';
+
+  @override
+  String hoursAgo(Object hours) {
+    return 'Il y a $hours heures';
+  }
+
+  @override
+  String get dishDetail => 'Détail du plat';
+
+  @override
+  String get reviews => 'Avis';
+
+  @override
+  String get restaurantPosts => 'Posts du restaurant';
 }

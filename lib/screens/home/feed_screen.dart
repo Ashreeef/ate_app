@@ -9,7 +9,11 @@ import '../../blocs/feed/feed_state.dart';
 import '../../blocs/post/post_bloc.dart';
 import '../../blocs/post/post_event.dart';
 import '../../models/post.dart';
+import '../../services/auth_service.dart';
 import '../../l10n/app_localizations.dart';
+import 'post_detail_screen.dart';
+import '../profile/other_user_profile_screen.dart';
+import '../restaurant/restaurant_page.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -111,8 +115,7 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Widget _buildPostCard(Post post) {
-    final currentUserId =
-        1; // TODO: Replace with actual user ID from AuthService.instance.currentUserId
+    final currentUserId = AuthService.instance.currentUserId ?? 1;
     final isLiked = post.likedBy.contains(currentUserId);
     final isSaved = post.savedBy.contains(currentUserId);
 
@@ -122,33 +125,67 @@ class _FeedScreenState extends State<FeedScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            leading: post.userAvatarPath != null
-                ? CircleAvatar(
-                    backgroundImage: FileImage(File(post.userAvatarPath!)),
-                  )
-                : CircleAvatar(child: Icon(Icons.person)),
-            title: Text(
-              post.username,
-              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+            leading: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        OtherUserProfileScreen(userId: post.userId),
+                  ),
+                );
+              },
+              child: post.userAvatarPath != null
+                  ? CircleAvatar(
+                      backgroundImage: FileImage(File(post.userAvatarPath!)),
+                    )
+                  : CircleAvatar(child: Icon(Icons.person)),
+            ),
+            title: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        OtherUserProfileScreen(userId: post.userId),
+                  ),
+                );
+              },
+              child: Text(
+                post.username,
+                style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
+              ),
             ),
             subtitle: Text(post.createdAt.toLocal().toString().split('.')[0]),
           ),
           if (post.images.isNotEmpty)
-            Container(
-              height: 200,
-              color: AppColors.backgroundLight,
-              child: PageView(
-                children: post.images
-                    .map(
-                      (imagePath) => Image.file(
-                        File(imagePath),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Center(child: Icon(Icons.image_not_supported));
-                        },
-                      ),
-                    )
-                    .toList(),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PostDetailScreen(post: post.toMap()),
+                  ),
+                );
+              },
+              child: Container(
+                height: 200,
+                color: AppColors.backgroundLight,
+                child: PageView(
+                  children: post.images
+                      .map(
+                        (imagePath) => Image.file(
+                          File(imagePath),
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Icon(Icons.image_not_supported),
+                            );
+                          },
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
             ),
           Padding(
@@ -158,7 +195,26 @@ class _FeedScreenState extends State<FeedScreen> {
               children: [
                 if (post.dishName != null)
                   Text('Dish: ${post.dishName}', style: AppTextStyles.caption),
-                if (post.restaurantName != null)
+                if (post.restaurantName != null && post.restaurantId != null)
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              RestaurantPage(restaurantId: post.restaurantId!),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Restaurant: ${post.restaurantName}',
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.primary,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                if (post.restaurantName != null && post.restaurantId == null)
                   Text(
                     'Restaurant: ${post.restaurantName}',
                     style: AppTextStyles.caption,
@@ -173,37 +229,57 @@ class _FeedScreenState extends State<FeedScreen> {
               ],
             ),
           ),
-          OverflowBar(
-            alignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      isLiked ? Icons.favorite : Icons.favorite_border,
-                      color: isLiked ? Colors.red : AppColors.textMedium,
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        isLiked ? Icons.favorite : Icons.favorite_border,
+                        color: isLiked ? Colors.red : AppColors.textMedium,
+                      ),
+                      onPressed: () {
+                        context.read<PostBloc>().add(
+                          ToggleLikeEvent(post.id!, currentUserId),
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      context.read<PostBloc>().add(
-                        ToggleLikeEvent(post.id!, currentUserId),
-                      );
-                    },
-                  ),
-                  Text('${post.likesCount}', style: AppTextStyles.body),
-                ],
-              ),
-              IconButton(
-                icon: Icon(
-                  isSaved ? Icons.bookmark : Icons.bookmark_border,
-                  color: isSaved ? AppColors.primary : AppColors.textMedium,
+                    Text('${post.likesCount}', style: AppTextStyles.body),
+                    SizedBox(width: AppSpacing.sm),
+                    IconButton(
+                      icon: Icon(
+                        Icons.chat_bubble_outline,
+                        color: AppColors.textMedium,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PostDetailScreen(post: post.toMap()),
+                          ),
+                        );
+                      },
+                    ),
+                    Text('${post.commentsCount}', style: AppTextStyles.body),
+                  ],
                 ),
-                onPressed: () {
-                  context.read<PostBloc>().add(
-                    ToggleSaveEvent(post.id!, currentUserId),
-                  );
-                },
-              ),
-            ],
+                IconButton(
+                  icon: Icon(
+                    isSaved ? Icons.bookmark : Icons.bookmark_border,
+                    color: isSaved ? AppColors.primary : AppColors.textMedium,
+                  ),
+                  onPressed: () {
+                    context.read<PostBloc>().add(
+                      ToggleSaveEvent(post.id!, currentUserId),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),

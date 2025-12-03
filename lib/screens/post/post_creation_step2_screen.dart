@@ -8,6 +8,8 @@ import '../../blocs/post/post_bloc.dart';
 import '../../blocs/post/post_event.dart';
 import '../../blocs/post/post_state.dart';
 import '../../models/post.dart';
+import '../../services/auth_service.dart';
+import '../../repositories/user_repository.dart';
 
 class PostCreationStep2Screen extends StatefulWidget {
   final List<XFile> selectedImages;
@@ -47,6 +49,11 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
     setState(() => _isSubmitting = true);
 
     try {
+      // Get current user info
+      final currentUserId = AuthService.instance.currentUserId ?? 1;
+      final userRepository = UserRepository();
+      final currentUser = await userRepository.getUserById(currentUserId);
+
       // Compress and save images
       List<String> compressedImagePaths = [];
       for (var xfile in widget.selectedImages) {
@@ -60,8 +67,8 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
 
       // Create post object
       final post = Post(
-        userId: 1, // TODO: Get from AuthService.instance.currentUserId!
-        username: 'Sondes', // TODO: Get from UserBloc or UserRepository
+        userId: currentUserId,
+        username: currentUser?.username ?? 'User',
         caption: _captionController.text,
         restaurantId: null,
         restaurantName: _restaurantController.text,
@@ -77,7 +84,8 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
       context.read<PostBloc>().add(CreatePostEvent(post));
 
       _showSuccessSnackBar('Post publié avec succès!');
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      // Pop both post creation screens to return to home
+      Navigator.of(context).popUntil((route) => route.isFirst);
     } catch (e) {
       _showErrorSnackBar('Erreur lors de la publication: $e');
       setState(() => _isSubmitting = false);

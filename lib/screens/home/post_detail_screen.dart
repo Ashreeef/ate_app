@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ate_app/utils/constants.dart';
+import '../../l10n/app_localizations.dart';
+import '../profile/other_user_profile_screen.dart';
+import '../restaurant/restaurant_page.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final Map<String, dynamic> post;
@@ -61,12 +64,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.white,
         elevation: 0,
-        title: Text('Post', style: AppTextStyles.heading3),
+        title: Text(l10n.post, style: AppTextStyles.heading3),
         actions: [
           IconButton(
             icon: Icon(
@@ -142,42 +147,88 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget _buildHeader() {
+    final userId = _post['userId'] as int?;
+    final restaurantId = _post['restaurantId'] as int?;
+
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: AppSizes.avatar / 2,
-            backgroundColor: AppColors.background,
-            child: _post['userAvatar'] != null && _post['userAvatar'].isNotEmpty
-                ? ClipOval(
-                    child: Image.network(
-                      _post['userAvatar'],
-                      fit: BoxFit.cover,
-                      width: AppSizes.avatar,
-                      height: AppSizes.avatar,
-                    ),
-                  )
-                : Icon(
-                    Icons.person,
-                    color: AppColors.textMedium,
-                    size: AppSizes.icon,
+          GestureDetector(
+            onTap: () {
+              if (userId != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        OtherUserProfileScreen(userId: userId),
                   ),
+                );
+              }
+            },
+            child: CircleAvatar(
+              radius: AppSizes.avatar / 2,
+              backgroundColor: AppColors.background,
+              child:
+                  _post['userAvatar'] != null && _post['userAvatar'].isNotEmpty
+                  ? ClipOval(
+                      child: Image.network(
+                        _post['userAvatar'],
+                        fit: BoxFit.cover,
+                        width: AppSizes.avatar,
+                        height: AppSizes.avatar,
+                      ),
+                    )
+                  : Icon(
+                      Icons.person,
+                      color: AppColors.textMedium,
+                      size: AppSizes.icon,
+                    ),
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _post['userName'] ?? 'Unknown User',
-                  style: AppTextStyles.username,
+                GestureDetector(
+                  onTap: () {
+                    if (userId != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              OtherUserProfileScreen(userId: userId),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(
+                    _post['userName'] ?? 'Unknown User',
+                    style: AppTextStyles.username,
+                  ),
                 ),
                 if (_post['restaurantName'] != null)
-                  Text(
-                    _post['restaurantName'],
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.textMedium,
+                  GestureDetector(
+                    onTap: () {
+                      if (restaurantId != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                RestaurantPage(restaurantId: restaurantId),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text(
+                      _post['restaurantName'],
+                      style: AppTextStyles.caption.copyWith(
+                        color: AppColors.textMedium,
+                        decoration: restaurantId != null
+                            ? TextDecoration.underline
+                            : null,
+                      ),
                     ),
                   ),
               ],
@@ -225,7 +276,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  'Échec du chargement de l\'image',
+                  AppLocalizations.of(context)!.imageLoadFailed,
                   style: AppTextStyles.caption,
                 ),
               ],
@@ -380,7 +431,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (comments.isNotEmpty)
-              Text('Commentaires', style: AppTextStyles.heading4),
+              Text(
+                AppLocalizations.of(context)!.comments,
+                style: AppTextStyles.heading4,
+              ),
             const SizedBox(height: AppSpacing.md),
             ListView.builder(
               shrinkWrap: true,
@@ -423,8 +477,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               ),
                             ),
                             const SizedBox(height: AppSpacing.xs),
-                            const Text(
-                              'Il y a 2 heures', // Placeholder
+                            Text(
+                              AppLocalizations.of(context)!.hoursAgo(2),
                               style: AppTextStyles.timestamp,
                             ),
                           ],
@@ -472,7 +526,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             child: TextField(
               controller: _commentController,
               decoration: InputDecoration(
-                hintText: 'Add a comment...',
+                hintText: AppLocalizations.of(context)!.addComment,
                 hintStyle: AppTextStyles.bodySmall.copyWith(
                   color: AppColors.textMedium,
                 ),
@@ -498,6 +552,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   void _sharePost() {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -505,15 +560,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
         ),
-        title: Text('Partager le post', style: AppTextStyles.heading3),
-        content: Text(
-          'La fonctionnalité de partage sera implémentée ici.',
-          style: AppTextStyles.body,
-        ),
+        title: Text(l10n.sharePost, style: AppTextStyles.heading3),
+        content: Text(l10n.sharePostDescription, style: AppTextStyles.body),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('OK', style: AppTextStyles.link),
+            child: Text(l10n.ok, style: AppTextStyles.link),
           ),
         ],
       ),
@@ -521,6 +573,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   void _showOptions() {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
@@ -537,7 +590,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             children: [
               ListTile(
                 leading: Icon(Icons.flag_outlined, color: AppColors.textDark),
-                title: Text('Signaler', style: AppTextStyles.bodyMedium),
+                title: Text(l10n.report, style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
                   // Implement report logic
@@ -545,13 +598,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
               ListTile(
                 leading: Icon(Icons.link, color: AppColors.textDark),
-                title: Text('Copier le lien', style: AppTextStyles.bodyMedium),
+                title: Text(l10n.copyLink, style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Lien copié dans le presse-papiers',
+                        l10n.linkCopied,
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.white,
                         ),
@@ -570,7 +623,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               const Divider(height: 1),
               ListTile(
                 leading: Icon(Icons.close, color: AppColors.textDark),
-                title: Text('Annuler', style: AppTextStyles.bodyMedium),
+                title: Text(l10n.cancel, style: AppTextStyles.bodyMedium),
                 onTap: () => Navigator.pop(context),
               ),
             ],
