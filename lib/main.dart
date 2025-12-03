@@ -29,6 +29,8 @@ import 'repositories/search_history_repository.dart';
 import 'services/auth_service.dart';
 import 'database/seed_data.dart';
 import 'database/quick_validation.dart';
+import 'blocs/search/search_bloc.dart';
+import 'blocs/restaurant/restaurant_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,6 +77,8 @@ class MyApp extends StatelessWidget {
     // Create repositories
     final userRepository = UserRepository();
     final postRepository = PostRepository();
+    final restaurantRepository = RestaurantRepository();
+    final searchHistoryRepository = SearchHistoryRepository();
     final authService = AuthService.instance;
     final profileRepository = ProfileRepository();
 
@@ -82,6 +86,12 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider<UserRepository>(create: (context) => userRepository),
         RepositoryProvider<PostRepository>(create: (context) => postRepository),
+        RepositoryProvider<RestaurantRepository>(
+          create: (context) => restaurantRepository,
+        ),
+        RepositoryProvider<SearchHistoryRepository>(
+          create: (context) => searchHistoryRepository,
+        ),
         RepositoryProvider<LikeRepository>(
           create: (context) => LikeRepository(),
         ),
@@ -116,6 +126,18 @@ class MyApp extends StatelessWidget {
               likeRepo: context.read<LikeRepository>(),
               savedPostRepo: context.read<SavedPostRepository>(),
               feedBloc: context.read<FeedBloc>(),
+            ),
+          ),
+          BlocProvider<SearchBloc>(
+            create: (context) => SearchBloc(
+              restaurantRepository: restaurantRepository,
+              searchHistoryRepository: searchHistoryRepository,
+              authService: authService,
+            ),
+          ),
+          BlocProvider<RestaurantBloc>(
+            create: (context) => RestaurantBloc(
+              restaurantRepository: restaurantRepository,
             ),
           ),
           BlocProvider<ProfileCubit>(
