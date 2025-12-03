@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../utils/constants.dart';
 import '../../widgets/restaurant/restaurant_card.dart';
-import '../../data/fake_restaurants.dart';
 import '../../models/restaurant.dart';
 import '../restaurant/restaurant_page.dart';
+import '../../blocs/search/search_bloc.dart';
+import '../../blocs/search/search_event.dart';
+import '../../blocs/search/search_state.dart';
 
 class SearchResultsScreen extends StatelessWidget {
   final String searchQuery;
@@ -15,20 +18,8 @@ class SearchResultsScreen extends StatelessWidget {
     this.showAll = false,
   });
 
-  List<Restaurant> _getResults() {
-    if (showAll) {
-      return FakeData.getRestaurants();
-    }
-    if (searchQuery.isEmpty) {
-      return [];
-    }
-    return FakeData.searchRestaurants(searchQuery);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final results = _getResults();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -39,28 +30,61 @@ class SearchResultsScreen extends StatelessWidget {
               : 'Résultats pour "$searchQuery"',
         ),
       ),
-      body: results.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search_off, size: 64, color: AppColors.textLight),
-                  SizedBox(height: AppSpacing.md),
-                  Text(
-                    showAll
-                        ? 'Aucun restaurant disponible'
-                        : 'Aucun résultat trouvé',
-                    style: AppTextStyles.heading4,
-                  ),
-                  SizedBox(height: AppSpacing.xs),
-                  Text(
-                    showAll ? '' : 'Essayez avec d\'autres mots-clés',
-                    style: AppTextStyles.bodySmall,
-                  ),
-                ],
+      body: BlocBuilder<SearchBloc, SearchState>(
+        builder: (context, state) {
+          if (showAll && state is! SearchResultsLoaded) {
+            context
+                .read<SearchBloc>()
+                .add(const SearchRestaurantsRequested(query: ''));
+          } else if (!showAll &&
+              state is! SearchResultsLoaded &&
+              searchQuery.isNotEmpty) {
+            context
+                .read<SearchBloc>()
+                .add(SearchRestaurantsRequested(query: searchQuery));
+          }
+
+          if (state is SearchLoading || state is SearchInitial) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          if (state is SearchError) {
+            return Center(
+              child: Text(
+                state.message,
+                style: AppTextStyles.bodyMedium,
               ),
-            )
-          : ListView.builder(
+            );
+          }
+
+          if (state is SearchResultsLoaded) {
+            final results = state.results;
+
+            if (results.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.search_off,
+                        size: 64, color: AppColors.textLight),
+                    SizedBox(height: AppSpacing.md),
+                    Text(
+                      showAll
+                          ? 'Aucun restaurant disponible'
+                          : 'Aucun résultat trouvé',
+                      style: AppTextStyles.heading4,
+                    ),
+                    SizedBox(height: AppSpacing.xs),
+                    Text(
+                      showAll ? '' : 'Essayez avec d\'autres mots-clés',
+                      style: AppTextStyles.bodySmall,
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return ListView.builder(
               padding: EdgeInsets.all(AppSpacing.md),
               itemCount: results.length,
               itemBuilder: (context, index) {
@@ -80,7 +104,32 @@ class SearchResultsScreen extends StatelessWidget {
                   },
                 );
               },
+            );
+          }
+
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.search_off,
+                    size: 64, color: AppColors.textLight),
+                SizedBox(height: AppSpacing.md),
+                Text(
+                  showAll
+                      ? 'Aucun restaurant disponible'
+                      : 'Aucun résultat trouvé',
+                  style: AppTextStyles.heading4,
+                ),
+                SizedBox(height: AppSpacing.xs),
+                Text(
+                  showAll ? '' : 'Essayez avec d\'autres mots-clés',
+                  style: AppTextStyles.bodySmall,
+                ),
+              ],
             ),
+          );
+        },
+      ),
     );
   }
 }
