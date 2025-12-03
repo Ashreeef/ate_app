@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../utils/constants.dart';
 import '../../widgets/restaurant/restaurant_card.dart';
-import '../../models/restaurant.dart';
 import '../restaurant/restaurant_page.dart';
 import '../../blocs/search/search_bloc.dart';
 import '../../blocs/search/search_event.dart';
 import '../../blocs/search/search_state.dart';
 
-class SearchResultsScreen extends StatelessWidget {
+class SearchResultsScreen extends StatefulWidget {
   final String searchQuery;
   final bool showAll;
 
@@ -19,41 +18,45 @@ class SearchResultsScreen extends StatelessWidget {
   });
 
   @override
+  State<SearchResultsScreen> createState() => _SearchResultsScreenState();
+}
+
+class _SearchResultsScreenState extends State<SearchResultsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showAll) {
+      context.read<SearchBloc>().add(
+        const SearchRestaurantsRequested(query: ''),
+      );
+    } else if (widget.searchQuery.isNotEmpty) {
+      context.read<SearchBloc>().add(
+        SearchRestaurantsRequested(query: widget.searchQuery),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          showAll
+          widget.showAll
               ? 'Tous les restaurants'
-              : searchQuery.isEmpty
+              : widget.searchQuery.isEmpty
               ? 'Résultats'
-              : 'Résultats pour "$searchQuery"',
+              : 'Résultats pour "${widget.searchQuery}"',
         ),
       ),
       body: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
-          if (showAll && state is! SearchResultsLoaded) {
-            context
-                .read<SearchBloc>()
-                .add(const SearchRestaurantsRequested(query: ''));
-          } else if (!showAll &&
-              state is! SearchResultsLoaded &&
-              searchQuery.isNotEmpty) {
-            context
-                .read<SearchBloc>()
-                .add(SearchRestaurantsRequested(query: searchQuery));
-          }
-
           if (state is SearchLoading || state is SearchInitial) {
             return Center(child: CircularProgressIndicator());
           }
 
           if (state is SearchError) {
             return Center(
-              child: Text(
-                state.message,
-                style: AppTextStyles.bodyMedium,
-              ),
+              child: Text(state.message, style: AppTextStyles.bodyMedium),
             );
           }
 
@@ -65,18 +68,21 @@ class SearchResultsScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.search_off,
-                        size: 64, color: AppColors.textLight),
+                    Icon(
+                      Icons.search_off,
+                      size: 64,
+                      color: AppColors.textLight,
+                    ),
                     SizedBox(height: AppSpacing.md),
                     Text(
-                      showAll
+                      widget.showAll
                           ? 'Aucun restaurant disponible'
                           : 'Aucun résultat trouvé',
                       style: AppTextStyles.heading4,
                     ),
                     SizedBox(height: AppSpacing.xs),
                     Text(
-                      showAll ? '' : 'Essayez avec d\'autres mots-clés',
+                      widget.showAll ? '' : 'Essayez avec d\'autres mots-clés',
                       style: AppTextStyles.bodySmall,
                     ),
                   ],
@@ -111,18 +117,17 @@ class SearchResultsScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.search_off,
-                    size: 64, color: AppColors.textLight),
+                Icon(Icons.search_off, size: 64, color: AppColors.textLight),
                 SizedBox(height: AppSpacing.md),
                 Text(
-                  showAll
+                  widget.showAll
                       ? 'Aucun restaurant disponible'
                       : 'Aucun résultat trouvé',
                   style: AppTextStyles.heading4,
                 ),
                 SizedBox(height: AppSpacing.xs),
                 Text(
-                  showAll ? '' : 'Essayez avec d\'autres mots-clés',
+                  widget.showAll ? '' : 'Essayez avec d\'autres mots-clés',
                   style: AppTextStyles.bodySmall,
                 ),
               ],

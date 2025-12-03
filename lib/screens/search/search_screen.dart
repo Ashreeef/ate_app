@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/custom_text_field.dart';
 import '../../widgets/restaurant/restaurant_card.dart';
-import '../../models/restaurant.dart';
 import 'search_results_screen.dart';
 import '../restaurant/restaurant_page.dart';
 import '../../blocs/search/search_bloc.dart';
@@ -20,6 +19,14 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final authService = AuthService.instance;
+    final currentUserId = authService.currentUserId ?? 0;
+    context.read<SearchBloc>().add(LoadSearchOverview(userId: currentUserId));
+  }
 
   @override
   void dispose() {
@@ -47,12 +54,6 @@ class _SearchScreenState extends State<SearchScreen> {
       body: SafeArea(
         child: BlocBuilder<SearchBloc, SearchState>(
           builder: (context, state) {
-            if (state is SearchInitial) {
-              context
-                  .read<SearchBloc>()
-                  .add(LoadSearchOverview(userId: currentUserId));
-            }
-
             return SingleChildScrollView(
               padding: EdgeInsets.all(AppSpacing.md),
               child: Column(
@@ -104,11 +105,10 @@ class _SearchScreenState extends State<SearchScreen> {
                           itemBuilder: (context, index) {
                             final restaurant = state.trendingRestaurants[index];
                             return Container(
-                              width:
-                                  MediaQuery.of(context).size.width * 0.75,
+                              width: MediaQuery.of(context).size.width * 0.75,
                               margin: EdgeInsets.only(
-                                right: index <
-                                        state.trendingRestaurants.length - 1
+                                right:
+                                    index < state.trendingRestaurants.length - 1
                                     ? AppSpacing.md
                                     : 0,
                               ),
@@ -136,8 +136,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
                     // Recent Searches Section
                     if (state.recentSearches.isNotEmpty) ...[
-                      Text('Recherches récentes',
-                          style: AppTextStyles.heading3),
+                      Text(
+                        'Recherches récentes',
+                        style: AppTextStyles.heading3,
+                      ),
                       SizedBox(height: AppSpacing.md),
                       ...state.recentSearches.map((search) {
                         return ListTile(
@@ -146,8 +148,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             color: AppColors.textMedium,
                             size: AppSizes.iconSm,
                           ),
-                          title:
-                              Text(search, style: AppTextStyles.bodyMedium),
+                          title: Text(search, style: AppTextStyles.bodyMedium),
                           trailing: IconButton(
                             icon: Icon(
                               Icons.close,
@@ -156,11 +157,11 @@ class _SearchScreenState extends State<SearchScreen> {
                             ),
                             onPressed: () {
                               context.read<SearchBloc>().add(
-                                    RemoveRecentSearchEntry(
-                                      query: search,
-                                      userId: currentUserId,
-                                    ),
-                                  );
+                                RemoveRecentSearchEntry(
+                                  query: search,
+                                  userId: currentUserId,
+                                ),
+                              );
                             },
                           ),
                           onTap: () {

@@ -15,10 +15,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required RestaurantRepository restaurantRepository,
     required SearchHistoryRepository searchHistoryRepository,
     required AuthService authService,
-  })  : _restaurantRepository = restaurantRepository,
-        _searchHistoryRepository = searchHistoryRepository,
-        _authService = authService,
-        super(const SearchInitial()) {
+  }) : _restaurantRepository = restaurantRepository,
+       _searchHistoryRepository = searchHistoryRepository,
+       _authService = authService,
+       super(const SearchInitial()) {
     on<LoadSearchOverview>(_onLoadSearchOverview);
     on<SearchRestaurantsRequested>(_onSearchRestaurantsRequested);
     on<RemoveRecentSearchEntry>(_onRemoveRecentSearchEntry);
@@ -34,8 +34,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       final recentSearches = await _searchHistoryRepository
           .getUniqueRecentSearchQueries(event.userId);
-      final trendingRestaurants =
-          await _restaurantRepository.getTrendingRestaurants(limit: 10);
+      final trendingRestaurants = await _restaurantRepository
+          .getTrendingRestaurants(limit: 10);
 
       emit(
         SearchOverviewLoaded(
@@ -53,37 +53,33 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     SearchRestaurantsRequested event,
     Emitter<SearchState> emit,
   ) async {
-    if (event.query.trim().isEmpty) {
-      emit(const SearchResultsLoaded(query: '', results: []));
+    final trimmedQuery = event.query.trim();
+
+    if (trimmedQuery.isEmpty) {
+      // For "show all" scenario, load all restaurants
+      final results = await _restaurantRepository.getAllRestaurants();
+      emit(SearchResultsLoaded(query: '', results: results));
       return;
     }
 
     emit(const SearchLoading());
 
     try {
-      final results =
-          await _restaurantRepository.searchRestaurants(event.query.trim());
+      final results = await _restaurantRepository.searchRestaurants(
+        trimmedQuery,
+      );
 
       // Save search query to history for current user if logged in
       if (_authService.isLoggedIn && _authService.currentUserId != null) {
         await _searchHistoryRepository.addSearchQuery(
           _authService.currentUserId!,
-          event.query.trim(),
+          trimmedQuery,
         );
       }
 
-      emit(
-        SearchResultsLoaded(
-          query: event.query.trim(),
-          results: results,
-        ),
-      );
+      emit(SearchResultsLoaded(query: trimmedQuery, results: results));
     } catch (e) {
-      emit(
-        SearchError(
-          message: 'Failed to perform search: ${e.toString()}',
-        ),
-      );
+      emit(SearchError(message: 'Failed to perform search: ${e.toString()}'));
     }
   }
 
@@ -102,8 +98,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       if (state is SearchOverviewLoaded) {
         final recentSearches = await _searchHistoryRepository
             .getUniqueRecentSearchQueries(event.userId);
-        final trendingRestaurants =
-            await _restaurantRepository.getTrendingRestaurants(limit: 10);
+        final trendingRestaurants = await _restaurantRepository
+            .getTrendingRestaurants(limit: 10);
 
         emit(
           SearchOverviewLoaded(
@@ -121,5 +117,3 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     }
   }
 }
-
-

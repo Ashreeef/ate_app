@@ -9,6 +9,7 @@ import '../repositories/comment_repository.dart';
 import '../repositories/like_repository.dart';
 import '../repositories/saved_post_repository.dart';
 import '../repositories/search_history_repository.dart';
+import '../utils/password_helper.dart';
 
 /// Seeds the database with comprehensive test data for development
 class SeedData {
@@ -77,7 +78,7 @@ class SeedData {
       User(
         username: 'testuser',
         email: 'test@ate.com',
-        password: 'password123',
+        password: PasswordHelper.hashPassword('password123'),
         bio: 'Test user for development',
         points: 100,
         level: 'Bronze',
@@ -85,7 +86,7 @@ class SeedData {
       User(
         username: 'Flen',
         email: 'flen@ate.com',
-        password: 'flen123',
+        password: PasswordHelper.hashPassword('flen123'),
         bio: 'Food enthusiast sharing my culinary adventures 🍽️',
         points: 232,
         level: 'Gold',
@@ -95,7 +96,7 @@ class SeedData {
       User(
         username: 'Sarah_Foodie',
         email: 'sarah@ate.com',
-        password: 'sarah123',
+        password: PasswordHelper.hashPassword('sarah123'),
         bio: 'Exploring the best food spots in Tunisia 🇹🇳',
         points: 450,
         level: 'Platinum',
@@ -105,7 +106,7 @@ class SeedData {
       User(
         username: 'Mohamed_Eats',
         email: 'mohamed@ate.com',
-        password: 'mohamed123',
+        password: PasswordHelper.hashPassword('mohamed123'),
         bio: 'Traditional Tunisian cuisine lover',
         points: 180,
         level: 'Silver',
@@ -115,7 +116,7 @@ class SeedData {
       User(
         username: 'Amira_Chef',
         email: 'amira@ate.com',
-        password: 'amira123',
+        password: PasswordHelper.hashPassword('amira123'),
         bio: 'Home chef | Recipe creator | Food blogger',
         points: 620,
         level: 'Platinum',
@@ -125,7 +126,7 @@ class SeedData {
       User(
         username: 'Youssef_Reviews',
         email: 'youssef@ate.com',
-        password: 'youssef123',
+        password: PasswordHelper.hashPassword('youssef123'),
         bio: 'Honest food reviews | No filter',
         points: 95,
         level: 'Bronze',
@@ -133,7 +134,7 @@ class SeedData {
       User(
         username: 'Leila_Gourmet',
         email: 'leila@ate.com',
-        password: 'leila123',
+        password: PasswordHelper.hashPassword('leila123'),
         bio: 'Fine dining enthusiast | Wine lover 🍷',
         points: 380,
         level: 'Gold',
@@ -143,7 +144,7 @@ class SeedData {
       User(
         username: 'Ahmed_Street',
         email: 'ahmed@ate.com',
-        password: 'ahmed123',
+        password: PasswordHelper.hashPassword('ahmed123'),
         bio: 'Street food explorer | Finding hidden gems',
         points: 210,
         level: 'Silver',
@@ -151,7 +152,7 @@ class SeedData {
       User(
         username: 'Nour_Vegan',
         email: 'nour@ate.com',
-        password: 'nour123',
+        password: PasswordHelper.hashPassword('nour123'),
         bio: 'Plant-based food advocate 🌱',
         points: 155,
         level: 'Silver',
@@ -161,7 +162,7 @@ class SeedData {
       User(
         username: 'Karim_Desserts',
         email: 'karim@ate.com',
-        password: 'karim123',
+        password: PasswordHelper.hashPassword('karim123'),
         bio: 'Sweet tooth | Dessert hunter 🍰',
         points: 290,
         level: 'Gold',
