@@ -6,6 +6,7 @@ import '../../widgets/restaurant/menu_item_card.dart';
 import '../../blocs/restaurant/restaurant_bloc.dart';
 import '../../blocs/restaurant/restaurant_event.dart';
 import '../../blocs/restaurant/restaurant_state.dart';
+import '../../l10n/app_localizations.dart';
 
 class RestaurantPage extends StatelessWidget {
   final int restaurantId;
@@ -14,29 +15,28 @@ class RestaurantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<RestaurantBloc, RestaurantState>(
       builder: (context, state) {
         if (state is RestaurantInitial) {
-          context
-              .read<RestaurantBloc>()
-              .add(LoadRestaurantById(restaurantId: restaurantId));
+          context.read<RestaurantBloc>().add(
+            LoadRestaurantById(restaurantId: restaurantId),
+          );
         }
 
         if (state is RestaurantLoading || state is RestaurantInitial) {
           return Scaffold(
-            appBar: AppBar(title: Text('Restaurant')),
+            appBar: AppBar(title: Text(l10n.restaurant)),
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
         if (state is RestaurantError) {
           return Scaffold(
-            appBar: AppBar(title: Text('Restaurant')),
+            appBar: AppBar(title: Text(l10n.restaurant)),
             body: Center(
-              child: Text(
-                state.message,
-                style: AppTextStyles.heading3,
-              ),
+              child: Text(state.message, style: AppTextStyles.heading3),
             ),
           );
         }
@@ -51,8 +51,9 @@ class RestaurantPage extends StatelessWidget {
               centerTitle: true,
               title: Text(
                 restaurant.name,
-                style: AppTextStyles.heading3
-                    .copyWith(fontWeight: FontWeight.w600),
+                style: AppTextStyles.heading3.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             body: CustomScrollView(
@@ -64,13 +65,12 @@ class RestaurantPage extends StatelessWidget {
                 // Menu Section
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: AppSpacing.lg),
-                        Text('Menu', style: AppTextStyles.heading3),
+                        Text(l10n.menu, style: AppTextStyles.heading3),
                         SizedBox(height: AppSpacing.md),
                         MenuItemCard(
                           name: 'Indian Spices',
@@ -95,13 +95,13 @@ class RestaurantPage extends StatelessWidget {
                       children: [
                         _StatItem(
                           icon: Icons.star_outline,
-                          label: 'Note',
+                          label: l10n.rating,
                           value: restaurant.rating.toStringAsFixed(1),
                         ),
                         SizedBox(width: AppSpacing.lg),
                         _StatItem(
                           icon: Icons.message_outlined,
-                          label: 'Posts',
+                          label: l10n.posts,
                           value: '${restaurant.postsCount}',
                         ),
                       ],
@@ -114,12 +114,9 @@ class RestaurantPage extends StatelessWidget {
         }
 
         return Scaffold(
-          appBar: AppBar(title: Text('Restaurant')),
+          appBar: AppBar(title: Text(l10n.restaurant)),
           body: Center(
-            child: Text(
-              'Restaurant non trouvé',
-              style: AppTextStyles.heading3,
-            ),
+            child: Text(l10n.restaurantNotFound, style: AppTextStyles.heading3),
           ),
         );
       },

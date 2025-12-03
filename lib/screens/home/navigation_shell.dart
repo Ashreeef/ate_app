@@ -6,6 +6,7 @@ import '../search/search_screen.dart';
 import '../post/post_creation_step1_screen.dart';
 import '../challenges/challenges_screen.dart';
 import '../profile/my_profile_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class NavigationShell extends StatefulWidget {
   const NavigationShell({super.key});
@@ -29,12 +30,14 @@ class _NavigationShellState extends State<NavigationShell> {
 
   // AppBar configurations for each tab
   PreferredSizeWidget? _buildAppBar() {
+    final l10n = AppLocalizations.of(context)!;
+
     switch (_currentIndex) {
       case 0: // Feed/Home
         return null; // Feed has its own custom header
 
       case 1: // Search
-        return AppBar(title: Text('Rechercher'));
+        return AppBar(title: Text(l10n.search));
 
       case 2: // Post Creation
         return AppBar(
@@ -42,10 +45,10 @@ class _NavigationShellState extends State<NavigationShell> {
             onPressed: () {
               setState(() => _currentIndex = 0);
             },
-            child: Text('Annuler', style: AppTextStyles.bodySmall),
+            child: Text(l10n.cancel, style: AppTextStyles.bodySmall),
           ),
           leadingWidth: 80,
-          title: Text('Nouveau Post'),
+          title: Text(l10n.newPost),
           actions: [
             TextButton(
               onPressed: () {
@@ -55,13 +58,13 @@ class _NavigationShellState extends State<NavigationShell> {
                   state.navigateToNextStep();
                 }
               },
-              child: Text('Suivant', style: AppTextStyles.link),
+              child: Text(l10n.next, style: AppTextStyles.link),
             ),
           ],
         );
 
       case 3: // Challenges
-        return AppBar(title: Text('Challenges'));
+        return AppBar(title: Text(l10n.challengesTitle));
 
       case 4: // Profile
         return null; // Profile screen has its own app bar

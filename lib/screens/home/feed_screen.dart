@@ -9,6 +9,7 @@ import '../../blocs/feed/feed_state.dart';
 import '../../blocs/post/post_bloc.dart';
 import '../../blocs/post/post_event.dart';
 import '../../models/post.dart';
+import '../../l10n/app_localizations.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -63,17 +64,19 @@ class _FeedScreenState extends State<FeedScreen> {
           Expanded(
             child: BlocBuilder<FeedBloc, FeedState>(
               builder: (context, state) {
+                final l10n = AppLocalizations.of(context)!;
+
                 if (state is FeedLoading && state is! FeedLoaded) {
                   return Center(child: CircularProgressIndicator());
                 }
 
                 if (state is FeedError) {
-                  return Center(child: Text('Error: ${state.message}'));
+                  return Center(child: Text('${l10n.error}: ${state.message}'));
                 }
 
                 if (state is FeedLoaded) {
                   if (state.posts.isEmpty) {
-                    return Center(child: Text('No posts yet'));
+                    return Center(child: Text(l10n.noPosts));
                   }
 
                   return RefreshIndicator(
@@ -98,7 +101,7 @@ class _FeedScreenState extends State<FeedScreen> {
                   );
                 }
 
-                return Center(child: Text('No posts available'));
+                return Center(child: Text(l10n.noPostsAvailable));
               },
             ),
           ),

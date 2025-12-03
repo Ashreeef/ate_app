@@ -377,4 +377,144 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loadMore => 'Load More';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get searchRestaurants => 'Search restaurants...';
+
+  @override
+  String get trendingNearYou => 'Trending near you';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get seeAll => 'See all';
+
+  @override
+  String get allRestaurants => 'All restaurants';
+
+  @override
+  String get results => 'Results';
+
+  @override
+  String resultsFor(Object query) {
+    return 'Results for \"$query\"';
+  }
+
+  @override
+  String get noRestaurantsAvailable => 'No restaurants available';
+
+  @override
+  String get noResultsFound => 'No results found';
+
+  @override
+  String get tryOtherKeywords => 'Try with other keywords';
+
+  @override
+  String get restaurantNotFound => 'Restaurant not found';
+
+  @override
+  String get menu => 'Menu';
+
+  @override
+  String get rating => 'Rating';
+
+  @override
+  String get dish => 'Dish';
+
+  @override
+  String get next => 'Next';
+
+  @override
+  String get activeChallenges => 'Active challenges';
+
+  @override
+  String get allChallenges => 'All challenges';
+
+  @override
+  String get joined => 'Joined!';
+
+  @override
+  String get resetEmailSent => 'Reset email sent!';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get takePhoto => 'Take a photo';
+
+  @override
+  String get selectPhotos => 'Select photos';
+
+  @override
+  String maxImagesMessage(Object maxImages) {
+    return 'You can select up to $maxImages images';
+  }
+
+  @override
+  String imageSelectionError(Object error) {
+    return 'Image selection failed: $error';
+  }
+
+  @override
+  String get selectAtLeastOne => 'Please select at least one image';
+
+  @override
+  String get comments => 'Comments';
+
+  @override
+  String get sharePost => 'Share post';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get report => 'Report';
+
+  @override
+  String get copyLink => 'Copy link';
+
+  @override
+  String get follow => 'Follow';
+
+  @override
+  String shareUserProfile(Object username) {
+    return 'Share $username\'s Profile';
+  }
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get copiedToClipboard => 'Copied to clipboard';
+
+  @override
+  String get errorUpdatingFollowStatus => 'Error updating follow status';
+
+  @override
+  String get post => 'Post';
+
+  @override
+  String get noPostsAvailable => 'No posts available';
+
+  @override
+  String get validationSuccess => '✅ Validation successful!';
+
+  @override
+  String get signIn => 'Sign In';
+
+  @override
+  String get french => 'French';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get arabic => 'Arabic';
+
+  @override
+  String get emailSupport => '📧 Email: support@ate-app.com';
 }

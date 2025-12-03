@@ -381,4 +381,145 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get loadMore => 'Charger plus';
+
+  @override
+  String get search => 'Rechercher';
+
+  @override
+  String get searchRestaurants => 'Rechercher des restaurants...';
+
+  @override
+  String get trendingNearYou => 'Tendances près de vous';
+
+  @override
+  String get recentSearches => 'Recherches récentes';
+
+  @override
+  String get seeAll => 'Voir tout';
+
+  @override
+  String get allRestaurants => 'Tous les restaurants';
+
+  @override
+  String get results => 'Résultats';
+
+  @override
+  String resultsFor(Object query) {
+    return 'Résultats pour \"$query\"';
+  }
+
+  @override
+  String get noRestaurantsAvailable => 'Aucun restaurant disponible';
+
+  @override
+  String get noResultsFound => 'Aucun résultat trouvé';
+
+  @override
+  String get tryOtherKeywords => 'Essayez avec d\'autres mots-clés';
+
+  @override
+  String get restaurantNotFound => 'Restaurant non trouvé';
+
+  @override
+  String get menu => 'Menu';
+
+  @override
+  String get rating => 'Note';
+
+  @override
+  String get dish => 'Plat';
+
+  @override
+  String get next => 'Suivant';
+
+  @override
+  String get activeChallenges => 'Challenges actifs';
+
+  @override
+  String get allChallenges => 'Tous les challenges';
+
+  @override
+  String get joined => 'Rejoint!';
+
+  @override
+  String get resetEmailSent => 'Email de réinitialisation envoyé!';
+
+  @override
+  String get gallery => 'Galerie';
+
+  @override
+  String get takePhoto => 'Prendre une photo';
+
+  @override
+  String get selectPhotos => 'Sélectionner des photos';
+
+  @override
+  String maxImagesMessage(Object maxImages) {
+    return 'Vous pouvez sélectionner jusqu\'à $maxImages images';
+  }
+
+  @override
+  String imageSelectionError(Object error) {
+    return 'Échec de la sélection d\'image: $error';
+  }
+
+  @override
+  String get selectAtLeastOne => 'Veuillez sélectionner au moins une image';
+
+  @override
+  String get comments => 'Commentaires';
+
+  @override
+  String get sharePost => 'Partager le post';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get report => 'Signaler';
+
+  @override
+  String get copyLink => 'Copier le lien';
+
+  @override
+  String get follow => 'Suivre';
+
+  @override
+  String shareUserProfile(Object username) {
+    return 'Partager le profil de $username';
+  }
+
+  @override
+  String get copy => 'Copier';
+
+  @override
+  String get copiedToClipboard => 'Copié dans le presse-papiers';
+
+  @override
+  String get errorUpdatingFollowStatus =>
+      'Erreur lors de la mise à jour du statut de suivi';
+
+  @override
+  String get post => 'Post';
+
+  @override
+  String get noPostsAvailable => 'Aucune publication disponible';
+
+  @override
+  String get validationSuccess => '✅ Validation réussie!';
+
+  @override
+  String get signIn => 'Se connecter';
+
+  @override
+  String get french => 'Français';
+
+  @override
+  String get english => 'Anglais';
+
+  @override
+  String get arabic => 'Arabe';
+
+  @override
+  String get emailSupport => '📧 Email: support@ate-app.com';
 }

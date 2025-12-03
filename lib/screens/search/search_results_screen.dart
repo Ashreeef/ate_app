@@ -6,6 +6,7 @@ import '../restaurant/restaurant_page.dart';
 import '../../blocs/search/search_bloc.dart';
 import '../../blocs/search/search_event.dart';
 import '../../blocs/search/search_state.dart';
+import '../../l10n/app_localizations.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   final String searchQuery;
@@ -38,14 +39,16 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
           widget.showAll
-              ? 'Tous les restaurants'
+              ? l10n.allRestaurants
               : widget.searchQuery.isEmpty
-              ? 'Résultats'
-              : 'Résultats pour "${widget.searchQuery}"',
+              ? l10n.results
+              : l10n.resultsFor(widget.searchQuery),
         ),
       ),
       body: BlocBuilder<SearchBloc, SearchState>(
@@ -76,13 +79,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     SizedBox(height: AppSpacing.md),
                     Text(
                       widget.showAll
-                          ? 'Aucun restaurant disponible'
-                          : 'Aucun résultat trouvé',
+                          ? l10n.noRestaurantsAvailable
+                          : l10n.noResultsFound,
                       style: AppTextStyles.heading4,
                     ),
                     SizedBox(height: AppSpacing.xs),
                     Text(
-                      widget.showAll ? '' : 'Essayez avec d\'autres mots-clés',
+                      widget.showAll ? '' : l10n.tryOtherKeywords,
                       style: AppTextStyles.bodySmall,
                     ),
                   ],

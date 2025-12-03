@@ -819,6 +819,270 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Load More'**
   String get loadMore;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @searchRestaurants.
+  ///
+  /// In en, this message translates to:
+  /// **'Search restaurants...'**
+  String get searchRestaurants;
+
+  /// No description provided for @trendingNearYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending near you'**
+  String get trendingNearYou;
+
+  /// No description provided for @recentSearches.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent searches'**
+  String get recentSearches;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @allRestaurants.
+  ///
+  /// In en, this message translates to:
+  /// **'All restaurants'**
+  String get allRestaurants;
+
+  /// No description provided for @results.
+  ///
+  /// In en, this message translates to:
+  /// **'Results'**
+  String get results;
+
+  /// No description provided for @resultsFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Results for \"{query}\"'**
+  String resultsFor(Object query);
+
+  /// No description provided for @noRestaurantsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No restaurants available'**
+  String get noRestaurantsAvailable;
+
+  /// No description provided for @noResultsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get noResultsFound;
+
+  /// No description provided for @tryOtherKeywords.
+  ///
+  /// In en, this message translates to:
+  /// **'Try with other keywords'**
+  String get tryOtherKeywords;
+
+  /// No description provided for @restaurantNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant not found'**
+  String get restaurantNotFound;
+
+  /// No description provided for @menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menu;
+
+  /// No description provided for @rating.
+  ///
+  /// In en, this message translates to:
+  /// **'Rating'**
+  String get rating;
+
+  /// No description provided for @dish.
+  ///
+  /// In en, this message translates to:
+  /// **'Dish'**
+  String get dish;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
+  /// No description provided for @activeChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'Active challenges'**
+  String get activeChallenges;
+
+  /// No description provided for @allChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'All challenges'**
+  String get allChallenges;
+
+  /// No description provided for @joined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined!'**
+  String get joined;
+
+  /// No description provided for @resetEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset email sent!'**
+  String get resetEmailSent;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a photo'**
+  String get takePhoto;
+
+  /// No description provided for @selectPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Select photos'**
+  String get selectPhotos;
+
+  /// No description provided for @maxImagesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You can select up to {maxImages} images'**
+  String maxImagesMessage(Object maxImages);
+
+  /// No description provided for @imageSelectionError.
+  ///
+  /// In en, this message translates to:
+  /// **'Image selection failed: {error}'**
+  String imageSelectionError(Object error);
+
+  /// No description provided for @selectAtLeastOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select at least one image'**
+  String get selectAtLeastOne;
+
+  /// No description provided for @comments.
+  ///
+  /// In en, this message translates to:
+  /// **'Comments'**
+  String get comments;
+
+  /// No description provided for @sharePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Share post'**
+  String get sharePost;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @report.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get report;
+
+  /// No description provided for @copyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy link'**
+  String get copyLink;
+
+  /// No description provided for @follow.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow'**
+  String get follow;
+
+  /// No description provided for @shareUserProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Share {username}\'s Profile'**
+  String shareUserProfile(Object username);
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @copiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copiedToClipboard;
+
+  /// No description provided for @errorUpdatingFollowStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating follow status'**
+  String get errorUpdatingFollowStatus;
+
+  /// No description provided for @post.
+  ///
+  /// In en, this message translates to:
+  /// **'Post'**
+  String get post;
+
+  /// No description provided for @noPostsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No posts available'**
+  String get noPostsAvailable;
+
+  /// No description provided for @validationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Validation successful!'**
+  String get validationSuccess;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signIn;
+
+  /// No description provided for @french.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get french;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get arabic;
+
+  /// No description provided for @emailSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'📧 Email: support@ate-app.com'**
+  String get emailSupport;
 }
 
 class _AppLocalizationsDelegate

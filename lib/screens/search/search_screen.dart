@@ -9,6 +9,7 @@ import '../../blocs/search/search_bloc.dart';
 import '../../blocs/search/search_event.dart';
 import '../../blocs/search/search_state.dart';
 import '../../services/auth_service.dart';
+import '../../l10n/app_localizations.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -49,6 +50,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final authService = AuthService.instance;
     final currentUserId = authService.currentUserId ?? 0;
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       body: SafeArea(
@@ -62,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   // Search Bar
                   CustomTextField.search(
                     controller: _searchController,
-                    hint: 'Rechercher des restaurants...',
+                    hint: l10n.searchRestaurants,
                     onChanged: (value) {},
                     onSubmitted: _handleSearch,
                   ),
@@ -77,7 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Tendances près de vous',
+                            l10n.trendingNearYou,
                             style: AppTextStyles.heading3,
                           ),
                           TextButton(
@@ -92,7 +94,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 ),
                               );
                             },
-                            child: Text('Voir tout', style: AppTextStyles.link),
+                            child: Text(l10n.seeAll, style: AppTextStyles.link),
                           ),
                         ],
                       ),
@@ -136,10 +138,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
                     // Recent Searches Section
                     if (state.recentSearches.isNotEmpty) ...[
-                      Text(
-                        'Recherches récentes',
-                        style: AppTextStyles.heading3,
-                      ),
+                      Text(l10n.recentSearches, style: AppTextStyles.heading3),
                       SizedBox(height: AppSpacing.md),
                       ...state.recentSearches.map((search) {
                         return ListTile(
