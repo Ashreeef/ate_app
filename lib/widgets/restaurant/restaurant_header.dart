@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/restaurant.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class RestaurantHeader extends StatelessWidget {
   final Restaurant restaurant;
@@ -9,6 +10,7 @@ class RestaurantHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -63,7 +65,7 @@ class RestaurantHeader extends StatelessWidget {
                     onPressed: () {
                       // TODO: Navigate to mentions
                     },
-                    child: Text('Mentions', style: AppTextStyles.link),
+                    child: Text(l10n.mentions, style: AppTextStyles.link),
                   ),
                 ],
               ),
@@ -79,7 +81,7 @@ class RestaurantHeader extends StatelessWidget {
                   SizedBox(width: AppSpacing.xs),
                   Expanded(
                     child: Text(
-                      restaurant.location ?? 'Location non spécifiée',
+                      restaurant.location ?? l10n.locationNotSpecified,
                       style: AppTextStyles.bodyMedium,
                     ),
                   ),
@@ -103,7 +105,7 @@ class RestaurantHeader extends StatelessWidget {
                   ),
                   SizedBox(width: AppSpacing.xs),
                   Text(
-                    '(${restaurant.postsCount} posts)',
+                    '(${restaurant.postsCount} ${l10n.posts})',
                     style: AppTextStyles.bodySmall,
                   ),
                 ],

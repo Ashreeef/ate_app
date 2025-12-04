@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ate_app/utils/constants.dart';
 import 'package:ate_app/screens/post/post_creation_step2_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 class PostCreationStep1Screen extends StatefulWidget {
   //  GlobalKey so navigation shell can access this screen
   static final GlobalKey<_PostCreationStep1ScreenState> globalKey = GlobalKey();
-  
-  PostCreationStep1Screen({Key? key}) : super(key: key ?? globalKey); 
+
+  PostCreationStep1Screen({Key? key}) : super(key: key ?? globalKey);
 
   @override
-  State<PostCreationStep1Screen> createState() => _PostCreationStep1ScreenState();
+  State<PostCreationStep1Screen> createState() =>
+      _PostCreationStep1ScreenState();
 }
 
 class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
@@ -21,7 +23,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
 
   //  Getter for navigation shell to check if images are selected
   bool get hasSelectedImages => _selectedImages.isNotEmpty;
-  
+
   //  Method for navigation shell to trigger navigation
   void navigateToNextStep() {
     _navigateToStep2();
@@ -33,23 +35,31 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
         source: source,
         imageQuality: 85,
       );
-      
+
       if (image != null && _selectedImages.length < _maxImages) {
         setState(() {
           _selectedImages.add(image);
         });
       } else if (_selectedImages.length >= _maxImages) {
+        final l10n = AppLocalizations.of(context)!;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Vous pouvez sélectionner jusqu\'à $_maxImages images', style: AppTextStyles.body),
+            content: Text(
+              l10n.maxImagesMessage(_maxImages),
+              style: AppTextStyles.body,
+            ),
             backgroundColor: AppColors.error,
           ),
         );
       }
     } catch (e) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Échec de la sélection d\'image: $e', style: AppTextStyles.body),
+          content: Text(
+            l10n.imageSelectionError(e.toString()),
+            style: AppTextStyles.body,
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -64,29 +74,34 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
 
   void _navigateToStep2() {
     if (_selectedImages.isEmpty) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Veuillez sélectionner au moins une image', style: AppTextStyles.body),
+          content: Text(l10n.selectAtLeastOne, style: AppTextStyles.body),
           backgroundColor: AppColors.error,
         ),
       );
       return;
     }
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PostCreationStep2Screen(selectedImages: _selectedImages),
+        builder: (context) =>
+            PostCreationStep2Screen(selectedImages: _selectedImages),
       ),
     );
   }
 
   void _showImageSourceDialog() {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSizes.borderRadiusLg)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSizes.borderRadiusLg),
+        ),
       ),
       builder: (context) {
         return Container(
@@ -94,14 +109,15 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Choisir une photo',
-                style: AppTextStyles.heading3,
-              ),
+              Text(l10n.choosePhoto, style: AppTextStyles.heading3),
               SizedBox(height: AppSpacing.md),
               ListTile(
-                leading: Icon(Icons.photo_library, color: AppColors.primary, size: AppSizes.iconLg),
-                title: Text('Galerie', style: AppTextStyles.body),
+                leading: Icon(
+                  Icons.photo_library,
+                  color: AppColors.primary,
+                  size: AppSizes.iconLg,
+                ),
+                title: Text(l10n.gallery, style: AppTextStyles.body),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.gallery);
@@ -109,8 +125,12 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
               ),
               Divider(),
               ListTile(
-                leading: Icon(Icons.photo_camera, color: AppColors.primary, size: AppSizes.iconLg),
-                title: Text('Prendre une photo', style: AppTextStyles.body),
+                leading: Icon(
+                  Icons.photo_camera,
+                  color: AppColors.primary,
+                  size: AppSizes.iconLg,
+                ),
+                title: Text(l10n.takePhoto, style: AppTextStyles.body),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.camera);
@@ -133,7 +153,9 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
         children: [
           if (_selectedImages.isNotEmpty) _buildSelectedImages(),
           Expanded(
-            child: _selectedImages.isEmpty ? _buildEmptyState() : _buildImageGrid(),
+            child: _selectedImages.isEmpty
+                ? _buildEmptyState()
+                : _buildImageGrid(),
           ),
         ],
       ),
@@ -197,6 +219,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   }
 
   Widget _buildEmptyState() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: Padding(
         padding: EdgeInsets.all(AppSpacing.xl),
@@ -204,18 +227,18 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.photo_library_outlined, 
-              size: 80, 
-              color: AppColors.textLight
+              Icons.photo_library_outlined,
+              size: 80,
+              color: AppColors.textLight,
             ),
             SizedBox(height: AppSpacing.lg),
             Text(
-              'Ajouter des photos', 
-              style: AppTextStyles.heading2.copyWith(color: AppColors.textDark)
+              l10n.addPhotos,
+              style: AppTextStyles.heading2.copyWith(color: AppColors.textDark),
             ),
             SizedBox(height: AppSpacing.sm),
             Text(
-              'Partagez votre expérience culinaire\navec de belles photos',
+              l10n.shareYourCulinaryExperience,
               style: AppTextStyles.body.copyWith(color: AppColors.textMedium),
               textAlign: TextAlign.center,
             ),
@@ -225,15 +248,15 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xl, 
-                  vertical: AppSpacing.md
+                  horizontal: AppSpacing.xl,
+                  vertical: AppSpacing.md,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSizes.borderRadius),
                 ),
               ),
               icon: Icon(Icons.add_photo_alternate, color: AppColors.white),
-              label: Text('Sélectionner des photos', style: AppTextStyles.button),
+              label: Text(l10n.selectPhotos, style: AppTextStyles.button),
             ),
           ],
         ),
@@ -242,6 +265,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   }
 
   Widget _buildImageGrid() {
+    final l10n = AppLocalizations.of(context)!;
     return GridView.builder(
       padding: EdgeInsets.all(AppSpacing.md),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -249,7 +273,9 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
         crossAxisSpacing: AppSpacing.sm,
         mainAxisSpacing: AppSpacing.sm,
       ),
-      itemCount: _selectedImages.length < _maxImages ? _selectedImages.length + 1 : _selectedImages.length,
+      itemCount: _selectedImages.length < _maxImages
+          ? _selectedImages.length + 1
+          : _selectedImages.length,
       itemBuilder: (context, index) {
         if (index == _selectedImages.length) {
           return GestureDetector(
@@ -258,20 +284,26 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
               decoration: BoxDecoration(
                 color: AppColors.backgroundLight,
                 borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                border: Border.all(color: AppColors.border, width: 2, style: BorderStyle.solid),
+                border: Border.all(
+                  color: AppColors.border,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.add, 
-                    size: AppSizes.iconLg, 
-                    color: AppColors.primary
+                    Icons.add,
+                    size: AppSizes.iconLg,
+                    color: AppColors.primary,
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'Ajouter',
-                    style: AppTextStyles.caption.copyWith(color: AppColors.primary),
+                    l10n.add,
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.primary,
+                    ),
                   ),
                 ],
               ),

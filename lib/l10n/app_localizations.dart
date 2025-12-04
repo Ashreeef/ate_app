@@ -226,6 +226,12 @@ abstract class AppLocalizations {
   /// **'Following'**
   String get following;
 
+  /// No description provided for @points.
+  ///
+  /// In en, this message translates to:
+  /// **'Points'**
+  String get points;
+
   /// No description provided for @saved.
   ///
   /// In en, this message translates to:
@@ -1117,7 +1123,7 @@ abstract class AppLocalizations {
   /// No description provided for @hoursAgo.
   ///
   /// In en, this message translates to:
-  /// **'{hours} hours ago'**
+  /// **'{hours}h ago'**
   String hoursAgo(Object hours);
 
   /// No description provided for @dishDetail.
@@ -1365,6 +1371,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ate'**
   String get appName;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all read'**
+  String get markAllRead;
+
+  /// No description provided for @noNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet'**
+  String get noNotifications;
+
+  /// No description provided for @minutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min ago'**
+  String minutesAgo(Object minutes);
+
+  /// No description provided for @daysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}d ago'**
+  String daysAgo(Object days);
+
+  /// No description provided for @noSavedPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved posts yet'**
+  String get noSavedPosts;
+
+  /// No description provided for @savedPostsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the bookmark icon on posts to save them here'**
+  String get savedPostsHint;
+
+  /// No description provided for @postUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Post removed from saved'**
+  String get postUnsaved;
+
+  /// No description provided for @noFollowers.
+  ///
+  /// In en, this message translates to:
+  /// **'No followers yet'**
+  String get noFollowers;
+
+  /// No description provided for @noFollowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Not following anyone yet'**
+  String get noFollowing;
+
+  /// No description provided for @continueWithSocial.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with'**
+  String get continueWithSocial;
+
+  /// No description provided for @noAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get noAccount;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account'**
+  String get createAccount;
+
+  /// No description provided for @choosePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a photo'**
+  String get choosePhoto;
+
+  /// No description provided for @addPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'Add photos'**
+  String get addPhotos;
+
+  /// No description provided for @shareYourCulinaryExperience.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your culinary experience\nwith beautiful photos'**
+  String get shareYourCulinaryExperience;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @trending.
+  ///
+  /// In en, this message translates to:
+  /// **'Trending'**
+  String get trending;
+
+  /// No description provided for @mentions.
+  ///
+  /// In en, this message translates to:
+  /// **'Mentions'**
+  String get mentions;
+
+  /// No description provided for @locationNotSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Location not specified'**
+  String get locationNotSpecified;
+
+  /// No description provided for @activeChallengesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active challenges'**
+  String get activeChallengesLabel;
+
+  /// No description provided for @allChallengesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'All challenges'**
+  String get allChallengesLabel;
+
+  /// No description provided for @noChallengesAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No challenges available'**
+  String get noChallengesAvailable;
+
+  /// No description provided for @newChallengesWillAppear.
+  ///
+  /// In en, this message translates to:
+  /// **'New challenges will appear here'**
+  String get newChallengesWillAppear;
 }
 
 class _AppLocalizationsDelegate

@@ -3,6 +3,7 @@ import '../../utils/constants.dart';
 import '../../widgets/challenges/challenge_card.dart';
 import '../../data/fake_restaurants.dart';
 import '../../models/challenge.dart';
+import '../../l10n/app_localizations.dart';
 
 class ChallengesScreen extends StatefulWidget {
   const ChallengesScreen({super.key});
@@ -50,7 +51,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     // Show snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Rejoint!'),
+        content: Text(AppLocalizations.of(context)!.joined),
         duration: Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
       ),
@@ -59,6 +60,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -68,7 +70,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
             children: [
               // Active Challenges Section (at top)
               if (_activeChallenges.isNotEmpty) ...[
-                Text('Challenges actifs', style: AppTextStyles.heading3),
+                Text(l10n.activeChallengesLabel, style: AppTextStyles.heading3),
                 SizedBox(height: AppSpacing.md),
                 ..._activeChallenges.map((challenge) {
                   return ChallengeCard(
@@ -82,7 +84,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
               ],
 
               // All Challenges Section
-              Text('Tous les challenges', style: AppTextStyles.heading3),
+              Text(l10n.allChallengesLabel, style: AppTextStyles.heading3),
               SizedBox(height: AppSpacing.md),
               if (_allChallenges.isEmpty)
                 Center(
@@ -97,12 +99,12 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                         ),
                         SizedBox(height: AppSpacing.md),
                         Text(
-                          'Aucun challenge disponible',
+                          l10n.noChallengesAvailable,
                           style: AppTextStyles.heading4,
                         ),
                         SizedBox(height: AppSpacing.xs),
                         Text(
-                          'Les nouveaux challenges apparaîtront ici',
+                          l10n.newChallengesWillAppear,
                           style: AppTextStyles.bodySmall,
                         ),
                       ],

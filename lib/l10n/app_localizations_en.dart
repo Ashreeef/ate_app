@@ -72,6 +72,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get following => 'Following';
 
   @override
+  String get points => 'Points';
+
+  @override
   String get saved => 'Saved';
 
   @override
@@ -536,7 +539,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String hoursAgo(Object hours) {
-    return '$hours hours ago';
+    return '${hours}h ago';
   }
 
   @override
@@ -675,4 +678,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appName => 'Ate';
+
+  @override
+  String get markAllRead => 'Mark all read';
+
+  @override
+  String get noNotifications => 'No notifications yet';
+
+  @override
+  String minutesAgo(Object minutes) {
+    return '$minutes min ago';
+  }
+
+  @override
+  String daysAgo(Object days) {
+    return '${days}d ago';
+  }
+
+  @override
+  String get noSavedPosts => 'No saved posts yet';
+
+  @override
+  String get savedPostsHint =>
+      'Tap the bookmark icon on posts to save them here';
+
+  @override
+  String get postUnsaved => 'Post removed from saved';
+
+  @override
+  String get noFollowers => 'No followers yet';
+
+  @override
+  String get noFollowing => 'Not following anyone yet';
+
+  @override
+  String get continueWithSocial => 'Continue with';
+
+  @override
+  String get noAccount => 'Don\'t have an account?';
+
+  @override
+  String get createAccount => 'Create an account';
+
+  @override
+  String get choosePhoto => 'Choose a photo';
+
+  @override
+  String get addPhotos => 'Add photos';
+
+  @override
+  String get shareYourCulinaryExperience =>
+      'Share your culinary experience\nwith beautiful photos';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get trending => 'Trending';
+
+  @override
+  String get mentions => 'Mentions';
+
+  @override
+  String get locationNotSpecified => 'Location not specified';
+
+  @override
+  String get activeChallengesLabel => 'Active challenges';
+
+  @override
+  String get allChallengesLabel => 'All challenges';
+
+  @override
+  String get noChallengesAvailable => 'No challenges available';
+
+  @override
+  String get newChallengesWillAppear => 'New challenges will appear here';
 }

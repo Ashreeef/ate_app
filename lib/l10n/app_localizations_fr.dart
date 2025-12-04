@@ -72,6 +72,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get following => 'Abonnements';
 
   @override
+  String get points => 'Points';
+
+  @override
   String get saved => 'Enregistrés';
 
   @override
@@ -541,7 +544,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String hoursAgo(Object hours) {
-    return 'Il y a $hours heures';
+    return 'il y a ${hours}h';
   }
 
   @override
@@ -682,4 +685,80 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get appName => 'Ate';
+
+  @override
+  String get markAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get noNotifications => 'Aucune notification pour le moment';
+
+  @override
+  String minutesAgo(Object minutes) {
+    return 'il y a $minutes min';
+  }
+
+  @override
+  String daysAgo(Object days) {
+    return 'il y a ${days}j';
+  }
+
+  @override
+  String get noSavedPosts => 'Aucun post sauvegardé';
+
+  @override
+  String get savedPostsHint =>
+      'Appuyez sur l\'icône de signet pour sauvegarder des posts ici';
+
+  @override
+  String get postUnsaved => 'Post retiré des favoris';
+
+  @override
+  String get noFollowers => 'Pas encore d\'abonnés';
+
+  @override
+  String get noFollowing => 'Ne suit personne pour le moment';
+
+  @override
+  String get continueWithSocial => 'Continuer avec';
+
+  @override
+  String get noAccount => 'Vous n\'avez pas de compte ?';
+
+  @override
+  String get createAccount => 'Créer un compte';
+
+  @override
+  String get choosePhoto => 'Choisir une photo';
+
+  @override
+  String get addPhotos => 'Ajouter des photos';
+
+  @override
+  String get shareYourCulinaryExperience =>
+      'Partagez votre expérience culinaire\navec de belles photos';
+
+  @override
+  String get add => 'Ajouter';
+
+  @override
+  String get trending => 'Tendance';
+
+  @override
+  String get mentions => 'Mentions';
+
+  @override
+  String get locationNotSpecified => 'Localisation non spécifiée';
+
+  @override
+  String get activeChallengesLabel => 'Challenges actifs';
+
+  @override
+  String get allChallengesLabel => 'Tous les challenges';
+
+  @override
+  String get noChallengesAvailable => 'Aucun challenge disponible';
+
+  @override
+  String get newChallengesWillAppear =>
+      'Les nouveaux challenges apparaîtront ici';
 }

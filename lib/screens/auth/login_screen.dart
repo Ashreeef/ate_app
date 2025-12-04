@@ -258,10 +258,11 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildSocialLogin() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Text(
-          'Continuer avec',
+          l10n.continueWithSocial,
           style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
           textAlign: TextAlign.center,
         ),
@@ -311,6 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildSignUpLink() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: GestureDetector(
         onTap: _handleSignUp,
@@ -321,9 +323,9 @@ class _LoginScreenState extends State<LoginScreen> {
               fontFamily: 'DM Sans',
             ),
             children: [
-              const TextSpan(text: 'Vous n\'avez pas de compte ? '),
+              TextSpan(text: '${l10n.noAccount} '),
               TextSpan(
-                text: 'Créer un compte',
+                text: l10n.createAccount,
                 style: const TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,

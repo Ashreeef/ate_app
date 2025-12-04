@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/restaurant.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
@@ -10,6 +11,7 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       margin: EdgeInsets.only(bottom: AppSpacing.md),
       child: InkWell(
@@ -56,7 +58,7 @@ class RestaurantCard extends StatelessWidget {
                           ),
                         ),
                         child: Text(
-                          'Trending',
+                          l10n.trending,
                           style: AppTextStyles.captionBold.copyWith(
                             color: AppColors.white,
                           ),
@@ -89,7 +91,7 @@ class RestaurantCard extends StatelessWidget {
                       SizedBox(width: AppSpacing.xs),
                       Expanded(
                         child: Text(
-                          restaurant.location ?? 'Location non spécifiée',
+                          restaurant.location ?? l10n.locationNotSpecified,
                           style: AppTextStyles.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,

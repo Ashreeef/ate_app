@@ -72,6 +72,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get following => 'المتابَعون';
 
   @override
+  String get points => 'نقاط';
+
+  @override
   String get saved => 'المحفوظات';
 
   @override
@@ -673,4 +676,78 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get appName => 'Ate';
+
+  @override
+  String get markAllRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get noNotifications => 'لا توجد إشعارات بعد';
+
+  @override
+  String minutesAgo(Object minutes) {
+    return 'منذ $minutes دقيقة';
+  }
+
+  @override
+  String daysAgo(Object days) {
+    return 'منذ $days يوم';
+  }
+
+  @override
+  String get noSavedPosts => 'لا توجد منشورات محفوظة';
+
+  @override
+  String get savedPostsHint =>
+      'اضغط على أيقونة الإشارة المرجعية لحفظ المنشورات هنا';
+
+  @override
+  String get postUnsaved => 'تم إزالة المنشور من المحفوظات';
+
+  @override
+  String get noFollowers => 'لا يوجد متابعون بعد';
+
+  @override
+  String get noFollowing => 'لا تتابع أي شخص بعد';
+
+  @override
+  String get continueWithSocial => 'المتابعة عبر';
+
+  @override
+  String get noAccount => 'ليس لديك حساب؟';
+
+  @override
+  String get createAccount => 'إنشاء حساب';
+
+  @override
+  String get choosePhoto => 'اختر صورة';
+
+  @override
+  String get addPhotos => 'إضافة صور';
+
+  @override
+  String get shareYourCulinaryExperience => 'شارك تجربتك الطهوية\nمع صور جميلة';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get trending => 'رائج';
+
+  @override
+  String get mentions => 'الإشارات';
+
+  @override
+  String get locationNotSpecified => 'الموقع غير محدد';
+
+  @override
+  String get activeChallengesLabel => 'التحديات النشطة';
+
+  @override
+  String get allChallengesLabel => 'جميع التحديات';
+
+  @override
+  String get noChallengesAvailable => 'لا توجد تحديات متاحة';
+
+  @override
+  String get newChallengesWillAppear => 'ستظهر التحديات الجديدة هنا';
 }
