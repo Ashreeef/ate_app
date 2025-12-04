@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../l10n/app_localizations.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/auth/auth_event.dart';
 import '../../blocs/auth/auth_state.dart';
@@ -32,12 +33,12 @@ class _SignupScreenState extends State<SignupScreen> {
   void _handleSignUp() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-            SignupRequested(
-              username: _nameController.text.trim(),
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+        SignupRequested(
+          username: _nameController.text.trim(),
+          email: _emailController.text.trim(),
+          password: _passwordController.text,
+        ),
+      );
     }
   }
 
@@ -128,8 +129,10 @@ class _SignupScreenState extends State<SignupScreen> {
 
                                 CustomButton(
                                   text: isLoading
-                                      ? 'Inscription en cours...'
-                                      : 'S\'inscrire',
+                                      ? AppLocalizations.of(
+                                          context,
+                                        )!.registeringAccount
+                                      : AppLocalizations.of(context)!.signUp,
                                   onPressed: isLoading ? () {} : _handleSignUp,
                                 ),
 
@@ -159,11 +162,12 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Bienvenue dans la communauté Ate !',
+          l10n.welcomeToCommunity,
           style: AppTextStyles.heading1.copyWith(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -172,7 +176,7 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Crée ton profil et commence à explorer les plats préférés de tes amis — découvre, partage et savoure chaque moment.',
+          l10n.signupSubtitle,
           style: AppTextStyles.bodySmall.copyWith(
             color: AppColors.textLight,
             height: 1.5,
@@ -184,11 +188,12 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildSignupForm() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         CustomTextField(
           controller: _nameController,
-          hint: 'Nom complet',
+          hint: l10n.fullName,
           type: CustomTextFieldType.text,
           textInputAction: TextInputAction.next,
           prefixIcon: const Icon(
@@ -199,7 +204,7 @@ class _SignupScreenState extends State<SignupScreen> {
         const SizedBox(height: AppSpacing.md),
         CustomTextField(
           controller: _emailController,
-          hint: 'Email',
+          hint: l10n.email,
           type: CustomTextFieldType.email,
           textInputAction: TextInputAction.next,
           prefixIcon: const Icon(
@@ -210,7 +215,7 @@ class _SignupScreenState extends State<SignupScreen> {
         const SizedBox(height: AppSpacing.md),
         CustomTextField(
           controller: _passwordController,
-          hint: 'Mot de passe',
+          hint: l10n.password,
           type: CustomTextFieldType.password,
           textInputAction: TextInputAction.done,
           onEditingComplete: _handleSignUp,
@@ -221,6 +226,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildOptionsRow() {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -252,7 +258,7 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
             const SizedBox(width: AppSpacing.sm),
             Text(
-              'Se souvenir de moi',
+              l10n.rememberMe,
               style: AppTextStyles.bodySmall.copyWith(
                 color: AppColors.textDark,
               ),
@@ -263,7 +269,7 @@ class _SignupScreenState extends State<SignupScreen> {
         GestureDetector(
           onTap: _handleForgotPassword,
           child: Text(
-            'Mot de passe oublié ?',
+            l10n.forgotPasswordQuestion,
             style: AppTextStyles.bodySmall.copyWith(
               color: AppColors.primary,
               fontWeight: FontWeight.w600,
@@ -275,10 +281,11 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildSocialSignUp() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       children: [
         Text(
-          'Continuer avec',
+          l10n.continueWith,
           style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
           textAlign: TextAlign.center,
         ),
@@ -328,6 +335,7 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Widget _buildLoginLink() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: GestureDetector(
         onTap: _handleLogin,
@@ -338,9 +346,9 @@ class _SignupScreenState extends State<SignupScreen> {
               fontFamily: 'DM Sans',
             ),
             children: [
-              const TextSpan(text: 'Vous avez déjà un compte ? '),
+              TextSpan(text: l10n.alreadyHaveAccountQuestion),
               TextSpan(
-                text: 'Se connecter',
+                text: l10n.signInNow,
                 style: const TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,

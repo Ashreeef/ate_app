@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
@@ -25,8 +26,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       // TODO: Implement password reset logic
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email de réinitialisation envoyé !'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.resetEmailSent),
           backgroundColor: AppColors.success,
         ),
       );
@@ -74,7 +75,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           const SizedBox(height: AppSpacing.lg),
 
                           CustomButton(
-                            text: 'RÉINITIALISER',
+                            text: AppLocalizations.of(context)!.resetPassword,
                             onPressed: _handleResetPassword,
                           ),
 
@@ -97,11 +98,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buildHeader() {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          'Oups, un petit trou de mémoire ?',
+          l10n.forgotPasswordTitle,
           style: AppTextStyles.heading1.copyWith(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -110,7 +112,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
-          'Pas de panique ! Entre ton adresse e-mail et on t\'enverra un lien pour réinitialiser ton mot de passe.',
+          l10n.forgotPasswordSubtitle,
           style: AppTextStyles.bodySmall.copyWith(
             color: AppColors.textLight,
             height: 1.5,
@@ -124,7 +126,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget _buildEmailForm() {
     return CustomTextField(
       controller: _emailController,
-      hint: 'Email',
+      hint: AppLocalizations.of(context)!.email,
       type: CustomTextFieldType.email,
       textInputAction: TextInputAction.done,
       onEditingComplete: _handleResetPassword,
@@ -133,6 +135,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Widget _buildLoginLink() {
+    final l10n = AppLocalizations.of(context)!;
     return Center(
       child: GestureDetector(
         onTap: _handleBackToLogin,
@@ -143,9 +146,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               fontFamily: 'DM Sans',
             ),
             children: [
-              const TextSpan(text: 'Tu te souviens de ton mot de passe ? '),
+              TextSpan(text: l10n.rememberPasswordQuestion),
               TextSpan(
-                text: 'Se connecter',
+                text: l10n.signInLink,
                 style: const TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.w600,

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:ate_app/utils/constants.dart';
 import '../../utils/image_utils.dart';
 import '../../blocs/post/post_bloc.dart';
@@ -31,18 +32,19 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   bool _isSubmitting = false;
 
   Future<void> _publishPost() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_captionController.text.isEmpty) {
-      _showErrorSnackBar('Veuillez écrire une légende');
+      _showErrorSnackBar(l10n.writeCaption);
       return;
     }
 
     if (_restaurantController.text.isEmpty) {
-      _showErrorSnackBar('Veuillez saisir un restaurant');
+      _showErrorSnackBar(l10n.enterRestaurant);
       return;
     }
 
     if (_rating == 0) {
-      _showErrorSnackBar('Veuillez évaluer votre expérience');
+      _showErrorSnackBar(l10n.rateExperience);
       return;
     }
 
@@ -83,11 +85,11 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
       // Emit create post event
       context.read<PostBloc>().add(CreatePostEvent(post));
 
-      _showSuccessSnackBar('Post publié avec succès!');
+      _showSuccessSnackBar(AppLocalizations.of(context)!.postPublished);
       // Pop both post creation screens to return to home
       Navigator.of(context).popUntil((route) => route.isFirst);
     } catch (e) {
-      _showErrorSnackBar('Erreur lors de la publication: $e');
+      _showErrorSnackBar('${AppLocalizations.of(context)!.error}: $e');
       setState(() => _isSubmitting = false);
     }
   }
@@ -125,18 +127,22 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   Widget build(BuildContext context) {
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
         if (state is PostSuccess) {
-          _showSuccessSnackBar('Post publié avec succès!');
+          _showSuccessSnackBar(l10n.postPublished);
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         } else if (state is PostFailure) {
-          _showErrorSnackBar('Erreur: ${state.message}');
+          _showErrorSnackBar('${l10n.error}: ${state.message}');
           setState(() => _isSubmitting = false);
         }
       },
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
-          title: Text('Nouveau post', style: AppTextStyles.heading3),
+          title: Text(
+            AppLocalizations.of(context)!.newPost,
+            style: AppTextStyles.heading3,
+          ),
           backgroundColor: AppColors.white,
           elevation: 0,
           leading: IconButton(
@@ -151,7 +157,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             TextButton(
               onPressed: _isSubmitting ? null : _publishPost,
               child: Text(
-                'Publier',
+                AppLocalizations.of(context)!.publish,
                 style: AppTextStyles.link.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -254,6 +260,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   }
 
   Widget _buildCaptionInput() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
@@ -263,7 +270,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             children: [
               Icon(Icons.edit_note, size: 20, color: AppColors.primary),
               SizedBox(width: AppSpacing.xs),
-              Text('Légende', style: AppTextStyles.heading4),
+              Text(l10n.caption, style: AppTextStyles.heading4),
               Text(' *', style: TextStyle(color: AppColors.error)),
             ],
           ),
@@ -280,7 +287,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               maxLength: 500,
               style: AppTextStyles.body,
               decoration: InputDecoration(
-                hintText: 'Partagez votre expérience culinaire...',
+                hintText: l10n.captionPlaceholder,
                 hintStyle: AppTextStyles.body.copyWith(
                   color: AppColors.textLight,
                 ),
@@ -298,6 +305,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   }
 
   Widget _buildRestaurantInput() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
@@ -307,7 +315,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             children: [
               Icon(Icons.restaurant, size: 20, color: AppColors.primary),
               SizedBox(width: AppSpacing.xs),
-              Text('Restaurant', style: AppTextStyles.heading4),
+              Text(l10n.restaurant, style: AppTextStyles.heading4),
               Text(' *', style: TextStyle(color: AppColors.error)),
             ],
           ),
@@ -322,7 +330,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               controller: _restaurantController,
               style: AppTextStyles.body,
               decoration: InputDecoration(
-                hintText: 'Nom du restaurant...',
+                hintText: l10n.restaurantPlaceholder,
                 hintStyle: AppTextStyles.body.copyWith(
                   color: AppColors.textLight,
                 ),
@@ -339,7 +347,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           Padding(
             padding: EdgeInsets.only(left: AppSpacing.sm),
             child: Text(
-              'Tapez le nom du restaurant',
+              l10n.restaurantHint,
               style: AppTextStyles.caption.copyWith(
                 color: AppColors.textMedium,
               ),
@@ -351,6 +359,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   }
 
   Widget _buildDishNameInput() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
@@ -360,10 +369,10 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             children: [
               Icon(Icons.dining, size: 20, color: AppColors.primary),
               SizedBox(width: AppSpacing.xs),
-              Text('Nom du plat', style: AppTextStyles.heading4),
+              Text(l10n.dishName, style: AppTextStyles.heading4),
               SizedBox(width: AppSpacing.xs),
               Text(
-                '(Optionnel)',
+                l10n.dishNameOptional,
                 style: AppTextStyles.caption.copyWith(
                   color: AppColors.textMedium,
                 ),
@@ -381,7 +390,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               controller: _dishNameController,
               style: AppTextStyles.body,
               decoration: InputDecoration(
-                hintText: 'ex: Couscous Royal, Poisson Grillé...',
+                hintText: l10n.dishNamePlaceholder,
                 hintStyle: AppTextStyles.body.copyWith(
                   color: AppColors.textLight,
                 ),
@@ -396,6 +405,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   }
 
   Widget _buildRatingInput() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
       child: Column(
@@ -405,7 +415,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             children: [
               Icon(Icons.star, size: 20, color: AppColors.starActive),
               SizedBox(width: AppSpacing.xs),
-              Text('Votre évaluation', style: AppTextStyles.heading4),
+              Text(l10n.yourRating, style: AppTextStyles.heading4),
               Text(' *', style: TextStyle(color: AppColors.error)),
             ],
           ),
@@ -458,17 +468,18 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   }
 
   String _getRatingText(int rating) {
+    final l10n = AppLocalizations.of(context)!;
     switch (rating) {
       case 1:
-        return 'Décevant';
+        return l10n.disappointing;
       case 2:
-        return 'Moyen';
+        return l10n.fair;
       case 3:
-        return 'Bien';
+        return l10n.good;
       case 4:
-        return 'Très bien';
+        return l10n.veryGood;
       case 5:
-        return 'Excellent!';
+        return l10n.excellent;
       default:
         return '';
     }

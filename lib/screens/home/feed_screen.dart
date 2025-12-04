@@ -194,7 +194,10 @@ class _FeedScreenState extends State<FeedScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (post.dishName != null)
-                  Text('Dish: ${post.dishName}', style: AppTextStyles.caption),
+                  Text(
+                    '${AppLocalizations.of(context)!.dish}: ${post.dishName}',
+                    style: AppTextStyles.caption,
+                  ),
                 if (post.restaurantName != null && post.restaurantId != null)
                   GestureDetector(
                     onTap: () {
@@ -207,7 +210,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       );
                     },
                     child: Text(
-                      'Restaurant: ${post.restaurantName}',
+                      '${AppLocalizations.of(context)!.restaurant}: ${post.restaurantName}',
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.primary,
                         decoration: TextDecoration.underline,
@@ -216,12 +219,12 @@ class _FeedScreenState extends State<FeedScreen> {
                   ),
                 if (post.restaurantName != null && post.restaurantId == null)
                   Text(
-                    'Restaurant: ${post.restaurantName}',
+                    '${AppLocalizations.of(context)!.restaurant}: ${post.restaurantName}',
                     style: AppTextStyles.caption,
                   ),
                 if (post.rating != null)
                   Text(
-                    'Rating: ${post.rating}/5',
+                    '${AppLocalizations.of(context)!.rating}: ${post.rating}/5',
                     style: AppTextStyles.caption,
                   ),
                 SizedBox(height: AppSpacing.sm),

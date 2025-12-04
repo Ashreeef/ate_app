@@ -568,4 +568,118 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signInButton => 'Se connecter';
+
+  @override
+  String get forgotPasswordTitle => 'Oups, un petit trou de mémoire ?';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'Pas de panique ! Entre ton adresse e-mail et on t\'enverra un lien pour réinitialiser ton mot de passe.';
+
+  @override
+  String get resetPassword => 'RÉINITIALISER';
+
+  @override
+  String get rememberPasswordQuestion =>
+      'Tu te souviens de ton mot de passe ? ';
+
+  @override
+  String get signInLink => 'Se connecter';
+
+  @override
+  String get welcomeToCommunity => 'Bienvenue dans la communauté Ate !';
+
+  @override
+  String get signupSubtitle =>
+      'Crée ton profil et commence à explorer les plats préférés de tes amis — découvre, partage et savoure chaque moment.';
+
+  @override
+  String get fullName => 'Nom complet';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Mot de passe';
+
+  @override
+  String get forgotPasswordQuestion => 'Mot de passe oublié ?';
+
+  @override
+  String get registeringAccount => 'Inscription en cours...';
+
+  @override
+  String get signUp => 'S\'inscrire';
+
+  @override
+  String get continueWith => 'Continuer avec';
+
+  @override
+  String get alreadyHaveAccountQuestion => 'Vous avez déjà un compte ? ';
+
+  @override
+  String get signInNow => 'Se connecter';
+
+  @override
+  String get profile => 'Profil';
+
+  @override
+  String get moreOptions => 'Plus d\'options';
+
+  @override
+  String nowFollowing(Object username) {
+    return 'Vous suivez maintenant $username';
+  }
+
+  @override
+  String unfollowed(Object username) {
+    return 'Vous ne suivez plus $username';
+  }
+
+  @override
+  String get errorUpdatingFollow =>
+      'Erreur lors de la mise à jour du statut de suivi';
+
+  @override
+  String get userNotFound => 'Utilisateur introuvable';
+
+  @override
+  String get followed => 'Suivi';
+
+  @override
+  String shareProfileCheck(Object bio, Object username) {
+    return 'Découvrez @$username sur Ate !\n\n$bio';
+  }
+
+  @override
+  String shareUserProfileTitle(Object username) {
+    return 'Partager le profil de $username';
+  }
+
+  @override
+  String shareMyProfile(Object bio, Object username) {
+    return 'Découvrez mon profil sur Ate !\n\nNom d\'utilisateur : @$username\nBio : $bio';
+  }
+
+  @override
+  String get shareProfileTitle => 'Partager le profil';
+
+  @override
+  String get username => 'Nom d\'utilisateur';
+
+  @override
+  String get bio => 'Bio';
+
+  @override
+  String get appVersion => 'Ate v1.0.0';
+
+  @override
+  String get deleteAccountWarning =>
+      'Cette action est irréversible. Toutes vos données seront définitivement supprimées.';
+
+  @override
+  String get closeButton => 'Fermer';
+
+  @override
+  String get appName => 'Ate';
 }

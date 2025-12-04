@@ -1167,6 +1167,204 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in'**
   String get signInButton;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Oops, memory lapse?'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No worries! Enter your email address and we\'ll send you a link to reset your password.'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'RESET'**
+  String get resetPassword;
+
+  /// No description provided for @rememberPasswordQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember your password? '**
+  String get rememberPasswordQuestion;
+
+  /// No description provided for @signInLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInLink;
+
+  /// No description provided for @welcomeToCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to the Ate community!'**
+  String get welcomeToCommunity;
+
+  /// No description provided for @signupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your profile and start exploring your friends\' favorite dishes — discover, share, and savor every moment.'**
+  String get signupSubtitle;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get fullName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @forgotPasswordQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPasswordQuestion;
+
+  /// No description provided for @registeringAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Registering...'**
+  String get registeringAccount;
+
+  /// No description provided for @signUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get signUp;
+
+  /// No description provided for @continueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with'**
+  String get continueWith;
+
+  /// No description provided for @alreadyHaveAccountQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? '**
+  String get alreadyHaveAccountQuestion;
+
+  /// No description provided for @signInNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signInNow;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More options'**
+  String get moreOptions;
+
+  /// No description provided for @nowFollowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Now following {username}'**
+  String nowFollowing(Object username);
+
+  /// No description provided for @unfollowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollowed {username}'**
+  String unfollowed(Object username);
+
+  /// No description provided for @errorUpdatingFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating follow status'**
+  String get errorUpdatingFollow;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found'**
+  String get userNotFound;
+
+  /// No description provided for @followed.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed'**
+  String get followed;
+
+  /// No description provided for @shareProfileCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out @{username} on Ate!\n\n{bio}'**
+  String shareProfileCheck(Object bio, Object username);
+
+  /// No description provided for @shareUserProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share {username}\'s Profile'**
+  String shareUserProfileTitle(Object username);
+
+  /// No description provided for @shareMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out my profile on Ate!\n\nUsername: @{username}\nBio: {bio}'**
+  String shareMyProfile(Object bio, Object username);
+
+  /// No description provided for @shareProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Profile'**
+  String get shareProfileTitle;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @bio.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio'**
+  String get bio;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Ate v1.0.0'**
+  String get appVersion;
+
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This action is irreversible. All your data will be permanently deleted.'**
+  String get deleteAccountWarning;
+
+  /// No description provided for @closeButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeButton;
+
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'Ate'**
+  String get appName;
 }
 
 class _AppLocalizationsDelegate

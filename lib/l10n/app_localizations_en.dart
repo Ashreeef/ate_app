@@ -563,4 +563,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signInButton => 'Sign in';
+
+  @override
+  String get forgotPasswordTitle => 'Oops, memory lapse?';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'No worries! Enter your email address and we\'ll send you a link to reset your password.';
+
+  @override
+  String get resetPassword => 'RESET';
+
+  @override
+  String get rememberPasswordQuestion => 'Remember your password? ';
+
+  @override
+  String get signInLink => 'Sign in';
+
+  @override
+  String get welcomeToCommunity => 'Welcome to the Ate community!';
+
+  @override
+  String get signupSubtitle =>
+      'Create your profile and start exploring your friends\' favorite dishes — discover, share, and savor every moment.';
+
+  @override
+  String get fullName => 'Full name';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get forgotPasswordQuestion => 'Forgot password?';
+
+  @override
+  String get registeringAccount => 'Registering...';
+
+  @override
+  String get signUp => 'Sign up';
+
+  @override
+  String get continueWith => 'Continue with';
+
+  @override
+  String get alreadyHaveAccountQuestion => 'Already have an account? ';
+
+  @override
+  String get signInNow => 'Sign in';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get moreOptions => 'More options';
+
+  @override
+  String nowFollowing(Object username) {
+    return 'Now following $username';
+  }
+
+  @override
+  String unfollowed(Object username) {
+    return 'Unfollowed $username';
+  }
+
+  @override
+  String get errorUpdatingFollow => 'Error updating follow status';
+
+  @override
+  String get userNotFound => 'User not found';
+
+  @override
+  String get followed => 'Followed';
+
+  @override
+  String shareProfileCheck(Object bio, Object username) {
+    return 'Check out @$username on Ate!\n\n$bio';
+  }
+
+  @override
+  String shareUserProfileTitle(Object username) {
+    return 'Share $username\'s Profile';
+  }
+
+  @override
+  String shareMyProfile(Object bio, Object username) {
+    return 'Check out my profile on Ate!\n\nUsername: @$username\nBio: $bio';
+  }
+
+  @override
+  String get shareProfileTitle => 'Share Profile';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get bio => 'Bio';
+
+  @override
+  String get appVersion => 'Ate v1.0.0';
+
+  @override
+  String get deleteAccountWarning =>
+      'This action is irreversible. All your data will be permanently deleted.';
+
+  @override
+  String get closeButton => 'Close';
+
+  @override
+  String get appName => 'Ate';
 }

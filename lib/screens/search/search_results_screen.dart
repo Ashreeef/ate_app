@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../l10n/app_localizations.dart';
 import '../../utils/constants.dart';
 import '../../widgets/restaurant/restaurant_card.dart';
 import '../restaurant/restaurant_page.dart';
@@ -124,13 +125,15 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 SizedBox(height: AppSpacing.md),
                 Text(
                   widget.showAll
-                      ? 'Aucun restaurant disponible'
-                      : 'Aucun résultat trouvé',
+                      ? AppLocalizations.of(context)!.noRestaurantsAvailable
+                      : AppLocalizations.of(context)!.noResultsFound,
                   style: AppTextStyles.heading4,
                 ),
                 SizedBox(height: AppSpacing.xs),
                 Text(
-                  widget.showAll ? '' : 'Essayez avec d\'autres mots-clés',
+                  widget.showAll
+                      ? ''
+                      : AppLocalizations.of(context)!.tryOtherKeywords,
                   style: AppTextStyles.bodySmall,
                 ),
               ],

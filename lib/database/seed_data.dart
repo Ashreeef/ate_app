@@ -178,7 +178,9 @@ class SeedData {
           users.add(createdUser);
         }
       } else {
-        users.add(existing);
+        final userToUpdate = user.copyWith(id: existing.id);
+        await userRepository.updateUser(userToUpdate);
+        users.add(userToUpdate);
       }
     }
 

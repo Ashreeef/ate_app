@@ -288,33 +288,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildTextField(
-                    label: 'Nom complet',
+                    label: AppLocalizations.of(context)!.fullName,
                     controller: _fullNameController,
                     icon: Icons.person_outline,
                   ),
                   SizedBox(height: AppSpacing.lg),
                   _buildTextField(
-                    label: 'Nom d\'utilisateur',
+                    label: AppLocalizations.of(context)!.username,
                     controller: _usernameController,
                     icon: Icons.alternate_email,
                   ),
                   SizedBox(height: AppSpacing.lg),
                   _buildTextField(
-                    label: 'Email',
+                    label: AppLocalizations.of(context)!.email,
                     controller: _emailController,
                     icon: Icons.email_outlined,
                     keyboardType: TextInputType.emailAddress,
                   ),
                   SizedBox(height: AppSpacing.lg),
                   _buildTextField(
-                    label: 'Téléphone',
+                    label: AppLocalizations.of(context)!.phone,
                     controller: _phoneController,
                     icon: Icons.phone_outlined,
                     keyboardType: TextInputType.phone,
                   ),
                   SizedBox(height: AppSpacing.lg),
                   _buildTextField(
-                    label: 'Bio',
+                    label: AppLocalizations.of(context)!.bio,
                     controller: _bioController,
                     icon: Icons.notes_outlined,
                     maxLines: 3,

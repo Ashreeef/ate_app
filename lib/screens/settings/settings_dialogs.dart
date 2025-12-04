@@ -371,7 +371,7 @@ class SettingsDialogs {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Fermer'),
+            child: Text(AppLocalizations.of(context)!.closeButton),
           ),
         ],
       ),

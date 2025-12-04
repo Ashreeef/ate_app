@@ -227,9 +227,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       });
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         final message = newFollowingState
-            ? 'Now following ${_user!.username}'
-            : 'Unfollowed ${_user!.username}';
+            ? '${l10n.nowFollowing} ${_user!.username}'
+            : '${l10n.unfollowed} ${_user!.username}';
         final bgColor = newFollowingState ? AppColors.success : AppColors.error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -244,7 +245,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error updating follow status'),
+            content: Text(AppLocalizations.of(context)!.errorUpdatingFollow),
             behavior: SnackBarBehavior.floating,
             backgroundColor: AppColors.error,
           ),

@@ -561,4 +561,116 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get signInButton => 'تسجيل الدخول';
+
+  @override
+  String get forgotPasswordTitle => 'نسيت كلمة المرور؟';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'لا تقلق! أدخل عنوان بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور الخاصة بك.';
+
+  @override
+  String get resetPassword => 'إعادة تعيين';
+
+  @override
+  String get rememberPasswordQuestion => 'تتذكر كلمة المرور الخاصة بك؟ ';
+
+  @override
+  String get signInLink => 'تسجيل الدخول';
+
+  @override
+  String get welcomeToCommunity => 'مرحبًا بك في مجتمع Ate!';
+
+  @override
+  String get signupSubtitle =>
+      'أنشئ ملفك الشخصي وابدأ في استكشاف أطباق أصدقائك المفضلة — اكتشف وشارك واستمتع بكل لحظة.';
+
+  @override
+  String get fullName => 'الاسم الكامل';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get password => 'كلمة المرور';
+
+  @override
+  String get forgotPasswordQuestion => 'نسيت كلمة المرور؟';
+
+  @override
+  String get registeringAccount => 'جاري التسجيل...';
+
+  @override
+  String get signUp => 'إنشاء حساب';
+
+  @override
+  String get continueWith => 'المتابعة مع';
+
+  @override
+  String get alreadyHaveAccountQuestion => 'هل لديك حساب بالفعل؟ ';
+
+  @override
+  String get signInNow => 'تسجيل الدخول';
+
+  @override
+  String get profile => 'الملف الشخصي';
+
+  @override
+  String get moreOptions => 'المزيد من الخيارات';
+
+  @override
+  String nowFollowing(Object username) {
+    return 'تتابع الآن $username';
+  }
+
+  @override
+  String unfollowed(Object username) {
+    return 'ألغيت متابعة $username';
+  }
+
+  @override
+  String get errorUpdatingFollow => 'خطأ في تحديث حالة المتابعة';
+
+  @override
+  String get userNotFound => 'المستخدم غير موجود';
+
+  @override
+  String get followed => 'تمت المتابعة';
+
+  @override
+  String shareProfileCheck(Object bio, Object username) {
+    return 'تحقق من @$username على Ate!\n\n$bio';
+  }
+
+  @override
+  String shareUserProfileTitle(Object username) {
+    return 'مشاركة ملف $username';
+  }
+
+  @override
+  String shareMyProfile(Object bio, Object username) {
+    return 'تحقق من ملفي الشخصي على Ate!\n\nاسم المستخدم: @$username\nنبذة: $bio';
+  }
+
+  @override
+  String get shareProfileTitle => 'مشاركة الملف الشخصي';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get bio => 'نبذة';
+
+  @override
+  String get appVersion => 'Ate الإصدار 1.0.0';
+
+  @override
+  String get deleteAccountWarning =>
+      'هذا الإجراء لا رجعة فيه. سيتم حذف جميع بياناتك نهائيًا.';
+
+  @override
+  String get closeButton => 'إغلاق';
+
+  @override
+  String get appName => 'Ate';
 }

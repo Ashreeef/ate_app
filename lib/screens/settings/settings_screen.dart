@@ -379,7 +379,7 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
         content: Text(
-          'Cette action est irréversible. Toutes vos données seront définitivement supprimées.',
+          AppLocalizations.of(context)!.deleteAccountWarning,
           style: AppTextStyles.body,
         ),
         actions: [
