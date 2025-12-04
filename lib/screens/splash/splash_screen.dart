@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:async';
 import '../../utils/constants.dart';
+import '../../services/auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -137,8 +138,15 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _navigateToNextScreen() {
     if (mounted) {
-      // TODO: Check authentication status
-      Navigator.of(context).pushReplacementNamed('/onboarding');
+      // Check authentication status
+      final authService = AuthService.instance;
+      if (authService.isLoggedIn) {
+        // User is logged in, go directly to home
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        // User not logged in, show onboarding
+        Navigator.of(context).pushReplacementNamed('/onboarding');
+      }
     }
   }
 

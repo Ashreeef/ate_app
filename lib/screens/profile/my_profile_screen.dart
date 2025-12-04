@@ -119,7 +119,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Icons.more_vert,
                   color: Theme.of(context).iconTheme.color,
                 ),
-                tooltip: 'More options',
+                tooltip: AppLocalizations.of(context)!.moreOptions,
                 onPressed: () {
                   _showOptionsMenu(context);
                 },
@@ -262,7 +262,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Share Profile'),
+                        title: Text(
+                          AppLocalizations.of(context)!.shareProfileTitle,
+                        ),
                         content: SelectableText(shareText),
                         actions: [
                           TextButton(

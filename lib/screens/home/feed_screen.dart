@@ -32,19 +32,19 @@ class _FeedScreenState extends State<FeedScreen> {
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
     // Load initial posts
-    context.read<FeedBloc>().add(LoadFeed());
+    context.read<FeedBloc>().add(const LoadFeed());
   }
 
   void _onScroll() {
     if (_scrollController.position.atEdge &&
         _scrollController.position.pixels != 0) {
-      context.read<FeedBloc>().add(LoadMoreFeed());
+      context.read<FeedBloc>().add(const LoadMoreFeed());
     }
   }
 
   // Simulate refreshing the feed
   Future<void> _onRefresh() async {
-    context.read<FeedBloc>().add(LoadFeed(refresh: true));
+    context.read<FeedBloc>().add(const LoadFeed(refresh: true));
   }
 
   @override

@@ -44,9 +44,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleSocialLogin(String provider) {
-    // TODO: Implement social login
-    // For Now, Navigate to home screen (temporary until social auth is implemented)
-    Navigator.pushReplacementNamed(context, '/home');
+    // Social login not yet implemented - show coming soon message
+    final l10n = AppLocalizations.of(context)!;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('$provider ${l10n.comingSoon}'),
+        backgroundColor: AppColors.primary,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   void _handleSignUp() {

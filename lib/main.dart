@@ -32,35 +32,42 @@ import 'database/quick_validation.dart';
 import 'blocs/search/search_bloc.dart';
 import 'blocs/restaurant/restaurant_bloc.dart';
 
+// Global repository instances
+final UserRepository _userRepository = UserRepository();
+final RestaurantRepository _restaurantRepository = RestaurantRepository();
+final PostRepository _postRepository = PostRepository();
+final CommentRepository _commentRepository = CommentRepository();
+final LikeRepository _likeRepository = LikeRepository();
+final SavedPostRepository _savedPostRepository = SavedPostRepository();
+final SearchHistoryRepository _searchHistoryRepository =
+    SearchHistoryRepository();
+final ProfileRepository _profileRepository = ProfileRepository();
+
+// Track if FFI has been initialized
+bool _ffiInitialized = false;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize sqflite for desktop platforms (Windows, Linux, macOS)
-  if (Platform.isWindows || Platform.isLinux) {
+  // Initialize sqflite for desktop platforms (Windows, Linux, macOS) - only once
+  if (!_ffiInitialized && (Platform.isWindows || Platform.isLinux)) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
+    _ffiInitialized = true;
   }
 
   // Initialize auth service
   await AuthService.instance.initialize();
 
   // Seed database with comprehensive test data (development only)
-  final userRepository = UserRepository();
-  final restaurantRepository = RestaurantRepository();
-  final postRepository = PostRepository();
-  final commentRepository = CommentRepository();
-  final likeRepository = LikeRepository();
-  final savedPostRepository = SavedPostRepository();
-  final searchHistoryRepository = SearchHistoryRepository();
-
   await SeedData.seedDatabase(
-    userRepository,
-    restaurantRepository,
-    postRepository,
-    commentRepository,
-    likeRepository,
-    savedPostRepository,
-    searchHistoryRepository,
+    _userRepository,
+    _restaurantRepository,
+    _postRepository,
+    _commentRepository,
+    _likeRepository,
+    _savedPostRepository,
+    _searchHistoryRepository,
   );
 
   // Validate database seeding (development only)
@@ -74,32 +81,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Create repositories
-    final userRepository = UserRepository();
-    final postRepository = PostRepository();
-    final restaurantRepository = RestaurantRepository();
-    final searchHistoryRepository = SearchHistoryRepository();
     final authService = AuthService.instance;
-    final profileRepository = ProfileRepository();
 
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<UserRepository>(create: (context) => userRepository),
-        RepositoryProvider<PostRepository>(create: (context) => postRepository),
+        RepositoryProvider<UserRepository>(
+          create: (context) => _userRepository,
+        ),
+        RepositoryProvider<PostRepository>(
+          create: (context) => _postRepository,
+        ),
         RepositoryProvider<RestaurantRepository>(
-          create: (context) => restaurantRepository,
+          create: (context) => _restaurantRepository,
         ),
         RepositoryProvider<SearchHistoryRepository>(
-          create: (context) => searchHistoryRepository,
+          create: (context) => _searchHistoryRepository,
         ),
         RepositoryProvider<LikeRepository>(
-          create: (context) => LikeRepository(),
+          create: (context) => _likeRepository,
         ),
         RepositoryProvider<SavedPostRepository>(
-          create: (context) => SavedPostRepository(),
+          create: (context) => _savedPostRepository,
         ),
         RepositoryProvider<ProfileRepository>(
-          create: (context) => profileRepository,
+          create: (context) => _profileRepository,
         ),
         RepositoryProvider<AuthService>(create: (context) => authService),
       ],
@@ -107,22 +112,22 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(
-              userRepository: userRepository,
+              userRepository: _userRepository,
               authService: authService,
             ),
           ),
           BlocProvider<UserBloc>(
             create: (context) => UserBloc(
-              userRepository: userRepository,
+              userRepository: _userRepository,
               authService: authService,
             ),
           ),
           BlocProvider<FeedBloc>(
-            create: (context) => FeedBloc(repo: postRepository),
+            create: (context) => FeedBloc(repo: _postRepository),
           ),
           BlocProvider<PostBloc>(
             create: (context) => PostBloc(
-              repo: postRepository,
+              repo: _postRepository,
               likeRepo: context.read<LikeRepository>(),
               savedPostRepo: context.read<SavedPostRepository>(),
               feedBloc: context.read<FeedBloc>(),
@@ -130,18 +135,17 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<SearchBloc>(
             create: (context) => SearchBloc(
-              restaurantRepository: restaurantRepository,
-              searchHistoryRepository: searchHistoryRepository,
+              restaurantRepository: _restaurantRepository,
+              searchHistoryRepository: _searchHistoryRepository,
               authService: authService,
             ),
           ),
           BlocProvider<RestaurantBloc>(
-            create: (context) => RestaurantBloc(
-              restaurantRepository: restaurantRepository,
-            ),
+            create: (context) =>
+                RestaurantBloc(restaurantRepository: _restaurantRepository),
           ),
           BlocProvider<ProfileCubit>(
-            create: (context) => ProfileCubit(profileRepository),
+            create: (context) => ProfileCubit(_profileRepository),
           ),
           BlocProvider<SettingsCubit>(
             create: (context) => SettingsCubit()..loadSettings(),
@@ -173,12 +177,49 @@ class MyApp extends StatelessWidget {
               ],
 
               home: const SplashScreen(),
-              routes: {
-                '/onboarding': (context) => const OnboardingScreen(),
-                '/login': (context) => const LoginScreen(),
-                '/signup': (context) => const SignupScreen(),
-                '/forgot-password': (context) => const ForgotPasswordScreen(),
-                '/home': (context) => const NavigationShell(),
+              onGenerateRoute: (settings) {
+                // Public routes (no auth required)
+                final publicRoutes = {
+                  '/onboarding': () => const OnboardingScreen(),
+                  '/login': () => const LoginScreen(),
+                  '/signup': () => const SignupScreen(),
+                  '/forgot-password': () => const ForgotPasswordScreen(),
+                };
+
+                // Protected routes (auth required)
+                final protectedRoutes = {
+                  '/home': () => const NavigationShell(),
+                };
+
+                // Check if it's a public route
+                if (publicRoutes.containsKey(settings.name)) {
+                  return MaterialPageRoute(
+                    builder: (context) => publicRoutes[settings.name]!(),
+                    settings: settings,
+                  );
+                }
+
+                // Check if it's a protected route
+                if (protectedRoutes.containsKey(settings.name)) {
+                  // Route guard: check if user is authenticated
+                  if (AuthService.instance.isLoggedIn) {
+                    return MaterialPageRoute(
+                      builder: (context) => protectedRoutes[settings.name]!(),
+                      settings: settings,
+                    );
+                  } else {
+                    // Redirect to login if not authenticated
+                    return MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                      settings: const RouteSettings(name: '/login'),
+                    );
+                  }
+                }
+
+                // Unknown route - redirect to splash
+                return MaterialPageRoute(
+                  builder: (context) => const SplashScreen(),
+                );
               },
             );
           },

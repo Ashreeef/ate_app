@@ -10,14 +10,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final int _pageSize = 10;
   List<Post> _posts = [];
 
-  FeedBloc({required this.repo}) : super(FeedInitial()) {
+  FeedBloc({required this.repo}) : super(const FeedInitial()) {
     on<LoadFeed>(_onLoadFeed);
     on<LoadMoreFeed>(_onLoadMore);
   }
 
   Future<void> _onLoadFeed(LoadFeed event, Emitter<FeedState> emit) async {
     try {
-      emit(FeedLoading());
+      emit(const FeedLoading());
       _page = 1;
       final offset = (_page - 1) * _pageSize;
       final posts = await repo.getRecentPosts(limit: _pageSize, offset: offset);

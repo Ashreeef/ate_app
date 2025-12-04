@@ -1,11 +1,11 @@
-import '../database/database_helper.dart';
-import '../repositories/user_repository.dart';
-import '../repositories/restaurant_repository.dart';
-import '../repositories/post_repository.dart';
-import '../repositories/comment_repository.dart';
-import '../repositories/like_repository.dart';
-import '../repositories/saved_post_repository.dart';
-import '../repositories/search_history_repository.dart';
+import 'package:ate_app/database/database_helper.dart';
+import 'package:ate_app/repositories/user_repository.dart';
+import 'package:ate_app/repositories/restaurant_repository.dart';
+import 'package:ate_app/repositories/post_repository.dart';
+import 'package:ate_app/repositories/comment_repository.dart';
+import 'package:ate_app/repositories/like_repository.dart';
+import 'package:ate_app/repositories/saved_post_repository.dart';
+import 'package:ate_app/repositories/search_history_repository.dart';
 
 /// Comprehensive database testing utility
 /// Run this to test all database operations and verify seed data

@@ -1,12 +1,28 @@
-abstract class PostState {}
+import 'package:equatable/equatable.dart';
 
-class PostIdle extends PostState {}
+abstract class PostState extends Equatable {
+  const PostState();
 
-class PostProcessing extends PostState {}
+  @override
+  List<Object?> get props => [];
+}
 
-class PostSuccess extends PostState {}
+class PostIdle extends PostState {
+  const PostIdle();
+}
+
+class PostProcessing extends PostState {
+  const PostProcessing();
+}
+
+class PostSuccess extends PostState {
+  const PostSuccess();
+}
 
 class PostFailure extends PostState {
   final String message;
-  PostFailure(this.message);
+  const PostFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

@@ -18,19 +18,19 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required this.likeRepo,
     required this.savedPostRepo,
     required this.feedBloc,
-  }) : super(PostIdle()) {
+  }) : super(const PostIdle()) {
     on<CreatePostEvent>(_onCreate);
     on<ToggleLikeEvent>(_onToggleLike);
     on<ToggleSaveEvent>(_onToggleSave);
   }
 
   Future<void> _onCreate(CreatePostEvent e, Emitter<PostState> emit) async {
-    emit(PostProcessing());
+    emit(const PostProcessing());
     try {
       await repo.createPost(e.post);
       // refresh feed
-      feedBloc.add(LoadFeed());
-      emit(PostSuccess());
+      feedBloc.add(const LoadFeed());
+      emit(const PostSuccess());
     } catch (err) {
       emit(PostFailure(err.toString()));
     }
@@ -41,8 +41,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // Toggle like in database
       await likeRepo.toggleLike(e.userId, e.postId);
       // Refresh feed to show updated like status
-      feedBloc.add(LoadFeed());
-      emit(PostSuccess());
+      feedBloc.add(const LoadFeed());
+      emit(const PostSuccess());
     } catch (err) {
       emit(PostFailure(err.toString()));
     }
@@ -53,8 +53,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // Toggle save in database
       await savedPostRepo.toggleSavePost(e.userId, e.postId);
       // Refresh feed to show updated save status
-      feedBloc.add(LoadFeed());
-      emit(PostSuccess());
+      feedBloc.add(const LoadFeed());
+      emit(const PostSuccess());
     } catch (err) {
       emit(PostFailure(err.toString()));
     }

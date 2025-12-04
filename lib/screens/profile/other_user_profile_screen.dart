@@ -327,7 +327,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
               Icons.more_vert,
               color: Theme.of(context).iconTheme.color,
             ),
-            tooltip: 'More options',
+            tooltip: AppLocalizations.of(context)!.moreOptions,
             onPressed: () {
               _showOptionsMenu(context);
             },

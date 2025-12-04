@@ -1,4 +1,4 @@
-import 'database_helper.dart';
+import 'package:ate_app/database/database_helper.dart';
 
 /// Test all database operations
 class DatabaseTest {

@@ -1,8 +1,20 @@
-abstract class FeedEvent {}
+import 'package:equatable/equatable.dart';
+
+abstract class FeedEvent extends Equatable {
+  const FeedEvent();
+
+  @override
+  List<Object?> get props => [];
+}
 
 class LoadFeed extends FeedEvent {
   final bool refresh;
-  LoadFeed({this.refresh = false});
+  const LoadFeed({this.refresh = false});
+
+  @override
+  List<Object?> get props => [refresh];
 }
 
-class LoadMoreFeed extends FeedEvent {}
+class LoadMoreFeed extends FeedEvent {
+  const LoadMoreFeed();
+}
