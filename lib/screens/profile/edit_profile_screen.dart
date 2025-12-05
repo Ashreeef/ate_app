@@ -112,7 +112,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: AppColors.primary),
             filled: true,
-            fillColor: AppColors.backgroundLight,
+            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
               borderSide: BorderSide.none,
@@ -138,10 +138,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final user = state.user;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -174,7 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             // Avatar Section
             Container(
-              color: AppColors.white,
+              color: Theme.of(context).cardTheme.color,
               padding: EdgeInsets.all(AppSpacing.xl),
               child: Center(
                 child: Stack(
@@ -186,7 +186,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       child: CircleAvatar(
                         radius: 60,
-                        backgroundColor: AppColors.backgroundLight,
+                        backgroundColor:
+                            Theme.of(
+                              context,
+                            ).cardTheme.color?.withOpacity(0.5) ??
+                            Colors.grey[300],
                         backgroundImage:
                             (user != null &&
                                 (user.profileImage?.isNotEmpty ?? false))
@@ -267,7 +271,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           child: Icon(
                             Icons.camera_alt,
-                            color: AppColors.white,
+                            color: Colors.white,
                             size: 20,
                           ),
                         ),
@@ -278,11 +282,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
 
-            SizedBox(height: AppSpacing.sm),
+            SizedBox(height: AppSpacing.md),
 
-            // Form Section
+            // Bio Section
             Container(
-              color: AppColors.white,
+              color: Theme.of(context).cardTheme.color,
               padding: EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

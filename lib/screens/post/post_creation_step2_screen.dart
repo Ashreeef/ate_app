@@ -126,15 +126,15 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           title: Text('Nouveau post', style: AppTextStyles.heading3),
-          backgroundColor: AppColors.white,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: AppColors.textDark,
+              color: Theme.of(context).iconTheme.color,
               size: AppSizes.icon,
             ),
             onPressed: _isSubmitting ? null : () => Navigator.pop(context),

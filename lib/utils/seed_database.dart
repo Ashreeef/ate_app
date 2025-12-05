@@ -64,30 +64,36 @@ class DatabaseSeeder {
       final aminaPosts = [
         Post(
           userId: userId1,
+          username: user1Map['username'] as String,
           caption: 'Best pizza in town! 🍕 The crust was perfectly crispy.',
           dishName: 'Margherita Pizza',
           rating: 4.5,
-          images:
-              'https://images.unsplash.com/photo-1513104890138-7c749659a591,https://images.unsplash.com/photo-1574071318508-1cdbab80d002',
+          images: [
+            'https://images.unsplash.com/photo-1513104890138-7c749659a591',
+            'https://images.unsplash.com/photo-1574071318508-1cdbab80d002',
+          ],
           likesCount: 45,
           commentsCount: 12,
         ),
         Post(
           userId: userId1,
+          username: user1Map['username'] as String,
           caption: 'Amazing sushi experience! Fresh and delicious 🍣',
           dishName: 'Sushi Platter',
           rating: 5.0,
-          images:
-              'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351',
+          images: [
+            'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351',
+          ],
           likesCount: 78,
           commentsCount: 23,
         ),
         Post(
           userId: userId1,
+          username: user1Map['username'] as String,
           caption: 'Burger heaven! 🍔 Juicy and flavorful.',
           dishName: 'Classic Burger',
           rating: 4.0,
-          images: 'https://images.unsplash.com/photo-1550547660-d9450f859349',
+          images: ['https://images.unsplash.com/photo-1550547660-d9450f859349'],
           likesCount: 34,
           commentsCount: 8,
         ),
@@ -97,20 +103,23 @@ class DatabaseSeeder {
       final omarPosts = [
         Post(
           userId: userId2,
+          username: user2Map['username'] as String,
           caption: 'Homemade pasta perfection 🍝',
           dishName: 'Carbonara',
           rating: 4.8,
-          images:
-              'https://images.unsplash.com/photo-1612874742237-6526221588e3',
+          images: [
+            'https://images.unsplash.com/photo-1612874742237-6526221588e3',
+          ],
           likesCount: 120,
           commentsCount: 35,
         ),
         Post(
           userId: userId2,
+          username: user2Map['username'] as String,
           caption: 'Fresh seafood catch of the day 🦞',
           dishName: 'Grilled Lobster',
           rating: 5.0,
-          images: 'https://images.unsplash.com/photo-1559339352-11d035aa65de',
+          images: ['https://images.unsplash.com/photo-1559339352-11d035aa65de'],
           likesCount: 156,
           commentsCount: 42,
         ),

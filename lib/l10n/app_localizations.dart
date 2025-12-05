@@ -645,6 +645,7 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Permanently delete your account'**
   String get deleteAccountPermanently;
+
   /// No description provided for @pickImages.
   ///
   /// In en, this message translates to:

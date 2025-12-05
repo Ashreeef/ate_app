@@ -27,10 +27,10 @@ class _TextFieldPreviewScreenState extends State<TextFieldPreviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('TextField Showcase'),
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),

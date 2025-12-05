@@ -257,9 +257,9 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: AppColors.white,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: Icon(
@@ -275,9 +275,9 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
 
     if (_errorMessage != null || _user == null) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: AppColors.white,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: Icon(
@@ -300,10 +300,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     final avatar = _user!.profileImage ?? FakeUserData.avatarUrl;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(
@@ -414,10 +414,9 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
 
   List<Map<String, dynamic>> _convertPostsToFakeFormat() {
     return _posts.map((post) {
-      final images = post.getImageList();
       return {
         'id': post.id,
-        'imageUrl': images.isNotEmpty ? images.first : FakeUserData.avatarUrl,
+        'imageUrl': post.images.isNotEmpty ? post.images.first : '',
         'likes': post.likesCount,
         'comments': post.commentsCount,
       };

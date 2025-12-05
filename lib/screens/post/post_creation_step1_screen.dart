@@ -7,11 +7,12 @@ import 'package:ate_app/screens/post/post_creation_step2_screen.dart';
 class PostCreationStep1Screen extends StatefulWidget {
   //  GlobalKey so navigation shell can access this screen
   static final GlobalKey<_PostCreationStep1ScreenState> globalKey = GlobalKey();
-  
-  PostCreationStep1Screen({Key? key}) : super(key: key ?? globalKey); 
+
+  PostCreationStep1Screen({Key? key}) : super(key: key ?? globalKey);
 
   @override
-  State<PostCreationStep1Screen> createState() => _PostCreationStep1ScreenState();
+  State<PostCreationStep1Screen> createState() =>
+      _PostCreationStep1ScreenState();
 }
 
 class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
@@ -21,7 +22,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
 
   //  Getter for navigation shell to check if images are selected
   bool get hasSelectedImages => _selectedImages.isNotEmpty;
-  
+
   //  Method for navigation shell to trigger navigation
   void navigateToNextStep() {
     _navigateToStep2();
@@ -33,7 +34,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
         source: source,
         imageQuality: 85,
       );
-      
+
       if (image != null && _selectedImages.length < _maxImages) {
         setState(() {
           _selectedImages.add(image);
@@ -41,7 +42,10 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
       } else if (_selectedImages.length >= _maxImages) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Vous pouvez sélectionner jusqu\'à $_maxImages images', style: AppTextStyles.body),
+            content: Text(
+              'Vous pouvez sélectionner jusqu\'à $_maxImages images',
+              style: AppTextStyles.body,
+            ),
             backgroundColor: AppColors.error,
           ),
         );
@@ -49,7 +53,10 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Échec de la sélection d\'image: $e', style: AppTextStyles.body),
+          content: Text(
+            'Échec de la sélection d\'image: $e',
+            style: AppTextStyles.body,
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -66,17 +73,21 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
     if (_selectedImages.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Veuillez sélectionner au moins une image', style: AppTextStyles.body),
+          content: Text(
+            'Veuillez sélectionner au moins une image',
+            style: AppTextStyles.body,
+          ),
           backgroundColor: AppColors.error,
         ),
       );
       return;
     }
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PostCreationStep2Screen(selectedImages: _selectedImages),
+        builder: (context) =>
+            PostCreationStep2Screen(selectedImages: _selectedImages),
       ),
     );
   }
@@ -84,9 +95,11 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   void _showImageSourceDialog() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: Theme.of(context).cardTheme.color,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSizes.borderRadiusLg)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSizes.borderRadiusLg),
+        ),
       ),
       builder: (context) {
         return Container(
@@ -94,13 +107,14 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Choisir une photo',
-                style: AppTextStyles.heading3,
-              ),
+              Text('Choisir une photo', style: AppTextStyles.heading3),
               SizedBox(height: AppSpacing.md),
               ListTile(
-                leading: Icon(Icons.photo_library, color: AppColors.primary, size: AppSizes.iconLg),
+                leading: Icon(
+                  Icons.photo_library,
+                  color: AppColors.primary,
+                  size: AppSizes.iconLg,
+                ),
                 title: Text('Galerie', style: AppTextStyles.body),
                 onTap: () {
                   Navigator.pop(context);
@@ -109,7 +123,11 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
               ),
               Divider(),
               ListTile(
-                leading: Icon(Icons.photo_camera, color: AppColors.primary, size: AppSizes.iconLg),
+                leading: Icon(
+                  Icons.photo_camera,
+                  color: AppColors.primary,
+                  size: AppSizes.iconLg,
+                ),
                 title: Text('Prendre une photo', style: AppTextStyles.body),
                 onTap: () {
                   Navigator.pop(context);
@@ -127,13 +145,15 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // REMOVED AppBar - navigation shell handles it now
       body: Column(
         children: [
           if (_selectedImages.isNotEmpty) _buildSelectedImages(),
           Expanded(
-            child: _selectedImages.isEmpty ? _buildEmptyState() : _buildImageGrid(),
+            child: _selectedImages.isEmpty
+                ? _buildEmptyState()
+                : _buildImageGrid(),
           ),
         ],
       ),
@@ -204,14 +224,14 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.photo_library_outlined, 
-              size: 80, 
-              color: AppColors.textLight
+              Icons.photo_library_outlined,
+              size: 80,
+              color: AppColors.textLight,
             ),
             SizedBox(height: AppSpacing.lg),
             Text(
-              'Ajouter des photos', 
-              style: AppTextStyles.heading2.copyWith(color: AppColors.textDark)
+              'Ajouter des photos',
+              style: AppTextStyles.heading2.copyWith(color: AppColors.textDark),
             ),
             SizedBox(height: AppSpacing.sm),
             Text(
@@ -225,15 +245,18 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xl, 
-                  vertical: AppSpacing.md
+                  horizontal: AppSpacing.xl,
+                  vertical: AppSpacing.md,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppSizes.borderRadius),
                 ),
               ),
               icon: Icon(Icons.add_photo_alternate, color: AppColors.white),
-              label: Text('Sélectionner des photos', style: AppTextStyles.button),
+              label: Text(
+                'Sélectionner des photos',
+                style: AppTextStyles.button,
+              ),
             ),
           ],
         ),
@@ -249,7 +272,9 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
         crossAxisSpacing: AppSpacing.sm,
         mainAxisSpacing: AppSpacing.sm,
       ),
-      itemCount: _selectedImages.length < _maxImages ? _selectedImages.length + 1 : _selectedImages.length,
+      itemCount: _selectedImages.length < _maxImages
+          ? _selectedImages.length + 1
+          : _selectedImages.length,
       itemBuilder: (context, index) {
         if (index == _selectedImages.length) {
           return GestureDetector(
@@ -258,20 +283,26 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
               decoration: BoxDecoration(
                 color: AppColors.backgroundLight,
                 borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                border: Border.all(color: AppColors.border, width: 2, style: BorderStyle.solid),
+                border: Border.all(
+                  color: AppColors.border,
+                  width: 2,
+                  style: BorderStyle.solid,
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.add, 
-                    size: AppSizes.iconLg, 
-                    color: AppColors.primary
+                    Icons.add,
+                    size: AppSizes.iconLg,
+                    color: AppColors.primary,
                   ),
                   SizedBox(height: 4),
                   Text(
                     'Ajouter',
-                    style: AppTextStyles.caption.copyWith(color: AppColors.primary),
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.primary,
+                    ),
                   ),
                 ],
               ),

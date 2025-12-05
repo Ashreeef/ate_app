@@ -75,9 +75,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         // Show loading indicator while profile is being loaded
         if (state.status == ProfileStatus.loading || _isLoadingPosts) {
           return Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: AppBar(
-              backgroundColor: AppColors.white,
+              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
               elevation: 0,
               automaticallyImplyLeading: false,
               centerTitle: true,
@@ -99,10 +99,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         final avatar = user?.profileImage ?? FakeUserData.avatarUrl;
 
         return Scaffold(
-          backgroundColor: AppColors.white,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
           appBar: AppBar(
-            backgroundColor: AppColors.white,
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 0,
             automaticallyImplyLeading: false,
             centerTitle: true,
@@ -178,10 +178,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   /// Convert database posts to grid display format
   List<Map<String, dynamic>> _convertPostsToFakeFormat() {
     return _posts.map((post) {
-      final images = post.getImageList();
       return {
         'id': post.id,
-        'imageUrl': images.isNotEmpty ? images.first : FakeUserData.avatarUrl,
+        'imageUrl': post.images.isNotEmpty
+            ? post.images.first
+            : FakeUserData.avatarUrl,
         'likes': post.likesCount,
         'comments': post.commentsCount,
       };
