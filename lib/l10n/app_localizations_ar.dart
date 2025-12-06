@@ -527,7 +527,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get imageLoadFailed => 'فشل تحميل الصورة';
 
   @override
-  String get sharePostDescription => 'سيتم تنفيذ وظيفة المشاركة هنا.';
+  String get sharePostDescription =>
+      'يمكنك مشاركة هذا المنشور عن طريق أخذ لقطة شاشة أو نسخ الرابط. ميزات المشاركة الاجتماعية قادمة قريبًا!';
 
   @override
   String get reportAction => 'إبلاغ';

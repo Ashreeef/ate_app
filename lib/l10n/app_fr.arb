@@ -167,7 +167,7 @@
   "emailSupport": "📧 Email: support@ate-app.com",
   "addComment": "Ajouter un commentaire...",
   "imageLoadFailed": "Échec du chargement de l'image",
-  "sharePostDescription": "La fonctionnalité de partage sera implémentée ici.",
+  "sharePostDescription": "Vous pouvez partager ce post en prenant une capture d'écran ou en copiant le lien. Les fonctionnalités de partage social arrivent bientôt!",
   "reportAction": "Signaler",
   "linkCopied": "Lien copié dans le presse-papiers",
   "hoursAgo": "Il y a {hours} heures",

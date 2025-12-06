@@ -469,7 +469,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get comments => 'Comments';
 
   @override
-  String get sharePost => 'Share post';
+  String get sharePost => 'Share Post';
 
   @override
   String get ok => 'OK';
@@ -529,7 +529,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sharePostDescription =>
-      'Share functionality will be implemented here.';
+      'You can share this post by taking a screenshot or copying the link. Social sharing features coming soon!';
 
   @override
   String get reportAction => 'Report';

@@ -6,10 +6,9 @@ import '../../widgets/feed/feed_header.dart';
 import '../../blocs/feed/feed_bloc.dart';
 import '../../blocs/feed/feed_event.dart';
 import '../../blocs/feed/feed_state.dart';
-import '../../blocs/post/post_bloc.dart';
-import '../../blocs/post/post_event.dart';
 import '../../models/post.dart';
 import '../../services/auth_service.dart';
+import '../../repositories/post_repository.dart';
 import '../../l10n/app_localizations.dart';
 import 'post_detail_screen.dart';
 import '../profile/other_user_profile_screen.dart';
@@ -25,6 +24,7 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   bool _isMonFeedSelected = true;
   late ScrollController _scrollController;
+  final PostRepository _postRepo = PostRepository();
 
   @override
   void initState() {
@@ -112,6 +112,75 @@ class _FeedScreenState extends State<FeedScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _toggleLike(Post post) async {
+    final currentUserId = AuthService.instance.currentUserId ?? 1;
+    final postId = post.id;
+
+    if (postId == null) return;
+
+    try {
+      final fullPost = await _postRepo.getPostById(postId);
+      if (fullPost == null) return;
+
+      // Update database
+      List<int> likedBy = List.from(fullPost.likedBy);
+      final isLiked = likedBy.contains(currentUserId);
+
+      if (isLiked) {
+        likedBy.remove(currentUserId);
+      } else {
+        likedBy.add(currentUserId);
+      }
+
+      final updatedPost = fullPost.copyWith(
+        likedBy: likedBy,
+        likesCount: likedBy.length,
+      );
+      await _postRepo.updatePost(updatedPost);
+
+      // Refresh feed
+      context.read<FeedBloc>().add(const LoadFeed());
+    } catch (e) {
+      print('Error toggling like: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to update like')));
+    }
+  }
+
+  Future<void> _toggleSave(Post post) async {
+    final currentUserId = AuthService.instance.currentUserId ?? 1;
+    final postId = post.id;
+
+    if (postId == null) return;
+
+    try {
+      final fullPost = await _postRepo.getPostById(postId);
+      if (fullPost == null) return;
+
+      // Update database
+      List<int> savedBy = List.from(fullPost.savedBy);
+      final isSaved = savedBy.contains(currentUserId);
+
+      if (isSaved) {
+        savedBy.remove(currentUserId);
+      } else {
+        savedBy.add(currentUserId);
+      }
+
+      final updatedPost = fullPost.copyWith(savedBy: savedBy);
+      await _postRepo.updatePost(updatedPost);
+
+      // Refresh feed
+      context.read<FeedBloc>().add(const LoadFeed());
+    } catch (e) {
+      print('Error toggling save: $e');
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to update save')));
+    }
   }
 
   Widget _buildPostCard(Post post) {
@@ -245,9 +314,7 @@ class _FeedScreenState extends State<FeedScreen> {
                         color: isLiked ? Colors.red : AppColors.textMedium,
                       ),
                       onPressed: () {
-                        context.read<PostBloc>().add(
-                          ToggleLikeEvent(post.id!, currentUserId),
-                        );
+                        _toggleLike(post);
                       },
                     ),
                     Text('${post.likesCount}', style: AppTextStyles.body),
@@ -276,9 +343,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     color: isSaved ? AppColors.primary : AppColors.textMedium,
                   ),
                   onPressed: () {
-                    context.read<PostBloc>().add(
-                      ToggleSaveEvent(post.id!, currentUserId),
-                    );
+                    _toggleSave(post);
                   },
                 ),
               ],

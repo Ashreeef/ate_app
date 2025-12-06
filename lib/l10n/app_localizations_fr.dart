@@ -534,7 +534,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get sharePostDescription =>
-      'La fonctionnalité de partage sera implémentée ici.';
+      'Vous pouvez partager ce post en prenant une capture d\'écran ou en copiant le lien. Les fonctionnalités de partage social arrivent bientôt!';
 
   @override
   String get reportAction => 'Signaler';

@@ -991,7 +991,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePost.
   ///
   /// In en, this message translates to:
-  /// **'Share post'**
+  /// **'Share Post'**
   String get sharePost;
 
   /// No description provided for @ok.
@@ -1105,7 +1105,7 @@ abstract class AppLocalizations {
   /// No description provided for @sharePostDescription.
   ///
   /// In en, this message translates to:
-  /// **'Share functionality will be implemented here.'**
+  /// **'You can share this post by taking a screenshot or copying the link. Social sharing features coming soon!'**
   String get sharePostDescription;
 
   /// No description provided for @reportAction.
