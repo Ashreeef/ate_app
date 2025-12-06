@@ -301,10 +301,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     final avatar = _user!.profileImage ?? FakeUserData.avatarUrl;
 
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
           icon: Icon(

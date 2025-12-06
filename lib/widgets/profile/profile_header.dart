@@ -36,7 +36,7 @@ class ProfileHeader extends StatelessWidget {
           CircleAvatar(
             radius: 50,
             backgroundImage: NetworkImage(avatarUrl),
-            backgroundColor: AppColors.backgroundLight,
+            backgroundColor: Theme.of(context).cardTheme.color?.withOpacity(0.3) ?? Colors.grey[700],
           ),
           SizedBox(height: AppSpacing.md),
 

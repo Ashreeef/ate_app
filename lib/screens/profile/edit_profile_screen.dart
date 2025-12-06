@@ -138,10 +138,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final user = state.user;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -186,7 +186,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                       child: CircleAvatar(
                         radius: 60,
-                        backgroundColor: AppColors.backgroundLight,
+                        backgroundColor:
+                            Theme.of(
+                              context,
+                            ).cardTheme.color?.withOpacity(0.3) ??
+                            Colors.grey[700],
                         backgroundImage:
                             (user != null &&
                                 (user.profileImage?.isNotEmpty ?? false))

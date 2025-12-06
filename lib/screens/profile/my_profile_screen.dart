@@ -75,9 +75,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         // Show loading indicator while profile is being loaded
         if (state.status == ProfileStatus.loading || _isLoadingPosts) {
           return Scaffold(
-            backgroundColor: AppColors.white,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             appBar: AppBar(
-              backgroundColor: AppColors.white,
+              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
               elevation: 0,
               automaticallyImplyLeading: false,
               centerTitle: true,
@@ -99,10 +99,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         final avatar = user?.profileImage ?? FakeUserData.avatarUrl;
 
         return Scaffold(
-          backgroundColor: AppColors.white,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
           appBar: AppBar(
-            backgroundColor: AppColors.white,
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             elevation: 0,
             automaticallyImplyLeading: false,
             centerTitle: true,
