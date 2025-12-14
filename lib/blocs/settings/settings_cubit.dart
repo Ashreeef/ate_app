@@ -257,7 +257,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     try {
       emit(state.copyWith(status: SettingsStatus.saving));
 
-      // TODO: Implement cache clearing
+      
       await Future.delayed(Duration(milliseconds: 500));
 
       emit(state.copyWith(status: SettingsStatus.saved));

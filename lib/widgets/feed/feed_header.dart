@@ -31,7 +31,12 @@ class FeedHeader extends StatelessWidget {
         bottom: false,
         child: Row(
           children: [
-            SvgPicture.asset('assets/images/logo_black.svg', height: 40),
+            SvgPicture.asset(
+              Theme.of(context).brightness == Brightness.dark
+                  ? 'assets/images/logo_white.svg'
+                  : 'assets/images/logo_black.svg',
+              height: 40,
+            ),
             const SizedBox(width: AppSpacing.lg),
             Expanded(
               child: Row(
@@ -74,19 +79,22 @@ class _FeedToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.textDark : Colors.transparent,
+          color: isSelected ? AppColors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(AppSizes.borderRadiusRound),
         ),
         child: Center(
           child: Text(
             text,
             style: AppTextStyles.bodyMedium.copyWith(
-              color: isSelected ? AppColors.white : AppColors.textDark,
+              color: isSelected
+                  ? AppColors.white
+                  : (isDarkMode ? Colors.white70 : AppColors.textDark),
               fontWeight: FontWeight.w600,
               fontFamily: 'DM Sans',
             ),

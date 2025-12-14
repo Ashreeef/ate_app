@@ -137,13 +137,13 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
         }
       },
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
           title: Text(
             AppLocalizations.of(context)!.newPost,
             style: AppTextStyles.heading3,
           ),
-          backgroundColor: AppColors.white,
+          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: Icon(
@@ -189,7 +189,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   Widget _buildImageCarousel() {
     return Container(
       height: 320,
-      color: AppColors.white,
+      color: Theme.of(context).cardColor,
       child: Column(
         children: [
           Expanded(
@@ -277,7 +277,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           SizedBox(height: AppSpacing.sm),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
               border: Border.all(color: AppColors.border),
             ),
@@ -322,7 +322,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           SizedBox(height: AppSpacing.sm),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
               border: Border.all(color: AppColors.border),
             ),
@@ -382,7 +382,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           SizedBox(height: AppSpacing.sm),
           Container(
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
               border: Border.all(color: AppColors.border),
             ),
@@ -423,7 +423,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           Container(
             padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
               border: Border.all(color: AppColors.border),
             ),

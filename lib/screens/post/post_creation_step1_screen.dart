@@ -97,7 +97,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
     final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppSizes.borderRadiusLg),
@@ -147,7 +147,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // REMOVED AppBar - navigation shell handles it now
       body: Column(
         children: [
@@ -167,7 +167,7 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
       height: 100,
       padding: EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardColor,
         border: Border(bottom: BorderSide(color: AppColors.border, width: 1)),
       ),
       child: ListView.builder(
