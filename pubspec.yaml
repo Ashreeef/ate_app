@@ -70,6 +70,11 @@ dependencies:
   # Internationalization
   intl: ^0.20.0
 
+  # Notifications
+  firebase_core: ^2.28.0
+  firebase_messaging: ^14.9.2
+  flutter_local_notifications: ^17.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

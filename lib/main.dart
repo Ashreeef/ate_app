@@ -15,6 +15,7 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/auth/forgot_password_screen.dart';
 import 'screens/home/navigation_shell.dart';
+import 'screens/notifications/notifications_screen.dart';
 import 'blocs/feed/feed_bloc.dart';
 import 'blocs/post/post_bloc.dart';
 import 'blocs/auth/auth_bloc.dart';
@@ -27,6 +28,7 @@ import 'repositories/like_repository.dart';
 import 'repositories/saved_post_repository.dart';
 import 'repositories/search_history_repository.dart';
 import 'services/auth_service.dart';
+import 'services/notification_service.dart';
 import 'database/seed_data.dart';
 import 'database/quick_validation.dart';
 import 'blocs/search/search_bloc.dart';
@@ -46,6 +48,9 @@ final ProfileRepository _profileRepository = ProfileRepository();
 // Track if FFI has been initialized
 bool _ffiInitialized = false;
 
+// Global navigator key for notification handling
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -58,6 +63,11 @@ void main() async {
 
   // Initialize auth service
   await AuthService.instance.initialize();
+
+  // Initialize notification service
+  await NotificationService.instance.initialize(
+    onNotificationTap: _handleNotificationTap,
+  );
 
   // Seed database with comprehensive test data (development only)
   await SeedData.seedDatabase(
@@ -74,6 +84,34 @@ void main() async {
   await QuickDatabaseValidation.validate();
 
   runApp(const MyApp());
+}
+
+/// Handle notification tap - navigate to appropriate screen
+void _handleNotificationTap(Map<String, dynamic> data) {
+  final type = data['type'] as String?;
+  final postId = data['postId'] as String?;
+
+  // Navigate based on notification type
+  switch (type) {
+    case 'post':
+      if (postId != null) {
+        navigatorKey.currentState?.pushNamed('/notifications');
+      }
+      break;
+    case 'comment':
+      if (postId != null) {
+        navigatorKey.currentState?.pushNamed('/notifications');
+      }
+      break;
+    case 'like':
+      if (postId != null) {
+        navigatorKey.currentState?.pushNamed('/notifications');
+      }
+      break;
+    default:
+      // Default action - open notifications screen
+      navigatorKey.currentState?.pushNamed('/notifications');
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -156,6 +194,7 @@ class MyApp extends StatelessWidget {
             return MaterialApp(
               title: 'Ate',
               debugShowCheckedModeBanner: false,
+              navigatorKey: navigatorKey,
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: settingsState.darkTheme
@@ -189,6 +228,7 @@ class MyApp extends StatelessWidget {
                 // Protected routes (auth required)
                 final protectedRoutes = {
                   '/home': () => const NavigationShell(),
+                  '/notifications': () => const NotificationsScreen(),
                 };
 
                 // Check if it's a public route

@@ -24,11 +24,11 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 3, // Keep version 3 from feature branch
+      version: 4, // Incremented for notifications table
       onCreate: _onCreate,
-      onUpgrade: _onUpgrade, // Keep upgrade logic from feature branch
+      onUpgrade: _onUpgrade,
       onConfigure: (db) async {
-        // Keep foreign key constraints from develop
+        // Keep foreign key constraints
         await db.execute('PRAGMA foreign_keys = ON');
       },
     );
@@ -166,6 +166,21 @@ class DatabaseHelper {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
+
+    // Create notifications table
+    await db.execute('''
+      CREATE TABLE notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        body TEXT NOT NULL,
+        image_url TEXT,
+        data TEXT,
+        created_at TEXT,
+        is_read INTEGER DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
   }
 
   /// Close database connection
@@ -186,6 +201,7 @@ class DatabaseHelper {
   /// Clear all data (for testing)
   Future<void> clearAllData() async {
     final db = await database;
+    await db.delete('notifications');
     await db.delete('saved_posts');
     await db.delete('comments');
     await db.delete('likes');
