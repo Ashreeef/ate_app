@@ -13,7 +13,7 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
   final NotificationService _notificationService = NotificationService.instance;
-  late Future<List<Notification>> _notificationsFuture;
+  late Future<List<AppNotification>> _notificationsFuture;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: _refreshNotifications,
-        child: FutureBuilder<List<Notification>>(
+        child: FutureBuilder<List<AppNotification>>(
           future: _notificationsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -117,7 +117,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   Widget _buildNotificationCard(
     BuildContext context,
-    Notification notification,
+    AppNotification notification,
   ) {
     return Dismissible(
       key: Key(
