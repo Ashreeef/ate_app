@@ -109,17 +109,28 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           controller: controller,
           maxLines: maxLines,
           keyboardType: keyboardType,
+          style: TextStyle(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.white
+                : AppColors.textDark,
+          ),
           decoration: InputDecoration(
             prefixIcon: Icon(icon, color: AppColors.primary),
             filled: true,
-            fillColor: AppColors.backgroundLight,
+            fillColor: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.secondary.withValues(alpha: 0.1)
+                : AppColors.backgroundLight,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              borderSide: BorderSide(color: AppColors.border),
+              borderSide: BorderSide(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.white.withValues(alpha: 0.2)
+                    : AppColors.border,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadius),
@@ -174,7 +185,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           children: [
             // Avatar Section
             Container(
-              color: AppColors.white,
+              color: Theme.of(context).cardColor,
               padding: EdgeInsets.all(AppSpacing.xl),
               child: Center(
                 child: Stack(
@@ -286,7 +297,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
             // Form Section
             Container(
-              color: AppColors.white,
+              color: Theme.of(context).cardColor,
               padding: EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

@@ -233,18 +233,43 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ? 1
               : (widget.maxLines ?? config.maxLines),
           minLines: widget.minLines ?? config.minLines,
-          style: AppTextStyles.bodyMedium,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color:
+                widget.type == CustomTextFieldType.search &&
+                    Theme.of(context).brightness == Brightness.dark
+                ? AppColors.white
+                : null,
+          ),
           decoration: InputDecoration(
             hintText: widget.hint ?? config.hint,
             hintStyle: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textLight,
+              color:
+                  widget.type == CustomTextFieldType.search &&
+                      Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.textLight
+                  : AppColors.textLight,
             ),
-            prefixIcon: widget.prefixIcon ?? config.prefixIcon,
+            prefixIcon: widget.prefixIcon != null
+                ? IconTheme(
+                    data: IconThemeData(
+                      color:
+                          widget.type == CustomTextFieldType.search &&
+                              Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.white
+                          : null,
+                    ),
+                    child: widget.prefixIcon!,
+                  )
+                : config.prefixIcon,
             suffixIcon: _buildSuffixIcon(),
             filled: true,
-            fillColor: widget.enabled
-                ? AppColors.white
-                : AppColors.backgroundLight,
+            fillColor:
+                widget.type == CustomTextFieldType.search &&
+                    Theme.of(context).brightness == Brightness.dark
+                ? AppColors.secondary.withValues(alpha: 0.15)
+                : (widget.enabled
+                      ? AppColors.white
+                      : AppColors.backgroundLight),
             contentPadding: EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
               vertical: widget.type == CustomTextFieldType.multiline
@@ -256,7 +281,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderSide: BorderSide(
                 color: widget.error != null
                     ? AppColors.error
-                    : AppColors.border,
+                    : (widget.type == CustomTextFieldType.search &&
+                              Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.white
+                          : AppColors.border),
                 width: 1,
               ),
             ),
@@ -265,7 +293,10 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderSide: BorderSide(
                 color: widget.error != null
                     ? AppColors.error
-                    : AppColors.border,
+                    : (widget.type == CustomTextFieldType.search &&
+                              Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.white
+                          : AppColors.border),
                 width: 1,
               ),
             ),
@@ -274,16 +305,25 @@ class _CustomTextFieldState extends State<CustomTextField> {
               borderSide: BorderSide(
                 color: widget.error != null
                     ? AppColors.error
-                    : AppColors.primary,
+                    : (widget.type == CustomTextFieldType.search &&
+                              Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.white
+                          : AppColors.primary),
                 width: 2,
               ),
             ),
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSizes.borderRadiusRound),
               borderSide: BorderSide(
-                color: AppColors.border.withValues(
-                  alpha: AppConstants.opacityMedium,
-                ),
+                color:
+                    widget.type == CustomTextFieldType.search &&
+                        Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.white.withValues(
+                        alpha: AppConstants.opacityMedium,
+                      )
+                    : AppColors.border.withValues(
+                        alpha: AppConstants.opacityMedium,
+                      ),
                 width: 1.5,
               ),
             ),
@@ -348,7 +388,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
     if (widget.type == CustomTextFieldType.search &&
         _controller.text.isNotEmpty) {
       return IconButton(
-        icon: Icon(Icons.close, color: AppColors.textMedium),
+        icon: Icon(
+          Icons.close,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? AppColors.white
+              : AppColors.textMedium,
+        ),
         onPressed: () {
           _controller.clear();
           widget.onChanged?.call('');
