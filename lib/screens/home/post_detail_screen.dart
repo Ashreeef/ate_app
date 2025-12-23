@@ -258,7 +258,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         AppSizes.borderRadius,
                       ),
                     ),
-                    color: AppColors.white,
+                    color: Theme.of(context).cardColor,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -602,7 +602,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         ),
-        color: AppColors.white,
+        color: Theme.of(context).cardColor,
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Center(child: CircularProgressIndicator()),
@@ -616,7 +616,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.borderRadius),
       ),
-      color: AppColors.white,
+      color: Theme.of(context).cardColor,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
@@ -736,7 +736,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: Theme.of(context).cardColor,
         border: Border(top: BorderSide(color: AppColors.border, width: 1)),
       ),
       child: Row(

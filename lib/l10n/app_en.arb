@@ -240,6 +240,7 @@
   "activeChallengesLabel": "Active challenges",
   "allChallengesLabel": "All challenges",
   "noChallengesAvailable": "No challenges available",
-  "newChallengesWillAppear": "New challenges will appear here"
-}
-
+  "newChallengesWillAppear": "New challenges will appear here",
+  "notifications": "Notifications",
+  "noNotifications": "No notifications",
+  "markAllAsRead": "Mark all as read"

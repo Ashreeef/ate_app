@@ -240,6 +240,7 @@
   "activeChallengesLabel": "Challenges actifs",
   "allChallengesLabel": "Tous les challenges",
   "noChallengesAvailable": "Aucun challenge disponible",
-  "newChallengesWillAppear": "Les nouveaux challenges apparaîtront ici"
-}
-
+  "newChallengesWillAppear": "Les nouveaux challenges apparaîtront ici",
+  "notifications": "Notifications",
+  "noNotifications": "Pas de notifications",
+  "markAllAsRead": "Marquer tout comme lu"
