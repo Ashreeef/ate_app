@@ -79,7 +79,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             : null,
         rating: _rating,
         images: compressedImagePaths,
-        userAvatarPath: null,
+        userAvatarPath: currentUser?.profileImage,
       );
 
       // Emit create post event
