@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/constants.dart';
 import '../../widgets/common/custom_button.dart';
 import '../../widgets/common/custom_text_field.dart';
+import '../../blocs/auth/auth_bloc.dart';
+import '../../blocs/auth/auth_event.dart';
+import '../../blocs/auth/auth_state.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -23,20 +27,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   void _handleResetPassword() {
     if (_formKey.currentState?.validate() ?? false) {
-      // TODO: Implement password reset logic
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.resetEmailSent),
-          backgroundColor: AppColors.success,
-        ),
+      // Trigger forgot password event
+      context.read<AuthBloc>().add(
+        ForgotPasswordRequested(email: _emailController.text.trim()),
       );
-      // Navigate back to login after a delay
-      Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) {
-          Navigator.pop(context);
-        }
-      });
     }
   }
 
@@ -46,53 +40,98 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const Spacer(flex: 3),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is PasswordResetEmailSent) {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+          // Navigate back to login after a delay
+          Future.delayed(const Duration(seconds: 2), () {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+          });
+        } else if (state is AuthError) {
+          // Show error message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          final isLoading = state is AuthLoading;
 
-                          _buildHeader(),
-
-                          const SizedBox(height: AppSpacing.xxxl),
-
-                          _buildEmailForm(),
-
-                          const SizedBox(height: AppSpacing.lg),
-
-                          CustomButton(
-                            text: AppLocalizations.of(context)!.resetPassword,
-                            onPressed: _handleResetPassword,
+          return Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.lg,
                           ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const Spacer(flex: 3),
 
-                          const SizedBox(height: AppSpacing.xxl),
+                                _buildHeader(),
 
-                          _buildLoginLink(),
+                                const SizedBox(height: AppSpacing.xxxl),
 
-                          const Spacer(flex: 4),
-                        ],
+                                _buildEmailForm(),
+
+                                const SizedBox(height: AppSpacing.lg),
+
+                                CustomButton(
+                                  text: isLoading
+                                      ? 'Sending...'
+                                      : AppLocalizations.of(
+                                          context,
+                                        )!.resetPassword,
+                                  onPressed: isLoading
+                                      ? () {}
+                                      : _handleResetPassword,
+                                ),
+
+                                const SizedBox(height: AppSpacing.xxl),
+
+                                _buildLoginLink(),
+
+                                const Spacer(flex: 4),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

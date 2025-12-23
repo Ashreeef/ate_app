@@ -1,8 +1,10 @@
 class User {
-  final int? id;
+  final int?
+  id; // Deprecated - kept for backward compatibility during migration
+  final String? uid; // Firebase User ID (primary identifier)
   final String username;
   final String email;
-  final String? password;
+  final String? password; // Deprecated - Firebase Auth handles passwords
   final String? profileImage;
   final String? bio;
   final String? displayName;
@@ -12,9 +14,11 @@ class User {
   final int points;
   final String level;
   final String? createdAt;
+  final String? updatedAt;
 
   User({
     this.id,
+    this.uid,
     required this.username,
     required this.email,
     this.password,
@@ -27,9 +31,10 @@ class User {
     this.points = 0,
     this.level = 'Bronze',
     this.createdAt,
+    this.updatedAt,
   });
 
-  // Convert User to Map for database
+  // Convert User to Map for database (local SQLite)
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -48,7 +53,26 @@ class User {
     };
   }
 
-  // Create User from Map
+  // Convert User to Map for Firestore
+  Map<String, dynamic> toFirestore() {
+    return {
+      'uid': uid,
+      'username': username,
+      'email': email,
+      'profileImage': profileImage,
+      'bio': bio,
+      'displayName': displayName,
+      'phone': phone,
+      'followersCount': followersCount,
+      'followingCount': followingCount,
+      'points': points,
+      'level': level,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+  }
+
+  // Create User from Map (local SQLite)
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'] as int?,
@@ -67,9 +91,29 @@ class User {
     );
   }
 
+  // Create User from Firestore document
+  factory User.fromFirestore(Map<String, dynamic> data) {
+    return User(
+      uid: data['uid'] as String?,
+      username: data['username'] as String? ?? '',
+      email: data['email'] as String? ?? '',
+      profileImage: data['profileImage'] as String?,
+      bio: data['bio'] as String?,
+      displayName: data['displayName'] as String?,
+      phone: data['phone'] as String?,
+      followersCount: data['followersCount'] as int? ?? 0,
+      followingCount: data['followingCount'] as int? ?? 0,
+      points: data['points'] as int? ?? 0,
+      level: data['level'] as String? ?? 'Bronze',
+      createdAt: data['createdAt'] as String?,
+      updatedAt: data['updatedAt'] as String?,
+    );
+  }
+
   // Copy with method for updates
   User copyWith({
     int? id,
+    String? uid,
     String? username,
     String? email,
     String? password,
@@ -82,9 +126,11 @@ class User {
     int? points,
     String? level,
     String? createdAt,
+    String? updatedAt,
   }) {
     return User(
       id: id ?? this.id,
+      uid: uid ?? this.uid,
       username: username ?? this.username,
       email: email ?? this.email,
       password: password ?? this.password,
@@ -97,11 +143,12 @@ class User {
       points: points ?? this.points,
       level: level ?? this.level,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   @override
   String toString() {
-    return 'User(id: $id, username: $username, email: $email, displayName: $displayName, followers: $followersCount, following: $followingCount)';
+    return 'User(id: $id, uid: $uid, username: $username, email: $email, displayName: $displayName, followers: $followersCount, following: $followingCount)';
   }
 }

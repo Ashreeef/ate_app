@@ -2,18 +2,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'user_event.dart';
 import 'user_state.dart';
 import '../../repositories/user_repository.dart';
-import '../../services/auth_service.dart';
+import '../../repositories/auth_repository.dart';
 
 /// Bloc for handling user profile management
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository _userRepository;
-  final AuthService _authService;
+  final AuthRepository _authRepository;
 
   UserBloc({
     required UserRepository userRepository,
-    required AuthService authService,
+    required AuthRepository authRepository,
   }) : _userRepository = userRepository,
-       _authService = authService,
+       _authRepository = authRepository,
        super(const UserInitial()) {
     on<LoadUser>(_onLoadUser);
     on<UpdateUser>(_onUpdateUser);
@@ -92,9 +92,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     Emitter<UserState> emit,
   ) async {
     try {
-      if (_authService.isLoggedIn) {
-        final userId = _authService.currentUserId;
-        final user = await _userRepository.getUserById(userId!);
+      if (_authRepository.isAuthenticated) {
+        final user = await _authRepository.getCurrentUser();
 
         if (user != null) {
           emit(UserLoaded(user: user));

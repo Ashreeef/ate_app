@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../repositories/restaurant_repository.dart';
 import '../../repositories/search_history_repository.dart';
-import '../../services/auth_service.dart';
+import '../../repositories/auth_repository.dart';
 import 'search_event.dart';
 import 'search_state.dart';
 
@@ -9,15 +9,15 @@ import 'search_state.dart';
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final RestaurantRepository _restaurantRepository;
   final SearchHistoryRepository _searchHistoryRepository;
-  final AuthService _authService;
+  final AuthRepository _authRepository;
 
   SearchBloc({
     required RestaurantRepository restaurantRepository,
     required SearchHistoryRepository searchHistoryRepository,
-    required AuthService authService,
+    required AuthRepository authRepository,
   }) : _restaurantRepository = restaurantRepository,
        _searchHistoryRepository = searchHistoryRepository,
-       _authService = authService,
+       _authRepository = authRepository,
        super(const SearchInitial()) {
     on<LoadSearchOverview>(_onLoadSearchOverview);
     on<SearchRestaurantsRequested>(_onSearchRestaurantsRequested);
@@ -70,11 +70,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       );
 
       // Save search query to history for current user if logged in
-      if (_authService.isLoggedIn && _authService.currentUserId != null) {
-        await _searchHistoryRepository.addSearchQuery(
-          _authService.currentUserId!,
-          trimmedQuery,
-        );
+      // Note: Will need to migrate search history to use UID instead of integer ID
+      if (_authRepository.isAuthenticated &&
+          _authRepository.currentUserId != null) {
+        // TODO: Migrate search history to use Firebase UID
+        // For now, skip saving search history until migration is complete
       }
 
       emit(SearchResultsLoaded(query: trimmedQuery, results: results));

@@ -53,3 +53,13 @@ class SignupSuccess extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+/// State when password reset email is sent
+class PasswordResetEmailSent extends AuthState {
+  final String message;
+
+  const PasswordResetEmailSent({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

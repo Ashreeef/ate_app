@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'dart:async';
 import '../../utils/constants.dart';
-import '../../services/auth_service.dart';
+import '../../blocs/auth/auth_bloc.dart';
+import '../../blocs/auth/auth_event.dart';
+import '../../blocs/auth/auth_state.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -26,6 +29,10 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _initializeAnimations();
     _startAnimationSequence();
+    // Trigger auth check on splash screen load
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthBloc>().add(const AuthCheckRequested());
+    });
   }
 
   void _initializeAnimations() {
@@ -138,9 +145,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   void _navigateToNextScreen() {
     if (mounted) {
-      // Check authentication status
-      final authService = AuthService.instance;
-      if (authService.isLoggedIn) {
+      // Check authentication status from AuthBloc
+      final authState = context.read<AuthBloc>().state;
+      if (authState is Authenticated) {
         // User is logged in, go directly to home
         Navigator.of(context).pushReplacementNamed('/home');
       } else {

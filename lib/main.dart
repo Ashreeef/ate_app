@@ -34,10 +34,7 @@ import 'repositories/comment_repository.dart';
 import 'repositories/like_repository.dart';
 import 'repositories/saved_post_repository.dart';
 import 'repositories/search_history_repository.dart';
-import 'services/auth_service.dart';
-import 'services/firebase_auth_service.dart';
-import 'services/cloudinary_storage_service.dart';
-import 'services/firestore_service.dart';
+import 'repositories/auth_repository.dart';
 import 'services/notification_service.dart';
 import 'database/seed_data.dart';
 import 'database/quick_validation.dart';
@@ -54,6 +51,7 @@ final SavedPostRepository _savedPostRepository = SavedPostRepository();
 final SearchHistoryRepository _searchHistoryRepository =
     SearchHistoryRepository();
 final ProfileRepository _profileRepository = ProfileRepository();
+final AuthRepository _authRepository = AuthRepository();
 
 // Track if FFI has been initialized
 bool _ffiInitialized = false;
@@ -77,9 +75,6 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
     _ffiInitialized = true;
   }
-
-  // Initialize auth service (will be migrated to Firebase)
-  await AuthService.instance.initialize();
 
   // Initialize notification service
   await NotificationService.instance.initialize(
@@ -136,8 +131,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService.instance;
-
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<UserRepository>(
@@ -161,20 +154,19 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<ProfileRepository>(
           create: (context) => _profileRepository,
         ),
-        RepositoryProvider<AuthService>(create: (context) => authService),
+        RepositoryProvider<AuthRepository>(
+          create: (context) => _authRepository,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(
-              userRepository: _userRepository,
-              authService: authService,
-            ),
+            create: (context) => AuthBloc(authRepository: _authRepository),
           ),
           BlocProvider<UserBloc>(
             create: (context) => UserBloc(
               userRepository: _userRepository,
-              authService: authService,
+              authRepository: _authRepository,
             ),
           ),
           BlocProvider<FeedBloc>(
@@ -192,7 +184,7 @@ class MyApp extends StatelessWidget {
             create: (context) => SearchBloc(
               restaurantRepository: _restaurantRepository,
               searchHistoryRepository: _searchHistoryRepository,
-              authService: authService,
+              authRepository: _authRepository,
             ),
           ),
           BlocProvider<RestaurantBloc>(
@@ -258,8 +250,8 @@ class MyApp extends StatelessWidget {
 
                 // Check if it's a protected route
                 if (protectedRoutes.containsKey(settings.name)) {
-                  // Route guard: check if user is authenticated
-                  if (AuthService.instance.isLoggedIn) {
+                  // Route guard: check if user is authenticated with Firebase
+                  if (_authRepository.isAuthenticated) {
                     return MaterialPageRoute(
                       builder: (context) => protectedRoutes[settings.name]!(),
                       settings: settings,
