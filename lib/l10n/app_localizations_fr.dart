@@ -690,7 +690,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markAllRead => 'Tout marquer comme lu';
 
   @override
-  String get noNotifications => 'Aucune notification pour le moment';
+  String get noNotifications => 'Pas de notifications';
 
   @override
   String minutesAgo(Object minutes) {
@@ -761,4 +761,7 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get newChallengesWillAppear =>
       'Les nouveaux challenges apparaîtront ici';
+
+  @override
+  String get markAllAsRead => 'Marquer tout comme lu';
 }

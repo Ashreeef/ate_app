@@ -1381,7 +1381,7 @@ abstract class AppLocalizations {
   /// No description provided for @noNotifications.
   ///
   /// In en, this message translates to:
-  /// **'No notifications yet'**
+  /// **'No notifications'**
   String get noNotifications;
 
   /// No description provided for @minutesAgo.
@@ -1509,6 +1509,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'New challenges will appear here'**
   String get newChallengesWillAppear;
+
+  /// No description provided for @markAllAsRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllAsRead;
 }
 
 class _AppLocalizationsDelegate

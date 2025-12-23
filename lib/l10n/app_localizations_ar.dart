@@ -751,4 +751,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get newChallengesWillAppear => 'ستظهر التحديات الجديدة هنا';
+
+  @override
+  String get markAllAsRead => 'تعليم الكل كمقروء';
 }

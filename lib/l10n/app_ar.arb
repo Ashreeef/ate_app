@@ -240,6 +240,9 @@
   "activeChallengesLabel": "التحديات النشطة",
   "allChallengesLabel": "جميع التحديات",
   "noChallengesAvailable": "لا توجد تحديات متاحة",
-  "newChallengesWillAppear": "ستظهر التحديات الجديدة هنا"
+  "newChallengesWillAppear": "ستظهر التحديات الجديدة هنا",
+  "notifications": "الإشعارات",
+  "noNotifications": "لا توجد إشعارات بعد",
+  "markAllAsRead": "تعليم الكل كمقروء"
 }
 
