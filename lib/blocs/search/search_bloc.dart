@@ -57,7 +57,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     if (trimmedQuery.isEmpty) {
       // For "show all" scenario, load all restaurants
-      final results = await _restaurantRepository.getAllRestaurants();
+      final results = await _restaurantRepository.queryRestaurants(limit: 50);
       emit(SearchResultsLoaded(query: '', results: results));
       return;
     }
@@ -67,19 +67,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       final results = await _restaurantRepository.searchRestaurants(
         trimmedQuery,
+        limit: 50,
       );
-
-      // Save search query to history for current user if logged in
-      // Note: Will need to migrate search history to use UID instead of integer ID
-      if (_authRepository.isAuthenticated &&
-          _authRepository.currentUserId != null) {
-        // TODO: Migrate search history to use Firebase UID
-        // For now, skip saving search history until migration is complete
-      }
 
       emit(SearchResultsLoaded(query: trimmedQuery, results: results));
     } catch (e) {
-      emit(SearchError(message: 'Failed to perform search: ${e.toString()}'));
+      emit(SearchError(message: e.toString()));
     }
   }
 

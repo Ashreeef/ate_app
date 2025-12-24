@@ -117,12 +117,12 @@ class _SearchScreenState extends State<SearchScreen> {
                               child: RestaurantCard(
                                 restaurant: restaurant,
                                 onTap: () {
-                                  if (restaurant.id != null) {
+                                  if (restaurant.restaurantId != null) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => RestaurantPage(
-                                          restaurantId: restaurant.id!,
+                                          restaurantId: restaurant.restaurantId!,
                                         ),
                                       ),
                                     );

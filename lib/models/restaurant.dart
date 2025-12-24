@@ -1,77 +1,156 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+/// Restaurant Model
+/// Represents a restaurant with Firestore integration
 class Restaurant {
-  final int? id;
+  final String? restaurantId; // Firebase document ID
   final String name;
-  final String? location;
-  final String? cuisineType;
+  final String description;
+  final String cuisine;
+  final GeoPoint location; // Latitude/Longitude for geospatial queries
+  final String address;
+  final String? phone;
   final double rating;
-  final String? imageUrl;
+  final String priceRange; // $ - $$$$
+  final List<String> images;
+  final Map<String, dynamic> openingHours;
   final int postsCount;
-  final String? createdAt;
+  final List<String> searchKeywords; // For prefix-based search
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
   Restaurant({
-    this.id,
+    this.restaurantId,
     required this.name,
-    this.location,
-    this.cuisineType,
+    this.description = '',
+    required this.cuisine,
+    required this.location,
+    required this.address,
+    this.phone,
     this.rating = 0.0,
-    this.imageUrl,
+    this.priceRange = '\$\$',
+    this.images = const [],
+    this.openingHours = const {},
     this.postsCount = 0,
+    List<String>? searchKeywords,
     this.createdAt,
-  });
+    this.updatedAt,
+  }) : searchKeywords = searchKeywords ?? _generateSearchKeywords(name, cuisine);
 
-  /// Convert Restaurant to Map for database
-  Map<String, dynamic> toMap() {
+  /// Generate search keywords for prefix-based search
+  /// Creates lowercase prefixes for name and cuisine
+  static List<String> _generateSearchKeywords(String name, String cuisine) {
+    final keywords = <String>{};
+    
+    // Add name prefixes (lowercase)
+    final nameLower = name.toLowerCase();
+    for (int i = 1; i <= nameLower.length; i++) {
+      keywords.add(nameLower.substring(0, i));
+    }
+    
+    // Add cuisine prefixes (lowercase)
+    final cuisineLower = cuisine.toLowerCase();
+    for (int i = 1; i <= cuisineLower.length; i++) {
+      keywords.add(cuisineLower.substring(0, i));
+    }
+    
+    // Add full words
+    keywords.add(nameLower);
+    keywords.add(cuisineLower);
+    
+    return keywords.toList();
+  }
+
+  /// Convert Restaurant to Firestore document
+  Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
+      'restaurantId': restaurantId,
       'name': name,
+      'description': description,
+      'cuisine': cuisine,
       'location': location,
-      'cuisine_type': cuisineType,
+      'address': address,
+      'phone': phone,
       'rating': rating,
-      'image_url': imageUrl,
-      'posts_count': postsCount,
-      'created_at': createdAt,
+      'priceRange': priceRange,
+      'images': images,
+      'openingHours': openingHours,
+      'postsCount': postsCount,
+      'searchKeywords': searchKeywords,
+      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      'updatedAt': FieldValue.serverTimestamp(),
     };
   }
 
-  /// Create Restaurant from database Map
-  factory Restaurant.fromMap(Map<String, dynamic> map) {
+  /// Create Restaurant from Firestore document
+  factory Restaurant.fromFirestore(Map<String, dynamic> data) {
     return Restaurant(
-      id: map['id'] as int?,
-      name: map['name'] as String,
-      location: map['location'] as String?,
-      cuisineType: map['cuisine_type'] as String?,
-      rating: (map['rating'] as num?)?.toDouble() ?? 0.0,
-      imageUrl: map['image_url'] as String?,
-      postsCount: map['posts_count'] as int? ?? 0,
-      createdAt: map['created_at'] as String?,
+      restaurantId: data['restaurantId'] as String?,
+      name: data['name'] as String? ?? '',
+      description: data['description'] as String? ?? '',
+      cuisine: data['cuisine'] as String? ?? '',
+      location: data['location'] as GeoPoint? ?? const GeoPoint(0, 0),
+      address: data['address'] as String? ?? '',
+      phone: data['phone'] as String?,
+      rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
+      priceRange: data['priceRange'] as String? ?? '\$\$',
+      images: (data['images'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
+      openingHours: data['openingHours'] as Map<String, dynamic>? ?? {},
+      postsCount: data['postsCount'] as int? ?? 0,
+      searchKeywords: (data['searchKeywords'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
+      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
     );
   }
 
   /// Create a copy with updated fields
   Restaurant copyWith({
-    int? id,
+    String? restaurantId,
     String? name,
-    String? location,
-    String? cuisineType,
+    String? description,
+    String? cuisine,
+    GeoPoint? location,
+    String? address,
+    String? phone,
     double? rating,
-    String? imageUrl,
+    String? priceRange,
+    List<String>? images,
+    Map<String, dynamic>? openingHours,
     int? postsCount,
-    String? createdAt,
+    List<String>? searchKeywords,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Restaurant(
-      id: id ?? this.id,
+      restaurantId: restaurantId ?? this.restaurantId,
       name: name ?? this.name,
+      description: description ?? this.description,
+      cuisine: cuisine ?? this.cuisine,
       location: location ?? this.location,
-      cuisineType: cuisineType ?? this.cuisineType,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
       rating: rating ?? this.rating,
-      imageUrl: imageUrl ?? this.imageUrl,
+      priceRange: priceRange ?? this.priceRange,
+      images: images ?? this.images,
+      openingHours: openingHours ?? this.openingHours,
       postsCount: postsCount ?? this.postsCount,
+      searchKeywords: searchKeywords ?? this.searchKeywords,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
   @override
   String toString() {
-    return 'Restaurant(id: $id, name: $name, location: $location, rating: $rating)';
+    return 'Restaurant(id: $restaurantId, name: $name, cuisine: $cuisine, address: $address, rating: $rating)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Restaurant && other.restaurantId == restaurantId;
+  }
+
+  @override
+  int get hashCode => restaurantId.hashCode;
 }

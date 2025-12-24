@@ -9,7 +9,7 @@ import '../../blocs/restaurant/restaurant_state.dart';
 import '../../l10n/app_localizations.dart';
 
 class RestaurantPage extends StatelessWidget {
-  final int restaurantId;
+  final String restaurantId;
 
   const RestaurantPage({super.key, required this.restaurantId});
 

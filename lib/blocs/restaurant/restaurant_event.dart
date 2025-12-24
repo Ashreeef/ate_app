@@ -10,7 +10,7 @@ abstract class RestaurantEvent extends Equatable {
 
 /// Event to load a single restaurant by ID
 class LoadRestaurantById extends RestaurantEvent {
-  final int restaurantId;
+  final String restaurantId;
 
   const LoadRestaurantById({required this.restaurantId});
 

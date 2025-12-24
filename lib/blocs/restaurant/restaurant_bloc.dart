@@ -31,11 +31,7 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
         emit(const RestaurantError(message: 'Restaurant not found'));
       }
     } catch (e) {
-      emit(
-        RestaurantError(
-          message: 'Failed to load restaurant: ${e.toString()}',
-        ),
-      );
+      emit(RestaurantError(message: e.toString()));
     }
   }
 }

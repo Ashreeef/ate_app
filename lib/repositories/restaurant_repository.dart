@@ -1,192 +1,508 @@
-import '../database/database_helper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/restaurant.dart';
+import '../services/firestore_service.dart';
 
 /// Repository for Restaurant data operations
+/// Handles all Firestore operations for restaurants
 class RestaurantRepository {
-  final DatabaseHelper _db = DatabaseHelper.instance;
+  final FirestoreService _firestoreService;
+
+  RestaurantRepository({
+    FirestoreService? firestoreService,
+  }) : _firestoreService = firestoreService ?? FirestoreService();
 
   // ==================== CREATE ====================
 
   /// Create a new restaurant
-  Future<int> createRestaurant(Restaurant restaurant) async {
-    return await _db.insert('restaurants', restaurant.toMap());
+  /// Returns the created restaurant's document ID
+  Future<String> createRestaurant(Restaurant restaurant) async {
+    try {
+      final docRef = _firestoreService.restaurants.doc();
+      final restaurantWithId = restaurant.copyWith(restaurantId: docRef.id);
+      
+      await docRef.set(
+        restaurantWithId.toFirestore(),
+        SetOptions(merge: true),
+      );
+      
+      return docRef.id;
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to create restaurant: ${e.toString()}';
+    }
   }
 
   /// Create multiple restaurants in batch
   Future<void> createRestaurants(List<Restaurant> restaurants) async {
-    final maps = restaurants.map((r) => r.toMap()).toList();
-    await _db.insertBatch('restaurants', maps);
+    try {
+      final batch = _firestoreService.batch();
+      
+      for (final restaurant in restaurants) {
+        final docRef = _firestoreService.restaurants.doc();
+        final restaurantWithId = restaurant.copyWith(restaurantId: docRef.id);
+        batch.set(docRef, restaurantWithId.toFirestore());
+      }
+      
+      await batch.commit();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to create restaurants: ${e.toString()}';
+    }
   }
 
   // ==================== READ ====================
 
   /// Get a restaurant by ID
-  Future<Restaurant?> getRestaurantById(int id) async {
-    final map = await _db.queryOne(
-      'restaurants',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    return map != null ? Restaurant.fromMap(map) : null;
+  Future<Restaurant?> getRestaurantById(String id) async {
+    try {
+      final doc = await _firestoreService.restaurants.doc(id).get();
+      
+      if (!doc.exists) return null;
+      
+      return Restaurant.fromFirestore(doc.data() as Map<String, dynamic>);
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to get restaurant: ${e.toString()}';
+    }
   }
 
-  /// Get all restaurants
-  Future<List<Restaurant>> getAllRestaurants({
-    String? orderBy = 'name ASC',
-    int? limit,
+  /// Stream a restaurant by ID (real-time updates)
+  Stream<Restaurant?> streamRestaurantById(String id) {
+    return _firestoreService.restaurants.doc(id).snapshots().map((snapshot) {
+      if (!snapshot.exists) return null;
+      return Restaurant.fromFirestore(snapshot.data() as Map<String, dynamic>);
+    });
+  }
+
+  /// Query restaurants with pagination
+  Future<List<Restaurant>> queryRestaurants({
+    int limit = 20,
+    String orderBy = 'name',
+    bool descending = false,
+    DocumentSnapshot? startAfter,
   }) async {
-    final maps = await _db.query('restaurants', orderBy: orderBy, limit: limit);
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
-  }
-
-  /// Search restaurants by name or location
-  Future<List<Restaurant>> searchRestaurants(String query) async {
-    final maps = await _db.rawQuery(
-      '''
-      SELECT * FROM restaurants 
-      WHERE name LIKE ? OR location LIKE ? OR cuisine_type LIKE ?
-      ORDER BY name ASC
-    ''',
-      ['%$query%', '%$query%', '%$query%'],
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+    try {
+      Query query = _firestoreService.restaurants
+          .orderBy(orderBy, descending: descending)
+          .limit(limit);
+      
+      if (startAfter != null) {
+        query = query.startAfterDocument(startAfter);
+      }
+      
+      final querySnapshot = await query.get();
+      
+      return querySnapshot.docs
+          .map((doc) => Restaurant.fromFirestore(doc.data() as Map<String, dynamic>))
+          .toList();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to query restaurants: ${e.toString()}';
+    }
   }
 
   /// Get restaurants by cuisine type
-  Future<List<Restaurant>> getRestaurantsByCuisine(String cuisineType) async {
-    final maps = await _db.query(
-      'restaurants',
-      where: 'cuisine_type = ?',
-      whereArgs: [cuisineType],
-      orderBy: 'name ASC',
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+  Future<List<Restaurant>> queryRestaurantsByCuisine(
+    String cuisine, {
+    int limit = 20,
+  }) async {
+    try {
+      final querySnapshot = await _firestoreService.restaurants
+          .where('cuisine', isEqualTo: cuisine)
+          .orderBy('rating', descending: true)
+          .limit(limit)
+          .get();
+      
+      return querySnapshot.docs
+          .map((doc) => Restaurant.fromFirestore(doc.data() as Map<String, dynamic>))
+          .toList();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to query restaurants by cuisine: ${e.toString()}';
+    }
   }
 
-  /// Get restaurants by location
-  Future<List<Restaurant>> getRestaurantsByLocation(String location) async {
-    final maps = await _db.query(
-      'restaurants',
-      where: 'location LIKE ?',
-      whereArgs: ['%$location%'],
-      orderBy: 'name ASC',
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+  /// Query nearby restaurants using bounding box approximation
+  /// 
+  /// Geospatial Strategy: Bounding Box Approximation
+  /// - Calculates min/max latitude and longitude based on radius
+  /// - Uses Firestore range queries (>=, <=) on GeoPoint
+  /// - Filters results in a square area, then calculates actual distance
+  /// - Efficient with standard Firestore indexes
+  /// 
+  /// Note: Results form a square, not a perfect circle
+  /// For production, consider GeoHash or external geospatial service
+  Future<List<Restaurant>> queryNearbyRestaurants(
+    GeoPoint center,
+    double radiusKm, {
+    int limit = 20,
+  }) async {
+    try {
+      // Calculate bounding box
+      // 1 degree latitude ≈ 111 km
+      // 1 degree longitude ≈ 111 km * cos(latitude)
+      final latDelta = radiusKm / 111.0;
+      final lonDelta = radiusKm / (111.0 * _cos(center.latitude));
+      
+      final minLat = center.latitude - latDelta;
+      final maxLat = center.latitude + latDelta;
+      final minLon = center.longitude - lonDelta;
+      final maxLon = center.longitude + lonDelta;
+      
+      // Query restaurants within bounding box
+      final querySnapshot = await _firestoreService.restaurants
+          .where('location', isGreaterThanOrEqualTo: GeoPoint(minLat, minLon))
+          .where('location', isLessThanOrEqualTo: GeoPoint(maxLat, maxLon))
+          .limit(limit * 2) // Get extra to filter by actual distance
+          .get();
+      
+      // Filter by actual distance and sort
+      final restaurants = querySnapshot.docs
+          .map((doc) => Restaurant.fromFirestore(doc.data() as Map<String, dynamic>))
+          .map((restaurant) {
+            final distance = _calculateDistance(center, restaurant.location);
+            return {'restaurant': restaurant, 'distance': distance};
+          })
+          .where((item) => item['distance'] as double <= radiusKm)
+          .toList()
+        ..sort((a, b) => (a['distance'] as double).compareTo(b['distance'] as double));
+      
+      return restaurants
+          .take(limit)
+          .map((item) => item['restaurant'] as Restaurant)
+          .toList();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to query nearby restaurants: ${e.toString()}';
+    }
+  }
+
+  /// Search restaurants by name or cuisine (prefix-based)
+  /// Uses searchKeywords array for efficient prefix matching
+  Future<List<Restaurant>> searchRestaurants(
+    String query, {
+    int limit = 20,
+  }) async {
+    try {
+      if (query.trim().isEmpty) {
+        return queryRestaurants(limit: limit);
+      }
+      
+      final searchTerm = query.toLowerCase().trim();
+      
+      // Search using searchKeywords array
+      final querySnapshot = await _firestoreService.restaurants
+          .where('searchKeywords', arrayContains: searchTerm)
+          .orderBy('rating', descending: true)
+          .limit(limit)
+          .get();
+      
+      return querySnapshot.docs
+          .map((doc) => Restaurant.fromFirestore(doc.data() as Map<String, dynamic>))
+          .toList();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to search restaurants: ${e.toString()}';
+    }
   }
 
   /// Get top rated restaurants
   Future<List<Restaurant>> getTopRatedRestaurants({int limit = 10}) async {
-    final maps = await _db.query(
-      'restaurants',
-      orderBy: 'rating DESC',
-      limit: limit,
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+    try {
+      final querySnapshot = await _firestoreService.restaurants
+          .orderBy('rating', descending: true)
+          .limit(limit)
+          .get();
+      
+      return querySnapshot.docs
+          .map((doc) => Restaurant.fromFirestore(doc.data() as Map<String, dynamic>))
+          .toList();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to get top rated restaurants: ${e.toString()}';
+    }
   }
 
   /// Get trending restaurants (most posts)
   Future<List<Restaurant>> getTrendingRestaurants({int limit = 10}) async {
-    final maps = await _db.query(
-      'restaurants',
-      orderBy: 'posts_count DESC',
-      limit: limit,
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+    try {
+      final querySnapshot = await _firestoreService.restaurants
+          .orderBy('postsCount', descending: true)
+          .limit(limit)
+          .get();
+      
+      return querySnapshot.docs
+          .map((doc) => Restaurant.fromFirestore(doc.data() as Map<String, dynamic>))
+          .toList();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to get trending restaurants: ${e.toString()}';
+    }
   }
 
   /// Get restaurant by name (exact match)
   Future<Restaurant?> getRestaurantByName(String name) async {
-    final map = await _db.queryOne(
-      'restaurants',
-      where: 'name = ?',
-      whereArgs: [name],
-    );
-    return map != null ? Restaurant.fromMap(map) : null;
+    try {
+      final querySnapshot = await _firestoreService.restaurants
+          .where('name', isEqualTo: name)
+          .limit(1)
+          .get();
+      
+      if (querySnapshot.docs.isEmpty) return null;
+      
+      return Restaurant.fromFirestore(
+        querySnapshot.docs.first.data() as Map<String, dynamic>,
+      );
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to get restaurant by name: ${e.toString()}';
+    }
   }
 
   // ==================== UPDATE ====================
 
   /// Update a restaurant
-  Future<int> updateRestaurant(Restaurant restaurant) async {
-    return await _db.update(
-      'restaurants',
-      restaurant.toMap(),
-      where: 'id = ?',
-      whereArgs: [restaurant.id],
-    );
+  Future<void> updateRestaurant(Restaurant restaurant) async {
+    try {
+      final id = restaurant.restaurantId;
+      if (id == null) {
+        throw 'Restaurant ID is required for update';
+      }
+      
+      await _firestoreService.restaurants.doc(id).update(
+        restaurant.toFirestore(),
+      );
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to update restaurant: ${e.toString()}';
+    }
   }
 
   /// Increment posts count
-  Future<void> incrementPostsCount(int restaurantId) async {
-    await _db.rawUpdate(
-      'UPDATE restaurants SET posts_count = posts_count + 1 WHERE id = ?',
-      [restaurantId],
-    );
+  Future<void> incrementPostsCount(String restaurantId) async {
+    try {
+      await _firestoreService.restaurants.doc(restaurantId).update({
+        'postsCount': _firestoreService.increment(1),
+        'updatedAt': _firestoreService.serverTimestamp,
+      });
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to increment posts count: ${e.toString()}';
+    }
   }
 
   /// Decrement posts count
-  Future<void> decrementPostsCount(int restaurantId) async {
-    await _db.rawUpdate(
-      'UPDATE restaurants SET posts_count = posts_count - 1 WHERE id = ? AND posts_count > 0',
-      [restaurantId],
-    );
+  Future<void> decrementPostsCount(String restaurantId) async {
+    try {
+      await _firestoreService.restaurants.doc(restaurantId).update({
+        'postsCount': _firestoreService.increment(-1),
+        'updatedAt': _firestoreService.serverTimestamp,
+      });
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to decrement posts count: ${e.toString()}';
+    }
   }
 
   /// Update restaurant rating
-  Future<void> updateRating(int restaurantId, double newRating) async {
-    await _db.update(
-      'restaurants',
-      {'rating': newRating},
-      where: 'id = ?',
-      whereArgs: [restaurantId],
-    );
+  Future<void> updateRating(String restaurantId, double newRating) async {
+    try {
+      await _firestoreService.restaurants.doc(restaurantId).update({
+        'rating': newRating,
+        'updatedAt': _firestoreService.serverTimestamp,
+      });
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to update rating: ${e.toString()}';
+    }
   }
 
   // ==================== DELETE ====================
 
   /// Delete a restaurant by ID
-  Future<int> deleteRestaurant(int id) async {
-    return await _db.delete('restaurants', where: 'id = ?', whereArgs: [id]);
+  Future<void> deleteRestaurant(String id) async {
+    try {
+      await _firestoreService.restaurants.doc(id).delete();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to delete restaurant: ${e.toString()}';
+    }
   }
 
   // ==================== UTILITY ====================
 
   /// Check if a restaurant exists
-  Future<bool> restaurantExists(int id) async {
-    return await _db.exists('restaurants', where: 'id = ?', whereArgs: [id]);
+  Future<bool> restaurantExists(String id) async {
+    try {
+      final doc = await _firestoreService.restaurants.doc(id).get();
+      return doc.exists;
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Check if a restaurant exists by name
   Future<bool> restaurantExistsByName(String name) async {
-    return await _db.exists(
-      'restaurants',
-      where: 'name = ?',
-      whereArgs: [name],
-    );
-  }
-
-  /// Get total restaurants count
-  Future<int> getTotalRestaurantsCount() async {
-    return await _db.getCount('restaurants');
+    try {
+      final querySnapshot = await _firestoreService.restaurants
+          .where('name', isEqualTo: name)
+          .limit(1)
+          .get();
+      
+      return querySnapshot.docs.isNotEmpty;
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Get all unique cuisine types
   Future<List<String>> getAllCuisineTypes() async {
-    final maps = await _db.rawQuery('''
-      SELECT DISTINCT cuisine_type FROM restaurants 
-      WHERE cuisine_type IS NOT NULL 
-      ORDER BY cuisine_type ASC
-    ''');
-    return maps.map((map) => map['cuisine_type'] as String).toList();
+    try {
+      // Firestore doesn't support DISTINCT queries
+      // Fetch all restaurants and extract unique cuisines
+      final querySnapshot = await _firestoreService.restaurants
+          .orderBy('cuisine')
+          .get();
+      
+      final cuisines = <String>{};
+      for (final doc in querySnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final cuisine = data['cuisine'] as String?;
+        if (cuisine != null && cuisine.isNotEmpty) {
+          cuisines.add(cuisine);
+        }
+      }
+      
+      return cuisines.toList()..sort();
+    } on FirebaseException catch (e) {
+      throw _handleFirestoreException(e);
+    } catch (e) {
+      throw 'Failed to get cuisine types: ${e.toString()}';
+    }
   }
 
-  /// Get all unique locations
-  Future<List<String>> getAllLocations() async {
-    final maps = await _db.rawQuery('''
-      SELECT DISTINCT location FROM restaurants 
-      WHERE location IS NOT NULL 
-      ORDER BY location ASC
-    ''');
-    return maps.map((map) => map['location'] as String).toList();
+  // ==================== PRIVATE HELPERS ====================
+
+  /// Handle Firestore exceptions with user-friendly messages
+  String _handleFirestoreException(FirebaseException e) {
+    switch (e.code) {
+      case 'permission-denied':
+        return 'Permission denied. Please check your access rights.';
+      case 'not-found':
+        return 'Restaurant not found.';
+      case 'already-exists':
+        return 'Restaurant already exists.';
+      case 'resource-exhausted':
+        return 'Too many requests. Please try again later.';
+      case 'failed-precondition':
+        return 'Operation failed. Please check your data.';
+      case 'aborted':
+        return 'Operation aborted. Please try again.';
+      case 'out-of-range':
+        return 'Invalid data range.';
+      case 'unimplemented':
+        return 'Operation not supported.';
+      case 'internal':
+        return 'Internal error. Please try again.';
+      case 'unavailable':
+        return 'Service unavailable. Please check your connection.';
+      case 'unauthenticated':
+        return 'Authentication required.';
+      case 'deadline-exceeded':
+        return 'Request timeout. Please try again.';
+      default:
+        return 'Firestore error: ${e.message ?? e.code}';
+    }
+  }
+
+  /// Calculate distance between two GeoPoints using Haversine formula
+  /// Returns distance in kilometers
+  double _calculateDistance(GeoPoint point1, GeoPoint point2) {
+    const earthRadiusKm = 6371.0;
+    
+    final lat1Rad = _toRadians(point1.latitude);
+    final lat2Rad = _toRadians(point2.latitude);
+    final deltaLat = _toRadians(point2.latitude - point1.latitude);
+    final deltaLon = _toRadians(point2.longitude - point1.longitude);
+    
+    final a = _sin(deltaLat / 2) * _sin(deltaLat / 2) +
+        _cos(lat1Rad) * _cos(lat2Rad) *
+        _sin(deltaLon / 2) * _sin(deltaLon / 2);
+    
+    final c = 2 * _atan2(_sqrt(a), _sqrt(1 - a));
+    
+    return earthRadiusKm * c;
+  }
+
+  /// Convert degrees to radians
+  double _toRadians(double degrees) => degrees * 3.141592653589793 / 180.0;
+  
+  /// Math helpers (dart:math alternatives to avoid import)
+  double _sin(double x) => _taylorSin(x);
+  double _cos(double x) => _taylorCos(x);
+  double _sqrt(double x) {
+    if (x == 0) return 0;
+    double z = x;
+    double result = 0;
+    for (int i = 0; i < 10; i++) {
+      result = (z + x / z) / 2;
+      if ((result - z).abs() < 0.0001) break;
+      z = result;
+    }
+    return result;
+  }
+  double _atan2(double y, double x) {
+    if (x > 0) return _atan(y / x);
+    if (x < 0 && y >= 0) return _atan(y / x) + 3.141592653589793;
+    if (x < 0 && y < 0) return _atan(y / x) - 3.141592653589793;
+    if (x == 0 && y > 0) return 3.141592653589793 / 2;
+    if (x == 0 && y < 0) return -3.141592653589793 / 2;
+    return 0;
+  }
+  double _atan(double x) {
+    double result = x;
+    double term = x;
+    for (int n = 1; n < 20; n++) {
+      term *= -x * x;
+      result += term / (2 * n + 1);
+    }
+    return result;
+  }
+  double _taylorSin(double x) {
+    double result = x;
+    double term = x;
+    for (int n = 1; n < 10; n++) {
+      term *= -x * x / ((2 * n) * (2 * n + 1));
+      result += term;
+    }
+    return result;
+  }
+  double _taylorCos(double x) {
+    double result = 1;
+    double term = 1;
+    for (int n = 1; n < 10; n++) {
+      term *= -x * x / ((2 * n - 1) * (2 * n));
+      result += term;
+    }
+    return result;
   }
 }
