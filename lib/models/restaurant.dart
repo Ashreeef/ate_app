@@ -140,9 +140,33 @@ class Restaurant {
     );
   }
 
+  /// Compatibility getters for legacy code
+  /// `imageUrl` returns the first image when available
+  String? get imageUrl => images.isNotEmpty ? images.first : null;
+
+  /// Legacy alias for `cuisine`
+  String? get cuisineType => cuisine;
+
+  /// Human-friendly location string for UI (legacy `location` usage)
+  String get locationName => address;
+
   @override
   String toString() {
     return 'Restaurant(id: $restaurantId, name: $name, cuisine: $cuisine, address: $address, rating: $rating)';
+  }
+
+  /// Legacy SQLite-compatible map representation used by some tests
+  Map<String, dynamic> toMap() {
+    return {
+      'restaurant_id': restaurantId,
+      'name': name,
+      'location': address,
+      'cuisine_type': cuisine,
+      'rating': rating,
+      'image_url': imageUrl,
+      'posts_count': postsCount,
+      'created_at': createdAt?.toIso8601String(),
+    };
   }
 
   @override
