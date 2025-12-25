@@ -105,6 +105,11 @@ class RestaurantRepository {
     }
   }
 
+  /// Compatibility: return all restaurants (used by some tests)
+  Future<List<Restaurant>> getAllRestaurants({int limit = 1000}) async {
+    return queryRestaurants(limit: limit);
+  }
+
   /// Get restaurants by cuisine type
   Future<List<Restaurant>> queryRestaurantsByCuisine(
     String cuisine, {
@@ -248,7 +253,10 @@ class RestaurantRepository {
       throw 'Failed to get trending restaurants: ${e.toString()}';
     }
   }
-
+  /// Compatibility: get all restaurants (used by tests)
+  Future<List<Restaurant>> getAllRestaurants({int limit = 1000}) async {
+    return await queryRestaurants(limit: limit);
+  }
   /// Get restaurant by name (exact match)
   Future<Restaurant?> getRestaurantByName(String name) async {
     try {
