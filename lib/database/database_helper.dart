@@ -103,6 +103,7 @@ class DatabaseHelper {
         // 4. Drop old table
         await txn.execute('DROP TABLE posts_old');
       });
+    }
     if (oldVersion < 6) {
       // Migrate search_history table to handle Firebase UIDs (String)
       await db.transaction((txn) async {
