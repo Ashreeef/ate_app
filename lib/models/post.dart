@@ -66,7 +66,6 @@ class Post {
       caption: map['caption'] as String? ?? '',
       restaurantId: map['restaurant_id']?.toString(), // Convert int from SQLite to String
       restaurantName: map['restaurant_name'] as String?,
-      restaurantName: map['restaurant_name'] as String?,
       dishName: map['dish_name'] as String?,
       rating: map['rating'] != null ? (map['rating'] as num).toDouble() : null,
       images: map['images'] != null
