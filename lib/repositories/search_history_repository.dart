@@ -8,16 +8,18 @@ class SearchHistoryRepository {
   // ==================== CREATE ====================
 
   /// Add a search query to history
-  Future<int> addSearchQuery(String userId, String query) async {
+  Future<int> addSearchQuery(Object userId, String query) async {
+    final userKey = userId.toString();
     return await _db.insert('search_history', {
-      'user_id': userId,
+      'user_id': userKey,
       'query': query,
     });
   }
 
   /// Add multiple search queries in batch
-  Future<void> addSearchQueries(String userId, List<String> queries) async {
-    final maps = queries.map((q) => {'user_id': userId, 'query': q}).toList();
+  Future<void> addSearchQueries(Object userId, List<String> queries) async {
+    final userKey = userId.toString();
+    final maps = queries.map((q) => {'user_id': userKey, 'query': q}).toList();
     await _db.insertBatch('search_history', maps);
   }
 
@@ -25,13 +27,14 @@ class SearchHistoryRepository {
 
   /// Get search history for a user
   Future<List<SearchHistory>> getSearchHistoryByUserId(
-    String userId, {
+    Object userId, {
     int limit = 20,
   }) async {
+    final userKey = userId.toString();
     final maps = await _db.query(
       'search_history',
       where: 'user_id = ?',
-      whereArgs: [userId],
+      whereArgs: [userKey],
       orderBy: 'created_at DESC',
       limit: limit,
     );
@@ -40,14 +43,15 @@ class SearchHistoryRepository {
 
   /// Get recent search queries (strings only)
   Future<List<String>> getRecentSearchQueries(
-    String userId, {
+    Object userId, {
     int limit = 10,
   }) async {
+    final userKey = userId.toString();
     final maps = await _db.query(
       'search_history',
       columns: ['query'],
       where: 'user_id = ?',
-      whereArgs: [userId],
+      whereArgs: [userKey],
       orderBy: 'created_at DESC',
       limit: limit,
     );
@@ -56,9 +60,10 @@ class SearchHistoryRepository {
 
   /// Get unique recent search queries (no duplicates)
   Future<List<String>> getUniqueRecentSearchQueries(
-    String userId, {
+    Object userId, {
     int limit = 10,
   }) async {
+    final userKey = userId.toString();
     final maps = await _db.rawQuery(
       '''
       SELECT DISTINCT query FROM search_history 
@@ -66,13 +71,14 @@ class SearchHistoryRepository {
       ORDER BY created_at DESC 
       LIMIT ?
     ''',
-      [userId, limit],
+      [userKey, limit],
     );
     return maps.map((map) => map['query'] as String).toList();
   }
 
   /// Search in history
-  Future<List<String>> searchInHistory(String userId, String searchTerm) async {
+  Future<List<String>> searchInHistory(Object userId, String searchTerm) async {
+    final userKey = userId.toString();
     final maps = await _db.rawQuery(
       '''
       SELECT DISTINCT query FROM search_history 
@@ -80,7 +86,7 @@ class SearchHistoryRepository {
       ORDER BY created_at DESC 
       LIMIT 10
     ''',
-      [userId, '%$searchTerm%'],
+      [userKey, '%$searchTerm%'],
     );
     return maps.map((map) => map['query'] as String).toList();
   }
@@ -103,11 +109,12 @@ class SearchHistoryRepository {
   }
 
   /// Get search history count for a user
-  Future<int> getSearchHistoryCountByUserId(String userId) async {
+  Future<int> getSearchHistoryCountByUserId(Object userId) async {
+    final userKey = userId.toString();
     return await _db.getCount(
       'search_history',
       where: 'user_id = ?',
-      whereArgs: [userId],
+      whereArgs: [userKey],
     );
   }
 
@@ -122,20 +129,22 @@ class SearchHistoryRepository {
   }
 
   /// Delete a specific query from history
-  Future<int> deleteSearchQuery(String userId, String query) async {
+  Future<int> deleteSearchQuery(Object userId, String query) async {
+    final userKey = userId.toString();
     return await _db.delete(
       'search_history',
       where: 'user_id = ? AND query = ?',
-      whereArgs: [userId, query],
+      whereArgs: [userKey, query],
     );
   }
 
   /// Clear all search history for a user
-  Future<int> clearSearchHistoryByUserId(String userId) async {
+  Future<int> clearSearchHistoryByUserId(Object userId) async {
+    final userKey = userId.toString();
     return await _db.delete(
       'search_history',
       where: 'user_id = ?',
-      whereArgs: [userId],
+      whereArgs: [userKey],
     );
   }
 
