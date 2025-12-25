@@ -105,11 +105,6 @@ class RestaurantRepository {
     }
   }
 
-  /// Compatibility: return all restaurants (used by some tests)
-  Future<List<Restaurant>> getAllRestaurants({int limit = 1000}) async {
-    return queryRestaurants(limit: limit);
-  }
-
   /// Get restaurants by cuisine type
   Future<List<Restaurant>> queryRestaurantsByCuisine(
     String cuisine, {
