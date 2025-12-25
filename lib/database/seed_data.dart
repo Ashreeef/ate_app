@@ -442,18 +442,13 @@ class SeedData {
     ];
 
     for (final restaurant in testRestaurants) {
-          final existingList = await restaurantRepository.searchRestaurants(restaurant.name);
-          if (existingList.isEmpty) {
-             final id = await restaurantRepository.createRestaurant(restaurant);
-             final created = await restaurantRepository.getRestaurantById(id);
-             if (created != null) restaurants.add(created);
-          } else {
-             restaurants.add(existingList.first);
-          }
+      final existingList = await restaurantRepository.searchRestaurants(restaurant.name);
+      if (existingList.isEmpty) {
+        final id = await restaurantRepository.createRestaurant(restaurant);
+        final created = await restaurantRepository.getRestaurantById(id);
+        if (created != null) restaurants.add(created);
       } else {
-          final id = await restaurantRepository.createRestaurant(restaurant);
-          final created = await restaurantRepository.getRestaurantById(id);
-          if (created != null) restaurants.add(created);
+        restaurants.add(existingList.first);
       }
     }
 
