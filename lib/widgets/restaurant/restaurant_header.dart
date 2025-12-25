@@ -47,11 +47,10 @@ class RestaurantHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(restaurant.name, style: AppTextStyles.heading2),
-                        if (restaurant.cuisineType != null &&
-                            restaurant.cuisineType!.isNotEmpty) ...[
+                        if (restaurant.cuisine.isNotEmpty) ...[
                           SizedBox(height: AppSpacing.sm),
                           Text(
-                            restaurant.cuisineType!,
+                            restaurant.cuisine,
                             style: AppTextStyles.bodySmall,
                             maxLines: 3,
                             overflow: TextOverflow.ellipsis,
@@ -81,7 +80,7 @@ class RestaurantHeader extends StatelessWidget {
                   SizedBox(width: AppSpacing.xs),
                   Expanded(
                     child: Text(
-                      restaurant.location ?? l10n.locationNotSpecified,
+                      (restaurant.address.isNotEmpty ? restaurant.address : l10n.locationNotSpecified),
                       style: AppTextStyles.bodyMedium,
                     ),
                   ),

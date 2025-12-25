@@ -91,7 +91,7 @@ class RestaurantCard extends StatelessWidget {
                       SizedBox(width: AppSpacing.xs),
                       Expanded(
                         child: Text(
-                          restaurant.location ?? l10n.locationNotSpecified,
+                          (restaurant.address.isNotEmpty ? restaurant.address : l10n.locationNotSpecified),
                           style: AppTextStyles.bodySmall,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
