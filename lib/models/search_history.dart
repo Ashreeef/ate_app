@@ -1,6 +1,6 @@
 class SearchHistory {
   final int? id;
-  final int userId;
+  final String userId;
   final String query;
   final String? createdAt;
 
@@ -25,7 +25,7 @@ class SearchHistory {
   factory SearchHistory.fromMap(Map<String, dynamic> map) {
     return SearchHistory(
       id: map['id'] as int?,
-      userId: map['user_id'] as int,
+      userId: map['user_id']?.toString() ?? '',
       query: map['query'] as String,
       createdAt: map['created_at'] as String?,
     );

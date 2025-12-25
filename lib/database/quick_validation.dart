@@ -43,12 +43,15 @@ class QuickDatabaseValidation {
         print('      Sample: ${users.first.username} (${users.first.email})');
       }
 
-      // Restaurants
+      // Restaurants (Firestore)
       final restaurantRepo = RestaurantRepository();
-      final restaurants = await restaurantRepo.getAllRestaurants();
+      // Use queryRestaurants with a small limit for validation
+      final restaurants = await restaurantRepo.queryRestaurants(limit: 5);
       if (restaurants.isNotEmpty) {
-        print('   🏪 Restaurants: ${restaurants.length} total');
+        print('   🏪 Restaurants (Firestore): ${restaurants.length}+ found');
         print('      Sample: ${restaurants.first.name}');
+      } else {
+        print('   🏪 Restaurants (Firestore): ❌ No restaurants found in Firestore');
       }
 
       // Posts

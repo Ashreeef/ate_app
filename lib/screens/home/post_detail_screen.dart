@@ -298,7 +298,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget _buildHeader() {
-    final restaurantId = _post['restaurantId'] as int?;
+    final restaurantId = _post['restaurantId']?.toString();
 
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.md),

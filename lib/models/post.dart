@@ -6,7 +6,7 @@ class Post {
   final String username;
   final String? userAvatarPath;
   final String caption;
-  final int? restaurantId;
+  final String? restaurantId;
   final String? restaurantName;
   final String? dishName;
   final double? rating;
@@ -64,7 +64,8 @@ class Post {
       username: map['username'] as String? ?? '',
       userAvatarPath: map['user_avatar_path'] as String?,
       caption: map['caption'] as String? ?? '',
-      restaurantId: map['restaurant_id'] as int?,
+      restaurantId: map['restaurant_id']?.toString(), // Convert int from SQLite to String
+      restaurantName: map['restaurant_name'] as String?,
       restaurantName: map['restaurant_name'] as String?,
       dishName: map['dish_name'] as String?,
       rating: map['rating'] != null ? (map['rating'] as num).toDouble() : null,
@@ -91,7 +92,7 @@ class Post {
     String? username,
     String? userAvatarPath,
     String? caption,
-    int? restaurantId,
+    String? restaurantId,
     String? restaurantName,
     String? dishName,
     double? rating,

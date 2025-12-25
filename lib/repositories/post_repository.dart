@@ -54,7 +54,7 @@ class PostRepository {
   }
 
   /// Get posts by restaurant ID
-  Future<List<Post>> getPostsByRestaurantId(int restaurantId) async {
+  Future<List<Post>> getPostsByRestaurantId(String restaurantId) async {
     final maps = await _db.query(
       'posts',
       where: 'restaurant_id = ?',
@@ -98,7 +98,7 @@ class PostRepository {
   }
 
   /// Get posts count for a restaurant
-  Future<int> getPostsCountByRestaurantId(int restaurantId) async {
+  Future<int> getPostsCountByRestaurantId(String restaurantId) async {
     return await _db.getCount(
       'posts',
       where: 'restaurant_id = ?',
@@ -163,7 +163,7 @@ class PostRepository {
   }
 
   /// Delete all posts for a restaurant
-  Future<int> deletePostsByRestaurantId(int restaurantId) async {
+  Future<int> deletePostsByRestaurantId(String restaurantId) async {
     return await _db.delete(
       'posts',
       where: 'restaurant_id = ?',

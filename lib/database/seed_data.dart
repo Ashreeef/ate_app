@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user.dart';
 import '../models/restaurant.dart';
 import '../models/post.dart';
@@ -193,205 +195,265 @@ class SeedData {
   ) async {
     final List<Restaurant> restaurants = [];
 
+    // Helper to create GeoPoint from approximation (Tunis area)
+    GeoPoint loc(double lat, double lng) => GeoPoint(lat, lng);
+
     final testRestaurants = [
       Restaurant(
         name: 'Le Baroque',
-        location: 'La Marsa, Tunis',
-        cuisineType: 'French',
+        location: loc(36.8789, 10.3278),
+        address: 'La Marsa, Tunis',
+        cuisine: 'French',
         rating: 4.8,
-        imageUrl:
-            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800'
+        ],
         postsCount: 0,
+        description: 'Elegant French dining experience in the heart of La Marsa.',
       ),
       Restaurant(
         name: 'Dar El Jeld',
-        location: 'Medina, Tunis',
-        cuisineType: 'Tunisian',
+        location: loc(36.8008, 10.1690),
+        address: 'Medina, Tunis',
+        cuisine: 'Tunisian',
         rating: 4.9,
-        imageUrl:
-            'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800'
+        ],
         postsCount: 0,
+        description: 'Traditional Tunisian cuisine in a historic palace.',
       ),
       Restaurant(
         name: 'La Closerie',
-        location: 'Carthage, Tunis',
-        cuisineType: 'Mediterranean',
+        location: loc(36.8587, 10.3312),
+        address: 'Carthage, Tunis',
+        cuisine: 'Mediterranean',
         rating: 4.7,
-        imageUrl:
-            'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800'
+        ],
         postsCount: 0,
+        description: 'Chic Mediterranean restaurant with a lovely garden.',
       ),
       Restaurant(
         name: 'Chez Zeineb',
-        location: 'Sidi Bou Said',
-        cuisineType: 'Tunisian',
+        location: loc(36.8701, 10.3418),
+        address: 'Sidi Bou Said',
+        cuisine: 'Tunisian',
         rating: 4.6,
-        imageUrl:
-            'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800'
+        ],
         postsCount: 0,
+        description: 'Authentic homemade Tunisian dishes.',
       ),
       Restaurant(
         name: 'Villa Didon',
-        location: 'Carthage, Tunis',
-        cuisineType: 'Fine Dining',
+        location: loc(36.8550, 10.3350),
+        address: 'Carthage, Tunis',
+        cuisine: 'Fine Dining',
         rating: 4.9,
-        imageUrl:
-            'https://images.unsplash.com/photo-1592861956120-e524fc739696?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1592861956120-e524fc739696?w=800'
+        ],
         postsCount: 0,
+        description: 'Luxury dining with a panoramic view of Carthage.',
       ),
       Restaurant(
         name: 'Le Golfe',
-        location: 'La Goulette, Tunis',
-        cuisineType: 'Seafood',
+        location: loc(36.8189, 10.3061),
+        address: 'La Goulette, Tunis',
+        cuisine: 'Seafood',
         rating: 4.5,
-        imageUrl:
-            'https://images.unsplash.com/photo-1559847844-5315695dadae?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1559847844-5315695dadae?w=800'
+        ],
         postsCount: 0,
+        description: 'Fresh seafood by the sea.',
       ),
       Restaurant(
         name: 'Bœuf sur le Toit',
-        location: 'Centre Ville, Tunis',
-        cuisineType: 'Steakhouse',
+        location: loc(36.8010, 10.1800),
+        address: 'Centre Ville, Tunis',
+        cuisine: 'Steakhouse',
         rating: 4.6,
-        imageUrl:
-            'https://images.unsplash.com/photo-1544025162-d76694265947?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1544025162-d76694265947?w=800'
+        ],
         postsCount: 0,
+        description: 'Premium steakhouse in downtown Tunis.',
       ),
       Restaurant(
         name: 'Salammbo',
-        location: 'Carthage, Tunis',
-        cuisineType: 'Tunisian',
+        location: loc(36.8400, 10.3200),
+        address: 'Carthage, Tunis',
+        cuisine: 'Tunisian',
         rating: 4.4,
-        imageUrl:
-            'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800'
+        ],
         postsCount: 0,
+        description: 'Cozy spot for Tunisian classics.',
       ),
       Restaurant(
         name: 'La Villa Bleue',
-        location: 'Sidi Bou Said',
-        cuisineType: 'Mediterranean',
+        location: loc(36.8710, 10.3425),
+        address: 'Sidi Bou Said',
+        cuisine: 'Mediterranean',
         rating: 4.8,
-        imageUrl:
-            'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?w=800'
+        ],
         postsCount: 0,
+        description: 'Upscale Mediterranean cuisine in a boutique hotel.',
       ),
       Restaurant(
         name: 'El Ali',
-        location: 'Medina, Tunis',
-        cuisineType: 'Tunisian',
+        location: loc(36.7990, 10.1700),
+        address: 'Medina, Tunis',
+        cuisine: 'Tunisian',
         rating: 4.3,
-        imageUrl:
-            'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?w=800'
+        ],
         postsCount: 0,
+        description: 'Cultural café and restaurant in the Medina.',
       ),
       Restaurant(
         name: 'Sushi Box',
-        location: 'Les Berges du Lac',
-        cuisineType: 'Japanese',
+        location: loc(36.8350, 10.2300),
+        address: 'Les Berges du Lac',
+        cuisine: 'Japanese',
         rating: 4.5,
-        imageUrl:
-            'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800'
+        ],
         postsCount: 0,
+        description: 'Fresh sushi and Japanese rolls.',
       ),
       Restaurant(
         name: 'Le Deck',
-        location: 'La Marsa, Tunis',
-        cuisineType: 'International',
+        location: loc(36.8800, 10.3290),
+        address: 'La Marsa, Tunis',
+        cuisine: 'International',
         rating: 4.4,
-        imageUrl:
-            'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=800'
+        ],
         postsCount: 0,
+        description: 'International menu with a relaxed atmosphere.',
       ),
       Restaurant(
         name: 'La Cigale',
-        location: 'Gammarth, Tunis',
-        cuisineType: 'French',
+        location: loc(36.9100, 10.2700),
+        address: 'Gammarth, Tunis',
+        cuisine: 'French',
         rating: 4.7,
-        imageUrl:
-            'https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?w=800'
+        ],
         postsCount: 0,
+        description: 'Refined French gastronomy.',
       ),
       Restaurant(
         name: 'Dar Hamouda Pacha',
-        location: 'Medina, Tunis',
-        cuisineType: 'Tunisian',
+        location: loc(36.7995, 10.1695),
+        address: 'Medina, Tunis',
+        cuisine: 'Tunisian',
         rating: 4.6,
-        imageUrl:
-            'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800'
+        ],
         postsCount: 0,
+        description: 'Dining in a 17th-century palace.',
       ),
       Restaurant(
         name: 'Le Grand Bleu',
-        location: 'La Goulette, Tunis',
-        cuisineType: 'Seafood',
+        location: loc(36.8200, 10.3070),
+        address: 'La Goulette, Tunis',
+        cuisine: 'Seafood',
         rating: 4.5,
-        imageUrl:
-            'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800'
+        ],
         postsCount: 0,
+        description: 'Famous for its fish and sea view.',
       ),
       Restaurant(
         name: 'Café des Nattes',
-        location: 'Sidi Bou Said',
-        cuisineType: 'Café',
+        location: loc(36.8715, 10.3430),
+        address: 'Sidi Bou Said',
+        cuisine: 'Café',
         rating: 4.2,
-        imageUrl:
-            'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800'
+        ],
         postsCount: 0,
+        description: 'Historic café with traditional vibes.',
       ),
       Restaurant(
         name: 'La Perle',
-        location: 'Gammarth, Tunis',
-        cuisineType: 'Mediterranean',
+        location: loc(36.9110, 10.2710),
+        address: 'Gammarth, Tunis',
+        cuisine: 'Mediterranean',
         rating: 4.6,
-        imageUrl:
-            'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=800'
+        ],
         postsCount: 0,
+        description: 'Mediterranean flavors in Gammarth.',
       ),
       Restaurant(
         name: 'Le Pirate',
-        location: 'La Marsa, Tunis',
-        cuisineType: 'Seafood',
+        location: loc(36.8810, 10.3300),
+        address: 'La Marsa, Tunis',
+        cuisine: 'Seafood',
         rating: 4.4,
-        imageUrl:
-            'https://images.unsplash.com/photo-1559847844-5315695dadae?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1559847844-5315695dadae?w=800'
+        ],
         postsCount: 0,
+        description: 'Pirate-themed seafood restaurant.',
       ),
       Restaurant(
         name: 'La Bouillabaisse',
-        location: 'La Goulette, Tunis',
-        cuisineType: 'French',
+        location: loc(36.8190, 10.3065),
+        address: 'La Goulette, Tunis',
+        cuisine: 'French',
         rating: 4.7,
-        imageUrl:
-            'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800'
+        ],
         postsCount: 0,
+        description: 'Specializing in French bouillabaisse and seafood.',
       ),
       Restaurant(
         name: 'Dar Belhadj',
-        location: 'Medina, Tunis',
-        cuisineType: 'Tunisian',
+        location: loc(36.8000, 10.1680),
+        address: 'Medina, Tunis',
+        cuisine: 'Tunisian',
         rating: 4.5,
-        imageUrl:
-            'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800',
+        images: [
+          'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800'
+        ],
         postsCount: 0,
+        description: 'Authentic dining in the heart of the Medina.',
       ),
     ];
 
     for (final restaurant in testRestaurants) {
-      final existing = await restaurantRepository.getRestaurantByName(
-        restaurant.name,
-      );
-      if (existing == null) {
-        final restaurantId = await restaurantRepository.createRestaurant(
-          restaurant,
-        );
-        final createdRestaurant = await restaurantRepository.getRestaurantById(
-          restaurantId,
-        );
-        if (createdRestaurant != null) {
-          restaurants.add(createdRestaurant);
-        }
+          final existingList = await restaurantRepository.searchRestaurants(restaurant.name);
+          if (existingList.isEmpty) {
+             final id = await restaurantRepository.createRestaurant(restaurant);
+             final created = await restaurantRepository.getRestaurantById(id);
+             if (created != null) restaurants.add(created);
+          } else {
+             restaurants.add(existingList.first);
+          }
       } else {
-        restaurants.add(existing);
+          final id = await restaurantRepository.createRestaurant(restaurant);
+          final created = await restaurantRepository.getRestaurantById(id);
+          if (created != null) restaurants.add(created);
       }
     }
 
@@ -486,14 +548,18 @@ class SeedData {
       final user = users[i % users.length];
       final restaurant = restaurants[i % restaurants.length];
 
+      final List<String> images = (json.decode(data['images'] as String) as List)
+          .map((e) => e.toString())
+          .toList();
+
       final post = Post(
         userId: user.id!,
         username: user.username,
         caption: data['caption'] as String,
-        restaurantId: restaurant.id,
+        restaurantId: restaurant.restaurantId,
         dishName: data['dishName'] as String,
         rating: data['rating'] as double,
-        images: (data['images'] as String).split(','),
+        images: images,
         likesCount: (i * 7) % 100, // Varied likes count
         commentsCount: (i * 3) % 50, // Varied comments count
         createdAt: DateTime.now().subtract(Duration(days: i ~/ 2)),
@@ -658,7 +724,7 @@ class SeedData {
         final query = searchQueries[(i + j) % searchQueries.length];
 
         final searchId = await searchHistoryRepository.addSearchQuery(
-          user.id!,
+          user.id!.toString(),
           query,
         );
         searchHistoryIds.add(searchId);

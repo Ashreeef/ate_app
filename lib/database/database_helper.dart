@@ -24,7 +24,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 4, // Incremented for notifications table
+      version: 6, // Incremented for SearchHistory migration (user_id TEXT)
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
@@ -57,6 +57,71 @@ class DatabaseHelper {
           'ALTER TABLE users ADD COLUMN following_count INTEGER DEFAULT 0',
         );
       } catch (_) {}
+    }
+    if (oldVersion < 5) {
+      // Migrate posts table to handle Firestore IDs for restaurants
+      await db.transaction((txn) async {
+        // 1. Rename existing table
+        await txn.execute('ALTER TABLE posts RENAME TO posts_old');
+
+        // 2. Create new table with TEXT restaurant_id and NO FK to restaurants
+        await txn.execute('''
+          CREATE TABLE posts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            username TEXT NOT NULL,
+            user_avatar_path TEXT,
+            caption TEXT NOT NULL,
+            restaurant_id TEXT, -- Changed to TEXT
+            restaurant_name TEXT,
+            dish_name TEXT,
+            rating REAL,
+            images TEXT,
+            likes_count INTEGER DEFAULT 0,
+            comments_count INTEGER DEFAULT 0,
+            liked_by TEXT,
+            saved_by TEXT,
+            created_at TEXT,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+          )
+        ''');
+
+        // 3. Copy data (converting restaurant_id to string if not null)
+        await txn.execute('''
+          INSERT INTO posts (
+            id, user_id, username, user_avatar_path, caption, 
+            restaurant_id, restaurant_name, dish_name, rating, images, 
+            likes_count, comments_count, liked_by, saved_by, created_at
+          )
+          SELECT 
+            id, user_id, username, user_avatar_path, caption, 
+            CAST(restaurant_id AS TEXT), restaurant_name, dish_name, rating, images, 
+            likes_count, comments_count, liked_by, saved_by, created_at
+          FROM posts_old
+        ''');
+
+        // 4. Drop old table
+        await txn.execute('DROP TABLE posts_old');
+      });
+    if (oldVersion < 6) {
+      // Migrate search_history table to handle Firebase UIDs (String)
+      await db.transaction((txn) async {
+        await txn.execute('ALTER TABLE search_history RENAME TO search_history_old');
+        await txn.execute('''
+          CREATE TABLE search_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL,
+            query TEXT NOT NULL,
+            created_at TEXT
+          )
+        ''');
+        await txn.execute('''
+          INSERT INTO search_history (id, user_id, query, created_at)
+          SELECT id, CAST(user_id AS TEXT), query, created_at
+          FROM search_history_old
+        ''');
+        await txn.execute('DROP TABLE search_history_old');
+      });
     }
   }
 
@@ -102,7 +167,7 @@ class DatabaseHelper {
         username TEXT NOT NULL,
         user_avatar_path TEXT,
         caption TEXT NOT NULL,
-        restaurant_id INTEGER,
+        restaurant_id TEXT, -- Changed to TEXT for Firestore compatibility
         restaurant_name TEXT,
         dish_name TEXT,
         rating REAL,
@@ -112,8 +177,7 @@ class DatabaseHelper {
         liked_by TEXT,
         saved_by TEXT,
         created_at TEXT,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-        FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE SET NULL
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
 
@@ -160,10 +224,9 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE search_history (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
+        user_id TEXT NOT NULL,
         query TEXT NOT NULL,
-        created_at TEXT,
-        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        created_at TEXT
       )
     ''');
 
