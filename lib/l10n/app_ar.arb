@@ -243,6 +243,27 @@
   "newChallengesWillAppear": "ستظهر التحديات الجديدة هنا",
   "notifications": "الإشعارات",
   "noNotifications": "لا توجد إشعارات بعد",
-  "markAllAsRead": "تعليم الكل كمقروء"
+  "markAllAsRead": "تعليم الكل كمقروء",
+  "deletePost": "حذف المنشور؟",
+  "deletePostConfirm": "هذا الإجراء لا يمكن التراجع عنه.",
+  "postDeleted": "تم حذف المنشور",
+  "failedToDeletePost": "فشل حذف المنشور: {error}",
+  "failedToAddComment": "فشل إضافة التعليق: {error}",
+  "failedToUpdateLike": "فشل تحديث الإعجاب",
+  "failedToUpdateSave": "فشل تحديث الحفظ",
+  "cannotAddComment": "لا يمكن إضافة تعليق لهذا المنشور",
+  "noCommentsYet": "لا توجد تعليقات بعد. كن أول من يعلق!",
+  "likesCountText": "{count} إعجاب",
+  "imageNotFound": "الصورة غير موجودة",
+  "user": "مستخدم",
+  "deleteAction": "حذف",
+  "unknown": "غير معروف",
+  "postsCount": "{count} منشورات",
+  "followersCount": "{count} متابعين",
+  "followingCount": "{count} يتابعهم",
+  "pointsCount": "{count} نقاط",
+  "likes": "تسجيلات الإعجاب",
+  "noDishes": "لم يتم العثور على أطباق",
+  "noPostsYet": "لا توجد منشورات حتى الآن"
 }
 

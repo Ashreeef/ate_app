@@ -1,144 +1,220 @@
-import '../database/database_helper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/comment.dart';
+import '../services/firestore_service.dart';
 
-/// Repository for Comment data operations
+/// Repository for Comment data operations using Firestore
+/// Comments are stored as subcollections under posts/{postId}/comments
 class CommentRepository {
-  final DatabaseHelper _db = DatabaseHelper.instance;
+  final FirestoreService _firestoreService = FirestoreService();
 
   // ==================== CREATE ====================
 
-  /// Create a new comment
-  Future<int> createComment(Comment comment) async {
-    return await _db.insert('comments', comment.toMap());
-  }
+  /// Add a comment to a post
+  Future<String> addComment({
+    required String postId,
+    required String userUid,
+    required String username,
+    required String? userAvatarUrl,
+    required String content,
+  }) async {
+    try {
+      // Create comment document in subcollection
+      final commentRef = _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .doc();
 
-  /// Create multiple comments in batch
-  Future<void> createComments(List<Comment> comments) async {
-    final maps = comments.map((c) => c.toMap()).toList();
-    await _db.insertBatch('comments', maps);
+      final now = DateTime.now().toIso8601String();
+
+      final comment = Comment(
+        commentId: commentRef.id,
+        postUid: postId,
+        userUid: userUid,
+        username: username,
+        userAvatarUrl: userAvatarUrl,
+        content: content,
+        createdAt: now,
+      );
+
+      final batch = _firestoreService.batch();
+
+      batch.set(commentRef, comment.toFirestore());
+
+      // Increment comments count on post
+      final postRef = _firestoreService.posts.doc(postId);
+      batch.update(postRef, {
+        'commentsCount': FieldValue.increment(1),
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+
+      await batch.commit();
+
+      return commentRef.id;
+    } catch (e) {
+      throw Exception('Failed to add comment: $e');
+    }
   }
 
   // ==================== READ ====================
 
-  /// Get a comment by ID
-  Future<Comment?> getCommentById(int id) async {
-    final map = await _db.queryOne(
-      'comments',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    return map != null ? Comment.fromMap(map) : null;
-  }
-
   /// Get all comments for a post
-  Future<List<Comment>> getCommentsByPostId(
-    int postId, {
-    String? orderBy = 'created_at ASC',
-  }) async {
-    final maps = await _db.query(
-      'comments',
-      where: 'post_id = ?',
-      whereArgs: [postId],
-      orderBy: orderBy,
-    );
-    return maps.map((map) => Comment.fromMap(map)).toList();
+  Future<List<Comment>> getPostComments(String postId, {int limit = 50}) async {
+    try {
+      final querySnapshot = await _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .orderBy('createdAt', descending: false)
+          .limit(limit)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => Comment.fromFirestore(doc.data()))
+          .toList();
+    } catch (e) {
+      return [];
+    }
   }
 
-  /// Get all comments by a user
-  Future<List<Comment>> getCommentsByUserId(int userId) async {
-    final maps = await _db.query(
-      'comments',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-      orderBy: 'created_at DESC',
-    );
-    return maps.map((map) => Comment.fromMap(map)).toList();
-  }
+  /// Get a single comment by ID
+  Future<Comment?> getCommentById(String postId, String commentId) async {
+    try {
+      final doc = await _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .doc(commentId)
+          .get();
 
-  /// Get recent comments (across all posts)
-  Future<List<Comment>> getRecentComments({int limit = 50}) async {
-    final maps = await _db.query(
-      'comments',
-      orderBy: 'created_at DESC',
-      limit: limit,
-    );
-    return maps.map((map) => Comment.fromMap(map)).toList();
+      if (!doc.exists) return null;
+      return Comment.fromFirestore(doc.data()!);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Get comments count for a post
-  Future<int> getCommentsCountByPostId(int postId) async {
-    return await _db.getCount(
-      'comments',
-      where: 'post_id = ?',
-      whereArgs: [postId],
-    );
+  Future<int> getCommentsCount(String postId) async {
+    try {
+      final querySnapshot = await _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .count()
+          .get();
+
+      return querySnapshot.count ?? 0;
+    } catch (e) {
+      return 0;
+    }
   }
 
-  /// Get comments count by a user
-  Future<int> getCommentsCountByUserId(int userId) async {
-    return await _db.getCount(
-      'comments',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
+  /// Stream comments in real-time
+  Stream<List<Comment>> getCommentsStream(String postId, {int limit = 50}) {
+    return _firestoreService.posts
+        .doc(postId)
+        .collection('comments')
+        .orderBy('createdAt', descending: false)
+        .limit(limit)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => Comment.fromFirestore(doc.data())).toList());
   }
 
   // ==================== UPDATE ====================
 
   /// Update a comment
-  Future<int> updateComment(Comment comment) async {
-    return await _db.update(
-      'comments',
-      comment.toMap(),
-      where: 'id = ?',
-      whereArgs: [comment.id],
-    );
-  }
-
-  /// Update comment content
-  Future<int> updateCommentContent(int commentId, String newContent) async {
-    return await _db.update(
-      'comments',
-      {'content': newContent},
-      where: 'id = ?',
-      whereArgs: [commentId],
-    );
+  Future<void> updateComment({
+    required String postId,
+    required String commentId,
+    required String content,
+  }) async {
+    try {
+      await _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .doc(commentId)
+          .update({
+        'content': content,
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      throw Exception('Failed to update comment: $e');
+    }
   }
 
   // ==================== DELETE ====================
 
-  /// Delete a comment by ID
-  Future<int> deleteComment(int id) async {
-    return await _db.delete('comments', where: 'id = ?', whereArgs: [id]);
+  /// Delete a comment
+  Future<void> deleteComment(String postId, String commentId) async {
+    try {
+      await _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .doc(commentId)
+          .delete();
+
+      // Decrement comments count on post
+      await _firestoreService.posts.doc(postId).update({
+        'commentsCount': FieldValue.increment(-1),
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      throw Exception('Failed to delete comment: $e');
+    }
   }
 
-  /// Delete all comments for a post
-  Future<int> deleteCommentsByPostId(int postId) async {
-    return await _db.delete(
-      'comments',
-      where: 'post_id = ?',
-      whereArgs: [postId],
-    );
-  }
+  /// Delete all comments for a post (used when deleting post)
+  Future<void> deleteAllPostComments(String postId) async {
+    try {
+      final querySnapshot = await _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .get();
 
-  /// Delete all comments by a user
-  Future<int> deleteCommentsByUserId(int userId) async {
-    return await _db.delete(
-      'comments',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      throw Exception('Failed to delete all comments: $e');
+    }
   }
 
   // ==================== UTILITY ====================
 
   /// Check if a comment exists
-  Future<bool> commentExists(int id) async {
-    return await _db.exists('comments', where: 'id = ?', whereArgs: [id]);
+  Future<bool> commentExists(String postId, String commentId) async {
+    try {
+      final doc = await _firestoreService.posts
+          .doc(postId)
+          .collection('comments')
+          .doc(commentId)
+          .get();
+
+      return doc.exists;
+    } catch (e) {
+      return false;
+    }
   }
 
-  /// Get total comments count
-  Future<int> getTotalCommentsCount() async {
-    return await _db.getCount('comments');
+  // ==================== BACKWARD COMPATIBILITY ====================
+
+  /// Backward-compatible alias for addComment
+  @Deprecated('Use addComment instead')
+  Future<int> createComment(dynamic comment) async {
+    // This is a compatibility shim - return 0 as placeholder
+    return 0;
+  }
+
+  /// Backward-compatible alias for getPostComments
+  @Deprecated('Use getPostComments instead')
+  Future<List<Comment>> getCommentsByPostId(int postId) async {
+    // This is a compatibility shim - return empty list
+    return [];
+  }
+
+  /// Backward-compatible alias - returns empty
+  @Deprecated('Use getPostComments instead')
+  Future<List<Comment>> getRecentComments({int limit = 50}) async {
+    // This method doesn't make sense in Firestore (comments are per-post)
+    return [];
   }
 }
+

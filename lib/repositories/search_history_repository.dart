@@ -1,171 +1,84 @@
-import '../database/database_helper.dart';
-import '../models/search_history.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-/// Repository for Search History data operations
+/// Repository for Search History data operations - Local Storage Version
 class SearchHistoryRepository {
-  final DatabaseHelper _db = DatabaseHelper.instance;
+  static const String _kHistoryKeyPrefix = 'search_history_';
 
   // ==================== CREATE ====================
 
   /// Add a search query to history
-  Future<int> addSearchQuery(int userId, String query) async {
-    return await _db.insert('search_history', {
-      'user_id': userId,
-      'query': query,
-    });
-  }
-
-  /// Add multiple search queries in batch
-  Future<void> addSearchQueries(int userId, List<String> queries) async {
-    final maps = queries.map((q) => {'user_id': userId, 'query': q}).toList();
-    await _db.insertBatch('search_history', maps);
+  Future<void> addSearchQuery(String userUid, String query) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = '$_kHistoryKeyPrefix$userUid';
+      
+      // Get existing history
+      List<String> history = prefs.getStringList(key) ?? [];
+      
+      // Remove if already exists (to move it to top)
+      history.remove(query);
+      
+      // Add to top
+      history.insert(0, query);
+      
+      // Limit history size to 50 items
+      if (history.length > 50) {
+        history = history.sublist(0, 50);
+      }
+      
+      await prefs.setStringList(key, history);
+    } catch (e) {
+      print('Error adding search query locally: $e');
+    }
   }
 
   // ==================== READ ====================
 
-  /// Get search history for a user
-  Future<List<SearchHistory>> getSearchHistoryByUserId(
-    int userId, {
-    int limit = 20,
-  }) async {
-    final maps = await _db.query(
-      'search_history',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-      orderBy: 'created_at DESC',
-      limit: limit,
-    );
-    return maps.map((map) => SearchHistory.fromMap(map)).toList();
-  }
-
-  /// Get recent search queries (strings only)
-  Future<List<String>> getRecentSearchQueries(
-    int userId, {
-    int limit = 10,
-  }) async {
-    final maps = await _db.query(
-      'search_history',
-      columns: ['query'],
-      where: 'user_id = ?',
-      whereArgs: [userId],
-      orderBy: 'created_at DESC',
-      limit: limit,
-    );
-    return maps.map((map) => map['query'] as String).toList();
-  }
-
-  /// Get unique recent search queries (no duplicates)
+  /// Get unique recent search queries
   Future<List<String>> getUniqueRecentSearchQueries(
-    int userId, {
+    String userUid, {
     int limit = 10,
   }) async {
-    final maps = await _db.rawQuery(
-      '''
-      SELECT DISTINCT query FROM search_history 
-      WHERE user_id = ? 
-      ORDER BY created_at DESC 
-      LIMIT ?
-    ''',
-      [userId, limit],
-    );
-    return maps.map((map) => map['query'] as String).toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = '$_kHistoryKeyPrefix$userUid';
+      
+      final history = prefs.getStringList(key) ?? [];
+      
+      return history.take(limit).toList();
+    } catch (e) {
+      print('Error getting search history locally: $e');
+      return [];
+    }
   }
-
-  /// Search in history
-  Future<List<String>> searchInHistory(int userId, String searchTerm) async {
-    final maps = await _db.rawQuery(
-      '''
-      SELECT DISTINCT query FROM search_history 
-      WHERE user_id = ? AND query LIKE ? 
-      ORDER BY created_at DESC 
-      LIMIT 10
-    ''',
-      [userId, '%$searchTerm%'],
-    );
-    return maps.map((map) => map['query'] as String).toList();
-  }
-
-  /// Get popular searches across all users
-  Future<List<Map<String, dynamic>>> getPopularSearches({
-    int limit = 10,
-  }) async {
-    final maps = await _db.rawQuery(
-      '''
-      SELECT query, COUNT(*) as count 
-      FROM search_history 
-      GROUP BY query 
-      ORDER BY count DESC 
-      LIMIT ?
-    ''',
-      [limit],
-    );
-    return maps;
-  }
-
-  /// Get search history count for a user
-  Future<int> getSearchHistoryCountByUserId(int userId) async {
-    return await _db.getCount(
-      'search_history',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
-  }
-
-  // ==================== UPDATE ====================
-  // Search history typically doesn't need update operations
 
   // ==================== DELETE ====================
 
-  /// Delete a specific search history entry
-  Future<int> deleteSearchHistoryEntry(int id) async {
-    return await _db.delete('search_history', where: 'id = ?', whereArgs: [id]);
-  }
-
   /// Delete a specific query from history
-  Future<int> deleteSearchQuery(int userId, String query) async {
-    return await _db.delete(
-      'search_history',
-      where: 'user_id = ? AND query = ?',
-      whereArgs: [userId, query],
-    );
+  Future<void> deleteSearchQuery(String userUid, String query) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = '$_kHistoryKeyPrefix$userUid';
+      
+      List<String> history = prefs.getStringList(key) ?? [];
+      
+      if (history.contains(query)) {
+        history.remove(query);
+        await prefs.setStringList(key, history);
+      }
+    } catch (e) {
+      print('Error deleting search query locally: $e');
+    }
   }
 
   /// Clear all search history for a user
-  Future<int> clearSearchHistoryByUserId(int userId) async {
-    return await _db.delete(
-      'search_history',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
-  }
-
-  /// Delete old search history entries (older than specified days)
-  Future<int> deleteOldSearchHistory(int userId, int daysOld) async {
-    final cutoffDate = DateTime.now()
-        .subtract(Duration(days: daysOld))
-        .toIso8601String();
-    return await _db.rawDelete(
-      '''
-      DELETE FROM search_history 
-      WHERE user_id = ? AND created_at < ?
-    ''',
-      [userId, cutoffDate],
-    );
-  }
-
-  // ==================== UTILITY ====================
-
-  /// Check if a query exists in history
-  Future<bool> queryExistsInHistory(int userId, String query) async {
-    return await _db.exists(
-      'search_history',
-      where: 'user_id = ? AND query = ?',
-      whereArgs: [userId, query],
-    );
-  }
-
-  /// Get total search history count
-  Future<int> getTotalSearchHistoryCount() async {
-    return await _db.getCount('search_history');
+  Future<void> clearSearchHistoryByUserUid(String userUid) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = '$_kHistoryKeyPrefix$userUid';
+      await prefs.remove(key);
+    } catch (e) {
+      print('Error clearing search history locally: $e');
+    }
   }
 }

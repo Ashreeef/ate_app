@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
+
+import '../../screens/home/follow_list_screen.dart';
 
 /// Profile header displaying avatar, stats, rank, and points
 class ProfileHeader extends StatelessWidget {
+  final String? userId; // User UID for navigation (required for followers/following list)
   final String avatarUrl;
   final String username;
   final int posts;
@@ -13,6 +17,7 @@ class ProfileHeader extends StatelessWidget {
 
   const ProfileHeader({
     super.key,
+    this.userId,
     required this.avatarUrl,
     required this.username,
     required this.posts,
@@ -24,6 +29,7 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       color: Theme.of(context).cardTheme.color,
       padding: EdgeInsets.symmetric(
@@ -49,10 +55,43 @@ class ProfileHeader extends StatelessWidget {
           SizedBox(height: AppSpacing.sm),
 
           // Stats Line (Posts | Followers | Following)
-          Text(
-            '$posts Posts | $followers Followers | $following Following',
-            style: AppTextStyles.bodySmall,
-            textAlign: TextAlign.center,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildStatItem(context, l10n.postsCount(posts), null),
+              _buildDivider(),
+              _buildStatItem(
+                context,
+                l10n.followersCount(followers),
+                userId != null
+                    ? () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FollowListScreen(
+                              userId: userId!,
+                              isFollowers: true,
+                            ),
+                          ),
+                        )
+                    : null,
+              ),
+              _buildDivider(),
+              _buildStatItem(
+                context,
+                l10n.followingCount(following),
+                userId != null
+                    ? () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FollowListScreen(
+                              userId: userId!,
+                              isFollowers: false,
+                            ),
+                          ),
+                        )
+                    : null,
+              ),
+            ],
           ),
           SizedBox(height: AppSpacing.sm),
 
@@ -69,11 +108,34 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
               SizedBox(width: AppSpacing.xs),
-              Text('$rank - $points Points', style: AppTextStyles.bodySmall),
+              Text('$rank - ${l10n.pointsCount(points)}', style: AppTextStyles.bodySmall),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildStatItem(BuildContext context, String label, VoidCallback? onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
+        child: Text(
+          label,
+          style: AppTextStyles.bodySmall.copyWith(
+            color: onTap != null ? AppColors.primary : AppColors.textMedium,
+            fontWeight: onTap != null ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Text(
+      '|',
+      style: AppTextStyles.bodySmall.copyWith(color: AppColors.divider),
     );
   }
 }

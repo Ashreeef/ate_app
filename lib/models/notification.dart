@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class AppNotification {
-  final int? id;
-  final int userId;
+  final String? id;
+  final String userUid;
   final String title;
   final String body;
   final String? imageUrl;
@@ -10,7 +12,7 @@ class AppNotification {
 
   AppNotification({
     this.id,
-    required this.userId,
+    required this.userUid,
     required this.title,
     required this.body,
     this.imageUrl,
@@ -23,7 +25,7 @@ class AppNotification {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'user_id': userId,
+      'user_uid': userUid,
       'title': title,
       'body': body,
       'image_url': imageUrl,
@@ -33,24 +35,37 @@ class AppNotification {
     };
   }
 
-  // Create from Map from database
-  factory AppNotification.fromMap(Map<String, dynamic> map) {
+  // Firestore serialization
+  Map<String, dynamic> toFirestore() {
+    return {
+      'userUid': userUid,
+      'title': title,
+      'body': body,
+      'imageUrl': imageUrl,
+      'data': data,
+      'createdAt': createdAt.toIso8601String(),
+      'isRead': isRead,
+    };
+  }
+
+  factory AppNotification.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return AppNotification(
-      id: map['id'] as int?,
-      userId: map['user_id'] as int,
-      title: map['title'] as String,
-      body: map['body'] as String,
-      imageUrl: map['image_url'] as String?,
-      data: map['data'] as Map<String, dynamic>? ?? {},
-      createdAt: DateTime.parse(map['created_at'] as String),
-      isRead: (map['is_read'] as int?) == 1,
+      id: doc.id,
+      userUid: data['userUid'] ?? '',
+      title: data['title'] ?? '',
+      body: data['body'] ?? '',
+      imageUrl: data['imageUrl'],
+      data: data['data'] ?? {},
+      createdAt: DateTime.parse(data['createdAt'] ?? DateTime.now().toIso8601String()),
+      isRead: data['isRead'] ?? false,
     );
   }
 
   // Copy with method
   AppNotification copyWith({
-    int? id,
-    int? userId,
+    String? id,
+    String? userUid,
     String? title,
     String? body,
     String? imageUrl,
@@ -60,7 +75,7 @@ class AppNotification {
   }) {
     return AppNotification(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
+      userUid: userUid ?? this.userUid,
       title: title ?? this.title,
       body: body ?? this.body,
       imageUrl: imageUrl ?? this.imageUrl,
@@ -72,5 +87,5 @@ class AppNotification {
 
   @override
   String toString() =>
-      'AppNotification(id: $id, userId: $userId, title: $title, body: $body, isRead: $isRead)';
+      'AppNotification(id: $id, userUid: $userUid, title: $title, body: $body, isRead: $isRead)';
 }

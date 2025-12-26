@@ -228,16 +228,16 @@ class SettingsCubit extends Cubit<SettingsState> {
     try {
       emit(state.copyWith(status: SettingsStatus.saving));
 
-      // Get current user ID
-      final prefs = await SharedPreferences.getInstance();
-      final currentUserId = prefs.getInt('current_user_id');
+      // Get current user ID from repository
+      final currentUser = await _profileRepository.getCurrentUser();
 
-      if (currentUserId != null) {
+      if (currentUser != null && currentUser.uid != null) {
         // Delete user from database
-        await _profileRepository.deleteUser(currentUserId);
+        await _profileRepository.deleteUser(currentUser.uid!);
       }
 
       // Clear all settings
+      final prefs = await SharedPreferences.getInstance();
       await prefs.clear();
 
       emit(state.copyWith(status: SettingsStatus.saved));

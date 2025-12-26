@@ -65,8 +65,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
-          // Navigate to home screen on successful login
-          Navigator.pushReplacementNamed(context, '/home');
+          // Navigate to home screen and clear the stack to prevent going back to onboarding/login
+          Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         } else if (state is AuthError) {
           // Show error message
           ScaffoldMessenger.of(context).showSnackBar(

@@ -1,29 +1,42 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Post {
-  final int? id;
-  final int userId;
+  final int? id; // Deprecated - SQLite only
+  final String? postId; // Firestore document ID
+  final int? userId; // Deprecated - SQLite only
+  final String? userUid; // Firebase User UID
   final String username;
-  final String? userAvatarPath;
+  final String? userAvatarPath; // Deprecated - SQLite only
+  final String? userAvatarUrl; // Cloudinary URL
   final String caption;
-  final int? restaurantId;
+  final int? restaurantId; // Deprecated - SQLite only
+  final String? restaurantUid; // Firestore restaurant ID
   final String? restaurantName;
   final String? dishName;
   final double? rating;
-  final List<String> images;
+  final List<String> images; // Cloudinary URLs
   final int likesCount;
   final int commentsCount;
-  final List<int> likedBy;
-  final List<int> savedBy;
+  final List<int> likedBy; // Deprecated - SQLite only
+  final List<String> likedByUids; // Firebase UIDs
+  final List<int> savedBy; // Deprecated - SQLite only
+  final List<String> savedByUids; // Firebase UIDs
   final DateTime createdAt;
+  final DateTime? updatedAt;
+
 
   Post({
     this.id,
-    required this.userId,
+    this.postId,
+    this.userId,
+    this.userUid,
     required this.username,
     this.userAvatarPath,
+    this.userAvatarUrl,
     required this.caption,
     this.restaurantId,
+    this.restaurantUid,
     this.restaurantName,
     this.dishName,
     this.rating,
@@ -31,67 +44,87 @@ class Post {
     this.likesCount = 0,
     this.commentsCount = 0,
     List<int>? likedBy,
+    List<String>? likedByUids,
     List<int>? savedBy,
+    List<String>? savedByUids,
     DateTime? createdAt,
+    this.updatedAt,
   })  : likedBy = likedBy ?? [],
+        likedByUids = likedByUids ?? [],
         savedBy = savedBy ?? [],
+        savedByUids = savedByUids ?? [],
         createdAt = createdAt ?? DateTime.now();
 
-  Map<String, dynamic> toMap() {
+
+  /// Convert Post to Map for Firestore
+  Map<String, dynamic> toMapForFirestore() {
     return {
-      'id': id,
-      'user_id': userId,
+      'postId': postId,
+      'userId': userUid,
       'username': username,
-      'user_avatar_path': userAvatarPath,
+      'userAvatarUrl': userAvatarUrl,
       'caption': caption,
-      'restaurant_id': restaurantId,
-      'restaurant_name': restaurantName,
-      'dish_name': dishName,
+      'restaurantId': restaurantUid, // Firestore uses 'restaurantId' key for the UID string
+      'restaurantName': restaurantName,
+      'dishName': dishName,
       'rating': rating,
-      'images': jsonEncode(images),
-      'likes_count': likesCount,
-      'comments_count': commentsCount,
-      'liked_by': jsonEncode(likedBy),
-      'saved_by': jsonEncode(savedBy),
-      'created_at': createdAt.toIso8601String(),
+      'images': images,
+      'likesCount': likesCount,
+      'commentsCount': commentsCount,
+      'likedBy': likedByUids,
+      'savedBy': savedByUids,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
-  factory Post.fromMap(Map<String, dynamic> map) {
+  /// Convert Post to Map for Firestore (legacy name)
+  Map<String, dynamic> toFirestore() => toMapForFirestore();
+
+  /// Create Post from Firestore document
+  factory Post.fromFirestore(Map<String, dynamic> data) {
     return Post(
-      id: map['id'] as int?,
-      userId: map['user_id'] as int,
-      username: map['username'] as String? ?? '',
-      userAvatarPath: map['user_avatar_path'] as String?,
-      caption: map['caption'] as String? ?? '',
-      restaurantId: map['restaurant_id'] as int?,
-      restaurantName: map['restaurant_name'] as String?,
-      dishName: map['dish_name'] as String?,
-      rating: map['rating'] != null ? (map['rating'] as num).toDouble() : null,
-      images: map['images'] != null
-          ? List<String>.from(jsonDecode(map['images']))
+      postId: data['postId'] as String?,
+      userUid: data['userId'] as String?,
+      username: data['username'] as String? ?? '',
+      userAvatarUrl: data['userAvatarUrl'] as String?,
+      caption: data['caption'] as String? ?? '',
+      restaurantUid: data['restaurantId'] as String?,
+      restaurantName: data['restaurantName'] as String?,
+      dishName: data['dishName'] as String?,
+      rating: data['rating'] != null ? (data['rating'] as num).toDouble() : null,
+      images: data['images'] != null
+          ? List<String>.from(data['images'])
           : [],
-      likesCount: map['likes_count'] ?? 0,
-      commentsCount: map['comments_count'] ?? 0,
-      likedBy: map['liked_by'] != null
-          ? List<int>.from(jsonDecode(map['liked_by']))
+      likesCount: data['likesCount'] ?? 0,
+      commentsCount: data['commentsCount'] ?? 0,
+      likedByUids: data['likedBy'] != null
+          ? List<String>.from(data['likedBy'])
           : [],
-      savedBy: map['saved_by'] != null
-          ? List<int>.from(jsonDecode(map['saved_by']))
+      savedByUids: data['savedBy'] != null
+          ? List<String>.from(data['savedBy'])
           : [],
-      createdAt: map['created_at'] != null
-          ? DateTime.parse(map['created_at'])
+      createdAt: data['createdAt'] != null
+          ? DateTime.parse(data['createdAt'])
           : DateTime.now(),
+      updatedAt: data['updatedAt'] != null
+          ? DateTime.parse(data['updatedAt'])
+          : null,
     );
   }
 
+
   Post copyWith({
     int? id,
+    String? postId,
     int? userId,
+    String? userUid,
     String? username,
     String? userAvatarPath,
+    String? userAvatarUrl,
     String? caption,
     int? restaurantId,
+    String? restaurantUid,
     String? restaurantName,
     String? dishName,
     double? rating,
@@ -99,16 +132,23 @@ class Post {
     int? likesCount,
     int? commentsCount,
     List<int>? likedBy,
+    List<String>? likedByUids,
     List<int>? savedBy,
+    List<String>? savedByUids,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return Post(
       id: id ?? this.id,
+      postId: postId ?? this.postId,
       userId: userId ?? this.userId,
+      userUid: userUid ?? this.userUid,
       username: username ?? this.username,
       userAvatarPath: userAvatarPath ?? this.userAvatarPath,
+      userAvatarUrl: userAvatarUrl ?? this.userAvatarUrl,
       caption: caption ?? this.caption,
       restaurantId: restaurantId ?? this.restaurantId,
+      restaurantUid: restaurantUid ?? this.restaurantUid,
       restaurantName: restaurantName ?? this.restaurantName,
       dishName: dishName ?? this.dishName,
       rating: rating ?? this.rating,
@@ -116,8 +156,11 @@ class Post {
       likesCount: likesCount ?? this.likesCount,
       commentsCount: commentsCount ?? this.commentsCount,
       likedBy: likedBy ?? this.likedBy,
+      likedByUids: likedByUids ?? this.likedByUids,
       savedBy: savedBy ?? this.savedBy,
+      savedByUids: savedByUids ?? this.savedByUids,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 

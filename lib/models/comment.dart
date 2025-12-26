@@ -1,52 +1,78 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Comment {
-  final int? id;
-  final int postId;
-  final int userId;
+  final int? id; // Deprecated - SQLite only
+  final String? commentId; // Firestore document ID
+  final int? postId; // Deprecated - SQLite only
+  final String? postUid; // Firestore post ID
+  final int? userId; // Deprecated - SQLite only
+  final String? userUid; // Firebase User UID
+  final String? username; // Denormalized for display
+  final String? userAvatarUrl; // Cloudinary URL for display
   final String content;
   final String? createdAt;
 
   Comment({
     this.id,
-    required this.postId,
-    required this.userId,
+    this.commentId,
+    this.postId,
+    this.postUid,
+    this.userId,
+    this.userUid,
+    this.username,
+    this.userAvatarUrl,
     required this.content,
     this.createdAt,
   });
 
-  /// Convert Comment to Map for database
-  Map<String, dynamic> toMap() {
+  /// Convert Comment to Map for Firestore
+  Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
-      'post_id': postId,
-      'user_id': userId,
+      'commentId': commentId,
+      'postId': postUid,
+      'userId': userUid,
+      'username': username,
+      'userAvatarUrl': userAvatarUrl,
       'content': content,
-      'created_at': createdAt,
+      'createdAt': createdAt,
     };
   }
 
-  /// Create Comment from database Map
-  factory Comment.fromMap(Map<String, dynamic> map) {
+  /// Create Comment from Firestore document
+  factory Comment.fromFirestore(Map<String, dynamic> data) {
     return Comment(
-      id: map['id'] as int?,
-      postId: map['post_id'] as int,
-      userId: map['user_id'] as int,
-      content: map['content'] as String,
-      createdAt: map['created_at'] as String?,
+      commentId: data['commentId'] as String?,
+      postUid: data['postId'] as String?,
+      userUid: data['userId'] as String?,
+      username: data['username'] as String?,
+      userAvatarUrl: data['userAvatarUrl'] as String?,
+      content: data['content'] as String? ?? '',
+      createdAt: data['createdAt'] as String?,
     );
   }
 
   /// Create a copy with updated fields
   Comment copyWith({
     int? id,
+    String? commentId,
     int? postId,
+    String? postUid,
     int? userId,
+    String? userUid,
+    String? username,
+    String? userAvatarUrl,
     String? content,
     String? createdAt,
   }) {
     return Comment(
       id: id ?? this.id,
+      commentId: commentId ?? this.commentId,
       postId: postId ?? this.postId,
+      postUid: postUid ?? this.postUid,
       userId: userId ?? this.userId,
+      userUid: userUid ?? this.userUid,
+      username: username ?? this.username,
+      userAvatarUrl: userAvatarUrl ?? this.userAvatarUrl,
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
     );

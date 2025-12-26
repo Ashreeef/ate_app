@@ -44,6 +44,15 @@ class CloudinaryStorageService {
     String userId,
   ) async {
     try {
+      if (imageFiles.isEmpty) return [];
+
+      // Validate files exist
+      for (var file in imageFiles) {
+        if (!await file.exists()) {
+          throw Exception('File not found: ${file.path}');
+        }
+      }
+
       final uploadTasks = <Future<String>>[];
 
       for (int i = 0; i < imageFiles.length; i++) {

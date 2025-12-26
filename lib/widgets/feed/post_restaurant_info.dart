@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
+import '../../screens/restaurant/restaurant_page.dart';
 
 class PostRestaurantInfo extends StatelessWidget {
+  final String? restaurantId;
   final String restaurantName;
   final String dishName;
-  final int rating;
+  final double rating;
 
   const PostRestaurantInfo({
     super.key,
+    this.restaurantId,
     required this.restaurantName,
     required this.dishName,
     required this.rating,
@@ -17,42 +20,60 @@ class PostRestaurantInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: Container(
-        padding: EdgeInsets.all(AppSpacing.sm),
-        decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.restaurant,
-              size: AppSizes.iconSm,
-              color: AppColors.primary,
-            ),
-            SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    restaurantName,
-                    style: AppTextStyles.bodySmall.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+      child: GestureDetector(
+        onTap: restaurantId != null
+            ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        RestaurantPage(restaurantId: restaurantId!),
                   ),
-                  Text(dishName, style: AppTextStyles.caption),
+                );
+              }
+            : null,
+        child: Container(
+          padding: EdgeInsets.all(AppSpacing.sm),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundLight,
+            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.restaurant,
+                size: AppSizes.iconSm,
+                color: AppColors.primary,
+              ),
+              SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      restaurantName,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: restaurantId != null ? AppColors.primary : null,
+                        decoration: restaurantId != null
+                            ? TextDecoration.underline
+                            : null,
+                      ),
+                    ),
+                    Text(dishName, style: AppTextStyles.caption),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  Icon(Icons.star, color: AppColors.starActive, size: 16),
+                  SizedBox(width: 4),
+                  Text('${rating.toStringAsFixed(1)}',
+                      style: AppTextStyles.captionBold),
                 ],
               ),
-            ),
-            Row(
-              children: [
-                Icon(Icons.star, color: AppColors.starActive, size: 16),
-                SizedBox(width: 4),
-                Text('$rating.0', style: AppTextStyles.captionBold),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

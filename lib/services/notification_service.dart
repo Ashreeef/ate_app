@@ -4,7 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../models/notification.dart' as app_notification;
 import '../repositories/notification_repository.dart';
-import '../services/auth_service.dart';
+import '../services/firebase_auth_service.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -126,7 +126,9 @@ class NotificationService {
     bool fromForeground = false,
     bool fromNotificationTap = false,
   }) async {
-    final userId = AuthService.instance.currentUserId ?? 1;
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return;
+
     final title = message.notification?.title ?? 'New Notification';
     final body = message.notification?.body ?? '';
     final imageUrl =
@@ -138,7 +140,7 @@ class NotificationService {
 
     // Create app notification object
     final notification = app_notification.AppNotification(
-      userId: userId,
+      userUid: userUid,
       title: title,
       body: body,
       imageUrl: imageUrl,
@@ -181,7 +183,7 @@ class NotificationService {
     );
 
     await _localNotifications.show(
-      notification.id ?? DateTime.now().millisecondsSinceEpoch,
+      int.tryParse(notification.id ?? '') ?? DateTime.now().millisecondsSinceEpoch,
       notification.title,
       notification.body,
       notificationDetails,
@@ -206,9 +208,11 @@ class NotificationService {
   static Future<void> _backgroundMessageHandler(RemoteMessage message) async {
     print('Handling background message: ${message.data}');
     // Save notification when app is terminated
-    final userId = AuthService.instance.currentUserId ?? 1;
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return;
+
     final notification = app_notification.AppNotification(
-      userId: userId,
+      userUid: userUid,
       title: message.notification?.title ?? 'New Notification',
       body: message.notification?.body ?? '',
       imageUrl: message.notification?.android?.imageUrl,
@@ -226,45 +230,65 @@ class NotificationService {
     int? limit,
     int? offset,
   }) async {
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return [];
+
     return await _notificationRepository.getNotifications(
-      limit: limit,
-      offset: offset,
+      userUid,
+      limit: limit ?? 50,
     );
   }
 
   /// Get unread count
   Future<int> getUnreadCount() async {
-    return await _notificationRepository.getUnreadCount();
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return 0;
+
+    return await _notificationRepository.getUnreadCount(userUid);
   }
 
   /// Mark notification as read
-  Future<void> markAsRead(int notificationId) async {
-    await _notificationRepository.markAsRead(notificationId);
+  Future<void> markAsRead(String notificationId) async {
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return;
+
+    await _notificationRepository.markAsRead(userUid, notificationId);
   }
 
   /// Mark all as read
   Future<void> markAllAsRead() async {
-    await _notificationRepository.markAllAsRead();
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return;
+
+    await _notificationRepository.markAllAsRead(userUid);
   }
 
   /// Delete notification
-  Future<void> deleteNotification(int notificationId) async {
-    await _notificationRepository.deleteNotification(notificationId);
+  Future<void> deleteNotification(String notificationId) async {
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return;
+
+    await _notificationRepository.deleteNotification(userUid, notificationId);
   }
 
   /// Delete all notifications
   Future<void> deleteAllNotifications() async {
-    await _notificationRepository.deleteAllNotifications();
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return;
+
+    await _notificationRepository.deleteAllNotifications(userUid);
   }
 
   /// Test notification (for development)
   Future<void> sendTestNotification() async {
-    final userId = AuthService.instance.currentUserId ?? 1;
+    final userUid = FirebaseAuthService().currentUserId;
+    if (userUid == null) return;
+
     final notification = app_notification.AppNotification(
-      userId: userId,
+      userUid: userUid,
       title: 'Test Notification',
       body: 'This is a test notification',
-      data: {'type': 'post', 'postId': 1},
+      data: {'type': 'post', 'postId': '1'},
       createdAt: DateTime.now(),
       isRead: false,
     );

@@ -34,25 +34,6 @@ class User {
     this.updatedAt,
   });
 
-  // Convert User to Map for database (local SQLite)
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'username': username,
-      'email': email,
-      'password': password,
-      'profile_image': profileImage,
-      'bio': bio,
-      'display_name': displayName,
-      'phone': phone,
-      'followers_count': followersCount,
-      'following_count': followingCount,
-      'points': points,
-      'level': level,
-      'created_at': createdAt,
-    };
-  }
-
   // Convert User to Map for Firestore
   Map<String, dynamic> toFirestore() {
     return {
@@ -70,25 +51,6 @@ class User {
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
-  }
-
-  // Create User from Map (local SQLite)
-  factory User.fromMap(Map<String, dynamic> map) {
-    return User(
-      id: map['id'] as int?,
-      username: map['username'] as String? ?? '',
-      email: map['email'] as String? ?? '',
-      password: map['password'] as String?,
-      profileImage: map['profile_image'] as String?,
-      bio: map['bio'] as String?,
-      displayName: map['display_name'] as String?,
-      phone: map['phone'] as String?,
-      followersCount: map['followers_count'] as int? ?? 0,
-      followingCount: map['following_count'] as int? ?? 0,
-      points: map['points'] as int? ?? 0,
-      level: map['level'] as String? ?? 'Bronze',
-      createdAt: map['created_at'] as String?,
-    );
   }
 
   // Create User from Firestore document
@@ -146,6 +108,9 @@ class User {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  // Alias for profileImage to match Post model naming convention
+  String? get userAvatarUrl => profileImage;
 
   @override
   String toString() {

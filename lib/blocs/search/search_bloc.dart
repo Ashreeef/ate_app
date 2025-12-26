@@ -34,8 +34,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       final recentSearches = await _searchHistoryRepository
           .getUniqueRecentSearchQueries(event.userId);
-      final trendingRestaurants = await _restaurantRepository
+      
+      var trendingRestaurants = await _restaurantRepository
           .getTrendingRestaurants(limit: 10);
+      
+      // Fallback: If no trending found (e.g. new DB), just show some restaurants
+      if (trendingRestaurants.length < 3) {
+        trendingRestaurants = await _restaurantRepository.getAllRestaurants(limit: 10);
+      }
 
       emit(
         SearchOverviewLoaded(
@@ -70,11 +76,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       );
 
       // Save search query to history for current user if logged in
-      // Note: Will need to migrate search history to use UID instead of integer ID
-      if (_authRepository.isAuthenticated &&
-          _authRepository.currentUserId != null) {
-        // TODO: Migrate search history to use Firebase UID
-        // For now, skip saving search history until migration is complete
+      final currentUserUid = _authRepository.currentUserId;
+      if (currentUserUid != null) {
+        await _searchHistoryRepository.addSearchQuery(currentUserUid, trimmedQuery);
       }
 
       emit(SearchResultsLoaded(query: trimmedQuery, results: results));
@@ -98,8 +102,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       if (state is SearchOverviewLoaded) {
         final recentSearches = await _searchHistoryRepository
             .getUniqueRecentSearchQueries(event.userId);
-        final trendingRestaurants = await _restaurantRepository
+        
+        var trendingRestaurants = await _restaurantRepository
             .getTrendingRestaurants(limit: 10);
+        
+        if (trendingRestaurants.length < 3) {
+          trendingRestaurants = await _restaurantRepository.getAllRestaurants(limit: 10);
+        }
 
         emit(
           SearchOverviewLoaded(

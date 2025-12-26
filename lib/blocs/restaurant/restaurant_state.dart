@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import '../../models/restaurant.dart';
+import '../../models/dish.dart';
+import '../../models/post.dart';
 
 /// Base class for all restaurant states
 abstract class RestaurantState extends Equatable {
@@ -19,14 +21,19 @@ class RestaurantLoading extends RestaurantState {
   const RestaurantLoading();
 }
 
-/// State when restaurant details are loaded successfully
 class RestaurantLoaded extends RestaurantState {
   final Restaurant restaurant;
+  final List<Dish> dishes;
+  final List<Post> mentions;
 
-  const RestaurantLoaded({required this.restaurant});
+  RestaurantLoaded({
+    required this.restaurant,
+    required this.dishes,
+    required this.mentions,
+  });
 
   @override
-  List<Object?> get props => [restaurant];
+  List<Object?> get props => [restaurant, dishes, mentions];
 }
 
 /// State when loading restaurant fails
@@ -38,5 +45,3 @@ class RestaurantError extends RestaurantState {
   @override
   List<Object?> get props => [message];
 }
-
-

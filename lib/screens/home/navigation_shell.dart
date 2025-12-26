@@ -11,12 +11,26 @@ import '../../l10n/app_localizations.dart';
 class NavigationShell extends StatefulWidget {
   const NavigationShell({super.key});
 
+  /// Static method to switch tabs from anywhere via context
+  static void selectTab(BuildContext context, int index) {
+    final state = context.findAncestorStateOfType<_NavigationShellState>();
+    if (state != null) {
+      state.selectTab(index);
+    }
+  }
+
   @override
   State<NavigationShell> createState() => _NavigationShellState();
 }
 
 class _NavigationShellState extends State<NavigationShell> {
   int _currentIndex = 0;
+
+  void selectTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   // List of screens for each tab
   final List<Widget> _screens = [

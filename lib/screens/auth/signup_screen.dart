@@ -48,8 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void _handleSocialSignUp(String provider) {
     // TODO: Implement social signup
-    // For Now, Navigate to home screen (temporary until social auth is implemented)
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
   }
 
   void _handleLogin() {

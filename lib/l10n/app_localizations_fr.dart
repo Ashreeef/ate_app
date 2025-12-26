@@ -12,7 +12,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appTitle => 'Ate';
 
   @override
-  String get loginTitle => 'Bienvenue';
+  String get loginTitle => 'Bon retour';
 
   @override
   String get loginButton => 'Se connecter';
@@ -30,13 +30,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get usernameLabel => 'Nom d\'utilisateur';
 
   @override
-  String get forgotPassword => 'Mot de passe oublié?';
+  String get forgotPassword => 'Mot de passe oublié ?';
 
   @override
-  String get dontHaveAccount => 'Vous n\'avez pas de compte?';
+  String get dontHaveAccount => 'Vous n\'avez pas de compte ?';
 
   @override
-  String get alreadyHaveAccount => 'Vous avez déjà un compte?';
+  String get alreadyHaveAccount => 'Vous avez déjà un compte ?';
 
   @override
   String get feedTitle => 'Découvrir';
@@ -60,10 +60,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editProfile => 'Modifier le profil';
 
   @override
-  String get logout => 'Se déconnecter';
+  String get logout => 'Déconnexion';
 
   @override
-  String get posts => 'Publications';
+  String get posts => 'Posts';
 
   @override
   String get followers => 'Abonnés';
@@ -75,13 +75,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get points => 'Points';
 
   @override
-  String get saved => 'Enregistrés';
+  String get saved => 'Enregistré';
 
   @override
-  String get myPosts => 'Mes publications';
+  String get myPosts => 'Mes Posts';
 
   @override
-  String get savedPosts => 'Publications enregistrées';
+  String get savedPosts => 'Posts enregistrés';
 
   @override
   String get like => 'J\'aime';
@@ -99,13 +99,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cancel => 'Annuler';
 
   @override
-  String get submit => 'Soumettre';
+  String get submit => 'Envoyer';
 
   @override
   String get loading => 'Chargement...';
 
   @override
-  String get error => 'Une erreur s\'est produite';
+  String get error => 'Une erreur est survenue';
 
   @override
   String get comingSoon => 'Bientôt disponible !';
@@ -117,7 +117,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get deleteAccount => 'Supprimer le compte';
 
   @override
-  String get logoutSuccess => 'Déconnexion réussie';
+  String get logoutSuccess => 'Déconnecté avec succès';
 
   @override
   String get shareProfile => 'Partager le profil';
@@ -142,11 +142,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le mot de passe doit contenir au moins 6 caractères';
 
   @override
-  String get passwordChangedSuccess => 'Mot de passe modifié avec succès';
+  String get passwordChangedSuccess => 'Mot de passe changé avec succès';
 
   @override
-  String get passwordChangeError =>
-      'Erreur lors de la modification du mot de passe';
+  String get passwordChangeError => 'Erreur lors du changement de mot de passe';
 
   @override
   String get incorrectPassword => 'Le mot de passe actuel est incorrect';
@@ -184,7 +183,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get phone => 'Téléphone';
 
   @override
-  String get frequentlyAsked => 'Questions fréquentes';
+  String get frequentlyAsked => 'Questions fréquemment posées';
 
   @override
   String get howToEditProfile => 'Comment modifier mon profil ?';
@@ -193,7 +192,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get howToFollowUsers => 'Comment suivre d\'autres utilisateurs ?';
 
   @override
-  String get howToPostPhoto => 'Comment publier une photo ?';
+  String get howToPostPhoto => 'Comment poster une photo ?';
 
   @override
   String get howToReportContent => 'Comment signaler un contenu ?';
@@ -229,7 +228,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dataCollectionDesc =>
-      '• Informations de profil\n• Photos et publications\n• Données d\'interaction';
+      '• Informations de profil\n• Photos et posts\n• Données d\'interaction';
 
   @override
   String get accountDeleted => 'Compte supprimé avec succès';
@@ -245,19 +244,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get account => 'Compte';
 
   @override
-  String get updateYourInfo => 'Mettre à jour vos informations';
+  String get updateYourInfo => 'Mettez à jour vos informations';
 
   @override
-  String get manageAccountSecurity => 'Gérer la sécurité de votre compte';
+  String get manageAccountSecurity => 'Gérez la sécurité de votre compte';
 
   @override
-  String get updateYourPassword => 'Mettre à jour votre mot de passe';
+  String get updateYourPassword => 'Mettez à jour votre mot de passe';
 
   @override
   String get preferences => 'Préférences';
 
   @override
-  String get manageNotifications => 'Gérer vos préférences de notification';
+  String get manageNotifications => 'Gérez vos préférences de notification';
 
   @override
   String get notifications => 'Notifications';
@@ -297,33 +296,33 @@ class AppLocalizationsFr extends AppLocalizations {
   String get pickImages => 'Choisir des images (max 3)';
 
   @override
-  String get noPosts => 'Pas encore de publications';
+  String get noPosts => 'Aucun post pour le moment';
 
   @override
   String get noPostsDescription =>
-      'Soyez le premier à partager votre expérience culinaire!';
+      'Soyez le premier à partager votre expérience culinaire !';
 
   @override
   String get selectAtLeastOneImage => 'Sélectionnez au moins une image';
 
   @override
   String imageSelectionFailed(Object error) {
-    return 'Échec de la sélection d\'image: $error';
+    return 'Échec de la sélection de l\'image : $error';
   }
 
   @override
-  String get postPublished => 'Publication réussie!';
+  String get postPublished => 'Post publié avec succès !';
 
   @override
   String postPublishError(Object error) {
-    return 'Erreur lors de la publication: $error';
+    return 'Erreur lors de la publication du post : $error';
   }
 
   @override
   String get writeCaption => 'Veuillez écrire une légende';
 
   @override
-  String get enterRestaurant => 'Veuillez saisir un restaurant';
+  String get enterRestaurant => 'Veuillez entrer un restaurant';
 
   @override
   String get rateExperience => 'Veuillez évaluer votre expérience';
@@ -356,7 +355,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get yourRating => 'Votre évaluation';
 
   @override
-  String get newPost => 'Nouveau post';
+  String get newPost => 'Nouveau Post';
 
   @override
   String get publish => 'Publier';
@@ -365,22 +364,22 @@ class AppLocalizationsFr extends AppLocalizations {
   String get disappointing => 'Décevant';
 
   @override
-  String get fair => 'Moyen';
+  String get fair => 'Passable';
 
   @override
-  String get good => 'Bien';
+  String get good => 'Bon';
 
   @override
-  String get veryGood => 'Très bien';
+  String get veryGood => 'Très bon';
 
   @override
-  String get excellent => 'Excellent!';
+  String get excellent => 'Excellent !';
 
   @override
-  String get myFeed => 'Mon Feed';
+  String get myFeed => 'Mon fil';
 
   @override
-  String get friendsFeed => 'Mes Amis';
+  String get friendsFeed => 'Fil d\'amis';
 
   @override
   String get loadMore => 'Charger plus';
@@ -392,7 +391,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get searchRestaurants => 'Rechercher des restaurants...';
 
   @override
-  String get trendingNearYou => 'Tendances près de vous';
+  String get trendingNearYou => 'Tendances près de chez vous';
 
   @override
   String get recentSearches => 'Recherches récentes';
@@ -427,7 +426,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get menu => 'Menu';
 
   @override
-  String get rating => 'Note';
+  String get rating => 'Évaluation';
 
   @override
   String get dish => 'Plat';
@@ -436,16 +435,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get next => 'Suivant';
 
   @override
-  String get activeChallenges => 'Challenges actifs';
+  String get activeChallenges => 'Défis actifs';
 
   @override
-  String get allChallenges => 'Tous les challenges';
+  String get allChallenges => 'Tous les défis';
 
   @override
-  String get joined => 'Rejoint!';
+  String get joined => 'Rejoint !';
 
   @override
-  String get resetEmailSent => 'Email de réinitialisation envoyé!';
+  String get resetEmailSent => 'E-mail de réinitialisation envoyé !';
 
   @override
   String get gallery => 'Galerie';
@@ -463,7 +462,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String imageSelectionError(Object error) {
-    return 'Échec de la sélection d\'image: $error';
+    return 'La sélection de l\'image a échoué : $error';
   }
 
   @override
@@ -473,7 +472,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get comments => 'Commentaires';
 
   @override
-  String get sharePost => 'Partager le post';
+  String get sharePost => 'Partager le Post';
 
   @override
   String get ok => 'OK';
@@ -506,10 +505,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get post => 'Post';
 
   @override
-  String get noPostsAvailable => 'Aucune publication disponible';
+  String get noPostsAvailable => 'Aucun post disponible';
 
   @override
-  String get validationSuccess => '✅ Validation réussie!';
+  String get validationSuccess => '✅ Validation réussie !';
 
   @override
   String get signIn => 'Se connecter';
@@ -524,7 +523,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get arabic => 'Arabe';
 
   @override
-  String get emailSupport => '📧 Email: support@ate-app.com';
+  String get emailSupport => '📧 Email : support@ate-app.com';
 
   @override
   String get addComment => 'Ajouter un commentaire...';
@@ -534,7 +533,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get sharePostDescription =>
-      'Vous pouvez partager ce post en prenant une capture d\'écran ou en copiant le lien. Les fonctionnalités de partage social arrivent bientôt!';
+      'Vous pouvez partager ce post en prenant une capture d\'écran ou en copiant le lien. Les fonctionnalités de partage social arrivent bientôt !';
 
   @override
   String get reportAction => 'Signaler';
@@ -548,7 +547,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get dishDetail => 'Détail du plat';
+  String get dishDetail => 'Détails du plat';
 
   @override
   String get reviews => 'Avis';
@@ -557,11 +556,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get restaurantPosts => 'Posts du restaurant';
 
   @override
-  String get timeToEat => 'Heure de passer à table !';
+  String get timeToEat => 'C\'est l\'heure de manger !';
 
   @override
   String get loginSubtitle =>
-      'Connecte-toi pour retrouver tes amis, découvrir de nouveaux plats et partager tes moments gourmands.';
+      'Connectez-vous pour retrouver vos amis, découvrir de nouveaux plats et partager vos délicieux moments.';
 
   @override
   String get rememberMe => 'Se souvenir de moi';
@@ -573,18 +572,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signInButton => 'Se connecter';
 
   @override
-  String get forgotPasswordTitle => 'Oups, un petit trou de mémoire ?';
+  String get forgotPasswordTitle => 'Oups, un trou de mémoire ?';
 
   @override
   String get forgotPasswordSubtitle =>
-      'Pas de panique ! Entre ton adresse e-mail et on t\'enverra un lien pour réinitialiser ton mot de passe.';
+      'Pas d\'inquiétude ! Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.';
 
   @override
   String get resetPassword => 'RÉINITIALISER';
 
   @override
   String get rememberPasswordQuestion =>
-      'Tu te souviens de ton mot de passe ? ';
+      'Vous vous souvenez de votre mot de passe ? ';
 
   @override
   String get signInLink => 'Se connecter';
@@ -594,13 +593,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signupSubtitle =>
-      'Crée ton profil et commence à explorer les plats préférés de tes amis — découvre, partage et savoure chaque moment.';
+      'Créez votre profil et commencez à explorer les plats préférés de vos amis — découvrez, partagez et savourez chaque moment.';
 
   @override
   String get fullName => 'Nom complet';
 
   @override
-  String get email => 'Email';
+  String get email => 'E-mail';
 
   @override
   String get password => 'Mot de passe';
@@ -621,7 +620,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get alreadyHaveAccountQuestion => 'Vous avez déjà un compte ? ';
 
   @override
-  String get signInNow => 'Se connecter';
+  String get signInNow => 'Se connecter maintenant';
 
   @override
   String get profile => 'Profil';
@@ -636,18 +635,17 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String unfollowed(Object username) {
-    return 'Vous ne suivez plus $username';
+    return 'Désabonné de $username';
   }
 
   @override
-  String get errorUpdatingFollow =>
-      'Erreur lors de la mise à jour du statut de suivi';
+  String get errorUpdatingFollow => 'Erreur lors de la mise à jour du suivi';
 
   @override
-  String get userNotFound => 'Utilisateur introuvable';
+  String get userNotFound => 'Utilisateur non trouvé';
 
   @override
-  String get followed => 'Suivi';
+  String get followed => 'Abonné';
 
   @override
   String shareProfileCheck(Object bio, Object username) {
@@ -690,7 +688,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get markAllRead => 'Tout marquer comme lu';
 
   @override
-  String get noNotifications => 'Pas de notifications';
+  String get noNotifications => 'Aucune notification';
 
   @override
   String minutesAgo(Object minutes) {
@@ -703,20 +701,20 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get noSavedPosts => 'Aucun post sauvegardé';
+  String get noSavedPosts => 'Pas encore de posts enregistrés';
 
   @override
   String get savedPostsHint =>
-      'Appuyez sur l\'icône de signet pour sauvegarder des posts ici';
+      'Appuyez sur l\'icône de signet sur les posts pour les enregistrer ici';
 
   @override
-  String get postUnsaved => 'Post retiré des favoris';
+  String get postUnsaved => 'Post retiré des enregistrements';
 
   @override
   String get noFollowers => 'Pas encore d\'abonnés';
 
   @override
-  String get noFollowing => 'Ne suit personne pour le moment';
+  String get noFollowing => 'Pas encore d\'abonnements';
 
   @override
   String get continueWithSocial => 'Continuer avec';
@@ -741,7 +739,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get add => 'Ajouter';
 
   @override
-  String get trending => 'Tendance';
+  String get trending => 'Tendances';
 
   @override
   String get mentions => 'Mentions';
@@ -750,18 +748,97 @@ class AppLocalizationsFr extends AppLocalizations {
   String get locationNotSpecified => 'Localisation non spécifiée';
 
   @override
-  String get activeChallengesLabel => 'Challenges actifs';
+  String get activeChallengesLabel => 'Défis actifs';
 
   @override
-  String get allChallengesLabel => 'Tous les challenges';
+  String get allChallengesLabel => 'Tous les défis';
 
   @override
-  String get noChallengesAvailable => 'Aucun challenge disponible';
+  String get noChallengesAvailable => 'Aucun défi disponible';
 
   @override
-  String get newChallengesWillAppear =>
-      'Les nouveaux challenges apparaîtront ici';
+  String get newChallengesWillAppear => 'Les nouveaux défis apparaîtront ici';
 
   @override
-  String get markAllAsRead => 'Marquer tout comme lu';
+  String get markAllAsRead => 'Tout marquer comme lu';
+
+  @override
+  String get deletePost => 'Supprimer le post ?';
+
+  @override
+  String get deletePostConfirm => 'Cette action ne peut pas être annulée.';
+
+  @override
+  String get postDeleted => 'Post supprimé';
+
+  @override
+  String failedToDeletePost(Object error) {
+    return 'Échec de la suppression du post : $error';
+  }
+
+  @override
+  String failedToAddComment(Object error) {
+    return 'Échec de l\'ajout du commentaire : $error';
+  }
+
+  @override
+  String get failedToUpdateLike => 'Échec de la mise à jour du j\'aime';
+
+  @override
+  String get failedToUpdateSave =>
+      'Échec de la mise à jour de l\'enregistrement';
+
+  @override
+  String get cannotAddComment =>
+      'Impossible d\'ajouter un commentaire à ce post';
+
+  @override
+  String get noCommentsYet =>
+      'Pas encore de commentaires. Soyez le premier à commenter !';
+
+  @override
+  String likesCountText(Object count) {
+    return '$count j\'aime';
+  }
+
+  @override
+  String get imageNotFound => 'Image introuvable';
+
+  @override
+  String get user => 'Utilisateur';
+
+  @override
+  String get deleteAction => 'Supprimer';
+
+  @override
+  String get unknown => 'Inconnu';
+
+  @override
+  String postsCount(Object count) {
+    return '$count Publications';
+  }
+
+  @override
+  String followersCount(Object count) {
+    return '$count Abonnés';
+  }
+
+  @override
+  String followingCount(Object count) {
+    return '$count Abonnements';
+  }
+
+  @override
+  String pointsCount(Object count) {
+    return '$count Points';
+  }
+
+  @override
+  String get likes => 'J\'aime';
+
+  @override
+  String get noDishes => 'Aucun plat trouvé';
+
+  @override
+  String get noPostsYet => 'Aucun post pour le moment';
 }

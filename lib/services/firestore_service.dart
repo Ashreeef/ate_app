@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// Base service for Firestore operations
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseFirestore get instance => _firestore;
 
   // Collection references
   CollectionReference get users => _firestore.collection('users');
