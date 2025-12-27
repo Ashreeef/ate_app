@@ -65,7 +65,13 @@ class _SearchScreenState extends State<SearchScreen> {
                   CustomTextField.search(
                     controller: _searchController,
                     hint: l10n.searchRestaurants,
-                    onChanged: (value) {},
+                    onChanged: (value) {
+                      if (value.isEmpty) {
+                        context.read<SearchBloc>().add(
+                          LoadSearchOverview(userId: currentUserId),
+                        );
+                      }
+                    },
                     onSubmitted: _handleSearch,
                   ),
                   SizedBox(height: AppSpacing.lg),
