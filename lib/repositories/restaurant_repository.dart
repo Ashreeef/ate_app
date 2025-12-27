@@ -550,7 +550,29 @@ class RestaurantRepository {
             dirty = true;
         }
         
-        if (dirty) {
+        // 3. Check Restaurant ID
+        if (data['restaurantId'] == null) {
+          data['restaurantId'] = doc.id;
+          needsUpdate = true;
+        }
+
+        // 4. Check Date Types (createdAt, updatedAt)
+        if (data['createdAt'] != null && data['createdAt'] is! Timestamp) {
+           final r = Restaurant.fromFirestore(data); // uses our patched parser
+           if (r.createdAt != null) {
+              data['createdAt'] = Timestamp.fromDate(r.createdAt!);
+              needsUpdate = true;
+           }
+        }
+        if (data['updatedAt'] != null && data['updatedAt'] is! Timestamp) {
+           final r = Restaurant.fromFirestore(data);
+           if (r.updatedAt != null) {
+              data['updatedAt'] = Timestamp.fromDate(r.updatedAt!);
+              needsUpdate = true;
+           }
+        }
+
+        if (dirty || needsUpdate) {
             await doc.reference.update(data);
             count++;
         }

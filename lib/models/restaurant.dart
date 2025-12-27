@@ -113,6 +113,13 @@ class Restaurant {
       return const GeoPoint(0, 0);
     }
 
+    DateTime? parseDate(dynamic value) {
+      if (value is Timestamp) return value.toDate();
+      if (value is String) return DateTime.tryParse(value);
+      if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
+      return null;
+    }
+
     return Restaurant(
       restaurantId: data['restaurantId'] as String?,
       name: data['name'] as String? ?? '',
@@ -127,8 +134,8 @@ class Restaurant {
       openingHours: data['openingHours'] as Map<String, dynamic>? ?? {},
       postsCount: data['postsCount'] as int? ?? 0,
       searchKeywords: (data['searchKeywords'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
-      updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
+      createdAt: parseDate(data['createdAt']),
+      updatedAt: parseDate(data['updatedAt']),
     );
   }
 
