@@ -12,7 +12,7 @@ import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_posts_grid.dart';
 
 class OtherUserProfileScreen extends StatefulWidget {
-  final int userId;
+  final String userId;
 
   const OtherUserProfileScreen({super.key, required this.userId});
 
@@ -56,7 +56,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     }
   }
 
-  Future<void> _saveFollowingStatus(int userId, bool isFollowing) async {
+  Future<void> _saveFollowingStatus(String userId, bool isFollowing) async {
     if (_currentUser == null) return;
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -94,7 +94,8 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     try {
       print('🔍 Loading user with ID: ${widget.userId}');
       setState(() => _isLoading = true);
-      final user = await _repository.getUserById(widget.userId);
+      // Use getUserByUid or getUserById string version
+      final user = await _repository.getUserByUid(widget.userId);
       print('✅ User loaded: ${user?.username} (ID: ${user?.id})');
       setState(() {
         _user = user;

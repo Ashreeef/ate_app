@@ -39,7 +39,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _onToggleLike(ToggleLikeEvent e, Emitter<PostState> emit) async {
     try {
       // Toggle like in database
-      await likeRepo.toggleLike(e.userId, e.postId);
+      await likeRepo.toggleLike(e.userId.toString(), e.postId.toString());
       // Refresh feed to show updated like status
       feedBloc.add(const LoadFeed());
       emit(const PostSuccess());
@@ -51,7 +51,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _onToggleSave(ToggleSaveEvent e, Emitter<PostState> emit) async {
     try {
       // Toggle save in database
-      await savedPostRepo.toggleSavePost(e.userId, e.postId);
+      await savedPostRepo.toggleSavePost(e.userId.toString(), e.postId.toString());
       // Refresh feed to show updated save status
       feedBloc.add(const LoadFeed());
       emit(const PostSuccess());

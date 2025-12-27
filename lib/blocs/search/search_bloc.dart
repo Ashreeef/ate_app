@@ -70,6 +70,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         limit: 50,
       );
 
+      // Save to history if user is logged in
+      if (_authRepository.currentUserId != null) {
+        await _searchHistoryRepository.addSearchQuery(
+          _authRepository.currentUserId!,
+          trimmedQuery,
+        );
+      }
+
       emit(SearchResultsLoaded(query: trimmedQuery, results: results));
     } catch (e) {
       emit(SearchError(message: e.toString()));

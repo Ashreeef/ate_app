@@ -26,7 +26,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(const UserLoading());
 
     try {
-      final user = await _userRepository.getUserById(event.userId);
+      // Use Firebase compatible method
+      final user = await _userRepository.getUserByUid(event.userId.toString());
 
       if (user != null) {
         emit(UserLoaded(user: user));
@@ -43,22 +44,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(const UserLoading());
 
     try {
-      final result = await _userRepository.updateUser(event.user);
+      // Use Firebase compatible method (returns void)
+      await _userRepository.updateUserFirestore(event.user);
 
-      if (result > 0) {
-        final updatedUser = await _userRepository.getUserById(event.user.id!);
-        if (updatedUser != null) {
-          emit(
-            UserUpdateSuccess(
-              user: updatedUser,
-              message: 'Profile updated successfully',
-            ),
-          );
-        } else {
-          emit(const UserError(message: 'Failed to fetch updated user'));
-        }
+      final updatedUser = await _userRepository.getUserByUid(event.user.id!);
+      if (updatedUser != null) {
+        emit(
+          UserUpdateSuccess(
+            user: updatedUser,
+            message: 'Profile updated successfully',
+          ),
+        );
       } else {
-        emit(const UserError(message: 'Failed to update profile'));
+        emit(const UserError(message: 'Failed to fetch updated user'));
       }
     } catch (e) {
       emit(UserError(message: 'Update failed: ${e.toString()}'));
@@ -71,12 +69,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     Emitter<UserState> emit,
   ) async {
     try {
-      final user = await _userRepository.getUserById(event.userId);
+      final user = await _userRepository.getUserByUid(event.userId.toString());
       if (user != null) {
         final updatedUser = user.copyWith(points: event.points);
-        await _userRepository.updateUser(updatedUser);
+        await _userRepository.updateUserFirestore(updatedUser);
 
-        final refreshedUser = await _userRepository.getUserById(event.userId);
+        final refreshedUser = await _userRepository.getUserByUid(event.userId.toString());
         if (refreshedUser != null) {
           emit(UserLoaded(user: refreshedUser));
         }
@@ -93,12 +91,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   ) async {
     try {
       if (_authRepository.isAuthenticated) {
-        final user = await _authRepository.getCurrentUser();
-
-        if (user != null) {
-          emit(UserLoaded(user: user));
-        } else {
-          emit(const UserError(message: 'User not found'));
+        final userId = _authRepository.currentUserId;
+        if (userId != null) {
+            final user = await _userRepository.getUserByUid(userId);
+             if (user != null) {
+                emit(UserLoaded(user: user));
+             } else {
+                emit(const UserError(message: 'User not found'));
+             }
         }
       } else {
         emit(const UserError(message: 'No user logged in'));

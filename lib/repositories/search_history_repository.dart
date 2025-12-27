@@ -9,9 +9,13 @@ class SearchHistoryRepository {
 
   /// Add a search query to history
   Future<void> addSearchQuery(String userId, String query) async {
+    // Delete existing entry if any to update timestamp
+    await deleteSearchQuery(userId, query);
+    
     await _db.insert('search_history', {
       'user_id': userId,
       'query': query,
+      'created_at': DateTime.now().toIso8601String(),
     });
   }
 

@@ -439,17 +439,25 @@ class SeedData {
       ),
     ];
 
+    // Fetch all existing restaurants once to avoid race conditions
+    // (Firestore indexing takes time, so immediate search after creation might fail)
+    final existingRestaurants = await restaurantRepository.getAllRestaurants();
+    final existingNames = existingRestaurants.map((r) => r.name).toSet();
+
     for (final restaurant in testRestaurants) {
-      final existingList = await restaurantRepository.searchRestaurants(restaurant.name);
-      if (existingList.isEmpty) {
+      if (!existingNames.contains(restaurant.name)) {
         final id = await restaurantRepository.createRestaurant(restaurant);
         final created = await restaurantRepository.getRestaurantById(id);
         if (created != null) restaurants.add(created);
       } else {
-        restaurants.add(existingList.first);
+        // Find the existing one to add to our local list for referencing later
+        final existing = existingRestaurants.firstWhere(
+          (r) => r.name == restaurant.name,
+        );
+        restaurants.add(existing);
       }
     }
-
+    
     return restaurants;
   }
 

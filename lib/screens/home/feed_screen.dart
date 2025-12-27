@@ -115,7 +115,7 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Future<void> _toggleLike(Post post) async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
+    final currentUserId = AuthService.instance.currentUserId ?? '1';
     final postId = post.id;
 
     if (postId == null) return;
@@ -125,7 +125,7 @@ class _FeedScreenState extends State<FeedScreen> {
       if (fullPost == null) return;
 
       // Update database
-      List<int> likedBy = List.from(fullPost.likedBy);
+      List<String> likedBy = List.from(fullPost.likedBy);
       final isLiked = likedBy.contains(currentUserId);
 
       if (isLiked) {
@@ -151,7 +151,7 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Future<void> _toggleSave(Post post) async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
+    final currentUserId = AuthService.instance.currentUserId ?? '1';
     final postId = post.id;
 
     if (postId == null) return;
@@ -161,7 +161,7 @@ class _FeedScreenState extends State<FeedScreen> {
       if (fullPost == null) return;
 
       // Update database
-      List<int> savedBy = List.from(fullPost.savedBy);
+      List<String> savedBy = List.from(fullPost.savedBy);
       final isSaved = savedBy.contains(currentUserId);
 
       if (isSaved) {
@@ -184,7 +184,7 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Widget _buildPostCard(Post post) {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
+    final currentUserId = AuthService.instance.currentUserId ?? '1';
     final isLiked = post.likedBy.contains(currentUserId);
     final isSaved = post.savedBy.contains(currentUserId);
 

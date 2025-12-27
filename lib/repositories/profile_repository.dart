@@ -13,7 +13,7 @@ class ProfileRepository {
     final prefs = await SharedPreferences.getInstance();
     final db = await _dbHelper.database;
 
-    final currentId = prefs.getInt(_kCurrentUserIdKey);
+    final currentId = prefs.getString(_kCurrentUserIdKey);
 
     if (currentId != null) {
       final maps = await db.query(
@@ -37,7 +37,7 @@ class ProfileRepository {
   }
 
   /// Fetch user by ID from database (for viewing other profiles)
-  Future<User?> getUserById(int id) async {
+  Future<User?> getUserById(String id) async {
     final db = await _dbHelper.database;
 
     // First try to get the user by exact ID
@@ -52,21 +52,21 @@ class ProfileRepository {
       return User.fromMap(maps.first);
     }
 
-    // If ID 2 is not found, get the second user from the database
-    if (id == 2) {
-      print(' User ID 2 not found, fetching second user...');
-      final allUsers = await db.query('users', orderBy: 'id');
-      if (allUsers.length > 1) {
-        return User.fromMap(allUsers[1]);
-      }
-    }
-
+    // Fallback logic could be added here if needed, but "id 2" logic is int-specific and likely obsolete
     return null;
   }
 
-  Future<int> createUser(User user) async {
+  /// Alias for getUserById to support callers using "uid" terminology
+  Future<User?> getUserByUid(String uid) => getUserById(uid);
+
+  Future<String> createUser(User user) async {
     final db = await _dbHelper.database;
-    final id = await db.insert('users', user.toMap());
+    await db.insert('users', user.toMap());
+    // In legacy SQLite flow, ID might be generated, but for compatibility we expect ID to be present or handled by DB
+    // Since we are moving to String IDs (UUID/Auth ID), user.id should be set.
+    // If user.id is null, we can't easily return a generated String ID from SQLite unless we query it back.
+    // For now, assume user.id is set.
+    final id = user.id ?? user.uid ?? ''; 
     await setCurrentUserId(id);
     return id;
   }
@@ -75,7 +75,8 @@ class ProfileRepository {
   Future<int> updateUser(User user) async {
     final db = await _dbHelper.database;
     if (user.id == null) {
-      return await createUser(user);
+       await createUser(user);
+       return 1;
     }
 
     print('Updating user: ID ${user.id}, username: ${user.username}');
@@ -107,7 +108,7 @@ class ProfileRepository {
     // Don't change current_user_id when updating other users
     // Only update if this is the current user
     final prefs = await SharedPreferences.getInstance();
-    final currentId = prefs.getInt(_kCurrentUserIdKey);
+    final currentId = prefs.getString(_kCurrentUserIdKey);
     if (currentId == user.id) {
       await setCurrentUserId(user.id);
     }
@@ -115,22 +116,22 @@ class ProfileRepository {
     return count;
   }
 
-  Future<void> deleteUser(int id) async {
+  Future<void> deleteUser(String id) async {
     final db = await _dbHelper.database;
     await db.delete('users', where: 'id = ?', whereArgs: [id]);
     final prefs = await SharedPreferences.getInstance();
-    final currentId = prefs.getInt(_kCurrentUserIdKey);
+    final currentId = prefs.getString(_kCurrentUserIdKey);
     if (currentId == id) {
       await prefs.remove(_kCurrentUserIdKey);
     }
   }
 
-  Future<void> setCurrentUserId(int? id) async {
+  Future<void> setCurrentUserId(String? id) async {
     final prefs = await SharedPreferences.getInstance();
     if (id == null) {
       await prefs.remove(_kCurrentUserIdKey);
     } else {
-      await prefs.setInt(_kCurrentUserIdKey, id);
+      await prefs.setString(_kCurrentUserIdKey, id);
     }
   }
 }

@@ -38,8 +38,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Future<void> _loadInitialData() async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    final currentUserId = AuthService.instance.currentUserId ?? '1';
+    final postId = _post['id']?.toString();
 
     if (postId != null) {
       // Load the full post from database to get accurate like/save status
@@ -61,7 +61,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     setState(() => _isLoadingComments = true);
 
     try {
-      final postId = _post['id'] as int?;
+      final postId = _post['id']?.toString();
       if (postId == null) {
         setState(() => _isLoadingComments = false);
         return;
@@ -71,7 +71,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       final List<Map<String, dynamic>> commentsWithUser = [];
 
       for (final comment in comments) {
-        final user = await _profileRepo.getUserById(comment.userId);
+        final user = await _profileRepo.getUserByUid(comment.userId);
         commentsWithUser.add({
           'id': comment.id,
           'userId': comment.userId,
@@ -95,8 +95,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   Future<void> _addComment() async {
     if (_commentController.text.trim().isEmpty) return;
 
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    final currentUserId = AuthService.instance.currentUserId ?? '1';
+    final postId = _post['id']?.toString();
 
     if (postId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -143,8 +143,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Future<void> _toggleLike() async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    final currentUserId = AuthService.instance.currentUserId ?? '1';
+    final postId = _post['id']?.toString();
 
     if (postId == null) return;
 
@@ -160,7 +160,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       });
 
       // Update database
-      List<int> likedBy = List.from(post.likedBy);
+      List<String> likedBy = List.from(post.likedBy);
       if (_isLiked) {
         if (!likedBy.contains(currentUserId)) {
           likedBy.add(currentUserId);
@@ -186,8 +186,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Future<void> _toggleSave() async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    final currentUserId = AuthService.instance.currentUserId ?? '1';
+    final postId = _post['id']?.toString();
 
     if (postId == null) return;
 
@@ -201,7 +201,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       });
 
       // Update database
-      List<int> savedBy = List.from(post.savedBy);
+      List<String> savedBy = List.from(post.savedBy);
       if (_isSaved) {
         if (!savedBy.contains(currentUserId)) {
           savedBy.add(currentUserId);

@@ -66,13 +66,16 @@ class NotificationRepository {
   }
 
   /// Mark notification as read
-  Future<void> markAsRead(int notificationId) async {
+  Future<void> markAsRead(String notificationId) async {
     try {
+      final id = int.tryParse(notificationId);
+      if (id == null) return;
+      
       await _db.update(
         _tableName,
         {'is_read': 1},
         where: 'id = ?',
-        whereArgs: [notificationId],
+        whereArgs: [id],
       );
     } catch (e) {
       print('Error marking notification as read: $e');
@@ -83,7 +86,7 @@ class NotificationRepository {
   /// Mark all notifications as read
   Future<void> markAllAsRead() async {
     try {
-      final currentUserId = AuthService.instance.currentUserId ?? 1;
+      final currentUserId = AuthService.instance.currentUserId ?? '1';
       await _db.update(
         _tableName,
         {'is_read': 1},
@@ -97,12 +100,15 @@ class NotificationRepository {
   }
 
   /// Delete a notification
-  Future<void> deleteNotification(int notificationId) async {
+  Future<void> deleteNotification(String notificationId) async {
     try {
+      final id = int.tryParse(notificationId);
+      if (id == null) return;
+
       await _db.delete(
         _tableName,
         where: 'id = ?',
-        whereArgs: [notificationId],
+        whereArgs: [id],
       );
     } catch (e) {
       print('Error deleting notification: $e');

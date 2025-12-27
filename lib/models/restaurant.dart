@@ -42,10 +42,15 @@ class Restaurant {
   static List<String> _generateSearchKeywords(String name, String cuisine) {
     final keywords = <String>{};
     
-    // Add name prefixes (lowercase)
+    // Add name prefixes for each word (lowercase)
     final nameLower = name.toLowerCase();
-    for (int i = 1; i <= nameLower.length; i++) {
-      keywords.add(nameLower.substring(0, i));
+    final words = nameLower.split(' ');
+    
+    for (final word in words) {
+      if (word.isEmpty) continue;
+      for (int i = 1; i <= word.length; i++) {
+        keywords.add(word.substring(0, i));
+      }
     }
     
     // Add cuisine prefixes (lowercase)
@@ -54,7 +59,7 @@ class Restaurant {
       keywords.add(cuisineLower.substring(0, i));
     }
     
-    // Add full words
+    // Add full strings
     keywords.add(nameLower);
     keywords.add(cuisineLower);
     
@@ -84,12 +89,36 @@ class Restaurant {
 
   /// Create Restaurant from Firestore document
   factory Restaurant.fromFirestore(Map<String, dynamic> data) {
+    GeoPoint parseGeoPoint(dynamic value) {
+      if (value is GeoPoint) return value;
+      if (value is Map) {
+        final lat = (value['latitude'] ?? value['lat'] ?? 0.0) as double;
+        final lng = (value['longitude'] ?? value['lng'] ?? value['long'] ?? 0.0) as double;
+        return GeoPoint(lat, lng);
+      }
+      if (value is String) {
+        // Try to parse "lat,long" string
+        try {
+          final parts = value.replaceAll(RegExp(r'[()]'), '').split(',');
+          if (parts.length >= 2) {
+            return GeoPoint(
+              double.parse(parts[0].trim()),
+              double.parse(parts[1].trim()),
+            );
+          }
+        } catch (e) {
+          print('Error parsing GeoPoint string: $value');
+        }
+      }
+      return const GeoPoint(0, 0);
+    }
+
     return Restaurant(
       restaurantId: data['restaurantId'] as String?,
       name: data['name'] as String? ?? '',
       description: data['description'] as String? ?? '',
       cuisine: data['cuisine'] as String? ?? '',
-      location: data['location'] as GeoPoint? ?? const GeoPoint(0, 0),
+      location: parseGeoPoint(data['location']),
       address: data['address'] as String? ?? '',
       phone: data['phone'] as String?,
       rating: (data['rating'] as num?)?.toDouble() ?? 0.0,

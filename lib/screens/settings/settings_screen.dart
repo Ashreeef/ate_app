@@ -6,6 +6,7 @@ import '../../blocs/settings/settings_cubit.dart';
 import '../../blocs/settings/settings_state.dart';
 import '../profile/edit_profile_screen.dart';
 import 'settings_dialogs.dart';
+import '../../repositories/restaurant_repository.dart';
 
 /// Settings screen for theme, language, notifications, and password
 class SettingsScreen extends StatelessWidget {
@@ -178,6 +179,15 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: AppLocalizations.of(context)!.legalInfo,
                 onTap: () {
                   SettingsDialogs.showTerms(context);
+                },
+              ),
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.build_circle_outlined,
+                title: 'Repair Data',
+                subtitle: 'Fix search keywods & data issues',
+                onTap: () {
+                  _showRepairDataDialog(context);
                 },
               ),
             ]),
@@ -407,5 +417,46 @@ class SettingsScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _showRepairDataDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Repair Database'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+             CircularProgressIndicator(),
+             SizedBox(height: 16),
+             Text('Fixing search data... Please wait.'),
+          ],
+        ),
+      ),
+    );
+
+    // Run repair in background
+    RestaurantRepository().repairSearchData().then((count) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Repair Complete: Updated $count restaurants'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    }).catchError((e) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Repair Failed: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    });
   }
 }

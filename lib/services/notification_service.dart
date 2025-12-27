@@ -121,12 +121,13 @@ class NotificationService {
   }
 
   /// Handle incoming message
+  /// Handle incoming message
   Future<void> _handleMessage(
     RemoteMessage message, {
     bool fromForeground = false,
     bool fromNotificationTap = false,
   }) async {
-    final userId = AuthService.instance.currentUserId ?? 1;
+    final userId = AuthService.instance.currentUserId ?? '1';
     final title = message.notification?.title ?? 'New Notification';
     final body = message.notification?.body ?? '';
     final imageUrl =
@@ -180,8 +181,11 @@ class NotificationService {
       iOS: iosDetails,
     );
 
+    // Local notifications require an int ID. Use hashCode of the string ID or fallback to current time
+    final localId = notification.id?.hashCode ?? DateTime.now().millisecondsSinceEpoch;
+
     await _localNotifications.show(
-      notification.id ?? DateTime.now().millisecondsSinceEpoch,
+      localId,
       notification.title,
       notification.body,
       notificationDetails,
@@ -206,7 +210,7 @@ class NotificationService {
   static Future<void> _backgroundMessageHandler(RemoteMessage message) async {
     print('Handling background message: ${message.data}');
     // Save notification when app is terminated
-    final userId = AuthService.instance.currentUserId ?? 1;
+    final userId = AuthService.instance.currentUserId ?? '1';
     final notification = app_notification.AppNotification(
       userId: userId,
       title: message.notification?.title ?? 'New Notification',
@@ -238,7 +242,7 @@ class NotificationService {
   }
 
   /// Mark notification as read
-  Future<void> markAsRead(int notificationId) async {
+  Future<void> markAsRead(String notificationId) async {
     await _notificationRepository.markAsRead(notificationId);
   }
 
@@ -248,7 +252,7 @@ class NotificationService {
   }
 
   /// Delete notification
-  Future<void> deleteNotification(int notificationId) async {
+  Future<void> deleteNotification(String notificationId) async {
     await _notificationRepository.deleteNotification(notificationId);
   }
 
@@ -259,7 +263,7 @@ class NotificationService {
 
   /// Test notification (for development)
   Future<void> sendTestNotification() async {
-    final userId = AuthService.instance.currentUserId ?? 1;
+    final userId = AuthService.instance.currentUserId ?? '1';
     final notification = app_notification.AppNotification(
       userId: userId,
       title: 'Test Notification',

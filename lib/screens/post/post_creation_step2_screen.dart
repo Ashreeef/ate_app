@@ -52,9 +52,9 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
 
     try {
       // Get current user info
-      final currentUserId = AuthService.instance.currentUserId ?? 1;
+      final currentUserId = AuthService.instance.currentUserId ?? '1';
       final userRepository = UserRepository();
-      final currentUser = await userRepository.getUserById(currentUserId);
+      final currentUser = await userRepository.getUserByUid(currentUserId);
 
       // Compress and save images
       List<String> compressedImagePaths = [];

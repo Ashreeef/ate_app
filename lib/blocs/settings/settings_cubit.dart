@@ -211,6 +211,11 @@ class SettingsCubit extends Cubit<SettingsState> {
 
       // Clear current user session
       final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('user_id'); // Match the key in AuthService if possible, or 'current_user_id' if that's what's used. AuthService uses 'user_id'. ProfileRepository uses 'current_user_id'. There might be inconsistency here.
+      // ProfileRepository uses _kCurrentUserIdKey = 'current_user_id'. AuthService uses _keyUserId = 'user_id'.
+      // This is a bug in the app structure (two keys?).
+      // For now, I'll stick to what was there but change type. 
+      // Original SettingsCubit.logout removed 'current_user_id'.
       await prefs.remove('current_user_id');
 
       emit(state.copyWith(status: SettingsStatus.saved));
@@ -230,7 +235,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
       // Get current user ID
       final prefs = await SharedPreferences.getInstance();
-      final currentUserId = prefs.getInt('current_user_id');
+      final currentUserId = prefs.getString('current_user_id');
 
       if (currentUserId != null) {
         // Delete user from database
