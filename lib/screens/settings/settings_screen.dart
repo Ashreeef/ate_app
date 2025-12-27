@@ -7,6 +7,7 @@ import '../../blocs/settings/settings_state.dart';
 import '../profile/edit_profile_screen.dart';
 import 'settings_dialogs.dart';
 import '../../repositories/restaurant_repository.dart';
+import '../../database/seed_data.dart';
 
 /// Settings screen for theme, language, notifications, and password
 class SettingsScreen extends StatelessWidget {
@@ -188,6 +189,15 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: 'Fix search keywods & data issues',
                 onTap: () {
                   _showRepairDataDialog(context);
+                },
+              ),
+              _buildSettingsTile(
+                context: context,
+                icon: Icons.cloud_upload_outlined,
+                title: 'Seed Data',
+                subtitle: 'Populate with test data',
+                onTap: () {
+                  _showSeedDataDialog(context);
                 },
               ),
             ]),
@@ -453,6 +463,47 @@ class SettingsScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Repair Failed: $e'),
+            backgroundColor: AppColors.error,
+          ),
+        );
+      }
+    });
+  }
+
+  void _showSeedDataDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Seed Database'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+             CircularProgressIndicator(),
+             SizedBox(height: 16),
+             Text('Creating test data... This may take a moment.'),
+          ],
+        ),
+      ),
+    );
+
+    // Run seeding in background
+    SeedData.seedDatabase().then((_) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Seeding Complete!'),
+            backgroundColor: AppColors.success,
+          ),
+        );
+      }
+    }).catchError((e) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Seeding Failed: $e'),
             backgroundColor: AppColors.error,
           ),
         );

@@ -15,44 +15,49 @@ import '../utils/password_helper.dart';
 
 /// Seeds the database with comprehensive test data for development
 class SeedData {
-  static Future<void> seedDatabase(
-    UserRepository userRepository,
-    RestaurantRepository restaurantRepository,
-    PostRepository postRepository,
-    CommentRepository commentRepository,
-    LikeRepository likeRepository,
-    SavedPostRepository savedPostRepository,
-    SearchHistoryRepository searchHistoryRepository,
-  ) async {
+  static Future<void> seedDatabase({
+    UserRepository? userRepository,
+    RestaurantRepository? restaurantRepository,
+    PostRepository? postRepository,
+    CommentRepository? commentRepository,
+    LikeRepository? likeRepository,
+    SavedPostRepository? savedPostRepository,
+    SearchHistoryRepository? searchHistoryRepository,
+  }) async {
+    final userRepo = userRepository ?? UserRepository();
+    final restaurantRepo = restaurantRepository ?? RestaurantRepository();
+    final postRepo = postRepository ?? PostRepository();
+    final commentRepo = commentRepository ?? CommentRepository();
+    final likeRepo = likeRepository ?? LikeRepository();
+    final savedPostRepo = savedPostRepository ?? SavedPostRepository();
+    final searchHistoryRepo = searchHistoryRepository ?? SearchHistoryRepository();
+
     try {
       print('🌱 Starting database seeding...');
 
-      // Clear existing data (optional - for fresh start)
-      // await _clearDatabase();
-
       // Seed users
-      final users = await _seedUsers(userRepository);
+      final users = await _seedUsers(userRepo);
       print('✅ Seeded ${users.length} users');
 
       // Seed restaurants
-      final restaurants = await _seedRestaurants(restaurantRepository);
+      final restaurants = await _seedRestaurants(restaurantRepo);
       print('✅ Seeded ${restaurants.length} restaurants');
 
       // Seed posts
-      final posts = await _seedPosts(postRepository, users, restaurants);
+      final posts = await _seedPosts(postRepo, users, restaurants);
       print('✅ Seeded ${posts.length} posts');
 
       // Seed comments
-      final comments = await _seedComments(commentRepository, users, posts);
+      final comments = await _seedComments(commentRepo, users, posts);
       print('✅ Seeded ${comments.length} comments');
 
       // Seed likes
-      final likes = await _seedLikes(likeRepository, users, posts);
+      final likes = await _seedLikes(likeRepo, users, posts);
       print('✅ Seeded ${likes.length} likes');
 
       // Seed saved posts
       final savedPosts = await _seedSavedPosts(
-        savedPostRepository,
+        savedPostRepo,
         users,
         posts,
       );
@@ -60,7 +65,7 @@ class SeedData {
 
       // Seed search history
       final searchHistory = await _seedSearchHistory(
-        searchHistoryRepository,
+        searchHistoryRepo,
         users,
       );
       print('✅ Seeded ${searchHistory.length} search history entries');
@@ -76,6 +81,7 @@ class SeedData {
   static Future<List<User>> _seedUsers(UserRepository userRepository) async {
     final List<User> users = [];
 
+    // ... (User list same as before but ensure create uses firestore)
     final testUsers = [
       User(
         username: 'testuser',
@@ -85,7 +91,7 @@ class SeedData {
         points: 100,
         level: 'Bronze',
       ),
-      User(
+       User(
         username: 'Flen',
         email: 'flen@ate.com',
         password: PasswordHelper.hashPassword('flen123'),
@@ -105,7 +111,13 @@ class SeedData {
         profileImage:
             'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800',
       ),
-      User(
+     // ... (Truncated purely for brevity in replacement, assuming original list is fine or I can copy it back. 
+     // Better to keep the original list from the file if possible. 
+     // I'll assume the original list is static and I just need to update the logic loop below)
+    ];
+    // Adding back the other users for completeness as I'm replacing the whole method block
+    testUsers.addAll([
+       User(
         username: 'Mohamed_Eats',
         email: 'mohamed@ate.com',
         password: PasswordHelper.hashPassword('mohamed123'),
@@ -169,13 +181,14 @@ class SeedData {
         points: 290,
         level: 'Gold',
       ),
-    ];
+    ]);
 
     for (final user in testUsers) {
       final existing = await userRepository.getUserByEmailFirestore(user.email);
       if (existing == null) {
-        // Use a mock UID for seeding local data if not using real Firebase Auth
-        final mockUid = 'user_${user.username.toLowerCase()}';
+        // Create new user in Firestore
+        // Note: In real app, Auth handles UID. Here we simulate it or use email hash
+        final mockUid = 'seed_${user.username.toLowerCase()}';
         final userToCreate = user.copyWith(uid: mockUid, id: mockUid);
         await userRepository.setUserFirestore(userToCreate);
         users.add(userToCreate);
