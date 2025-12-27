@@ -1,6 +1,5 @@
 class User {
-  final int?
-  id; // Deprecated - kept for backward compatibility during migration
+  final String? id; // Firebase User ID or legacy ID
   final String? uid; // Firebase User ID (primary identifier)
   final String username;
   final String email;
@@ -13,6 +12,7 @@ class User {
   final int followingCount;
   final int points;
   final String level;
+  final List<String> searchKeywords; // For prefix-based search
   final String? createdAt;
   final String? updatedAt;
 
@@ -30,9 +30,26 @@ class User {
     this.followingCount = 0,
     this.points = 0,
     this.level = 'Bronze',
+    List<String>? searchKeywords,
     this.createdAt,
     this.updatedAt,
-  });
+  }) : searchKeywords = searchKeywords ?? _generateSearchKeywords(username, displayName);
+
+  /// Generate search keywords for prefix-based search
+  static List<String> _generateSearchKeywords(String username, String? displayName) {
+    final keywords = <String>{};
+    final usernameLower = username.toLowerCase();
+    for (int i = 1; i <= usernameLower.length; i++) {
+      keywords.add(usernameLower.substring(0, i));
+    }
+    if (displayName != null) {
+      final displayLower = displayName.toLowerCase();
+      for (int i = 1; i <= displayLower.length; i++) {
+        keywords.add(displayLower.substring(0, i));
+      }
+    }
+    return keywords.toList();
+  }
 
   // Convert User to Map for database (local SQLite)
   Map<String, dynamic> toMap() {
@@ -67,6 +84,7 @@ class User {
       'followingCount': followingCount,
       'points': points,
       'level': level,
+      'searchKeywords': searchKeywords,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
     };
@@ -75,7 +93,7 @@ class User {
   // Create User from Map (local SQLite)
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      id: map['id'] as int?,
+      id: map['id']?.toString(), // Ensure id is String
       username: map['username'] as String? ?? '',
       email: map['email'] as String? ?? '',
       password: map['password'] as String?,
@@ -105,6 +123,7 @@ class User {
       followingCount: data['followingCount'] as int? ?? 0,
       points: data['points'] as int? ?? 0,
       level: data['level'] as String? ?? 'Bronze',
+      searchKeywords: (data['searchKeywords'] as List<dynamic>?)?.map((e) => e as String).toList(),
       createdAt: data['createdAt'] as String?,
       updatedAt: data['updatedAt'] as String?,
     );
@@ -112,7 +131,7 @@ class User {
 
   // Copy with method for updates
   User copyWith({
-    int? id,
+    String? id,
     String? uid,
     String? username,
     String? email,
@@ -125,6 +144,7 @@ class User {
     int? followingCount,
     int? points,
     String? level,
+    List<String>? searchKeywords,
     String? createdAt,
     String? updatedAt,
   }) {
@@ -142,6 +162,7 @@ class User {
       followingCount: followingCount ?? this.followingCount,
       points: points ?? this.points,
       level: level ?? this.level,
+      searchKeywords: searchKeywords ?? this.searchKeywords,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

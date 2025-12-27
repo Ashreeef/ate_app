@@ -105,21 +105,24 @@ class UserRepository {
     }
   }
 
-  /// Search users by username (Firestore)
+  /// Search users by username or display name (Firestore)
   Future<List<User>> searchUsersFirestore(String query) async {
     try {
-      // Firestore doesn't support case-insensitive LIKE queries
-      // We'll fetch all users and filter client-side (consider using Algolia for production)
-      final querySnapshot = await _firestoreService.users.get();
+      if (query.trim().isEmpty) {
+        return getAllUsersFirestore();
+      }
 
-      final users = querySnapshot.docs
+      final searchTerm = query.toLowerCase().trim();
+
+      // Efficient prefix-based search using searchKeywords array
+      final querySnapshot = await _firestoreService.users
+          .where('searchKeywords', arrayContains: searchTerm)
+          .limit(20)
+          .get();
+
+      return querySnapshot.docs
           .map((doc) => User.fromFirestore(doc.data() as Map<String, dynamic>))
-          .where(
-            (user) => user.username.toLowerCase().contains(query.toLowerCase()),
-          )
           .toList();
-
-      return users;
     } catch (e) {
       return [];
     }
@@ -137,8 +140,9 @@ class UserRepository {
   // Keep these for backward compatibility during migration
 
   /// Get user by ID (Local SQLite - Deprecated)
+  /// Get user by ID (Local SQLite - Deprecated)
   @Deprecated('Use getUserByUid for Firebase')
-  Future<User?> getUserById(int id) async {
+  Future<User?> getUserById(String id) async {
     final db = await _databaseHelper.database;
     final maps = await db.query('users', where: 'id = ?', whereArgs: [id]);
 
@@ -162,16 +166,16 @@ class UserRepository {
 
   /// Create new user (Local SQLite - Deprecated)
   @Deprecated('Use setUserFirestore for Firebase')
-  Future<int> createUser(User user) async {
+  Future<void> createUser(User user) async {
     final db = await _databaseHelper.database;
-    return await db.insert('users', user.toMap());
+    await db.insert('users', user.toMap());
   }
 
   /// Update user (Local SQLite - Deprecated)
   @Deprecated('Use updateUserFirestore for Firebase')
-  Future<int> updateUser(User user) async {
+  Future<void> updateUser(User user) async {
     final db = await _databaseHelper.database;
-    return await db.update(
+    await db.update(
       'users',
       user.toMap(),
       where: 'id = ?',
@@ -181,9 +185,9 @@ class UserRepository {
 
   /// Delete user (Local SQLite - Deprecated)
   @Deprecated('Use deleteUserFirestore for Firebase')
-  Future<int> deleteUser(int id) async {
+  Future<void> deleteUser(String id) async {
     final db = await _databaseHelper.database;
-    return await db.delete('users', where: 'id = ?', whereArgs: [id]);
+    await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
   /// Check if email exists (Local SQLite - Deprecated)

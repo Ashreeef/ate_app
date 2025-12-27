@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 class Post {
-  final int? id;
-  final int userId;
+  final String? id;
+  final String userId;
   final String username;
   final String? userAvatarPath;
   final String caption;
@@ -13,8 +13,8 @@ class Post {
   final List<String> images;
   final int likesCount;
   final int commentsCount;
-  final List<int> likedBy;
-  final List<int> savedBy;
+  final List<String> likedBy;
+  final List<String> savedBy;
   final DateTime createdAt;
 
   Post({
@@ -30,8 +30,8 @@ class Post {
     required this.images,
     this.likesCount = 0,
     this.commentsCount = 0,
-    List<int>? likedBy,
-    List<int>? savedBy,
+    List<String>? likedBy,
+    List<String>? savedBy,
     DateTime? createdAt,
   })  : likedBy = likedBy ?? [],
         savedBy = savedBy ?? [],
@@ -59,12 +59,12 @@ class Post {
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
-      id: map['id'] as int?,
-      userId: map['user_id'] as int,
+      id: map['id']?.toString(),
+      userId: map['user_id']?.toString() ?? '',
       username: map['username'] as String? ?? '',
       userAvatarPath: map['user_avatar_path'] as String?,
       caption: map['caption'] as String? ?? '',
-      restaurantId: map['restaurant_id']?.toString(), // Convert int from SQLite to String
+      restaurantId: map['restaurant_id']?.toString(),
       restaurantName: map['restaurant_name'] as String?,
       dishName: map['dish_name'] as String?,
       rating: map['rating'] != null ? (map['rating'] as num).toDouble() : null,
@@ -74,10 +74,10 @@ class Post {
       likesCount: map['likes_count'] ?? 0,
       commentsCount: map['comments_count'] ?? 0,
       likedBy: map['liked_by'] != null
-          ? List<int>.from(jsonDecode(map['liked_by']))
+          ? List<String>.from(jsonDecode(map['liked_by']))
           : [],
       savedBy: map['saved_by'] != null
-          ? List<int>.from(jsonDecode(map['saved_by']))
+          ? List<String>.from(jsonDecode(map['saved_by']))
           : [],
       createdAt: map['created_at'] != null
           ? DateTime.parse(map['created_at'])
@@ -86,8 +86,8 @@ class Post {
   }
 
   Post copyWith({
-    int? id,
-    int? userId,
+    String? id,
+    String? userId,
     String? username,
     String? userAvatarPath,
     String? caption,
@@ -98,8 +98,8 @@ class Post {
     List<String>? images,
     int? likesCount,
     int? commentsCount,
-    List<int>? likedBy,
-    List<int>? savedBy,
+    List<String>? likedBy,
+    List<String>? savedBy,
     DateTime? createdAt,
   }) {
     return Post(

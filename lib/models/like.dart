@@ -1,7 +1,7 @@
 class Like {
-  final int? id;
-  final int userId;
-  final int postId;
+  final String? id;
+  final String userId;
+  final String postId;
   final String? createdAt;
 
   Like({this.id, required this.userId, required this.postId, this.createdAt});
@@ -19,9 +19,9 @@ class Like {
   /// Create Like from database Map
   factory Like.fromMap(Map<String, dynamic> map) {
     return Like(
-      id: map['id'] as int?,
-      userId: map['user_id'] as int,
-      postId: map['post_id'] as int,
+      id: map['id']?.toString(),
+      userId: map['user_id']?.toString() ?? '',
+      postId: map['post_id']?.toString() ?? '',
       createdAt: map['created_at'] as String?,
     );
   }

@@ -1,7 +1,7 @@
 class SavedPost {
-  final int? id;
-  final int userId;
-  final int postId;
+  final String? id;
+  final String userId;
+  final String postId;
   final String? createdAt;
 
   SavedPost({
@@ -24,9 +24,9 @@ class SavedPost {
   /// Create SavedPost from database Map
   factory SavedPost.fromMap(Map<String, dynamic> map) {
     return SavedPost(
-      id: map['id'] as int?,
-      userId: map['user_id'] as int,
-      postId: map['post_id'] as int,
+      id: map['id']?.toString(),
+      userId: map['user_id']?.toString() ?? '',
+      postId: map['post_id']?.toString() ?? '',
       createdAt: map['created_at'] as String?,
     );
   }

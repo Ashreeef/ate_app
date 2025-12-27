@@ -1,6 +1,6 @@
 class AppNotification {
-  final int? id;
-  final int userId;
+  final String? id;
+  final String userId;
   final String title;
   final String body;
   final String? imageUrl;
@@ -36,8 +36,8 @@ class AppNotification {
   // Create from Map from database
   factory AppNotification.fromMap(Map<String, dynamic> map) {
     return AppNotification(
-      id: map['id'] as int?,
-      userId: map['user_id'] as int,
+      id: map['id']?.toString(),
+      userId: map['user_id']?.toString() ?? '',
       title: map['title'] as String,
       body: map['body'] as String,
       imageUrl: map['image_url'] as String?,
@@ -49,8 +49,8 @@ class AppNotification {
 
   // Copy with method
   AppNotification copyWith({
-    int? id,
-    int? userId,
+    String? id,
+    String? userId,
     String? title,
     String? body,
     String? imageUrl,

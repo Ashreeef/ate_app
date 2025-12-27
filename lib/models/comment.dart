@@ -1,7 +1,7 @@
 class Comment {
-  final int? id;
-  final int postId;
-  final int userId;
+  final String? id;
+  final String postId;
+  final String userId;
   final String content;
   final String? createdAt;
 
@@ -27,9 +27,9 @@ class Comment {
   /// Create Comment from database Map
   factory Comment.fromMap(Map<String, dynamic> map) {
     return Comment(
-      id: map['id'] as int?,
-      postId: map['post_id'] as int,
-      userId: map['user_id'] as int,
+      id: map['id']?.toString(),
+      postId: map['post_id']?.toString() ?? '',
+      userId: map['user_id']?.toString() ?? '',
       content: map['content'] as String,
       createdAt: map['created_at'] as String?,
     );
@@ -37,9 +37,9 @@ class Comment {
 
   /// Create a copy with updated fields
   Comment copyWith({
-    int? id,
-    int? postId,
-    int? userId,
+    String? id,
+    String? postId,
+    String? userId,
     String? content,
     String? createdAt,
   }) {
