@@ -470,7 +470,7 @@ class RestaurantRepository {
             // and then let the constructor generate keywords if we pass null?
             // Wait, constructor generates ONLY if list is passed as null.
             // fromFirestore passes what is in data.
-            final keywords = Restaurant._generateSearchKeywords(name, cuisine);
+            final keywords = Restaurant.generateSearchKeywords(name, cuisine);
             data['searchKeywords'] = keywords;
             needsUpdate = true;
           }

@@ -84,13 +84,13 @@ void main() async {
   // Seed database with comprehensive test data (development only)
   // Moved to background to avoid blocking app startup
   SeedData.seedDatabase(
-    _userRepository,
-    _restaurantRepository,
-    _postRepository,
-    _commentRepository,
-    _likeRepository,
-    _savedPostRepository,
-    _searchHistoryRepository,
+    userRepository: _userRepository,
+    restaurantRepository: _restaurantRepository,
+    postRepository: _postRepository,
+    commentRepository: _commentRepository,
+    likeRepository: _likeRepository,
+    savedPostRepository: _savedPostRepository,
+    searchHistoryRepository: _searchHistoryRepository,
   ).then((_) {
     // Validate database seeding after completion
     QuickDatabaseValidation.validate();

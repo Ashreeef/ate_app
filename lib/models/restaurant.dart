@@ -35,11 +35,11 @@ class Restaurant {
     List<String>? searchKeywords,
     this.createdAt,
     this.updatedAt,
-  }) : searchKeywords = searchKeywords ?? _generateSearchKeywords(name, cuisine);
+  }) : searchKeywords = searchKeywords ?? generateSearchKeywords(name, cuisine);
 
   /// Generate search keywords for prefix-based search
   /// Creates lowercase prefixes for name and cuisine
-  static List<String> _generateSearchKeywords(String name, String cuisine) {
+  static List<String> generateSearchKeywords(String name, String cuisine) {
     final keywords = <String>{};
     
     // Add name prefixes for each word (lowercase)
