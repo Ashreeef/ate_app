@@ -344,13 +344,13 @@ class ComprehensiveDatabaseTest {
       final user = users.first;
 
       // Get search history
-      final history = await _searchRepo.getSearchHistoryByUserId(user.id!);
+      final history = await _searchRepo.getSearchHistoryByUserId(user.id!.toString());
       print('   User ${user.id} has ${history.length} search entries');
       results['history_count'] = history.length;
 
       // Get recent queries
       final recentQueries = await _searchRepo.getRecentSearchQueries(
-        user.id!,
+        user.id!.toString(),
         limit: 5,
       );
       print('   Recent queries: ${recentQueries.join(", ")}');
@@ -358,7 +358,7 @@ class ComprehensiveDatabaseTest {
 
       // Get unique queries
       final uniqueQueries = await _searchRepo.getUniqueRecentSearchQueries(
-        user.id!,
+        user.id!.toString(),
         limit: 10,
       );
       print('   Unique queries: ${uniqueQueries.length}');
