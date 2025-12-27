@@ -172,17 +172,15 @@ class SeedData {
     ];
 
     for (final user in testUsers) {
-      final existing = await userRepository.getUserByEmail(user.email);
+      final existing = await userRepository.getUserByEmailFirestore(user.email);
       if (existing == null) {
-        final userId = await userRepository.createUser(user);
-        final createdUser = await userRepository.getUserById(userId);
-        if (createdUser != null) {
-          users.add(createdUser);
-        }
+        // Use a mock UID for seeding local data if not using real Firebase Auth
+        final mockUid = 'user_${user.username.toLowerCase()}';
+        final userToCreate = user.copyWith(uid: mockUid, id: mockUid);
+        await userRepository.setUserFirestore(userToCreate);
+        users.add(userToCreate);
       } else {
-        final userToUpdate = user.copyWith(id: existing.id);
-        await userRepository.updateUser(userToUpdate);
-        users.add(userToUpdate);
+        users.add(existing);
       }
     }
 
@@ -548,7 +546,8 @@ class SeedData {
           .toList();
 
       final post = Post(
-        userId: user.id!,
+        id: 'post_$i',
+        userId: user.uid!,
         username: user.username,
         caption: data['caption'] as String,
         restaurantId: restaurant.restaurantId,
@@ -560,11 +559,8 @@ class SeedData {
         createdAt: DateTime.now().subtract(Duration(days: i ~/ 2)),
       );
 
-      final postId = await postRepository.createPost(post);
-      final createdPost = await postRepository.getPostById(postId);
-      if (createdPost != null) {
-        posts.add(createdPost);
-      }
+      await postRepository.createPost(post);
+      posts.add(post);
     }
 
     return posts;
@@ -603,31 +599,29 @@ class SeedData {
       final text = commentTexts[i % commentTexts.length];
 
       final comment = Comment(
+        id: 'comment_$i',
         postId: post.id!,
-        userId: user.id!,
+        userId: user.uid!,
         content: text,
         createdAt: DateTime.now()
             .subtract(Duration(hours: i))
             .toIso8601String(),
       );
 
-      final commentId = await commentRepository.createComment(comment);
-      final createdComment = await commentRepository.getCommentById(commentId);
-      if (createdComment != null) {
-        comments.add(createdComment);
-      }
+      await commentRepository.createComment(comment);
+      comments.add(comment);
     }
 
     return comments;
   }
 
   /// Seed likes (200+ likes)
-  static Future<List<int>> _seedLikes(
+  static Future<List<String>> _seedLikes(
     LikeRepository likeRepository,
     List<User> users,
     List<Post> posts,
   ) async {
-    final List<int> likeIds = [];
+    final List<String> likeIds = [];
 
     // Each user likes multiple posts
     for (int i = 0; i < users.length; i++) {
@@ -639,10 +633,11 @@ class SeedData {
         final post = posts[(i + j) % posts.length];
 
         try {
-          final likeId = await likeRepository.likePost(post.id!, user.id!);
-          likeIds.add(likeId);
+          final lid = 'like_${i}_$j';
+          await likeRepository.likePost(user.uid!, post.id!);
+          likeIds.add(lid);
         } catch (e) {
-          // Skip if duplicate (user already liked this post)
+          // Skip if duplicate
           continue;
         }
       }
@@ -652,12 +647,12 @@ class SeedData {
   }
 
   /// Seed saved posts (50+ saved posts)
-  static Future<List<int>> _seedSavedPosts(
+  static Future<List<String>> _seedSavedPosts(
     SavedPostRepository savedPostRepository,
     List<User> users,
     List<Post> posts,
   ) async {
-    final List<int> savedPostIds = [];
+    final List<String> savedPostIds = [];
 
     // Each user saves some posts
     for (int i = 0; i < users.length; i++) {
@@ -669,11 +664,12 @@ class SeedData {
         final post = posts[(i * 3 + j) % posts.length];
 
         try {
-          final savedPostId = await savedPostRepository.savePost(
+          final sid = 'save_${i}_$j';
+          await savedPostRepository.savePost(
+            user.uid!,
             post.id!,
-            user.id!,
           );
-          savedPostIds.add(savedPostId);
+          savedPostIds.add(sid);
         } catch (e) {
           // Skip if duplicate
           continue;
@@ -685,11 +681,11 @@ class SeedData {
   }
 
   /// Seed search history (100+ entries)
-  static Future<List<int>> _seedSearchHistory(
+  static Future<List<String>> _seedSearchHistory(
     SearchHistoryRepository searchHistoryRepository,
     List<User> users,
   ) async {
-    final List<int> searchHistoryIds = [];
+    final List<String> searchHistoryIds = [];
 
     final searchQueries = [
       'couscous',
@@ -718,11 +714,11 @@ class SeedData {
       for (int j = 0; j < searchCount; j++) {
         final query = searchQueries[(i + j) % searchQueries.length];
 
-        final searchId = await searchHistoryRepository.addSearchQuery(
-          user.id!.toString(),
+        await searchHistoryRepository.addSearchQuery(
+          user.uid!,
           query,
         );
-        searchHistoryIds.add(searchId);
+        searchHistoryIds.add('search_${i}_$j');
       }
     }
 

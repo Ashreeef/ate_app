@@ -8,8 +8,8 @@ class CommentRepository {
   // ==================== CREATE ====================
 
   /// Create a new comment
-  Future<int> createComment(Comment comment) async {
-    return await _db.insert('comments', comment.toMap());
+  Future<void> createComment(Comment comment) async {
+    await _db.insert('comments', comment.toMap());
   }
 
   /// Create multiple comments in batch
@@ -21,7 +21,7 @@ class CommentRepository {
   // ==================== READ ====================
 
   /// Get a comment by ID
-  Future<Comment?> getCommentById(int id) async {
+  Future<Comment?> getCommentById(String id) async {
     final map = await _db.queryOne(
       'comments',
       where: 'id = ?',
@@ -32,7 +32,7 @@ class CommentRepository {
 
   /// Get all comments for a post
   Future<List<Comment>> getCommentsByPostId(
-    int postId, {
+    String postId, {
     String? orderBy = 'created_at ASC',
   }) async {
     final maps = await _db.query(
@@ -45,7 +45,7 @@ class CommentRepository {
   }
 
   /// Get all comments by a user
-  Future<List<Comment>> getCommentsByUserId(int userId) async {
+  Future<List<Comment>> getCommentsByUserId(String userId) async {
     final maps = await _db.query(
       'comments',
       where: 'user_id = ?',
@@ -66,7 +66,7 @@ class CommentRepository {
   }
 
   /// Get comments count for a post
-  Future<int> getCommentsCountByPostId(int postId) async {
+  Future<int> getCommentsCountByPostId(String postId) async {
     return await _db.getCount(
       'comments',
       where: 'post_id = ?',
@@ -75,7 +75,7 @@ class CommentRepository {
   }
 
   /// Get comments count by a user
-  Future<int> getCommentsCountByUserId(int userId) async {
+  Future<int> getCommentsCountByUserId(String userId) async {
     return await _db.getCount(
       'comments',
       where: 'user_id = ?',
@@ -86,8 +86,8 @@ class CommentRepository {
   // ==================== UPDATE ====================
 
   /// Update a comment
-  Future<int> updateComment(Comment comment) async {
-    return await _db.update(
+  Future<void> updateComment(Comment comment) async {
+    await _db.update(
       'comments',
       comment.toMap(),
       where: 'id = ?',
@@ -96,8 +96,8 @@ class CommentRepository {
   }
 
   /// Update comment content
-  Future<int> updateCommentContent(int commentId, String newContent) async {
-    return await _db.update(
+  Future<void> updateCommentContent(String commentId, String newContent) async {
+    await _db.update(
       'comments',
       {'content': newContent},
       where: 'id = ?',
@@ -108,12 +108,12 @@ class CommentRepository {
   // ==================== DELETE ====================
 
   /// Delete a comment by ID
-  Future<int> deleteComment(int id) async {
+  Future<int> deleteComment(String id) async {
     return await _db.delete('comments', where: 'id = ?', whereArgs: [id]);
   }
 
   /// Delete all comments for a post
-  Future<int> deleteCommentsByPostId(int postId) async {
+  Future<int> deleteCommentsByPostId(String postId) async {
     return await _db.delete(
       'comments',
       where: 'post_id = ?',
@@ -122,7 +122,7 @@ class CommentRepository {
   }
 
   /// Delete all comments by a user
-  Future<int> deleteCommentsByUserId(int userId) async {
+  Future<int> deleteCommentsByUserId(String userId) async {
     return await _db.delete(
       'comments',
       where: 'user_id = ?',
@@ -133,7 +133,7 @@ class CommentRepository {
   // ==================== UTILITY ====================
 
   /// Check if a comment exists
-  Future<bool> commentExists(int id) async {
+  Future<bool> commentExists(String id) async {
     return await _db.exists('comments', where: 'id = ?', whereArgs: [id]);
   }
 

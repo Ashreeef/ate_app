@@ -8,22 +8,21 @@ class SavedPostRepository {
   // ==================== CREATE ====================
 
   /// Save a post
-  Future<int> savePost(int userId, int postId) async {
+  Future<void> savePost(String userId, String postId) async {
     try {
-      return await _db.insert('saved_posts', {
+      await _db.insert('saved_posts', {
         'user_id': userId,
         'post_id': postId,
       });
     } catch (e) {
-      // Post already saved (UNIQUE constraint violation)
-      return 0;
+      // Post already saved or error
     }
   }
 
   // ==================== READ ====================
 
   /// Check if user has saved a post
-  Future<bool> hasUserSavedPost(int userId, int postId) async {
+  Future<bool> hasUserSavedPost(String userId, String postId) async {
     return await _db.exists(
       'saved_posts',
       where: 'user_id = ? AND post_id = ?',
@@ -32,7 +31,7 @@ class SavedPostRepository {
   }
 
   /// Get all saved posts by a user
-  Future<List<SavedPost>> getSavedPostsByUserId(int userId) async {
+  Future<List<SavedPost>> getSavedPostsByUserId(String userId) async {
     final maps = await _db.query(
       'saved_posts',
       where: 'user_id = ?',
@@ -43,7 +42,7 @@ class SavedPostRepository {
   }
 
   /// Get saved post IDs by a user
-  Future<List<int>> getSavedPostIdsByUserId(int userId) async {
+  Future<List<String>> getSavedPostIdsByUserId(String userId) async {
     final maps = await _db.query(
       'saved_posts',
       columns: ['post_id'],
@@ -51,11 +50,11 @@ class SavedPostRepository {
       whereArgs: [userId],
       orderBy: 'created_at DESC',
     );
-    return maps.map((map) => map['post_id'] as int).toList();
+    return maps.map((map) => map['post_id'].toString()).toList();
   }
 
   /// Get saved posts count for a user
-  Future<int> getSavedPostsCountByUserId(int userId) async {
+  Future<int> getSavedPostsCountByUserId(String userId) async {
     return await _db.getCount(
       'saved_posts',
       where: 'user_id = ?',
@@ -64,18 +63,18 @@ class SavedPostRepository {
   }
 
   /// Get users who saved a specific post
-  Future<List<int>> getUsersWhoSavedPost(int postId) async {
+  Future<List<String>> getUsersWhoSavedPost(String postId) async {
     final maps = await _db.query(
       'saved_posts',
       columns: ['user_id'],
       where: 'post_id = ?',
       whereArgs: [postId],
     );
-    return maps.map((map) => map['user_id'] as int).toList();
+    return maps.map((map) => map['user_id'].toString()).toList();
   }
 
   /// Get count of how many users saved a post
-  Future<int> getSavesCountByPostId(int postId) async {
+  Future<int> getSavesCountByPostId(String postId) async {
     return await _db.getCount(
       'saved_posts',
       where: 'post_id = ?',
@@ -86,8 +85,8 @@ class SavedPostRepository {
   // ==================== DELETE ====================
 
   /// Unsave a post
-  Future<int> unsavePost(int userId, int postId) async {
-    return await _db.delete(
+  Future<void> unsavePost(String userId, String postId) async {
+    await _db.delete(
       'saved_posts',
       where: 'user_id = ? AND post_id = ?',
       whereArgs: [userId, postId],
@@ -95,7 +94,7 @@ class SavedPostRepository {
   }
 
   /// Delete all saved posts by a user
-  Future<int> deleteSavedPostsByUserId(int userId) async {
+  Future<int> deleteSavedPostsByUserId(String userId) async {
     return await _db.delete(
       'saved_posts',
       where: 'user_id = ?',
@@ -104,7 +103,7 @@ class SavedPostRepository {
   }
 
   /// Delete all saves for a specific post
-  Future<int> deleteSavesByPostId(int postId) async {
+  Future<int> deleteSavesByPostId(String postId) async {
     return await _db.delete(
       'saved_posts',
       where: 'post_id = ?',
@@ -115,7 +114,7 @@ class SavedPostRepository {
   // ==================== UTILITY ====================
 
   /// Toggle saved post (save if not exists, unsave if exists)
-  Future<bool> toggleSavePost(int userId, int postId) async {
+  Future<bool> toggleSavePost(String userId, String postId) async {
     final exists = await hasUserSavedPost(userId, postId);
     if (exists) {
       await unsavePost(userId, postId);

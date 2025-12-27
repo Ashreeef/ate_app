@@ -8,19 +8,18 @@ class LikeRepository {
   // ==================== CREATE ====================
 
   /// Add a like to a post
-  Future<int> likePost(int userId, int postId) async {
+  Future<void> likePost(String userId, String postId) async {
     try {
-      return await _db.insert('likes', {'user_id': userId, 'post_id': postId});
+      await _db.insert('likes', {'user_id': userId, 'post_id': postId});
     } catch (e) {
-      // Like already exists (UNIQUE constraint violation)
-      return 0;
+      // Like already exists or error
     }
   }
 
   // ==================== READ ====================
 
   /// Check if user has liked a post
-  Future<bool> hasUserLikedPost(int userId, int postId) async {
+  Future<bool> hasUserLikedPost(String userId, String postId) async {
     return await _db.exists(
       'likes',
       where: 'user_id = ? AND post_id = ?',
@@ -29,7 +28,7 @@ class LikeRepository {
   }
 
   /// Get all likes for a post
-  Future<List<Like>> getLikesByPostId(int postId) async {
+  Future<List<Like>> getLikesByPostId(String postId) async {
     final maps = await _db.query(
       'likes',
       where: 'post_id = ?',
@@ -40,7 +39,7 @@ class LikeRepository {
   }
 
   /// Get all posts liked by a user
-  Future<List<int>> getPostsLikedByUser(int userId) async {
+  Future<List<String>> getPostsLikedByUser(String userId) async {
     final maps = await _db.query(
       'likes',
       columns: ['post_id'],
@@ -48,11 +47,11 @@ class LikeRepository {
       whereArgs: [userId],
       orderBy: 'created_at DESC',
     );
-    return maps.map((map) => map['post_id'] as int).toList();
+    return maps.map((map) => map['post_id'].toString()).toList();
   }
 
   /// Get likes count for a post
-  Future<int> getLikesCountByPostId(int postId) async {
+  Future<int> getLikesCountByPostId(String postId) async {
     return await _db.getCount(
       'likes',
       where: 'post_id = ?',
@@ -61,7 +60,7 @@ class LikeRepository {
   }
 
   /// Get total number of likes by a user
-  Future<int> getLikesCountByUserId(int userId) async {
+  Future<int> getLikesCountByUserId(String userId) async {
     return await _db.getCount(
       'likes',
       where: 'user_id = ?',
@@ -70,21 +69,21 @@ class LikeRepository {
   }
 
   /// Get users who liked a post
-  Future<List<int>> getUsersWhoLikedPost(int postId) async {
+  Future<List<String>> getUsersWhoLikedPost(String postId) async {
     final maps = await _db.query(
       'likes',
       columns: ['user_id'],
       where: 'post_id = ?',
       whereArgs: [postId],
     );
-    return maps.map((map) => map['user_id'] as int).toList();
+    return maps.map((map) => map['user_id'].toString()).toList();
   }
 
   // ==================== DELETE ====================
 
   /// Remove a like from a post (unlike)
-  Future<int> unlikePost(int userId, int postId) async {
-    return await _db.delete(
+  Future<void> unlikePost(String userId, String postId) async {
+    await _db.delete(
       'likes',
       where: 'user_id = ? AND post_id = ?',
       whereArgs: [userId, postId],
@@ -92,19 +91,19 @@ class LikeRepository {
   }
 
   /// Delete all likes for a post
-  Future<int> deleteLikesByPostId(int postId) async {
+  Future<int> deleteLikesByPostId(String postId) async {
     return await _db.delete('likes', where: 'post_id = ?', whereArgs: [postId]);
   }
 
   /// Delete all likes by a user
-  Future<int> deleteLikesByUserId(int userId) async {
+  Future<int> deleteLikesByUserId(String userId) async {
     return await _db.delete('likes', where: 'user_id = ?', whereArgs: [userId]);
   }
 
   // ==================== UTILITY ====================
 
   /// Toggle like (add if not exists, remove if exists)
-  Future<bool> toggleLike(int userId, int postId) async {
+  Future<bool> toggleLike(String userId, String postId) async {
     final exists = await hasUserLikedPost(userId, postId);
     if (exists) {
       await unlikePost(userId, postId);
