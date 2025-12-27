@@ -8,10 +8,24 @@ import '../../blocs/restaurant/restaurant_event.dart';
 import '../../blocs/restaurant/restaurant_state.dart';
 import '../../l10n/app_localizations.dart';
 
-class RestaurantPage extends StatelessWidget {
+class RestaurantPage extends StatefulWidget {
   final String restaurantId;
 
   const RestaurantPage({super.key, required this.restaurantId});
+
+  @override
+  State<RestaurantPage> createState() => _RestaurantPageState();
+}
+
+class _RestaurantPageState extends State<RestaurantPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Force load the specific restaurant when entering the page
+    context.read<RestaurantBloc>().add(
+      LoadRestaurantById(restaurantId: widget.restaurantId),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +33,7 @@ class RestaurantPage extends StatelessWidget {
 
     return BlocBuilder<RestaurantBloc, RestaurantState>(
       builder: (context, state) {
-        if (state is RestaurantInitial) {
-          context.read<RestaurantBloc>().add(
-            LoadRestaurantById(restaurantId: restaurantId),
-          );
-        }
-
-        if (state is RestaurantLoading || state is RestaurantInitial) {
+        if (state is RestaurantLoading) {
           return Scaffold(
             appBar: AppBar(title: Text(l10n.restaurant)),
             body: Center(child: CircularProgressIndicator()),
@@ -43,6 +51,16 @@ class RestaurantPage extends StatelessWidget {
 
         if (state is RestaurantLoaded) {
           final restaurant = state.restaurant;
+          
+          // Slight optimization: If we have a lingering state from previous view, 
+          // we might see the old one for a split second. 
+          // Ideally we check restaurant.restaurantId == widget.restaurantId
+          if (restaurant.restaurantId != widget.restaurantId) {
+             return Scaffold(
+              appBar: AppBar(title: Text(l10n.restaurant)),
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
 
           return Scaffold(
             appBar: AppBar(
