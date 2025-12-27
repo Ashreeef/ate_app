@@ -21,7 +21,7 @@ class PostRepository {
   // ==================== READ ====================
 
   /// Get a post by ID
-  Future<Post?> getPostById(int id) async {
+  Future<Post?> getPostById(String id) async {
     final map = await _db.queryOne('posts', where: 'id = ?', whereArgs: [id]);
     return map != null ? Post.fromMap(map) : null;
   }
@@ -42,7 +42,7 @@ class PostRepository {
   }
 
   /// Get posts by user ID
-  Future<List<Post>> getPostsByUserId(int userId, {int? limit}) async {
+  Future<List<Post>> getPostsByUserId(String userId, {int? limit}) async {
     final maps = await _db.query(
       'posts',
       where: 'user_id = ?',
@@ -89,7 +89,7 @@ class PostRepository {
   }
 
   /// Get posts count for a user
-  Future<int> getPostsCountByUserId(int userId) async {
+  Future<int> getPostsCountByUserId(String userId) async {
     return await _db.getCount(
       'posts',
       where: 'user_id = ?',
@@ -119,7 +119,7 @@ class PostRepository {
   }
 
   /// Increment likes count
-  Future<void> incrementLikesCount(int postId) async {
+  Future<void> incrementLikesCount(String postId) async {
     await _db.rawUpdate(
       'UPDATE posts SET likes_count = likes_count + 1 WHERE id = ?',
       [postId],
@@ -127,7 +127,7 @@ class PostRepository {
   }
 
   /// Decrement likes count
-  Future<void> decrementLikesCount(int postId) async {
+  Future<void> decrementLikesCount(String postId) async {
     await _db.rawUpdate(
       'UPDATE posts SET likes_count = likes_count - 1 WHERE id = ? AND likes_count > 0',
       [postId],
@@ -135,7 +135,7 @@ class PostRepository {
   }
 
   /// Increment comments count
-  Future<void> incrementCommentsCount(int postId) async {
+  Future<void> incrementCommentsCount(String postId) async {
     await _db.rawUpdate(
       'UPDATE posts SET comments_count = comments_count + 1 WHERE id = ?',
       [postId],
@@ -143,7 +143,7 @@ class PostRepository {
   }
 
   /// Decrement comments count
-  Future<void> decrementCommentsCount(int postId) async {
+  Future<void> decrementCommentsCount(String postId) async {
     await _db.rawUpdate(
       'UPDATE posts SET comments_count = comments_count - 1 WHERE id = ? AND comments_count > 0',
       [postId],
@@ -153,12 +153,12 @@ class PostRepository {
   // ==================== DELETE ====================
 
   /// Delete a post by ID
-  Future<int> deletePost(int id) async {
+  Future<int> deletePost(String id) async {
     return await _db.delete('posts', where: 'id = ?', whereArgs: [id]);
   }
 
   /// Delete all posts by a user
-  Future<int> deletePostsByUserId(int userId) async {
+  Future<int> deletePostsByUserId(String userId) async {
     return await _db.delete('posts', where: 'user_id = ?', whereArgs: [userId]);
   }
 
@@ -174,7 +174,7 @@ class PostRepository {
   // ==================== UTILITY ====================
 
   /// Check if a post exists
-  Future<bool> postExists(int id) async {
+  Future<bool> postExists(String id) async {
     return await _db.exists('posts', where: 'id = ?', whereArgs: [id]);
   }
 

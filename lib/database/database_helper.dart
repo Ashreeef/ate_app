@@ -24,7 +24,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 6, // Incremented for SearchHistory migration (user_id TEXT)
+      version: 7, // Incremented for full String ID unification
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
       onConfigure: (db) async {
@@ -128,9 +128,10 @@ class DatabaseHelper {
 
   Future _onCreate(Database db, int version) async {
     // Create users table with ALL fields from both branches
+    // Create users table with ALL fields from both branches
     await db.execute('''
       CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY, -- Changed to TEXT for Firebase UID
         username TEXT NOT NULL UNIQUE,
         email TEXT NOT NULL UNIQUE,
         password TEXT,
@@ -147,9 +148,10 @@ class DatabaseHelper {
     ''');
 
     // Create restaurants table
+    // Create restaurants table
     await db.execute('''
       CREATE TABLE restaurants (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id TEXT PRIMARY KEY, -- Changed to TEXT for Firestore Document ID
         name TEXT NOT NULL,
         location TEXT,
         cuisine_type TEXT,
@@ -161,10 +163,11 @@ class DatabaseHelper {
     ''');
 
     // Create posts table
+    // Create posts table
     await db.execute('''
       CREATE TABLE posts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
+        id TEXT PRIMARY KEY, -- Changed to TEXT for potential Firestore sync
+        user_id TEXT NOT NULL, -- Changed to TEXT
         username TEXT NOT NULL,
         user_avatar_path TEXT,
         caption TEXT NOT NULL,
@@ -183,11 +186,12 @@ class DatabaseHelper {
     ''');
 
     // Create comments table
+    // Create comments table
     await db.execute('''
       CREATE TABLE comments (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        post_id INTEGER NOT NULL,
-        user_id INTEGER NOT NULL,
+        id TEXT PRIMARY KEY, -- Changed to TEXT
+        post_id TEXT NOT NULL, -- Changed to TEXT
+        user_id TEXT NOT NULL, -- Changed to TEXT
         content TEXT NOT NULL,
         created_at TEXT,
         FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
@@ -196,11 +200,12 @@ class DatabaseHelper {
     ''');
 
     // Create likes table
+    // Create likes table
     await db.execute('''
       CREATE TABLE likes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        post_id INTEGER NOT NULL,
+        id TEXT PRIMARY KEY, -- Changed to TEXT
+        user_id TEXT NOT NULL, -- Changed to TEXT
+        post_id TEXT NOT NULL, -- Changed to TEXT
         created_at TEXT,
         UNIQUE(user_id, post_id),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -209,11 +214,12 @@ class DatabaseHelper {
     ''');
 
     // Create saved_posts table
+    // Create saved_posts table
     await db.execute('''
       CREATE TABLE saved_posts (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        post_id INTEGER NOT NULL,
+        id TEXT PRIMARY KEY, -- Changed to TEXT
+        user_id TEXT NOT NULL, -- Changed to TEXT
+        post_id TEXT NOT NULL, -- Changed to TEXT
         created_at TEXT,
         UNIQUE(user_id, post_id),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -232,10 +238,11 @@ class DatabaseHelper {
     ''');
 
     // Create notifications table
+    // Create notifications table
     await db.execute('''
       CREATE TABLE notifications (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
+        id TEXT PRIMARY KEY, -- Changed to TEXT
+        user_id TEXT NOT NULL, -- Changed to TEXT
         title TEXT NOT NULL,
         body TEXT NOT NULL,
         image_url TEXT,
