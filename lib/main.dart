@@ -82,7 +82,8 @@ void main() async {
   );
 
   // Seed database with comprehensive test data (development only)
-  await SeedData.seedDatabase(
+  // Moved to background to avoid blocking app startup
+  SeedData.seedDatabase(
     _userRepository,
     _restaurantRepository,
     _postRepository,
@@ -90,10 +91,12 @@ void main() async {
     _likeRepository,
     _savedPostRepository,
     _searchHistoryRepository,
-  );
-
-  // Validate database seeding (development only)
-  await QuickDatabaseValidation.validate();
+  ).then((_) {
+    // Validate database seeding after completion
+    QuickDatabaseValidation.validate();
+  }).catchError((e) {
+    debugPrint('Error during background seeding: $e');
+  });
 
   runApp(const MyApp());
 }
