@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/restaurant.dart';
 import '../services/firestore_service.dart';
@@ -447,65 +448,15 @@ class RestaurantRepository {
     final deltaLat = _toRadians(point2.latitude - point1.latitude);
     final deltaLon = _toRadians(point2.longitude - point1.longitude);
     
-    final a = _sin(deltaLat / 2) * _sin(deltaLat / 2) +
-        _cos(lat1Rad) * _cos(lat2Rad) *
-        _sin(deltaLon / 2) * _sin(deltaLon / 2);
+    final a = math.sin(deltaLat / 2) * math.sin(deltaLat / 2) +
+        math.cos(lat1Rad) * math.cos(lat2Rad) *
+        math.sin(deltaLon / 2) * math.sin(deltaLon / 2);
     
-    final c = 2 * _atan2(_sqrt(a), _sqrt(1 - a));
+    final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     
     return earthRadiusKm * c;
   }
 
   /// Convert degrees to radians
-  double _toRadians(double degrees) => degrees * 3.141592653589793 / 180.0;
-  
-  /// Math helpers (dart:math alternatives to avoid import)
-  double _sin(double x) => _taylorSin(x);
-  double _cos(double x) => _taylorCos(x);
-  double _sqrt(double x) {
-    if (x == 0) return 0;
-    double z = x;
-    double result = 0;
-    for (int i = 0; i < 10; i++) {
-      result = (z + x / z) / 2;
-      if ((result - z).abs() < 0.0001) break;
-      z = result;
-    }
-    return result;
-  }
-  double _atan2(double y, double x) {
-    if (x > 0) return _atan(y / x);
-    if (x < 0 && y >= 0) return _atan(y / x) + 3.141592653589793;
-    if (x < 0 && y < 0) return _atan(y / x) - 3.141592653589793;
-    if (x == 0 && y > 0) return 3.141592653589793 / 2;
-    if (x == 0 && y < 0) return -3.141592653589793 / 2;
-    return 0;
-  }
-  double _atan(double x) {
-    double result = x;
-    double term = x;
-    for (int n = 1; n < 20; n++) {
-      term *= -x * x;
-      result += term / (2 * n + 1);
-    }
-    return result;
-  }
-  double _taylorSin(double x) {
-    double result = x;
-    double term = x;
-    for (int n = 1; n < 10; n++) {
-      term *= -x * x / ((2 * n) * (2 * n + 1));
-      result += term;
-    }
-    return result;
-  }
-  double _taylorCos(double x) {
-    double result = 1;
-    double term = 1;
-    for (int n = 1; n < 10; n++) {
-      term *= -x * x / ((2 * n - 1) * (2 * n));
-      result += term;
-    }
-    return result;
-  }
+  double _toRadians(double degrees) => degrees * math.pi / 180.0;
 }
