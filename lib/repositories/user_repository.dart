@@ -1,13 +1,9 @@
 import '../models/user.dart';
-import '../database/database_helper.dart';
-import '../utils/password_helper.dart';
 import '../services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// Repository for user data operations
-/// Supports both local SQLite (legacy) and Firestore (current)
+/// Repository for user data operations using Firestore
 class UserRepository {
-  final DatabaseHelper _databaseHelper = DatabaseHelper.instance;
   final FirestoreService _firestoreService = FirestoreService();
 
   // ============= FIRESTORE OPERATIONS (CURRENT) =============
@@ -131,110 +127,5 @@ class UserRepository {
       if (!snapshot.exists) return null;
       return User.fromFirestore(snapshot.data() as Map<String, dynamic>);
     });
-  }
-
-  // ============= LOCAL DATABASE OPERATIONS (LEGACY) =============
-  // Keep these for backward compatibility during migration
-
-  /// Get user by ID (Local SQLite - Deprecated)
-  @Deprecated('Use getUserByUid for Firebase')
-  Future<User?> getUserById(int id) async {
-    final db = await _databaseHelper.database;
-    final maps = await db.query('users', where: 'id = ?', whereArgs: [id]);
-
-    if (maps.isEmpty) return null;
-    return User.fromMap(maps.first);
-  }
-
-  /// Get user by email (Local SQLite - Deprecated)
-  @Deprecated('Use getUserByEmailFirestore for Firebase')
-  Future<User?> getUserByEmail(String email) async {
-    final db = await _databaseHelper.database;
-    final maps = await db.query(
-      'users',
-      where: 'email = ?',
-      whereArgs: [email],
-    );
-
-    if (maps.isEmpty) return null;
-    return User.fromMap(maps.first);
-  }
-
-  /// Create new user (Local SQLite - Deprecated)
-  @Deprecated('Use setUserFirestore for Firebase')
-  Future<int> createUser(User user) async {
-    final db = await _databaseHelper.database;
-    return await db.insert('users', user.toMap());
-  }
-
-  /// Update user (Local SQLite - Deprecated)
-  @Deprecated('Use updateUserFirestore for Firebase')
-  Future<int> updateUser(User user) async {
-    final db = await _databaseHelper.database;
-    return await db.update(
-      'users',
-      user.toMap(),
-      where: 'id = ?',
-      whereArgs: [user.id],
-    );
-  }
-
-  /// Delete user (Local SQLite - Deprecated)
-  @Deprecated('Use deleteUserFirestore for Firebase')
-  Future<int> deleteUser(int id) async {
-    final db = await _databaseHelper.database;
-    return await db.delete('users', where: 'id = ?', whereArgs: [id]);
-  }
-
-  /// Check if email exists (Local SQLite - Deprecated)
-  @Deprecated('Use getUserByEmailFirestore for Firebase')
-  Future<bool> emailExists(String email) async {
-    final user = await getUserByEmail(email);
-    return user != null;
-  }
-
-  /// Authenticate user (Local SQLite - Deprecated)
-  @Deprecated('Use AuthRepository.signIn for Firebase')
-  Future<User?> authenticate(String email, String password) async {
-    final db = await _databaseHelper.database;
-
-    // Get user by email first
-    final maps = await db.query(
-      'users',
-      where: 'email = ?',
-      whereArgs: [email],
-    );
-
-    if (maps.isEmpty) return null;
-
-    final user = User.fromMap(maps.first);
-
-    // Verify password using secure comparison
-    if (user.password != null &&
-        PasswordHelper.verifyPassword(password, user.password!)) {
-      return user;
-    }
-
-    return null;
-  }
-
-  /// Get all users (Local SQLite - Deprecated)
-  @Deprecated('Use getAllUsersFirestore for Firebase')
-  Future<List<User>> getAllUsers() async {
-    final db = await _databaseHelper.database;
-    final maps = await db.query('users', orderBy: 'created_at DESC');
-    return maps.map((map) => User.fromMap(map)).toList();
-  }
-
-  /// Search users by username (Local SQLite - Deprecated)
-  @Deprecated('Use searchUsersFirestore for Firebase')
-  Future<List<User>> searchUsers(String query) async {
-    final db = await _databaseHelper.database;
-    final maps = await db.query(
-      'users',
-      where: 'username LIKE ?',
-      whereArgs: ['%$query%'],
-    );
-    return maps.map((map) => User.fromMap(map)).toList();
   }
 }

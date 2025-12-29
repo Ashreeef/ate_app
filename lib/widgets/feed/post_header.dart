@@ -6,7 +6,7 @@ import '../../blocs/profile/profile_cubit.dart';
 
 /// Post header showing user info with clickable profile navigation
 class PostHeader extends StatelessWidget {
-  final int? userId; // User ID for profile navigation
+  final String? userId; // User UID for profile navigation
   final String userName;
   final String userAvatar;
   final VoidCallback onProfileTap; // Legacy callback, kept for compatibility
@@ -31,7 +31,7 @@ class PostHeader extends StatelessWidget {
 
     // Don't navigate if viewing own post (already on own profile)
     final currentUser = context.read<ProfileCubit>().state.user;
-    if (currentUser != null && currentUser.id == userId) {
+    if (currentUser != null && currentUser.uid == userId) {
       return;
     }
 

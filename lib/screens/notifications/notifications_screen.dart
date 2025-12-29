@@ -32,7 +32,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     _refreshNotifications();
   }
 
-  Future<void> _deleteNotification(int notificationId) async {
+  Future<void> _deleteNotification(String notificationId) async {
     await _notificationService.deleteNotification(notificationId);
     _refreshNotifications();
   }

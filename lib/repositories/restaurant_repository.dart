@@ -1,192 +1,146 @@
-import '../database/database_helper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/restaurant.dart';
+import '../models/dish.dart';
 
-/// Repository for Restaurant data operations
+/// Repository for Restaurant data operations - Firestore Version
 class RestaurantRepository {
-  final DatabaseHelper _db = DatabaseHelper.instance;
+  final CollectionReference _restaurants = FirebaseFirestore.instance.collection('restaurants');
 
   // ==================== CREATE ====================
 
-  /// Create a new restaurant
-  Future<int> createRestaurant(Restaurant restaurant) async {
-    return await _db.insert('restaurants', restaurant.toMap());
+  /// Create a new restaurant (used by seeding or admin)
+  Future<void> createRestaurant(Restaurant restaurant) async {
+    final docRef = _restaurants.doc(restaurant.id);
+    await docRef.set(restaurant.toFirestore());
   }
 
-  /// Create multiple restaurants in batch
-  Future<void> createRestaurants(List<Restaurant> restaurants) async {
-    final maps = restaurants.map((r) => r.toMap()).toList();
-    await _db.insertBatch('restaurants', maps);
+  /// Create a new dish for a restaurant (used by seeding or admin)
+  Future<String> createDish(Dish dish) async {
+    final docRef = _restaurants.doc(dish.restaurantId).collection('dishes').doc();
+    // Ensure the ID is set in the document data
+    final dishData = dish.toFirestore();
+    dishData['id'] = docRef.id;
+    await docRef.set(dishData);
+    return docRef.id;
   }
 
   // ==================== READ ====================
 
-  /// Get a restaurant by ID
-  Future<Restaurant?> getRestaurantById(int id) async {
-    final map = await _db.queryOne(
-      'restaurants',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    return map != null ? Restaurant.fromMap(map) : null;
+  /// Get a restaurant by ID (UID)
+  Future<Restaurant?> getRestaurantById(String id) async {
+    final doc = await _restaurants.doc(id).get();
+    if (!doc.exists) return null;
+    return Restaurant.fromFirestore(doc.id, doc.data() as Map<String, dynamic>);
+  }
+
+  /// Get dishes for a restaurant
+  Future<List<Dish>> getDishesForRestaurant(String restaurantId) async {
+    try {
+      final snapshot = await _restaurants
+          .doc(restaurantId)
+          .collection('dishes')
+          .orderBy('rating', descending: true)
+          .get();
+
+      return snapshot.docs
+          .map((doc) => Dish.fromFirestore(doc.data()))
+          .toList();
+    } catch (e) {
+      print('Error fetching dishes: $e');
+      return [];
+    }
   }
 
   /// Get all restaurants
-  Future<List<Restaurant>> getAllRestaurants({
-    String? orderBy = 'name ASC',
-    int? limit,
-  }) async {
-    final maps = await _db.query('restaurants', orderBy: orderBy, limit: limit);
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+  Future<List<Restaurant>> getAllRestaurants({int limit = 50}) async {
+    final snapshot = await _restaurants
+        .orderBy('name')
+        .limit(limit)
+        .get();
+    return snapshot.docs
+        .map((doc) => Restaurant.fromFirestore(doc.id, doc.data() as Map<String, dynamic>))
+        .toList();
   }
 
-  /// Search restaurants by name or location
+  /// Search restaurants by name
+  /// Note: Firestore doesn't support full-text search. Using a prefix search for now.
   Future<List<Restaurant>> searchRestaurants(String query) async {
-    final maps = await _db.rawQuery(
-      '''
-      SELECT * FROM restaurants 
-      WHERE name LIKE ? OR location LIKE ? OR cuisine_type LIKE ?
-      ORDER BY name ASC
-    ''',
-      ['%$query%', '%$query%', '%$query%'],
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
-  }
-
-  /// Get restaurants by cuisine type
-  Future<List<Restaurant>> getRestaurantsByCuisine(String cuisineType) async {
-    final maps = await _db.query(
-      'restaurants',
-      where: 'cuisine_type = ?',
-      whereArgs: [cuisineType],
-      orderBy: 'name ASC',
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
-  }
-
-  /// Get restaurants by location
-  Future<List<Restaurant>> getRestaurantsByLocation(String location) async {
-    final maps = await _db.query(
-      'restaurants',
-      where: 'location LIKE ?',
-      whereArgs: ['%$location%'],
-      orderBy: 'name ASC',
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+    if (query.isEmpty) return [];
+    
+    final lowerQuery = query.toLowerCase();
+    
+    // Simple prefix search using lowercase searchName field
+    final snapshot = await _restaurants
+        .where('searchName', isGreaterThanOrEqualTo: lowerQuery)
+        .where('searchName', isLessThanOrEqualTo: '$lowerQuery\uf8ff')
+        .limit(20)
+        .get();
+        
+    return snapshot.docs
+        .map((doc) => Restaurant.fromFirestore(doc.id, doc.data() as Map<String, dynamic>))
+        .toList();
   }
 
   /// Get top rated restaurants
   Future<List<Restaurant>> getTopRatedRestaurants({int limit = 10}) async {
-    final maps = await _db.query(
-      'restaurants',
-      orderBy: 'rating DESC',
-      limit: limit,
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
+    final snapshot = await _restaurants
+        .orderBy('rating', descending: true)
+        .limit(limit)
+        .get();
+    return snapshot.docs
+        .map((doc) => Restaurant.fromFirestore(doc.id, doc.data() as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Get restaurant by name (case-sensitive exact match)
+  Future<Restaurant?> getRestaurantByName(String name) async {
+    final snapshot = await _restaurants.where('name', isEqualTo: name).limit(1).get();
+    if (snapshot.docs.isEmpty) return null;
+    final doc = snapshot.docs.first;
+    return Restaurant.fromFirestore(doc.id, doc.data() as Map<String, dynamic>);
   }
 
   /// Get trending restaurants (most posts)
   Future<List<Restaurant>> getTrendingRestaurants({int limit = 10}) async {
-    final maps = await _db.query(
-      'restaurants',
-      orderBy: 'posts_count DESC',
-      limit: limit,
-    );
-    return maps.map((map) => Restaurant.fromMap(map)).toList();
-  }
-
-  /// Get restaurant by name (exact match)
-  Future<Restaurant?> getRestaurantByName(String name) async {
-    final map = await _db.queryOne(
-      'restaurants',
-      where: 'name = ?',
-      whereArgs: [name],
-    );
-    return map != null ? Restaurant.fromMap(map) : null;
+    final snapshot = await _restaurants
+        .orderBy('postsCount', descending: true)
+        .limit(limit)
+        .get();
+    return snapshot.docs
+        .map((doc) => Restaurant.fromFirestore(doc.id, doc.data() as Map<String, dynamic>))
+        .toList();
   }
 
   // ==================== UPDATE ====================
 
-  /// Update a restaurant
-  Future<int> updateRestaurant(Restaurant restaurant) async {
-    return await _db.update(
-      'restaurants',
-      restaurant.toMap(),
-      where: 'id = ?',
-      whereArgs: [restaurant.id],
-    );
+  /// Update restaurant rating
+  Future<void> updateRating(String restaurantId, double newRating) async {
+    await _restaurants.doc(restaurantId).update({
+      'rating': newRating,
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
   }
 
   /// Increment posts count
-  Future<void> incrementPostsCount(int restaurantId) async {
-    await _db.rawUpdate(
-      'UPDATE restaurants SET posts_count = posts_count + 1 WHERE id = ?',
-      [restaurantId],
-    );
+  Future<void> incrementPostsCount(String restaurantId) async {
+    await _restaurants.doc(restaurantId).update({
+      'postsCount': FieldValue.increment(1),
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
   }
 
   /// Decrement posts count
-  Future<void> decrementPostsCount(int restaurantId) async {
-    await _db.rawUpdate(
-      'UPDATE restaurants SET posts_count = posts_count - 1 WHERE id = ? AND posts_count > 0',
-      [restaurantId],
-    );
-  }
-
-  /// Update restaurant rating
-  Future<void> updateRating(int restaurantId, double newRating) async {
-    await _db.update(
-      'restaurants',
-      {'rating': newRating},
-      where: 'id = ?',
-      whereArgs: [restaurantId],
-    );
+  Future<void> decrementPostsCount(String restaurantId) async {
+    await _restaurants.doc(restaurantId).update({
+      'postsCount': FieldValue.increment(-1),
+      'updatedAt': DateTime.now().toIso8601String(),
+    });
   }
 
   // ==================== DELETE ====================
 
-  /// Delete a restaurant by ID
-  Future<int> deleteRestaurant(int id) async {
-    return await _db.delete('restaurants', where: 'id = ?', whereArgs: [id]);
-  }
-
-  // ==================== UTILITY ====================
-
-  /// Check if a restaurant exists
-  Future<bool> restaurantExists(int id) async {
-    return await _db.exists('restaurants', where: 'id = ?', whereArgs: [id]);
-  }
-
-  /// Check if a restaurant exists by name
-  Future<bool> restaurantExistsByName(String name) async {
-    return await _db.exists(
-      'restaurants',
-      where: 'name = ?',
-      whereArgs: [name],
-    );
-  }
-
-  /// Get total restaurants count
-  Future<int> getTotalRestaurantsCount() async {
-    return await _db.getCount('restaurants');
-  }
-
-  /// Get all unique cuisine types
-  Future<List<String>> getAllCuisineTypes() async {
-    final maps = await _db.rawQuery('''
-      SELECT DISTINCT cuisine_type FROM restaurants 
-      WHERE cuisine_type IS NOT NULL 
-      ORDER BY cuisine_type ASC
-    ''');
-    return maps.map((map) => map['cuisine_type'] as String).toList();
-  }
-
-  /// Get all unique locations
-  Future<List<String>> getAllLocations() async {
-    final maps = await _db.rawQuery('''
-      SELECT DISTINCT location FROM restaurants 
-      WHERE location IS NOT NULL 
-      ORDER BY location ASC
-    ''');
-    return maps.map((map) => map['location'] as String).toList();
+  /// Delete a restaurant (Admin only usually)
+  Future<void> deleteRestaurant(String id) async {
+    await _restaurants.doc(id).delete();
   }
 }

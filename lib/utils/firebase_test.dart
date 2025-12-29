@@ -47,10 +47,8 @@ class FirebaseTest {
       print('   Make sure Firestore is enabled in Firebase Console');
     }
 
-    // 3. Test Cloudinary Storage (100% free alternative to Firebase Storage)
+    // 3. Test Cloudinary Storage
     try {
-      final storageService = CloudinaryStorageService();
-
       print('✅ Cloudinary Storage: Ready');
       print('   Cloud name: ${CloudinaryStorageService.cloudName}');
       print('   Upload preset: ${CloudinaryStorageService.uploadPreset}');

@@ -12,6 +12,8 @@ import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_posts_grid.dart';
 import 'edit_profile_screen.dart';
 import '../settings/settings_screen.dart';
+import '../home/post_detail_screen.dart';
+import '../saved/saved_posts_screen.dart';
 
 /// Current user's profile screen with posts and profile management
 class MyProfileScreen extends StatefulWidget {
@@ -45,11 +47,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   /// Fetch posts for current user from database
   Future<void> _loadPosts() async {
     final cubit = context.read<ProfileCubit>();
-    final userId = cubit.state.user?.id;
+    final user = cubit.state.user;
+    final userUid = user?.uid;
 
-    if (userId != null) {
+    if (userUid != null) {
       try {
-        final posts = await _postRepository.getPostsByUserId(userId);
+        final posts = await _postRepository.getUserPosts(userUid);
         if (mounted) {
           setState(() {
             _posts = posts;
@@ -70,6 +73,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         // Show loading indicator while profile is being loaded
@@ -81,7 +85,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               elevation: 0,
               automaticallyImplyLeading: false,
               centerTitle: true,
-              title: Text('Profile', style: AppTextStyles.heading4),
+              title: Text(l10n.profile, style: AppTextStyles.heading4),
             ),
             body: Center(child: CircularProgressIndicator()),
           );
@@ -90,7 +94,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         final user = state.user;
 
         // Debug: print user data
-        print(' MyProfileScreen - User: ${user?.username}, ID: ${user?.id}');
+        print(' MyProfileScreen - User: ${user?.username}, UID: ${user?.uid}');
         print(
           ' Stats - Followers: ${user?.followersCount}, Points: ${user?.points}',
         );
@@ -145,6 +149,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           children: [
                             // Profile Header Component
                             ProfileHeader(
+                              userId: user?.uid,
                               avatarUrl: avatar,
                               username: username,
                               posts: _posts.length,
@@ -162,12 +167,36 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 ? Padding(
                                     padding: EdgeInsets.all(AppSpacing.xl),
                                     child: Text(
-                                      'No posts yet',
+                                      AppLocalizations.of(context)!.noPosts,
                                       style: AppTextStyles.bodyMedium,
                                     ),
                                   )
                                 : ProfilePostsGrid(
                                     posts: _convertPostsToFakeFormat(),
+                                    onPostTap: (postId) async {
+                                      try {
+                                        final post = _posts.firstWhere(
+                                          (p) => p.postId == postId,
+                                        );
+                                        // Navigate to detail screen
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => 
+                                              PostDetailScreen(post: post.toFirestore()),
+                                          ),
+                                        );
+
+                                        // If post was deleted (result == true), reload posts
+                                        if (result == true && mounted) {
+                                          _loadPosts();
+                                          // Also refresh user profile stats (post count)
+                                          context.read<ProfileCubit>().loadProfile();
+                                        }
+                                      } catch (e) {
+                                        print('Error navigating to post: $e');
+                                      }
+                                    },
                                   ),
                           ],
                         ),
@@ -185,7 +214,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     return _posts.map((post) {
       final images = post.images;
       return {
-        'id': post.id,
+        'id': post.postId,
         'imageUrl': images.isNotEmpty ? images.first : FakeUserData.avatarUrl,
         'likes': post.likesCount,
         'comments': post.commentsCount,
@@ -221,6 +250,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SettingsScreen()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.bookmark_outline,
+                  color: Theme.of(context).iconTheme.color,
+                ),
+                title: Text(
+                  AppLocalizations.of(context)!.savedPosts,
+                  style: AppTextStyles.bodyMedium,
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SavedPostsScreen()),
                   );
                 },
               ),

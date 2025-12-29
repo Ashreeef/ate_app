@@ -1,5 +1,5 @@
 name: ate_app
-description: "A new Flutter project."
+description: "ATE: Eat, Review, and Share - Your Ultimate Food Companion App"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -44,9 +44,6 @@ dependencies:
   # Navigation
   go_router: ^17.0.0
 
-  # Database
-  sqflite: ^2.3.3+1
-  sqflite_common_ffi: ^2.3.6
   path: ^1.9.0
   path_provider: ^2.1.2
 

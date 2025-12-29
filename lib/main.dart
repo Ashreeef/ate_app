@@ -1,45 +1,48 @@
+import 'dart:async';
+import 'dart:io' show Platform;
+
+// Flutter imports
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'dart:io' show Platform;
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-// Firebase imports
+// Third-party imports
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'firebase_options.dart';
 
-// App imports
-import 'l10n/app_localizations.dart';
-import 'utils/theme.dart';
-import 'blocs/profile/profile_cubit.dart';
-import 'blocs/settings/settings_cubit.dart';
-import 'blocs/settings/settings_state.dart';
-import 'repositories/profile_repository.dart';
-import 'screens/splash/splash_screen.dart';
-import 'screens/onboarding/onboarding_screen.dart';
-import 'screens/auth/login_screen.dart';
-import 'screens/auth/signup_screen.dart';
-import 'screens/auth/forgot_password_screen.dart';
-import 'screens/home/navigation_shell.dart';
-import 'screens/notifications/notifications_screen.dart';
+// Local imports
+import 'blocs/auth/auth_bloc.dart';
 import 'blocs/feed/feed_bloc.dart';
 import 'blocs/post/post_bloc.dart';
-import 'blocs/auth/auth_bloc.dart';
+import 'blocs/profile/profile_cubit.dart';
+import 'blocs/restaurant/restaurant_bloc.dart';
+import 'blocs/search/search_bloc.dart';
+import 'blocs/settings/settings_cubit.dart';
+import 'blocs/settings/settings_state.dart';
 import 'blocs/user/user_bloc.dart';
-import 'repositories/user_repository.dart';
-import 'repositories/restaurant_repository.dart';
-import 'repositories/post_repository.dart';
+import 'firebase_options.dart';
+import 'l10n/app_localizations.dart';
+import 'repositories/auth_repository.dart';
 import 'repositories/comment_repository.dart';
+import 'repositories/follow_repository.dart';
 import 'repositories/like_repository.dart';
+import 'repositories/post_repository.dart';
+import 'repositories/profile_repository.dart';
+import 'repositories/restaurant_repository.dart';
 import 'repositories/saved_post_repository.dart';
 import 'repositories/search_history_repository.dart';
-import 'repositories/auth_repository.dart';
+import 'repositories/user_repository.dart';
+import 'screens/auth/forgot_password_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/signup_screen.dart';
+import 'screens/home/navigation_shell.dart';
+import 'screens/notifications/notifications_screen.dart';
+import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/splash/splash_screen.dart';
 import 'services/notification_service.dart';
-import 'database/seed_data.dart';
-import 'database/quick_validation.dart';
-import 'blocs/search/search_bloc.dart';
-import 'blocs/restaurant/restaurant_bloc.dart';
+import 'utils/theme.dart';
 
 // Global repository instances
 final UserRepository _userRepository = UserRepository();
@@ -53,9 +56,6 @@ final SearchHistoryRepository _searchHistoryRepository =
 final ProfileRepository _profileRepository = ProfileRepository();
 final AuthRepository _authRepository = AuthRepository();
 
-// Track if FFI has been initialized
-bool _ffiInitialized = false;
-
 // Global navigator key for notification handling
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -68,32 +68,10 @@ void main() async {
   // Initialize Firebase Crashlytics
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
-  // Initialize sqflite for desktop platforms (Windows, Linux, macOS) - only once
-  // Note: Will be removed once fully migrated to Firebase
-  if (!_ffiInitialized && (Platform.isWindows || Platform.isLinux)) {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-    _ffiInitialized = true;
-  }
-
   // Initialize notification service
   await NotificationService.instance.initialize(
     onNotificationTap: _handleNotificationTap,
   );
-
-  // Seed database with comprehensive test data (development only)
-  await SeedData.seedDatabase(
-    _userRepository,
-    _restaurantRepository,
-    _postRepository,
-    _commentRepository,
-    _likeRepository,
-    _savedPostRepository,
-    _searchHistoryRepository,
-  );
-
-  // Validate database seeding (development only)
-  await QuickDatabaseValidation.validate();
 
   runApp(const MyApp());
 }
@@ -157,6 +135,9 @@ class MyApp extends StatelessWidget {
         RepositoryProvider<AuthRepository>(
           create: (context) => _authRepository,
         ),
+        RepositoryProvider<FollowRepository>(
+          create: (context) => FollowRepository(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -170,7 +151,11 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<FeedBloc>(
-            create: (context) => FeedBloc(repo: _postRepository),
+            create: (context) => FeedBloc(
+              repo: _postRepository,
+              followRepo: context.read<FollowRepository>(),
+              authRepo: _authRepository,
+            ),
           ),
           BlocProvider<PostBloc>(
             create: (context) => PostBloc(
@@ -188,8 +173,10 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<RestaurantBloc>(
-            create: (context) =>
-                RestaurantBloc(restaurantRepository: _restaurantRepository),
+            create: (context) => RestaurantBloc(
+              restaurantRepository: _restaurantRepository,
+              postRepository: _postRepository,
+            ),
           ),
           BlocProvider<ProfileCubit>(
             create: (context) => ProfileCubit(_profileRepository),

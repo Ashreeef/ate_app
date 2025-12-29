@@ -8,14 +8,20 @@ abstract class RestaurantEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-/// Event to load a single restaurant by ID
-class LoadRestaurantById extends RestaurantEvent {
-  final int restaurantId;
+/// Event to load all restaurant details (info, dishes, mentions)
+class LoadRestaurantDetails extends RestaurantEvent {
+  final String restaurantId;
+  final bool loadDishes;
+  final bool loadMentions;
 
-  const LoadRestaurantById({required this.restaurantId});
+  const LoadRestaurantDetails({
+    required this.restaurantId,
+    this.loadDishes = true,
+    this.loadMentions = true,
+  });
 
   @override
-  List<Object?> get props => [restaurantId];
+  List<Object?> get props => [restaurantId, loadDishes, loadMentions];
 }
 
 

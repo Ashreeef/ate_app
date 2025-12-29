@@ -4,13 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:ate_app/utils/constants.dart';
-import '../../utils/image_utils.dart';
 import '../../blocs/post/post_bloc.dart';
 import '../../blocs/post/post_event.dart';
 import '../../blocs/post/post_state.dart';
-import '../../models/post.dart';
-import '../../services/auth_service.dart';
-import '../../repositories/user_repository.dart';
+import '../../repositories/auth_repository.dart';
+import '../../widgets/post/restaurant_selection_widget.dart';
 
 class PostCreationStep2Screen extends StatefulWidget {
   final List<XFile> selectedImages;
@@ -30,6 +28,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
   int _currentImageIndex = 0;
   final PageController _pageController = PageController();
   bool _isSubmitting = false;
+  String? _selectedRestaurantId;
 
   Future<void> _publishPost() async {
     final l10n = AppLocalizations.of(context)!;
@@ -51,43 +50,33 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
     setState(() => _isSubmitting = true);
 
     try {
-      // Get current user info
-      final currentUserId = AuthService.instance.currentUserId ?? 1;
-      final userRepository = UserRepository();
-      final currentUser = await userRepository.getUserById(currentUserId);
-
-      // Compress and save images
-      List<String> compressedImagePaths = [];
-      for (var xfile in widget.selectedImages) {
-        final file = File(xfile.path);
-        final compressed = await ImageUtils.compressAndGetFile(
-          file,
-          quality: 65,
-        );
-        compressedImagePaths.add(compressed.path);
+      // Get current user from AuthRepository
+      final authRepo = context.read<AuthRepository>();
+      final currentUser = await authRepo.getCurrentUser();
+      
+      if (currentUser == null) {
+        throw Exception('User not authenticated');
       }
 
-      // Create post object
-      final post = Post(
-        userId: currentUserId,
-        username: currentUser?.username ?? 'User',
+      // Convert XFile to File for Cloudinary upload
+      List<File> imageFiles = widget.selectedImages
+          .map((xfile) => File(xfile.path))
+          .toList();
+
+      // Create post event with new structure
+      context.read<PostBloc>().add(CreatePostEvent(
+        userUid: currentUser.uid!,
+        username: currentUser.username,
+        userAvatarUrl: currentUser.profileImage,
         caption: _captionController.text,
-        restaurantId: null,
+        imageFiles: imageFiles,
+        restaurantUid: _selectedRestaurantId,
         restaurantName: _restaurantController.text,
         dishName: _dishNameController.text.isNotEmpty
             ? _dishNameController.text
             : null,
         rating: _rating,
-        images: compressedImagePaths,
-        userAvatarPath: currentUser?.profileImage,
-      );
-
-      // Emit create post event
-      context.read<PostBloc>().add(CreatePostEvent(post));
-
-      _showSuccessSnackBar(AppLocalizations.of(context)!.postPublished);
-      // Pop both post creation screens to return to home
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      ));
     } catch (e) {
       _showErrorSnackBar('${AppLocalizations.of(context)!.error}: $e');
       setState(() => _isSubmitting = false);
@@ -132,7 +121,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           _showSuccessSnackBar(l10n.postPublished);
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         } else if (state is PostFailure) {
-          _showErrorSnackBar('${l10n.error}: ${state.message}');
+          _showErrorSnackBar('${l10n.error}: ${state.error}');
           setState(() => _isSubmitting = false);
         }
       },
@@ -320,28 +309,13 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
             ],
           ),
           SizedBox(height: AppSpacing.sm),
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: TextField(
-              controller: _restaurantController,
-              style: AppTextStyles.body,
-              decoration: InputDecoration(
-                hintText: l10n.restaurantPlaceholder,
-                hintStyle: AppTextStyles.body.copyWith(
-                  color: AppColors.textLight,
-                ),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(AppSpacing.md),
-                prefixIcon: Icon(
-                  Icons.location_on,
-                  color: AppColors.textMedium,
-                ),
-              ),
-            ),
+          RestaurantSelectionWidget(
+            controller: _restaurantController,
+            onSelected: (id, name) {
+              setState(() {
+                _selectedRestaurantId = id;
+              });
+            },
           ),
           SizedBox(height: AppSpacing.xs),
           Padding(

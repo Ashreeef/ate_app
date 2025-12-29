@@ -7,11 +7,15 @@ import '../../blocs/feed/feed_bloc.dart';
 import '../../blocs/feed/feed_event.dart';
 import '../../blocs/feed/feed_state.dart';
 import '../../models/post.dart';
-import '../../services/auth_service.dart';
-import '../../repositories/post_repository.dart';
-import '../../l10n/app_localizations.dart';
+import 'package:ate_app/repositories/post_repository.dart';
+import 'package:ate_app/repositories/like_repository.dart';
+import 'package:ate_app/repositories/saved_post_repository.dart';
+import 'package:ate_app/repositories/auth_repository.dart';
+import 'package:ate_app/l10n/app_localizations.dart';
+import 'post_likes_screen.dart';
 import 'post_detail_screen.dart';
-import '../profile/other_user_profile_screen.dart';
+import 'package:ate_app/screens/profile/other_user_profile_screen.dart';
+import 'package:ate_app/screens/home/navigation_shell.dart';
 import '../restaurant/restaurant_page.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -25,6 +29,8 @@ class _FeedScreenState extends State<FeedScreen> {
   bool _isMonFeedSelected = true;
   late ScrollController _scrollController;
   final PostRepository _postRepo = PostRepository();
+  final LikeRepository _likeRepo = LikeRepository();
+  final SavedPostRepository _savedPostRepo = SavedPostRepository();
 
   @override
   void initState() {
@@ -38,13 +44,15 @@ class _FeedScreenState extends State<FeedScreen> {
   void _onScroll() {
     if (_scrollController.position.atEdge &&
         _scrollController.position.pixels != 0) {
-      context.read<FeedBloc>().add(const LoadMoreFeed());
+      final type = _isMonFeedSelected ? FeedType.global : FeedType.friends;
+      context.read<FeedBloc>().add(LoadMoreFeed(type: type));
     }
   }
 
   // Simulate refreshing the feed
   Future<void> _onRefresh() async {
-    context.read<FeedBloc>().add(const LoadFeed(refresh: true));
+    final type = _isMonFeedSelected ? FeedType.global : FeedType.friends;
+    context.read<FeedBloc>().add(LoadFeed(refresh: true, type: type));
   }
 
   @override
@@ -62,8 +70,18 @@ class _FeedScreenState extends State<FeedScreen> {
         children: [
           FeedHeader(
             isMonFeedSelected: _isMonFeedSelected,
-            onMonFeedTap: () => setState(() => _isMonFeedSelected = true),
-            onMesAmisTap: () => setState(() => _isMonFeedSelected = false),
+            onMonFeedTap: () {
+              if (!_isMonFeedSelected) {
+                setState(() => _isMonFeedSelected = true);
+                context.read<FeedBloc>().add(const LoadFeed(type: FeedType.global));
+              }
+            },
+            onMesAmisTap: () {
+              if (_isMonFeedSelected) {
+                setState(() => _isMonFeedSelected = false);
+                context.read<FeedBloc>().add(const LoadFeed(type: FeedType.friends));
+              }
+            },
           ),
           Expanded(
             child: BlocBuilder<FeedBloc, FeedState>(
@@ -115,8 +133,8 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Future<void> _toggleLike(Post post) async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = post.id;
+    // Use Firestore UID instead of int ID
+    final postId = post.postId;
 
     if (postId == null) return;
 
@@ -124,21 +142,17 @@ class _FeedScreenState extends State<FeedScreen> {
       final fullPost = await _postRepo.getPostById(postId);
       if (fullPost == null) return;
 
-      // Update database
-      List<int> likedBy = List.from(fullPost.likedBy);
-      final isLiked = likedBy.contains(currentUserId);
+      // Use LikeRepository to toggle like
+      // Get current user UID from AuthRepository
+      final currentUserUid = context.read<AuthRepository>().currentUserId;
+      if (currentUserUid == null) return;
 
+      final isLiked = fullPost.likedByUids.contains(currentUserUid);
       if (isLiked) {
-        likedBy.remove(currentUserId);
+        await _likeRepo.unlikePost(postId, currentUserUid);
       } else {
-        likedBy.add(currentUserId);
+        await _likeRepo.likePost(postId, currentUserUid);
       }
-
-      final updatedPost = fullPost.copyWith(
-        likedBy: likedBy,
-        likesCount: likedBy.length,
-      );
-      await _postRepo.updatePost(updatedPost);
 
       // Refresh feed
       context.read<FeedBloc>().add(const LoadFeed());
@@ -151,8 +165,8 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Future<void> _toggleSave(Post post) async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = post.id;
+    // Use Firestore UID instead of int ID
+    final postId = post.postId;
 
     if (postId == null) return;
 
@@ -160,18 +174,17 @@ class _FeedScreenState extends State<FeedScreen> {
       final fullPost = await _postRepo.getPostById(postId);
       if (fullPost == null) return;
 
-      // Update database
-      List<int> savedBy = List.from(fullPost.savedBy);
-      final isSaved = savedBy.contains(currentUserId);
+      // Use SavedPostRepository to toggle save
+      // Get current user UID from AuthRepository
+      final currentUserUid = context.read<AuthRepository>().currentUserId;
+      if (currentUserUid == null) return;
 
+      final isSaved = fullPost.savedByUids.contains(currentUserUid);
       if (isSaved) {
-        savedBy.remove(currentUserId);
+        await _savedPostRepo.unsavePost(postId, currentUserUid);
       } else {
-        savedBy.add(currentUserId);
+        await _savedPostRepo.savePost(postId, currentUserUid);
       }
-
-      final updatedPost = fullPost.copyWith(savedBy: savedBy);
-      await _postRepo.updatePost(updatedPost);
 
       // Refresh feed
       context.read<FeedBloc>().add(const LoadFeed());
@@ -184,41 +197,54 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   Widget _buildPostCard(Post post) {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final isLiked = post.likedBy.contains(currentUserId);
-    final isSaved = post.savedBy.contains(currentUserId);
+    // Use Firestore UIDs for like/save status
+    final currentUserUid = context.read<AuthRepository>().currentUserId;
+    final isLiked = currentUserUid != null && post.likedByUids.contains(currentUserUid);
+    final isSaved = currentUserUid != null && post.savedByUids.contains(currentUserUid);
 
     return Card(
-      margin: EdgeInsets.symmetric(horizontal: 0, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
             leading: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        OtherUserProfileScreen(userId: post.userId),
-                  ),
-                );
+                if (post.userUid == currentUserUid) {
+                  NavigationShell.selectTab(context, 4);
+                } else if (post.userUid != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          OtherUserProfileScreen(userId: post.userUid!),
+                    ),
+                  );
+                }
               },
-              child: post.userAvatarPath != null
+              child: post.userAvatarUrl != null && post.userAvatarUrl!.isNotEmpty
                   ? CircleAvatar(
-                      backgroundImage: FileImage(File(post.userAvatarPath!)),
+                      backgroundImage: NetworkImage(post.userAvatarUrl!),
                     )
-                  : CircleAvatar(child: Icon(Icons.person)),
+                  : (post.userAvatarPath != null
+                      ? CircleAvatar(
+                          backgroundImage: FileImage(File(post.userAvatarPath!)),
+                        )
+                      : const CircleAvatar(child: Icon(Icons.person))),
             ),
             title: GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        OtherUserProfileScreen(userId: post.userId),
-                  ),
-                );
+                if (post.userUid == currentUserUid) {
+                  NavigationShell.selectTab(context, 4);
+                } else if (post.userUid != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          OtherUserProfileScreen(userId: post.userUid!),
+                    ),
+                  );
+                }
               },
               child: Text(
                 post.username,
@@ -229,13 +255,17 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
           if (post.images.isNotEmpty)
             GestureDetector(
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                // Navigate to detail screen and refresh feed on return
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PostDetailScreen(post: post.toMap()),
+                    builder: (context) => PostDetailScreen(post: post.toFirestore()),
                   ),
                 );
+                if (mounted) {
+                  context.read<FeedBloc>().add(const RefreshFeed());
+                }
               },
               child: Container(
                 height: 200,
@@ -243,12 +273,26 @@ class _FeedScreenState extends State<FeedScreen> {
                 child: PageView(
                   children: post.images
                       .map(
-                        (imagePath) => Image.file(
-                          File(imagePath),
+                        (imageUrl) => Image.network(
+                          imageUrl,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              color: Colors.grey[300],
+                              child: const Center(
+                                child: Icon(Icons.broken_image, color: Colors.grey),
+                              ),
+                            );
+                          },
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
                             return Center(
-                              child: Icon(Icons.image_not_supported),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
                             );
                           },
                         ),
@@ -258,51 +302,57 @@ class _FeedScreenState extends State<FeedScreen> {
               ),
             ),
           Padding(
-            padding: EdgeInsets.all(AppSpacing.md),
+            padding: const EdgeInsets.all(AppSpacing.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (post.dishName != null)
-                  Text(
-                    '${AppLocalizations.of(context)!.dish}: ${post.dishName}',
-                    style: AppTextStyles.caption,
-                  ),
-                if (post.restaurantName != null && post.restaurantId != null)
+                if (post.restaurantName != null && post.restaurantUid != null)
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              RestaurantPage(restaurantId: post.restaurantId!),
+                              RestaurantPage(restaurantId: post.restaurantUid!),
                         ),
                       );
                     },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(AppSizes.borderRadiusSm),
+                      ),
+                      child: Text(
+                        '${post.restaurantName}${post.dishName != null ? " • ${post.dishName}" : ""}',
+                        style: AppTextStyles.caption.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  )
+                else if (post.restaurantName != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.textLight.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(AppSizes.borderRadiusSm),
+                    ),
                     child: Text(
-                      '${AppLocalizations.of(context)!.restaurant}: ${post.restaurantName}',
+                      '${post.restaurantName}${post.dishName != null ? " • ${post.dishName}" : ""}',
                       style: AppTextStyles.caption.copyWith(
-                        color: AppColors.primary,
-                        decoration: TextDecoration.underline,
+                        color: AppColors.textMedium,
                       ),
                     ),
                   ),
-                if (post.restaurantName != null && post.restaurantId == null)
-                  Text(
-                    '${AppLocalizations.of(context)!.restaurant}: ${post.restaurantName}',
-                    style: AppTextStyles.caption,
-                  ),
-                if (post.rating != null)
-                  Text(
-                    '${AppLocalizations.of(context)!.rating}: ${post.rating}/5',
-                    style: AppTextStyles.caption,
-                  ),
-                SizedBox(height: AppSpacing.sm),
+                const SizedBox(height: AppSpacing.sm),
                 Text(post.caption, style: AppTextStyles.body),
               ],
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -313,14 +363,25 @@ class _FeedScreenState extends State<FeedScreen> {
                         isLiked ? Icons.favorite : Icons.favorite_border,
                         color: isLiked ? Colors.red : AppColors.textMedium,
                       ),
-                      onPressed: () {
-                        _toggleLike(post);
-                      },
+                      onPressed: () => _toggleLike(post),
                     ),
-                    Text('${post.likesCount}', style: AppTextStyles.body),
-                    SizedBox(width: AppSpacing.sm),
+                    GestureDetector(
+                      onTap: post.postId != null
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PostLikesScreen(postId: post.postId!),
+                                ),
+                              );
+                            }
+                          : null,
+                      child: Text('${post.likesCount}', style: AppTextStyles.body),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
                     IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.chat_bubble_outline,
                         color: AppColors.textMedium,
                       ),
@@ -329,7 +390,7 @@ class _FeedScreenState extends State<FeedScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                PostDetailScreen(post: post.toMap()),
+                                PostDetailScreen(post: post.toFirestore()),
                           ),
                         );
                       },
@@ -342,9 +403,7 @@ class _FeedScreenState extends State<FeedScreen> {
                     isSaved ? Icons.bookmark : Icons.bookmark_border,
                     color: isSaved ? AppColors.primary : AppColors.textMedium,
                   ),
-                  onPressed: () {
-                    _toggleSave(post);
-                  },
+                  onPressed: () => _toggleSave(post),
                 ),
               ],
             ),
@@ -353,4 +412,5 @@ class _FeedScreenState extends State<FeedScreen> {
       ),
     );
   }
+
 }

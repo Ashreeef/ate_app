@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+enum FeedType { global, friends }
+
 abstract class FeedEvent extends Equatable {
   const FeedEvent();
 
@@ -9,12 +11,22 @@ abstract class FeedEvent extends Equatable {
 
 class LoadFeed extends FeedEvent {
   final bool refresh;
-  const LoadFeed({this.refresh = false});
+  final FeedType type;
+  const LoadFeed({this.refresh = false, this.type = FeedType.global});
 
   @override
-  List<Object?> get props => [refresh];
+  List<Object?> get props => [refresh, type];
 }
 
 class LoadMoreFeed extends FeedEvent {
-  const LoadMoreFeed();
+  final FeedType type;
+  const LoadMoreFeed({this.type = FeedType.global});
+
+  @override
+  List<Object?> get props => [type];
 }
+
+class RefreshFeed extends FeedEvent {
+  const RefreshFeed();
+}
+

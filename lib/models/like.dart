@@ -1,33 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Like {
-  final int? id;
-  final int userId;
-  final int postId;
+  final int? id; // Deprecated - SQLite only
+  final int? userId; // Deprecated - SQLite only
+  final int? postId; // Deprecated - SQLite only
+  final String? userUid; // Firebase User UID
+  final String? postUid; // Firestore post ID
   final String? createdAt;
 
-  Like({this.id, required this.userId, required this.postId, this.createdAt});
+  Like({
+    this.id,
+    this.userId,
+    this.postId,
+    this.userUid,
+    this.postUid,
+    this.createdAt,
+  });
 
-  /// Convert Like to Map for database
-  Map<String, dynamic> toMap() {
+  /// Convert Like to Map for Firestore
+  Map<String, dynamic> toFirestore() {
     return {
-      'id': id,
-      'user_id': userId,
-      'post_id': postId,
-      'created_at': createdAt,
+      'userId': userUid,
+      'createdAt': createdAt ?? DateTime.now().toIso8601String(),
     };
   }
 
-  /// Create Like from database Map
-  factory Like.fromMap(Map<String, dynamic> map) {
+  /// Create Like from Firestore document
+  factory Like.fromFirestore(Map<String, dynamic> data) {
     return Like(
-      id: map['id'] as int?,
-      userId: map['user_id'] as int,
-      postId: map['post_id'] as int,
-      createdAt: map['created_at'] as String?,
+      userUid: data['userId'] as String?,
+      createdAt: data['createdAt'] as String?,
     );
   }
 
   @override
   String toString() {
-    return 'Like(id: $id, userId: $userId, postId: $postId)';
+    return 'Like(userUid: $userUid, postUid: $postUid, createdAt: $createdAt)';
   }
 }

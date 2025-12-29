@@ -11,12 +11,12 @@ abstract class UserEvent extends Equatable {
 
 /// Event to load user details
 class LoadUser extends UserEvent {
-  final int userId;
+  final String uid;
 
-  const LoadUser({required this.userId});
+  const LoadUser({required this.uid});
 
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [uid];
 }
 
 /// Event to update user profile
@@ -31,13 +31,13 @@ class UpdateUser extends UserEvent {
 
 /// Event to update user points
 class UpdateUserPoints extends UserEvent {
-  final int userId;
+  final String uid;
   final int points;
 
-  const UpdateUserPoints({required this.userId, required this.points});
+  const UpdateUserPoints({required this.uid, required this.points});
 
   @override
-  List<Object?> get props => [userId, points];
+  List<Object?> get props => [uid, points];
 }
 
 /// Event to refresh user data

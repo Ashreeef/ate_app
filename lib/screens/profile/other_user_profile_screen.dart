@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../../repositories/follow_repository.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
 import '../../data/fake_data.dart';
@@ -10,9 +10,10 @@ import '../../models/user.dart';
 import '../../models/post.dart';
 import '../../widgets/profile/profile_header.dart';
 import '../../widgets/profile/profile_posts_grid.dart';
+import '../home/post_detail_screen.dart';
 
 class OtherUserProfileScreen extends StatefulWidget {
-  final int userId;
+  final String userId;
 
   const OtherUserProfileScreen({super.key, required this.userId});
 
@@ -23,6 +24,8 @@ class OtherUserProfileScreen extends StatefulWidget {
 class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   final ProfileRepository _repository = ProfileRepository();
   final PostRepository _postRepository = PostRepository();
+  final FollowRepository _followRepository = FollowRepository();
+  
   User? _user;
   User? _currentUser;
   List<Post> _posts = [];
@@ -41,39 +44,15 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   Future<void> _checkFollowingStatus() async {
     if (_currentUser == null || _user == null) return;
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final followingList =
-          prefs.getStringList('following_${_currentUser!.id}') ?? [];
-      final isFollowing = followingList.contains(_user!.id.toString());
-      print(
-        '🔍 Checking follow status: Current user ${_currentUser!.id} -> Other user ${_user!.id}',
+      final isFollowing = await _followRepository.isFollowing(
+        _currentUser!.uid!, 
+        _user!.uid!
       );
-      print('   Following list: $followingList');
-      print('   Is following: $isFollowing');
-      setState(() => _isFollowing = isFollowing);
+      if (mounted) {
+        setState(() => _isFollowing = isFollowing);
+      }
     } catch (e) {
       print('❌ Error checking follow status: $e');
-    }
-  }
-
-  Future<void> _saveFollowingStatus(int userId, bool isFollowing) async {
-    if (_currentUser == null) return;
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final key = 'following_${_currentUser!.id}';
-      final followingList = prefs.getStringList(key) ?? [];
-      final userIdStr = userId.toString();
-
-      if (isFollowing && !followingList.contains(userIdStr)) {
-        followingList.add(userIdStr);
-      } else if (!isFollowing && followingList.contains(userIdStr)) {
-        followingList.remove(userIdStr);
-      }
-
-      await prefs.setStringList(key, followingList);
-      print('💾 Saved follow status: $key = $followingList');
-    } catch (e) {
-      print('❌ Error saving follow status: $e');
     }
   }
 
@@ -92,14 +71,18 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
 
   Future<void> _loadUser() async {
     try {
-      print('🔍 Loading user with ID: ${widget.userId}');
+      print('🔍 Loading user with UID: ${widget.userId}');
       setState(() => _isLoading = true);
-      final user = await _repository.getUserById(widget.userId);
-      print('✅ User loaded: ${user?.username} (ID: ${user?.id})');
-      setState(() {
-        _user = user;
-        _isLoading = false;
-      });
+      // Use Firestore UID
+      final user = await _repository.getUserByUid(widget.userId);
+      print('✅ User loaded: ${user?.username} (UID: ${user?.uid})');
+      
+      if (mounted) {
+        setState(() {
+          _user = user;
+          _isLoading = false;
+        });
+      }
 
       // Check follow status after user is loaded
       if (_currentUser != null) {
@@ -112,11 +95,13 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       }
     } catch (e) {
       print('❌ Error loading user: $e');
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-        _isLoadingPosts = false;
-      });
+      if (mounted) {
+        setState(() {
+          _errorMessage = e.toString();
+          _isLoading = false;
+          _isLoadingPosts = false;
+        });
+      }
     }
   }
 
@@ -124,7 +109,8 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     try {
       setState(() => _isLoadingPosts = true);
       print(' Loading posts for userId: ${widget.userId}');
-      final posts = await _postRepository.getPostsByUserId(widget.userId);
+      // Use Firestore method
+      final posts = await _postRepository.getUserPosts(widget.userId);
       print(' Posts loaded: ${posts.length} posts found');
       if (mounted) {
         setState(() {
@@ -141,108 +127,57 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   }
 
   Future<void> _toggleFollow() async {
-    if (_currentUser == null || _user == null) return;
+    if (_currentUser == null || _user == null) {
+      print('⚠️ Cannot toggle follow: _currentUser or _user is null');
+      return;
+    }
+
+    final currentUid = _currentUser!.uid;
+    final targetUid = _user!.uid;
+
+    if (currentUid == null || targetUid == null) {
+      return;
+    }
+
+    // Optimistic update
+    setState(() => _isFollowing = !_isFollowing);
 
     try {
-      final currentUser = _currentUser!;
-      final otherUser = _user!;
-      final newFollowingState = !_isFollowing;
-
-      late User updatedCurrentUser;
-      late User updatedOtherUser;
-
-      if (newFollowingState) {
-        // Follow: current user's following +1, other user's followers +1
-        updatedCurrentUser = User(
-          id: currentUser.id,
-          displayName: currentUser.displayName,
-          username: currentUser.username,
-          email: currentUser.email,
-          password: currentUser.password,
-          phone: currentUser.phone,
-          profileImage: currentUser.profileImage,
-          bio: currentUser.bio,
-          followersCount: currentUser.followersCount,
-          followingCount: currentUser.followingCount + 1,
-          points: currentUser.points,
-          level: currentUser.level,
-        );
-
-        updatedOtherUser = User(
-          id: otherUser.id,
-          displayName: otherUser.displayName,
-          username: otherUser.username,
-          email: otherUser.email,
-          password: otherUser.password,
-          phone: otherUser.phone,
-          profileImage: otherUser.profileImage,
-          bio: otherUser.bio,
-          followersCount: otherUser.followersCount + 1,
-          followingCount: otherUser.followingCount,
-          points: otherUser.points,
-          level: otherUser.level,
+      if (_isFollowing) {
+        await _followRepository.followUser(
+          currentUserId: currentUid,
+          targetUserId: targetUid,
         );
       } else {
-        // Unfollow: current user's following -1, other user's followers -1
-        updatedCurrentUser = User(
-          id: currentUser.id,
-          displayName: currentUser.displayName,
-          username: currentUser.username,
-          email: currentUser.email,
-          password: currentUser.password,
-          phone: currentUser.phone,
-          profileImage: currentUser.profileImage,
-          bio: currentUser.bio,
-          followersCount: currentUser.followersCount,
-          followingCount: (currentUser.followingCount - 1).clamp(0, 999999),
-          points: currentUser.points,
-          level: currentUser.level,
-        );
-
-        updatedOtherUser = User(
-          id: otherUser.id,
-          displayName: otherUser.displayName,
-          username: otherUser.username,
-          email: otherUser.email,
-          password: otherUser.password,
-          phone: otherUser.phone,
-          profileImage: otherUser.profileImage,
-          bio: otherUser.bio,
-          followersCount: (otherUser.followersCount - 1).clamp(0, 999999),
-          followingCount: otherUser.followingCount,
-          points: otherUser.points,
-          level: otherUser.level,
+        await _followRepository.unfollowUser(
+          currentUserId: currentUid,
+          targetUserId: targetUid,
         );
       }
 
-      // Save both users and follow state
-      await _repository.updateUser(updatedCurrentUser);
-      await _repository.updateUser(updatedOtherUser);
-      await _saveFollowingStatus(otherUser.id!, newFollowingState);
-
-      setState(() {
-        _currentUser = updatedCurrentUser;
-        _user = updatedOtherUser;
-        _isFollowing = newFollowingState;
-      });
-
-      if (mounted) {
+      // Reload user data to get updated counts
+      final updatedUser = await _repository.getUserByUid(widget.userId);
+      if (mounted && updatedUser != null) {
+        setState(() => _user = updatedUser);
+        
         final l10n = AppLocalizations.of(context)!;
-        final message = newFollowingState
-            ? '${l10n.nowFollowing} ${_user!.username}'
-            : '${l10n.unfollowed} ${_user!.username}';
-        final bgColor = newFollowingState ? AppColors.success : AppColors.error;
+        final message = _isFollowing
+            ? l10n.nowFollowing(_user!.username)
+            : l10n.unfollowed(_user!.username);
+        final bgColor = _isFollowing ? AppColors.success : AppColors.error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),
             behavior: SnackBarBehavior.floating,
             backgroundColor: bgColor,
+            duration: Duration(seconds: 1),
           ),
         );
       }
     } catch (e) {
-      print('Error toggling follow: $e');
+      // Revert on error
       if (mounted) {
+        setState(() => _isFollowing = !_isFollowing);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.errorUpdatingFollow),
@@ -290,7 +225,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
         ),
         body: Center(
           child: Text(
-            _errorMessage ?? 'User not found',
+            _errorMessage ?? AppLocalizations.of(context)!.userNotFound,
             style: AppTextStyles.bodyMedium,
           ),
         ),
@@ -298,7 +233,8 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     }
 
     final username = _user!.username;
-    final avatar = _user!.profileImage ?? FakeUserData.avatarUrl;
+    // Use userAvatarUrl if available, fallback to legacy field or fake
+    final avatar = _user!.userAvatarUrl ?? _user!.profileImage ?? FakeUserData.avatarUrl;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -352,6 +288,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                       children: [
                         // Profile Header Component
                         ProfileHeader(
+                          userId: _user!.uid,
                           avatarUrl: avatar,
                           username: username,
                           posts: _posts.length,
@@ -385,7 +322,9 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                                 ),
                               ),
                               child: Text(
-                                _isFollowing ? 'Followed' : 'Follow',
+                                _isFollowing 
+                                    ? AppLocalizations.of(context)!.followed 
+                                    : AppLocalizations.of(context)!.follow,
                                 style: AppTextStyles.bodyMedium.copyWith(
                                   color: _isFollowing
                                       ? AppColors.textDark
@@ -402,12 +341,34 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                             ? Padding(
                                 padding: EdgeInsets.all(AppSpacing.xl),
                                 child: Text(
-                                  'No posts yet',
+                                  AppLocalizations.of(context)!.noPosts,
                                   style: AppTextStyles.bodyMedium,
                                 ),
                               )
                             : ProfilePostsGrid(
                                 posts: _convertPostsToFakeFormat(),
+                                onPostTap: (postId) async {
+                                  try {
+                                    final post = _posts.firstWhere(
+                                      (p) => p.postId == postId,
+                                    );
+                                    // Navigate to detail screen
+                                    await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => 
+                                          PostDetailScreen(post: post.toFirestore()),
+                                      ),
+                                    );
+                                    
+                                    // Refresh posts when coming back (to update likes/comments counts)
+                                    if (mounted) {
+                                      _loadPosts();
+                                    }
+                                  } catch (e) {
+                                    print('Error navigating to post: $e');
+                                  }
+                                },
                               ),
                       ],
                     ),
@@ -422,7 +383,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
     return _posts.map((post) {
       final images = post.images;
       return {
-        'id': post.id,
+        'id': post.postId,
         'imageUrl': images.isNotEmpty ? images.first : FakeUserData.avatarUrl,
         'likes': post.likesCount,
         'comments': post.commentsCount,
@@ -449,7 +410,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                   Icons.person_add_outlined,
                   color: Theme.of(context).iconTheme.color,
                 ),
-                title: Text('Follow', style: AppTextStyles.bodyMedium),
+                title: Text(AppLocalizations.of(context)!.follow, style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
                   _toggleFollow();
@@ -472,12 +433,12 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text('Share ${_user!.username}\'s Profile'),
+                        title: Text(AppLocalizations.of(context)!.shareUserProfileTitle(_user!.username)),
                         content: SelectableText(shareText),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: Text('Close'),
+                            child: Text(AppLocalizations.of(context)!.close),
                           ),
                           TextButton(
                             onPressed: () {
@@ -485,12 +446,12 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Copied to clipboard'),
+                                  content: Text(AppLocalizations.of(context)!.copiedToClipboard),
                                   duration: Duration(seconds: 2),
                                 ),
                               );
                             },
-                            child: Text('Copy'),
+                            child: Text(AppLocalizations.of(context)!.copy),
                           ),
                         ],
                       ),

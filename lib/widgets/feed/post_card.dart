@@ -365,6 +365,11 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String userName = post['username'] ?? post['userName'] ?? 'User';
+    final String userAvatar = post['userAvatarUrl'] ?? post['userAvatar'] ?? '';
+    final List? images = post['images'] as List?;
+    final String imageUrl = images?.isNotEmpty == true ? images!.first : (post['imageUrl'] ?? '');
+
     return Card(
       elevation: 2,
       margin: EdgeInsets.only(bottom: AppSpacing.lg),
@@ -376,13 +381,13 @@ class PostCard extends StatelessWidget {
         children: [
           // Post header with profile navigation enabled
           PostHeader(
-            userId: post['userId'] as int?, // Pass userId for profile lookup
-            userName: post['userName'],
-            userAvatar: post['userAvatar'],
+            userId: post['userId'] as String?, // Pass userId for profile lookup
+            userName: userName,
+            userAvatar: userAvatar,
             onProfileTap: onTap,
             onMoreTap: () => _showOptionsMenu(context),
           ),
-          PostImage(imageUrl: post['imageUrl'], onDoubleTap: onLike),
+          PostImage(imageUrl: imageUrl, onDoubleTap: onLike),
           PostEngagementBar(
             isLiked: post['isLiked'] ?? false,
             isSaved: post['isSaved'] ?? false,
@@ -393,19 +398,20 @@ class PostCard extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
             child: Text(
-              '${post['likes'] ?? 0} likes',
+              '${post['likesCount'] ?? post['likes'] ?? 0} likes',
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
           SizedBox(height: AppSpacing.sm),
-          PostCaption(userName: post['userName'], caption: post['caption']),
+          PostCaption(userName: userName, caption: post['caption'] ?? ''),
           SizedBox(height: AppSpacing.sm),
           PostRestaurantInfo(
-            restaurantName: post['restaurantName'],
-            dishName: post['dishName'],
-            rating: post['rating'],
+            restaurantId: (post['restaurantId'] ?? post['restaurantUid'])?.toString(),
+            restaurantName: post['restaurantName'] ?? '',
+            dishName: post['dishName'] ?? '',
+            rating: (post['rating'] as num?)?.toDouble() ?? 0.0,
           ),
           SizedBox(height: AppSpacing.md),
         ],

@@ -6,7 +6,7 @@ class FakeData {
   static List<Restaurant> getRestaurants() {
     return [
       Restaurant(
-        id: 1,
+        id: '1',
         name: 'Rimberio Spicy Food',
         location: 'Sidi Abdellah, Algiers',
         cuisineType: 'Spicy',
@@ -16,7 +16,7 @@ class FakeData {
             'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&auto=format&fit=crop&q=80',
       ),
       Restaurant(
-        id: 2,
+        id: '2',
         name: 'La Piazza Italiana',
         location: 'Hydra, Algiers',
         cuisineType: 'Italian',
@@ -26,7 +26,7 @@ class FakeData {
             'https://images.unsplash.com/photo-1498579150354-977475b7ea0b?w=800&auto=format&fit=crop&q=80',
       ),
       Restaurant(
-        id: 3,
+        id: '3',
         name: 'Sushi Paradise',
         location: 'El Biar, Algiers',
         cuisineType: 'Japanese',
@@ -36,7 +36,7 @@ class FakeData {
             'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800&auto=format&fit=crop&q=80',
       ),
       Restaurant(
-        id: 4,
+        id: '4',
         name: 'Burger House',
         location: 'Birkhadem, Algiers',
         cuisineType: 'American',
@@ -46,7 +46,7 @@ class FakeData {
             'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&auto=format&fit=crop&q=80',
       ),
       Restaurant(
-        id: 5,
+        id: '5',
         name: 'Café Parisien',
         location: 'Centre-ville, Algiers',
         cuisineType: 'French',
@@ -56,7 +56,7 @@ class FakeData {
             'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&auto=format&fit=crop&q=80',
       ),
       Restaurant(
-        id: 6,
+        id: '6',
         name: 'Tajine Royale',
         location: 'Bouzareah, Algiers',
         cuisineType: 'Moroccan',
@@ -88,7 +88,7 @@ class FakeData {
   }
 
   // Get restaurant by ID
-  static Restaurant? getRestaurantById(int id) {
+  static Restaurant? getRestaurantById(String id) {
     try {
       return getRestaurants().firstWhere((r) => r.id == id);
     } catch (e) {

@@ -1515,6 +1515,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Mark all as read'**
   String get markAllAsRead;
+
+  /// No description provided for @deletePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Post?'**
+  String get deletePost;
+
+  /// No description provided for @deletePostConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get deletePostConfirm;
+
+  /// No description provided for @postDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Post deleted'**
+  String get postDeleted;
+
+  /// No description provided for @failedToDeletePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to delete post: {error}'**
+  String failedToDeletePost(Object error);
+
+  /// No description provided for @failedToAddComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add comment: {error}'**
+  String failedToAddComment(Object error);
+
+  /// No description provided for @failedToUpdateLike.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update like'**
+  String get failedToUpdateLike;
+
+  /// No description provided for @failedToUpdateSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update save'**
+  String get failedToUpdateSave;
+
+  /// No description provided for @cannotAddComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot add comment to this post'**
+  String get cannotAddComment;
+
+  /// No description provided for @noCommentsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No comments yet. Be the first to comment!'**
+  String get noCommentsYet;
+
+  /// No description provided for @likesCountText.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} likes'**
+  String likesCountText(Object count);
+
+  /// No description provided for @imageNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Image not found'**
+  String get imageNotFound;
+
+  /// No description provided for @user.
+  ///
+  /// In en, this message translates to:
+  /// **'User'**
+  String get user;
+
+  /// No description provided for @deleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get deleteAction;
+
+  /// No description provided for @unknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// No description provided for @postsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Posts'**
+  String postsCount(Object count);
+
+  /// No description provided for @followersCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Followers'**
+  String followersCount(Object count);
+
+  /// No description provided for @followingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Following'**
+  String followingCount(Object count);
+
+  /// No description provided for @pointsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Points'**
+  String pointsCount(Object count);
+
+  /// No description provided for @likes.
+  ///
+  /// In en, this message translates to:
+  /// **'Likes'**
+  String get likes;
+
+  /// No description provided for @noDishes.
+  ///
+  /// In en, this message translates to:
+  /// **'No dishes found'**
+  String get noDishes;
+
+  /// No description provided for @noPostsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No posts yet'**
+  String get noPostsYet;
 }
 
 class _AppLocalizationsDelegate

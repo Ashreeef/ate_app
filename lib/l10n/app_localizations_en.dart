@@ -756,4 +756,81 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get markAllAsRead => 'Mark all as read';
+
+  @override
+  String get deletePost => 'Delete Post?';
+
+  @override
+  String get deletePostConfirm => 'This action cannot be undone.';
+
+  @override
+  String get postDeleted => 'Post deleted';
+
+  @override
+  String failedToDeletePost(Object error) {
+    return 'Failed to delete post: $error';
+  }
+
+  @override
+  String failedToAddComment(Object error) {
+    return 'Failed to add comment: $error';
+  }
+
+  @override
+  String get failedToUpdateLike => 'Failed to update like';
+
+  @override
+  String get failedToUpdateSave => 'Failed to update save';
+
+  @override
+  String get cannotAddComment => 'Cannot add comment to this post';
+
+  @override
+  String get noCommentsYet => 'No comments yet. Be the first to comment!';
+
+  @override
+  String likesCountText(Object count) {
+    return '$count likes';
+  }
+
+  @override
+  String get imageNotFound => 'Image not found';
+
+  @override
+  String get user => 'User';
+
+  @override
+  String get deleteAction => 'Delete';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String postsCount(Object count) {
+    return '$count Posts';
+  }
+
+  @override
+  String followersCount(Object count) {
+    return '$count Followers';
+  }
+
+  @override
+  String followingCount(Object count) {
+    return '$count Following';
+  }
+
+  @override
+  String pointsCount(Object count) {
+    return '$count Points';
+  }
+
+  @override
+  String get likes => 'Likes';
+
+  @override
+  String get noDishes => 'No dishes found';
+
+  @override
+  String get noPostsYet => 'No posts yet';
 }

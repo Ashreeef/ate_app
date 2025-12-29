@@ -4,8 +4,13 @@ import '../../utils/constants.dart';
 /// Grid layout displaying user's posts with like/comment counts
 class ProfilePostsGrid extends StatelessWidget {
   final List<Map<String, dynamic>> posts;
+  final Function(String)? onPostTap;
 
-  const ProfilePostsGrid({super.key, required this.posts});
+  const ProfilePostsGrid({
+    super.key,
+    required this.posts,
+    this.onPostTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +28,16 @@ class ProfilePostsGrid extends StatelessWidget {
         itemCount: posts.length,
         itemBuilder: (context, index) {
           final post = posts[index];
-          return _PostThumbnail(
-            imageUrl: post['imageUrl'] as String,
-            likes: post['likes'] as int,
+          return GestureDetector(
+            onTap: () {
+              if (onPostTap != null) {
+                onPostTap!(post['id'] as String);
+              }
+            },
+            child: _PostThumbnail(
+              imageUrl: post['imageUrl'] as String,
+              likes: post['likes'] as int,
+            ),
           );
         },
       ),

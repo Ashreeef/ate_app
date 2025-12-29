@@ -1,151 +1,120 @@
-import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/notification.dart';
-import '../database/database_helper.dart';
-import '../services/auth_service.dart';
+import '../services/firestore_service.dart';
 
+/// Repository for notification data operations using Firestore
 class NotificationRepository {
-  static const String _tableName = 'notifications';
-  final DatabaseHelper _db = DatabaseHelper.instance;
+  final FirestoreService _firestoreService = FirestoreService();
 
-  /// Save a notification to the local database
-  Future<int> saveNotification(AppNotification notification) async {
+  /// Save a notification to Firestore
+  Future<void> saveNotification(AppNotification notification) async {
     try {
-      final map = notification.toMap();
-      // Convert data map to JSON string for storage
-      map['data'] = jsonEncode(notification.data);
-      return await _db.insert(_tableName, map);
+      final docRef = _firestoreService.users
+          .doc(notification.userUid)
+          .collection('notifications')
+          .doc();
+      
+      await docRef.set(notification.toFirestore());
     } catch (e) {
-      print('Error saving notification: $e');
       throw Exception('Failed to save notification: $e');
     }
   }
 
-  /// Get all notifications for current user
-  Future<List<AppNotification>> getNotifications({
-    int? limit,
-    int? offset,
-  }) async {
+  /// Get notifications for a user
+  Future<List<AppNotification>> getNotifications(String userUid, {int limit = 50}) async {
     try {
-      final currentUserId = AuthService.instance.currentUserId ?? 1;
-      final results = await _db.query(
-        _tableName,
-        where: 'user_id = ?',
-        whereArgs: [currentUserId],
-        orderBy: 'created_at DESC',
-        limit: limit,
-        offset: offset,
-      );
+      final querySnapshot = await _firestoreService.users
+          .doc(userUid)
+          .collection('notifications')
+          .orderBy('createdAt', descending: true)
+          .limit(limit)
+          .get();
 
-      return results.map((map) {
-        // Parse data JSON string back to map
-        if (map['data'] is String) {
-          map['data'] = jsonDecode(map['data']);
-        }
-        return AppNotification.fromMap(map);
-      }).toList();
+      return querySnapshot.docs
+          .map((doc) => AppNotification.fromFirestore(doc))
+          .toList();
     } catch (e) {
-      print('Error fetching notifications: $e');
-      throw Exception('Failed to fetch notifications: $e');
+      throw Exception('Failed to get notifications: $e');
     }
   }
 
-  /// Get unread notification count
-  Future<int> getUnreadCount() async {
+  /// Get unread notification count for a user
+  Future<int> getUnreadCount(String userUid) async {
     try {
-      final currentUserId = AuthService.instance.currentUserId ?? 1;
-      final results = await _db.query(
-        _tableName,
-        where: 'user_id = ? AND is_read = 0',
-        whereArgs: [currentUserId],
-      );
-      return results.length;
+      final querySnapshot = await _firestoreService.users
+          .doc(userUid)
+          .collection('notifications')
+          .where('isRead', isEqualTo: false)
+          .get();
+
+      return querySnapshot.docs.length;
     } catch (e) {
-      print('Error getting unread count: $e');
-      return 0;
+      throw Exception('Failed to get unread count: $e');
     }
   }
 
-  /// Mark notification as read
-  Future<void> markAsRead(int notificationId) async {
+  /// Mark a notification as read
+  Future<void> markAsRead(String userUid, String notificationId) async {
     try {
-      await _db.update(
-        _tableName,
-        {'is_read': 1},
-        where: 'id = ?',
-        whereArgs: [notificationId],
-      );
+      await _firestoreService.users
+          .doc(userUid)
+          .collection('notifications')
+          .doc(notificationId)
+          .update({'isRead': true});
     } catch (e) {
-      print('Error marking notification as read: $e');
       throw Exception('Failed to mark notification as read: $e');
     }
   }
 
-  /// Mark all notifications as read
-  Future<void> markAllAsRead() async {
+  /// Mark all notifications as read for a user
+  Future<void> markAllAsRead(String userUid) async {
     try {
-      final currentUserId = AuthService.instance.currentUserId ?? 1;
-      await _db.update(
-        _tableName,
-        {'is_read': 1},
-        where: 'user_id = ?',
-        whereArgs: [currentUserId],
-      );
+      final batch = FirebaseFirestore.instance.batch();
+      final querySnapshot = await _firestoreService.users
+          .doc(userUid)
+          .collection('notifications')
+          .where('isRead', isEqualTo: false)
+          .get();
+
+      for (final doc in querySnapshot.docs) {
+        batch.update(doc.reference, {'isRead': true});
+      }
+
+      await batch.commit();
     } catch (e) {
-      print('Error marking all notifications as read: $e');
       throw Exception('Failed to mark all notifications as read: $e');
     }
   }
 
   /// Delete a notification
-  Future<void> deleteNotification(int notificationId) async {
+  Future<void> deleteNotification(String userUid, String notificationId) async {
     try {
-      await _db.delete(
-        _tableName,
-        where: 'id = ?',
-        whereArgs: [notificationId],
-      );
+      await _firestoreService.users
+          .doc(userUid)
+          .collection('notifications')
+          .doc(notificationId)
+          .delete();
     } catch (e) {
-      print('Error deleting notification: $e');
       throw Exception('Failed to delete notification: $e');
     }
   }
 
-  /// Delete all notifications for current user
-  Future<void> deleteAllNotifications() async {
+  /// Delete all notifications for a user
+  Future<void> deleteAllNotifications(String userUid) async {
     try {
-      final currentUserId = AuthService.instance.currentUserId ?? 1;
-      await _db.delete(
-        _tableName,
-        where: 'user_id = ?',
-        whereArgs: [currentUserId],
-      );
-    } catch (e) {
-      print('Error deleting all notifications: $e');
-      throw Exception('Failed to delete all notifications: $e');
-    }
-  }
+      final batch = FirebaseFirestore.instance.batch();
+      final querySnapshot = await _firestoreService.users
+          .doc(userUid)
+          .collection('notifications')
+          .get();
 
-  /// Get a single notification by ID
-  Future<AppNotification?> getNotificationById(int id) async {
-    try {
-      final results = await _db.query(
-        _tableName,
-        where: 'id = ?',
-        whereArgs: [id],
-        limit: 1,
-      );
-
-      if (results.isEmpty) return null;
-
-      final map = results.first;
-      // Parse data JSON string back to map
-      if (map['data'] is String) {
-        map['data'] = jsonDecode(map['data']);
+      for (final doc in querySnapshot.docs) {
+        batch.delete(doc.reference);
       }
-      return AppNotification.fromMap(map);
+
+      await batch.commit();
     } catch (e) {
-      print('Error fetching notification: $e');
-      return null;
+      throw Exception('Failed to delete all notifications: $e');
     }
   }
 }

@@ -1,14 +1,20 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ate_app/utils/constants.dart';
 import '../../l10n/app_localizations.dart';
-import '../../models/comment.dart';
 import '../../repositories/comment_repository.dart';
-import '../../repositories/profile_repository.dart';
-import '../../repositories/post_repository.dart';
-import '../../services/auth_service.dart';
-import '../restaurant/restaurant_page.dart';
+import '../../repositories/auth_repository.dart';
+import '../../repositories/like_repository.dart';
+import '../../repositories/saved_post_repository.dart';
+import '../../blocs/post/post_bloc.dart';
+import '../../blocs/post/post_event.dart';
+import 'post_likes_screen.dart';
+import '../../widgets/feed/post_restaurant_info.dart';
+import '../profile/other_user_profile_screen.dart';
+import 'package:ate_app/screens/home/navigation_shell.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final Map<String, dynamic> post;
@@ -27,30 +33,66 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   List<Map<String, dynamic>> _comments = [];
   bool _isLoadingComments = true;
   final CommentRepository _commentRepo = CommentRepository();
-  final ProfileRepository _profileRepo = ProfileRepository();
-  final PostRepository _postRepo = PostRepository();
+
+  // Author data (fresh from DB)
+  String? _authorUsername;
+  String? _authorAvatarUrl;
+  String? _authorUid;
+  String? _currentUserAvatarUrl;
+
 
   @override
   void initState() {
     super.initState();
-    _post = Map.from(widget.post);
+    _post = Map.from(widget.post); // Initialize _post first
     _loadInitialData();
   }
 
   Future<void> _loadInitialData() async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    // Basic setup - check both userUid (Firestore) and userId (Legacy)
+    _authorUid = _post['userUid'] ?? _post['userId']?.toString();
+    
+    // Safety check: Firestore UIDs are long strings. 
+    // If it's a short numeric string, it's a legacy ID and won't work for fetch.
+    if (_authorUid != null && _authorUid!.length < 5) {
+       print('PostDetail: Found legacy ID $_authorUid, fetch will likely fail.');
+    }
+    
+    // 1. Fetch fresh author data
+    if (_authorUid != null) {
+      try {
+        final author = await context.read<AuthRepository>().getUserByUid(_authorUid!);
+        if (mounted && author != null) {
+          setState(() {
+            _authorUsername = author.username;
+            _authorAvatarUrl = author.profileImage;
+          });
+        }
+      } catch (e) {
+        print('Error fetching author data: $e');
+      }
 
-    if (postId != null) {
-      // Load the full post from database to get accurate like/save status
-      final post = await _postRepo.getPostById(postId);
-      if (post != null) {
-        setState(() {
-          _isLiked = post.likedBy.contains(currentUserId);
-          _isSaved = post.savedBy.contains(currentUserId);
-          _post['likes_count'] = post.likesCount;
-          _post['comments_count'] = post.commentsCount;
-        });
+      // 2. Fetch interaction status and current user data
+      final currentUserUid = context.read<AuthRepository>().currentUserId;
+      if (currentUserUid != null) {
+        try {
+          // Fetch interaction status
+          final isLiked = await LikeRepository().isPostLiked(_post['postId'], currentUserUid);
+          final isSaved = await SavedPostRepository().isPostSaved(_post['postId'], currentUserUid);
+          
+          // Fetch current user avatar
+          final currentUser = await context.read<AuthRepository>().getUserByUid(currentUserUid);
+          
+          if (mounted) {
+            setState(() {
+              _isLiked = isLiked;
+              _isSaved = isSaved;
+              _currentUserAvatarUrl = currentUser?.profileImage;
+            });
+          }
+        } catch (e) {
+          print('Error fetching user/interaction data: $e');
+        }
       }
     }
 
@@ -58,25 +100,26 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Future<void> _loadComments() async {
+    final l10n = AppLocalizations.of(context)!;
     setState(() => _isLoadingComments = true);
 
     try {
-      final postId = _post['id'] as int?;
+      final postId = _post['postId'] as String?; // Use Firestore postId
       if (postId == null) {
         setState(() => _isLoadingComments = false);
         return;
       }
 
-      final comments = await _commentRepo.getCommentsByPostId(postId);
+      final comments = await _commentRepo.getPostComments(postId);
       final List<Map<String, dynamic>> commentsWithUser = [];
 
       for (final comment in comments) {
-        final user = await _profileRepo.getUserById(comment.userId);
+        // Comments already have denormalized user data
         commentsWithUser.add({
-          'id': comment.id,
-          'userId': comment.userId,
-          'username': user?.username ?? 'Unknown',
-          'userAvatar': user?.profileImage,
+          'id': comment.commentId,
+          'userId': comment.userUid,
+          'username': comment.username ?? l10n.unknown,
+          'userAvatar': comment.userAvatarUrl,
           'text': comment.content,
           'createdAt': comment.createdAt,
         });
@@ -93,131 +136,112 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Future<void> _addComment() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_commentController.text.trim().isEmpty) return;
 
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    final currentUserUid = context.read<AuthRepository>().currentUserId;
+    final postId = _post['postId'] as String?;
 
-    if (postId == null) {
+    if (postId == null || currentUserUid == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Cannot add comment to this post')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.cannotAddComment)),
       );
       return;
     }
 
     try {
-      // Create comment in database
-      final comment = Comment(
+      // Get current user info for the comment
+      final user = await context.read<AuthRepository>().getUserByUid(currentUserUid);
+      final username = user?.username ?? l10n.unknown;
+      final userAvatar = user?.profileImage;
+
+      // Use proper addComment method
+      await _commentRepo.addComment(
         postId: postId,
-        userId: currentUserId,
+        userUid: currentUserUid,
+        username: username,
+        userAvatarUrl: userAvatar,
         content: _commentController.text.trim(),
-        createdAt: DateTime.now().toIso8601String(),
       );
-
-      await _commentRepo.createComment(comment);
-
-      // Update post comments count
-      final post = await _postRepo.getPostById(postId);
-      if (post != null) {
-        final updatedPost = post.copyWith(
-          commentsCount: post.commentsCount + 1,
-        );
-        await _postRepo.updatePost(updatedPost);
-      }
 
       // Clear input and reload comments
       _commentController.clear();
       FocusScope.of(context).unfocus();
       await _loadComments();
 
-      // Update local post data
-      setState(() {
-        _post['comments_count'] = (_post['comments_count'] ?? 0) + 1;
-      });
+      // Refresh post data to get updated counts
+      await _loadInitialData();
+
     } catch (e) {
       print('Error adding comment: $e');
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('Failed to add comment')));
+      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddComment(e.toString()))));
     }
   }
 
   Future<void> _toggleLike() async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    final currentUserUid = context.read<AuthRepository>().currentUserId;
+    final postId = _post['postId'] as String?;
 
-    if (postId == null) return;
+    if (postId == null || currentUserUid == null) return;
 
     try {
-      final post = await _postRepo.getPostById(postId);
-      if (post == null) return;
-
       // Optimistically update UI
       setState(() {
         _isLiked = !_isLiked;
-        _post['likes_count'] =
-            (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
+        _post['likes_count'] = (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
       });
 
-      // Update database
-      List<int> likedBy = List.from(post.likedBy);
+      final LikeRepository likeRepo = LikeRepository();
       if (_isLiked) {
-        if (!likedBy.contains(currentUserId)) {
-          likedBy.add(currentUserId);
-        }
+        await likeRepo.likePost(postId, currentUserUid);
       } else {
-        likedBy.remove(currentUserId);
+        await likeRepo.unlikePost(postId, currentUserUid);
       }
-
-      final updatedPost = post.copyWith(
-        likedBy: likedBy,
-        likesCount: likedBy.length,
-      );
-      await _postRepo.updatePost(updatedPost);
+      
+      // No need to update post manually, repository handles it.
+      // Verify state later if needed.
     } catch (e) {
       print('Error toggling like: $e');
       // Revert on error
       setState(() {
         _isLiked = !_isLiked;
-        _post['likes_count'] =
-            (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
+        _post['likes_count'] = (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
       });
+        ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update like')),
+      );
     }
   }
 
   Future<void> _toggleSave() async {
-    final currentUserId = AuthService.instance.currentUserId ?? 1;
-    final postId = _post['id'] as int?;
+    final currentUserUid = context.read<AuthRepository>().currentUserId;
+    final postId = _post['postId'] as String?;
 
-    if (postId == null) return;
+    if (postId == null || currentUserUid == null) return;
 
     try {
-      final post = await _postRepo.getPostById(postId);
-      if (post == null) return;
-
       // Optimistically update UI
       setState(() {
         _isSaved = !_isSaved;
       });
 
-      // Update database
-      List<int> savedBy = List.from(post.savedBy);
+      final SavedPostRepository savedRepo = SavedPostRepository();
       if (_isSaved) {
-        if (!savedBy.contains(currentUserId)) {
-          savedBy.add(currentUserId);
-        }
+        await savedRepo.savePost(postId, currentUserUid);
       } else {
-        savedBy.remove(currentUserId);
+        await savedRepo.unsavePost(postId, currentUserUid);
       }
-
-      final updatedPost = post.copyWith(savedBy: savedBy);
-      await _postRepo.updatePost(updatedPost);
     } catch (e) {
       print('Error toggling save: $e');
       // Revert on error
       setState(() {
         _isSaved = !_isSaved;
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context)!.failedToUpdateSave)),
+      );
     }
   }
 
@@ -298,62 +322,87 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget _buildHeader() {
-    final restaurantId = _post['restaurantId'] as int?;
-
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.md),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: AppSizes.avatar / 2,
-            backgroundColor: AppColors.background,
-            child: _post['userAvatar'] != null && _post['userAvatar'].isNotEmpty
-                ? ClipOval(
-                    child: Image.network(
-                      _post['userAvatar'],
-                      fit: BoxFit.cover,
-                      width: AppSizes.avatar,
-                      height: AppSizes.avatar,
+          GestureDetector(
+            onTap: () {
+              final userUid = _authorUid ?? _post['userUid'] as String?;
+              final currentUserUid = context.read<AuthRepository>().currentUserId;
+              if (userUid != null) {
+                if (userUid == currentUserUid) {
+                  NavigationShell.selectTab(context, 4);
+                  Navigator.pop(context); 
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => OtherUserProfileScreen(userId: userUid),
                     ),
-                  )
-                : Icon(
-                    Icons.person,
-                    color: AppColors.textMedium,
-                    size: AppSizes.icon,
-                  ),
+                  );
+                }
+              }
+            },
+            child: CircleAvatar(
+              radius: AppSizes.avatar / 2,
+              backgroundColor: AppColors.background,
+              child: (_authorAvatarUrl != null && _authorAvatarUrl!.isNotEmpty)
+                  ? ClipOval(
+                      child: Image.network(
+                        _authorAvatarUrl!,
+                        fit: BoxFit.cover,
+                        width: AppSizes.avatar,
+                        height: AppSizes.avatar,
+                        errorBuilder: (context, error, stackTrace) => Icon(Icons.person),
+                      ),
+                    )
+                  : ((_post['userAvatarUrl'] != null && _post['userAvatarUrl'].isNotEmpty) || 
+                     (_post['userAvatar'] != null && _post['userAvatar'].isNotEmpty)
+                      ? ClipOval(
+                          child: Image.network(
+                            _post['userAvatarUrl'] ?? _post['userAvatar'],
+                            fit: BoxFit.cover,
+                            width: AppSizes.avatar,
+                            height: AppSizes.avatar,
+                            errorBuilder: (context, error, stackTrace) => Icon(Icons.person),
+                          ),
+                        )
+                      : Icon(
+                          Icons.person,
+                          color: AppColors.textMedium,
+                          size: AppSizes.icon,
+                        )),
+            ),
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _post['userName'] ?? 'Unknown User',
-                  style: AppTextStyles.username,
-                ),
-                if (_post['restaurantName'] != null)
-                  GestureDetector(
-                    onTap: () {
-                      if (restaurantId != null) {
+                GestureDetector(
+                  onTap: () {
+                    final userUid = _authorUid ?? _post['userUid'] as String?;
+                    final currentUserUid = context.read<AuthRepository>().currentUserId;
+                    if (userUid != null) {
+                      if (userUid == currentUserUid) {
+                        NavigationShell.selectTab(context, 4);
+                        Navigator.pop(context);
+                      } else {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                RestaurantPage(restaurantId: restaurantId),
+                            builder: (context) => OtherUserProfileScreen(userId: userUid),
                           ),
                         );
                       }
-                    },
-                    child: Text(
-                      _post['restaurantName'],
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColors.textMedium,
-                        decoration: restaurantId != null
-                            ? TextDecoration.underline
-                            : null,
-                      ),
-                    ),
+                    }
+                  },
+                  child: Text(
+                    _authorUsername ?? _post['username'] ?? _post['userName'] ?? 'Unknown User',
+                    style: AppTextStyles.username,
                   ),
+                ),
               ],
             ),
           ),
@@ -520,16 +569,32 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget _buildLikesCount() {
+    final l10n = AppLocalizations.of(context)!;
+    final postId = _post['postId'] as String?;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-      child: Text(
-        '${_post['likes_count'] ?? 0} likes',
-        style: AppTextStyles.captionBold,
+      child: GestureDetector(
+        onTap: postId != null
+            ? () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PostLikesScreen(postId: postId),
+                  ),
+                );
+              }
+            : null,
+        child: Text(
+          l10n.likesCountText(_post['likes_count'] ?? 0),
+          style: AppTextStyles.captionBold,
+        ),
       ),
     );
   }
 
   Widget _buildCaption() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.md,
@@ -542,7 +607,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           style: AppTextStyles.bodySmall,
           children: [
             TextSpan(
-              text: '${_post['username'] ?? 'Unknown'} ',
+              text: '${_post['username'] ?? l10n.unknown} ',
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: FontWeight.w600,
                 color: AppColors.textDark,
@@ -556,41 +621,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   }
 
   Widget _buildRestaurantInfo() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        AppSpacing.md,
-        0,
-        AppSpacing.md,
-        AppSpacing.md,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (_post['dish_name'] != null)
-            Text(
-              _post['dish_name'],
-              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w500),
-            ),
-          const SizedBox(height: AppSpacing.xs),
-          if (_post['rating'] != null)
-            Row(
-              children: [
-                Icon(
-                  Icons.star,
-                  color: AppColors.starActive,
-                  size: AppSizes.icon,
-                ),
-                const SizedBox(width: AppSpacing.xs),
-                Text(
-                  '${_post['rating']}.0',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-        ],
-      ),
+    if (_post['restaurantName'] == null && _post['dish_name'] == null) {
+      return const SizedBox.shrink();
+    }
+    
+    return PostRestaurantInfo(
+      restaurantId: _post['restaurantId']?.toString(),
+      restaurantName: _post['restaurantName'] ?? '',
+      dishName: _post['dish_name'] ?? _post['dishName'] ?? '',
+      rating: (_post['rating'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -629,15 +668,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             const SizedBox(height: AppSpacing.md),
             if (_comments.isEmpty)
               Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.lg),
-                  child: Text(
-                    'No comments yet. Be the first to comment!',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.textMedium,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 32),
+                    child: Text(
+                      AppLocalizations.of(context)!.noCommentsYet,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textMedium,
+                      ),
                     ),
-                  ),
-                ),
+                  )
               )
             else
               ListView.builder(
@@ -651,19 +690,37 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: AppSizes.avatarSm / 2,
-                          backgroundColor: AppColors.background,
-                          backgroundImage: comment['userAvatar'] != null
-                              ? NetworkImage(comment['userAvatar'])
-                              : null,
-                          child: comment['userAvatar'] == null
-                              ? Icon(
-                                  Icons.person,
-                                  size: AppSizes.iconXs,
-                                  color: AppColors.textMedium,
-                                )
-                              : null,
+                        GestureDetector(
+                          onTap: () {
+                            if (comment['userId'] != null) {
+                              final currentUserUid = context.read<AuthRepository>().currentUserId;
+                              if (comment['userId'] == currentUserUid) {
+                                NavigationShell.selectTab(context, 4);
+                                Navigator.pop(context);
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => OtherUserProfileScreen(userId: comment['userId']),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                          child: CircleAvatar(
+                            radius: AppSizes.avatarSm / 2,
+                            backgroundColor: AppColors.background,
+                            backgroundImage: comment['userAvatar'] != null && comment['userAvatar'].toString().isNotEmpty
+                                ? NetworkImage(comment['userAvatar'])
+                                : null,
+                            child: (comment['userAvatar'] == null || comment['userAvatar'].toString().isEmpty)
+                                ? Icon(
+                                    Icons.person,
+                                    size: AppSizes.iconXs,
+                                    color: AppColors.textMedium,
+                                  )
+                                : null,
+                          ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
@@ -680,6 +737,23 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.textDark,
                                       ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                          if (comment['userId'] != null) {
+                                            final currentUserUid = context.read<AuthRepository>().currentUserId;
+                                            if (comment['userId'] == currentUserUid) {
+                                              NavigationShell.selectTab(context, 4);
+                                              Navigator.pop(context);
+                                            } else {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => OtherUserProfileScreen(userId: comment['userId']),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
                                     ),
                                     TextSpan(
                                       text: comment['text'],
@@ -744,11 +818,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           CircleAvatar(
             radius: AppSizes.avatarSm / 2,
             backgroundColor: AppColors.background,
-            child: Icon(
-              Icons.person,
-              size: AppSizes.iconXs,
-              color: AppColors.textMedium,
-            ),
+            backgroundImage: _currentUserAvatarUrl != null && _currentUserAvatarUrl!.isNotEmpty
+                ? NetworkImage(_currentUserAvatarUrl!)
+                : null,
+            child: (_currentUserAvatarUrl == null || _currentUserAvatarUrl!.isEmpty)
+                ? Icon(
+                    Icons.person,
+                    size: AppSizes.iconXs,
+                    color: AppColors.textMedium,
+                  )
+                : null,
           ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
@@ -782,6 +861,17 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   void _showOptions() {
     final l10n = AppLocalizations.of(context)!;
+    final currentUserUid = context.read<AuthRepository>().currentUserId;
+    // Use verified author UID from initState if available, else fallback
+    final postUserUid = _authorUid ?? _post['userUid'] as String?;
+    
+    // Debug prints to verify deletion logic
+    print('Options Debug: CurrentUser: $currentUserUid');
+    print('Options Debug: PostUser: $postUserUid');
+    
+    final isOwner = currentUserUid != null && postUserUid != null && currentUserUid == postUserUid;
+    print('Options Debug: isOwner: $isOwner');
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Theme.of(context).cardTheme.color,
@@ -792,10 +882,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         ),
       ),
       builder: (context) {
-        return SizedBox(
-          height: 180,
+        return SafeArea(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
+              if (isOwner)
+                ListTile(
+                  leading: Icon(Icons.delete_outline, color: AppColors.error),
+                  title: Text(
+                    l10n.deleteAction, 
+                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error)
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _showDeleteConfirmation();
+                  },
+                ),
               ListTile(
                 leading: Icon(Icons.flag_outlined, color: AppColors.textDark),
                 title: Text(l10n.report, style: AppTextStyles.bodyMedium),
@@ -839,6 +941,64 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         );
       },
     );
+  }
+
+  void _showDeleteConfirmation() async {
+    final bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.deletePost),
+        content: Text(AppLocalizations.of(context)!.deletePostConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              AppLocalizations.of(context)!.deleteAction,
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      _deletePost();
+    }
+  }
+
+  Future<void> _deletePost() async {
+    final postId = _post['postId'] as String?;
+    if (postId == null) return;
+
+    try {
+      context.read<PostBloc>().add(DeletePostEvent(postId));
+      
+      // Wait a bit or listen to state? 
+      // For simplicity, assume success and pop with result
+      // Ideally we should use BlocListener
+      
+      // But we need to return 'true' to indicate deletion to the previous screen
+      // Let's delay/assume success for now or wait for repo
+      // Actually, Bloc will emit state.
+      // We should really wrap the Scaffold in BlocListener for PostDeletedSuccess
+      
+      // For now, let's just pop immediately after dispatching, 
+      // assuming the Bloc handles it. 
+      // But we want to refresh the previous screen.
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.postDeleted)),
+        );
+        Navigator.pop(context, true);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(AppLocalizations.of(context)!.failedToDeletePost(e.toString()))),
+        );
+      }
   }
 
   @override

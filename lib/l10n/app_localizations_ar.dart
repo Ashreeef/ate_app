@@ -754,4 +754,81 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get markAllAsRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get deletePost => 'حذف المنشور؟';
+
+  @override
+  String get deletePostConfirm => 'هذا الإجراء لا يمكن التراجع عنه.';
+
+  @override
+  String get postDeleted => 'تم حذف المنشور';
+
+  @override
+  String failedToDeletePost(Object error) {
+    return 'فشل حذف المنشور: $error';
+  }
+
+  @override
+  String failedToAddComment(Object error) {
+    return 'فشل إضافة التعليق: $error';
+  }
+
+  @override
+  String get failedToUpdateLike => 'فشل تحديث الإعجاب';
+
+  @override
+  String get failedToUpdateSave => 'فشل تحديث الحفظ';
+
+  @override
+  String get cannotAddComment => 'لا يمكن إضافة تعليق لهذا المنشور';
+
+  @override
+  String get noCommentsYet => 'لا توجد تعليقات بعد. كن أول من يعلق!';
+
+  @override
+  String likesCountText(Object count) {
+    return '$count إعجاب';
+  }
+
+  @override
+  String get imageNotFound => 'الصورة غير موجودة';
+
+  @override
+  String get user => 'مستخدم';
+
+  @override
+  String get deleteAction => 'حذف';
+
+  @override
+  String get unknown => 'غير معروف';
+
+  @override
+  String postsCount(Object count) {
+    return '$count منشورات';
+  }
+
+  @override
+  String followersCount(Object count) {
+    return '$count متابعين';
+  }
+
+  @override
+  String followingCount(Object count) {
+    return '$count يتابعهم';
+  }
+
+  @override
+  String pointsCount(Object count) {
+    return '$count نقاط';
+  }
+
+  @override
+  String get likes => 'تسجيلات الإعجاب';
+
+  @override
+  String get noDishes => 'لم يتم العثور على أطباق';
+
+  @override
+  String get noPostsYet => 'لا توجد منشورات حتى الآن';
 }

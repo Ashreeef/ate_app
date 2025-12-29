@@ -1,122 +1,148 @@
-import '../database/database_helper.dart';
-import '../models/like.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/firestore_service.dart';
 
-/// Repository for Like data operations
+/// Repository for Like data operations using Firestore
+/// Likes are stored as subcollections under posts/{postId}/likes
+/// AND as array in post document for quick access
 class LikeRepository {
-  final DatabaseHelper _db = DatabaseHelper.instance;
+  final FirestoreService _firestoreService = FirestoreService();
 
   // ==================== CREATE ====================
 
-  /// Add a like to a post
-  Future<int> likePost(int userId, int postId) async {
+  /// Like a post
+  Future<void> likePost(String postId, String userUid) async {
     try {
-      return await _db.insert('likes', {'user_id': userId, 'post_id': postId});
+      final batch = _firestoreService.batch();
+
+      // Add like document to subcollection
+      final likeRef = _firestoreService.posts
+          .doc(postId)
+          .collection('likes')
+          .doc(userUid);
+
+      batch.set(likeRef, {
+        'userId': userUid,
+        'createdAt': DateTime.now().toIso8601String(),
+      });
+
+      // Update post document (increment count + add to array)
+      final postRef = _firestoreService.posts.doc(postId);
+      batch.update(postRef, {
+        'likesCount': FieldValue.increment(1),
+        'likedBy': FieldValue.arrayUnion([userUid]),
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+
+      await batch.commit();
     } catch (e) {
-      // Like already exists (UNIQUE constraint violation)
-      return 0;
+      throw Exception('Failed to like post: $e');
+    }
+  }
+
+  // ==================== DELETE ====================
+
+  /// Unlike a post
+  Future<void> unlikePost(String postId, String userUid) async {
+    try {
+      final batch = _firestoreService.batch();
+
+      // Remove like document from subcollection
+      final likeRef = _firestoreService.posts
+          .doc(postId)
+          .collection('likes')
+          .doc(userUid);
+
+      batch.delete(likeRef);
+
+      // Update post document (decrement count + remove from array)
+      final postRef = _firestoreService.posts.doc(postId);
+      batch.update(postRef, {
+        'likesCount': FieldValue.increment(-1),
+        'likedBy': FieldValue.arrayRemove([userUid]),
+        'updatedAt': DateTime.now().toIso8601String(),
+      });
+
+      await batch.commit();
+    } catch (e) {
+      throw Exception('Failed to unlike post: $e');
     }
   }
 
   // ==================== READ ====================
 
-  /// Check if user has liked a post
-  Future<bool> hasUserLikedPost(int userId, int postId) async {
-    return await _db.exists(
-      'likes',
-      where: 'user_id = ? AND post_id = ?',
-      whereArgs: [userId, postId],
-    );
+  /// Check if user liked a post
+  Future<bool> isPostLiked(String postId, String userUid) async {
+    try {
+      final doc = await _firestoreService.posts
+          .doc(postId)
+          .collection('likes')
+          .doc(userUid)
+          .get();
+
+      return doc.exists;
+    } catch (e) {
+      return false;
+    }
   }
 
-  /// Get all likes for a post
-  Future<List<Like>> getLikesByPostId(int postId) async {
-    final maps = await _db.query(
-      'likes',
-      where: 'post_id = ?',
-      whereArgs: [postId],
-      orderBy: 'created_at DESC',
-    );
-    return maps.map((map) => Like.fromMap(map)).toList();
-  }
+  /// Get all user UIDs who liked a post
+  Future<List<String>> getPostLikes(String postId) async {
+    try {
+      final querySnapshot = await _firestoreService.posts
+          .doc(postId)
+          .collection('likes')
+          .get();
 
-  /// Get all posts liked by a user
-  Future<List<int>> getPostsLikedByUser(int userId) async {
-    final maps = await _db.query(
-      'likes',
-      columns: ['post_id'],
-      where: 'user_id = ?',
-      whereArgs: [userId],
-      orderBy: 'created_at DESC',
-    );
-    return maps.map((map) => map['post_id'] as int).toList();
+      return querySnapshot.docs.map((doc) => doc.id).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   /// Get likes count for a post
-  Future<int> getLikesCountByPostId(int postId) async {
-    return await _db.getCount(
-      'likes',
-      where: 'post_id = ?',
-      whereArgs: [postId],
-    );
+  Future<int> getLikesCount(String postId) async {
+    try {
+      final querySnapshot = await _firestoreService.posts
+          .doc(postId)
+          .collection('likes')
+          .count()
+          .get();
+
+      return querySnapshot.count ?? 0;
+    } catch (e) {
+      return 0;
+    }
   }
 
-  /// Get total number of likes by a user
-  Future<int> getLikesCountByUserId(int userId) async {
-    return await _db.getCount(
-      'likes',
-      where: 'user_id = ?',
-      whereArgs: [userId],
-    );
-  }
+  /// Get all posts liked by a user
+  Future<List<String>> getUserLikedPosts(String userUid) async {
+    try {
+      // Query posts where likedBy array contains userUid
+      final querySnapshot = await _firestoreService.posts
+          .where('likedBy', arrayContains: userUid)
+          .get();
 
-  /// Get users who liked a post
-  Future<List<int>> getUsersWhoLikedPost(int postId) async {
-    final maps = await _db.query(
-      'likes',
-      columns: ['user_id'],
-      where: 'post_id = ?',
-      whereArgs: [postId],
-    );
-    return maps.map((map) => map['user_id'] as int).toList();
-  }
-
-  // ==================== DELETE ====================
-
-  /// Remove a like from a post (unlike)
-  Future<int> unlikePost(int userId, int postId) async {
-    return await _db.delete(
-      'likes',
-      where: 'user_id = ? AND post_id = ?',
-      whereArgs: [userId, postId],
-    );
-  }
-
-  /// Delete all likes for a post
-  Future<int> deleteLikesByPostId(int postId) async {
-    return await _db.delete('likes', where: 'post_id = ?', whereArgs: [postId]);
-  }
-
-  /// Delete all likes by a user
-  Future<int> deleteLikesByUserId(int userId) async {
-    return await _db.delete('likes', where: 'user_id = ?', whereArgs: [userId]);
+      return querySnapshot.docs.map((doc) => doc.id).toList();
+    } catch (e) {
+      return [];
+    }
   }
 
   // ==================== UTILITY ====================
 
-  /// Toggle like (add if not exists, remove if exists)
-  Future<bool> toggleLike(int userId, int postId) async {
-    final exists = await hasUserLikedPost(userId, postId);
-    if (exists) {
-      await unlikePost(userId, postId);
-      return false; // unliked
-    } else {
-      await likePost(userId, postId);
-      return true; // liked
-    }
-  }
+  /// Delete all likes for a post (used when deleting post)
+  Future<void> deleteAllPostLikes(String postId) async {
+    try {
+      final querySnapshot = await _firestoreService.posts
+          .doc(postId)
+          .collection('likes')
+          .get();
 
-  /// Get total likes count
-  Future<int> getTotalLikesCount() async {
-    return await _db.getCount('likes');
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      throw Exception('Failed to delete all likes: $e');
+    }
   }
 }

@@ -8,7 +8,7 @@ import '../restaurant/restaurant_page.dart';
 import '../../blocs/search/search_bloc.dart';
 import '../../blocs/search/search_event.dart';
 import '../../blocs/search/search_state.dart';
-import '../../services/auth_service.dart';
+import '../../repositories/auth_repository.dart';
 import '../../l10n/app_localizations.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -24,8 +24,8 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    final authService = AuthService.instance;
-    final currentUserId = authService.currentUserId ?? 0;
+    final authRepository = context.read<AuthRepository>();
+    final currentUserId = authRepository.currentUserId ?? '';
     context.read<SearchBloc>().add(LoadSearchOverview(userId: currentUserId));
   }
 
@@ -48,8 +48,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService.instance;
-    final currentUserId = authService.currentUserId ?? 0;
+    final authRepository = context.read<AuthRepository>();
+    final currentUserId = authRepository.currentUserId ?? '';
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(

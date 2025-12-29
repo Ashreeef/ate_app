@@ -16,13 +16,20 @@ class PostProcessing extends PostState {
 }
 
 class PostSuccess extends PostState {
-  const PostSuccess();
+  final String? message;
+  final String? postId; // For create post success
+
+  const PostSuccess({this.message, this.postId});
+
+  @override
+  List<Object?> get props => [message, postId];
 }
 
 class PostFailure extends PostState {
-  final String message;
-  const PostFailure(this.message);
+  final String error;
+
+  const PostFailure(this.error);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [error];
 }

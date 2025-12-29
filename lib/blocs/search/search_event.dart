@@ -10,7 +10,7 @@ abstract class SearchEvent extends Equatable {
 
 /// Event to load initial search data (trending restaurants, recent searches)
 class LoadSearchOverview extends SearchEvent {
-  final int userId;
+  final String userId;
 
   const LoadSearchOverview({required this.userId});
 
@@ -31,7 +31,7 @@ class SearchRestaurantsRequested extends SearchEvent {
 /// Event to remove a single recent search entry from UI/history
 class RemoveRecentSearchEntry extends SearchEvent {
   final String query;
-  final int userId;
+  final String userId;
 
   const RemoveRecentSearchEntry({
     required this.query,
