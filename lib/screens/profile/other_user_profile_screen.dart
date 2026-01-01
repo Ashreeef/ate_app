@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import '../../repositories/follow_repository.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
-import '../../data/fake_data.dart';
 import '../../repositories/profile_repository.dart';
 import '../../repositories/post_repository.dart';
 import '../../models/user.dart';

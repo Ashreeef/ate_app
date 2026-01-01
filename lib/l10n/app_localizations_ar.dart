@@ -154,6 +154,161 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseLanguage => 'اختر اللغة';
 
   @override
+  String get helpSupport => 'المساعدة والدعم';
+
+  @override
+  String get contactUs => '📞 تواصل معنا';
+
+  @override
+  String get emailSupport => ' البريد الإلكتروني: support@ate-app.com';
+
+  @override
+  String get phoneSupport => ' الهاتف: +33 1 23 45 67 89';
+
+  @override
+  String get liveChat => ' الدردشة المباشرة: متوفرة 24/7';
+
+  @override
+  String get supportHours => ' الدعم: الإثنين-الجمعة 9 صباحاً-6 مساءً';
+
+  @override
+  String get frequentlyAsked => 'الأسئلة الشائعة';
+
+  @override
+  String get howToEditProfile => 'كيف أعدل ملفي الشخصي؟';
+
+  @override
+  String get howToEditProfileAnswer =>
+      'اذهب إلى الإعدادات > تعديل الملف الشخصي لتغيير معلوماتك الشخصية.';
+
+  @override
+  String get howToFollowUsers => 'كيف أتابع مستخدمين آخرين؟';
+
+  @override
+  String get howToFollowUsersAnswer =>
+      'قم بزيارة ملفهم الشخصي واضغط على زر \'متابعة\'.';
+
+  @override
+  String get howToPostPhoto => 'كيف أنشر صورة؟';
+
+  @override
+  String get howToPostPhotoAnswer =>
+      'اضغط على زر \'+\' في أسفل الشاشة، اختر صورة وأضف وصفاً.';
+
+  @override
+  String get howToReportContent => 'كيف أبلغ عن محتوى؟';
+
+  @override
+  String get howToReportContentAnswer =>
+      'اضغط على النقاط الثلاث على المنشور واختر \'إبلاغ\'.';
+
+  @override
+  String get forgotPasswordHelp => 'نسيت كلمة المرور؟';
+
+  @override
+  String get forgotPasswordHelpAnswer =>
+      'استخدم رابط \'نسيت كلمة المرور\' في شاشة تسجيل الدخول.';
+
+  @override
+  String get mainFeatures => 'الميزات الرئيسية';
+
+  @override
+  String get shareculinaryMoments => '•  شارك لحظاتك الطبخية';
+
+  @override
+  String get followFriends => '•  تابع أصدقائك واكتشف ملفات جديدة';
+
+  @override
+  String get likeComment => '•  أعجب وعلق على المنشورات';
+
+  @override
+  String get savePosts => '•  احفظ منشوراتك المفضلة';
+
+  @override
+  String get pointsSystem => '•  نظام النقاط والمستويات';
+
+  @override
+  String get discoverRestaurants => '•  اكتشف مطاعم جديدة';
+
+  @override
+  String get darkMode => 'الوضع الداكن';
+
+  @override
+  String get troubleshooting => ' حل المشاكل';
+
+  @override
+  String get restartApp => '• أعد تشغيل التطبيق إذا تصرف بشكل غريب';
+
+  @override
+  String get checkInternet => '• تحقق من اتصال الإنترنت';
+
+  @override
+  String get updateApp => '• حدث إلى أحدث إصدار';
+
+  @override
+  String get clearCache => '• امسح التخزين المؤقت في الإعدادات';
+
+  @override
+  String get contactSupport => '• تواصل مع الدعم إذا استمرت المشكلة';
+
+  @override
+  String get closeDialog => 'إغلاق';
+
+  @override
+  String get aboutAte => ' حول Ate';
+
+  @override
+  String get appDescription =>
+      'Ate هو رفيقك الطبخي النهائي! شارك تجاربك الغذائية، اكتشف مطاعم جديدة وتواصل مع عشاق الطعام الآخرين.';
+
+  @override
+  String get ourMission => ' مهمتنا';
+
+  @override
+  String get missionDescription =>
+      'ربط محبي الطعام وجعل كل وجبة لا تُنسى من خلال إنشاء مجتمع محب حول شغف الطبخ.';
+
+  @override
+  String get whatWeOffer => ' ما نقدمه';
+
+  @override
+  String get shareFoodPhotos => '• مشاركة صور أطباقك المفضلة';
+
+  @override
+  String get discoverNewRestaurants => '• اكتشاف مطاعم جديدة';
+
+  @override
+  String get personalizedRecommendations => '• نظام توصيات شخصية';
+
+  @override
+  String get activeCommunity => '• مجتمع نشط من محبي الطعام';
+
+  @override
+  String get intuitiveInterface => '• واجهة بديهية وحديثة';
+
+  @override
+  String get privacyRespect => '• احترام خصوصيتك';
+
+  @override
+  String get theTeam => ' الفريق';
+
+  @override
+  String get teamDescription =>
+      'تم التطوير بـ ❤️ من قبل فريق شغوف بالتكنولوجيا والطبخ، مقره في الجزائر.';
+
+  @override
+  String get versionInfo => 'الإصدار 1.0.0';
+
+  @override
+  String get buildInfo => 'البناء: 2026.01.01';
+
+  @override
+  String get allRightsReserved => '© 2025 أكل. جميع الحقوق محفوظة.';
+
+  @override
+  String get madeInAlgeria => 'صُنع في الجزائر 🇩🇿';
+
+  @override
   String get privacySecurity => 'الخصوصية والأمان';
 
   @override
@@ -172,37 +327,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get close => 'إغلاق';
 
   @override
-  String get helpSupport => 'المساعدة والدعم';
-
-  @override
   String get needHelp => 'هل تحتاج إلى مساعدة؟';
 
   @override
   String get phone => 'الهاتف';
 
   @override
-  String get frequentlyAsked => 'الأسئلة الشائعة';
-
-  @override
-  String get howToEditProfile => 'كيف أعدل ملفي الشخصي؟';
-
-  @override
-  String get howToFollowUsers => 'كيف أتابع مستخدمين آخرين؟';
-
-  @override
-  String get howToPostPhoto => 'كيف أنشر صورة؟';
-
-  @override
-  String get howToReportContent => 'كيف أبلغ عن محتوى؟';
-
-  @override
   String get about => 'حول';
 
   @override
   String get version => 'الإصدار 1.0.0';
-
-  @override
-  String get allRightsReserved => '© 2025 أكل. جميع الحقوق محفوظة.';
 
   @override
   String get termsPrivacy => 'الشروط والخصوصية';
@@ -264,9 +398,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get theme => 'المظهر';
-
-  @override
-  String get darkMode => 'الوضع الداكن';
 
   @override
   String get support => 'الدعم';
@@ -516,9 +647,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get arabic => 'العربية';
-
-  @override
-  String get emailSupport => '📧 البريد الإلكتروني: support@ate-app.com';
 
   @override
   String get addComment => 'أضف تعليقاً...';

@@ -388,6 +388,300 @@ abstract class AppLocalizations {
   /// **'Choose Language'**
   String get chooseLanguage;
 
+  /// No description provided for @helpSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Help & Support'**
+  String get helpSupport;
+
+  /// No description provided for @contactUs.
+  ///
+  /// In en, this message translates to:
+  /// **'📞 Contact Us'**
+  String get contactUs;
+
+  /// No description provided for @emailSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'📧 Email: support@ate-app.com'**
+  String get emailSupport;
+
+  /// No description provided for @phoneSupport.
+  ///
+  /// In en, this message translates to:
+  /// **' Phone: +33 1 23 45 67 89'**
+  String get phoneSupport;
+
+  /// No description provided for @liveChat.
+  ///
+  /// In en, this message translates to:
+  /// **' Live Chat: Available 24/7'**
+  String get liveChat;
+
+  /// No description provided for @supportHours.
+  ///
+  /// In en, this message translates to:
+  /// **' Support: Mon-Fri 9AM-6PM'**
+  String get supportHours;
+
+  /// No description provided for @frequentlyAsked.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently Asked Questions'**
+  String get frequentlyAsked;
+
+  /// No description provided for @howToEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'How to edit my profile?'**
+  String get howToEditProfile;
+
+  /// No description provided for @howToEditProfileAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Settings > Edit Profile to change your personal information.'**
+  String get howToEditProfileAnswer;
+
+  /// No description provided for @howToFollowUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'How to follow other users?'**
+  String get howToFollowUsers;
+
+  /// No description provided for @howToFollowUsersAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Visit their profile and tap the \'Follow\' button.'**
+  String get howToFollowUsersAnswer;
+
+  /// No description provided for @howToPostPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'How to post a photo?'**
+  String get howToPostPhoto;
+
+  /// No description provided for @howToPostPhotoAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the \'+\' button at the bottom of the screen, select a photo and add a description.'**
+  String get howToPostPhotoAnswer;
+
+  /// No description provided for @howToReportContent.
+  ///
+  /// In en, this message translates to:
+  /// **'How to report content?'**
+  String get howToReportContent;
+
+  /// No description provided for @howToReportContentAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the three dots on a post and select \'Report\'.'**
+  String get howToReportContentAnswer;
+
+  /// No description provided for @forgotPasswordHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPasswordHelp;
+
+  /// No description provided for @forgotPasswordHelpAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the \'Forgot Password\' link on the login screen.'**
+  String get forgotPasswordHelpAnswer;
+
+  /// No description provided for @mainFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ Main Features'**
+  String get mainFeatures;
+
+  /// No description provided for @shareculinaryMoments.
+  ///
+  /// In en, this message translates to:
+  /// **'•  Share your culinary moments'**
+  String get shareculinaryMoments;
+
+  /// No description provided for @followFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'•  Follow friends and discover new profiles'**
+  String get followFriends;
+
+  /// No description provided for @likeComment.
+  ///
+  /// In en, this message translates to:
+  /// **'•  Like and comment on posts'**
+  String get likeComment;
+
+  /// No description provided for @savePosts.
+  ///
+  /// In en, this message translates to:
+  /// **'•  Save your favorite posts'**
+  String get savePosts;
+
+  /// No description provided for @pointsSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'•  Points and levels system'**
+  String get pointsSystem;
+
+  /// No description provided for @discoverRestaurants.
+  ///
+  /// In en, this message translates to:
+  /// **'•  Discover new restaurants'**
+  String get discoverRestaurants;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark mode'**
+  String get darkMode;
+
+  /// No description provided for @troubleshooting.
+  ///
+  /// In en, this message translates to:
+  /// **' Troubleshooting'**
+  String get troubleshooting;
+
+  /// No description provided for @restartApp.
+  ///
+  /// In en, this message translates to:
+  /// **'• Restart the app if it behaves strangely'**
+  String get restartApp;
+
+  /// No description provided for @checkInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'• Check your internet connection'**
+  String get checkInternet;
+
+  /// No description provided for @updateApp.
+  ///
+  /// In en, this message translates to:
+  /// **'• Update to the latest version'**
+  String get updateApp;
+
+  /// No description provided for @clearCache.
+  ///
+  /// In en, this message translates to:
+  /// **'• Clear cache in settings'**
+  String get clearCache;
+
+  /// No description provided for @contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'• Contact support if the problem persists'**
+  String get contactSupport;
+
+  /// No description provided for @closeDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get closeDialog;
+
+  /// No description provided for @aboutAte.
+  ///
+  /// In en, this message translates to:
+  /// **'🍽️ About Ate'**
+  String get aboutAte;
+
+  /// No description provided for @appDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Ate is your ultimate culinary companion! Share your gastronomic experiences, discover new restaurants and connect with other food enthusiasts.'**
+  String get appDescription;
+
+  /// No description provided for @ourMission.
+  ///
+  /// In en, this message translates to:
+  /// **' Our Mission'**
+  String get ourMission;
+
+  /// No description provided for @missionDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting food lovers and making every meal memorable by creating a caring community around culinary passion.'**
+  String get missionDescription;
+
+  /// No description provided for @whatWeOffer.
+  ///
+  /// In en, this message translates to:
+  /// **' What We Offer'**
+  String get whatWeOffer;
+
+  /// No description provided for @shareFoodPhotos.
+  ///
+  /// In en, this message translates to:
+  /// **'• Share photos of your favorite dishes'**
+  String get shareFoodPhotos;
+
+  /// No description provided for @discoverNewRestaurants.
+  ///
+  /// In en, this message translates to:
+  /// **'• Discover new restaurants'**
+  String get discoverNewRestaurants;
+
+  /// No description provided for @personalizedRecommendations.
+  ///
+  /// In en, this message translates to:
+  /// **'• Personalized recommendation system'**
+  String get personalizedRecommendations;
+
+  /// No description provided for @activeCommunity.
+  ///
+  /// In en, this message translates to:
+  /// **'• Active community of food lovers'**
+  String get activeCommunity;
+
+  /// No description provided for @intuitiveInterface.
+  ///
+  /// In en, this message translates to:
+  /// **'• Intuitive and modern interface'**
+  String get intuitiveInterface;
+
+  /// No description provided for @privacyRespect.
+  ///
+  /// In en, this message translates to:
+  /// **'• Respect for your privacy'**
+  String get privacyRespect;
+
+  /// No description provided for @theTeam.
+  ///
+  /// In en, this message translates to:
+  /// **' The Team'**
+  String get theTeam;
+
+  /// No description provided for @teamDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Developed with ❤️ by a passionate team of technology and gastronomy, based in Algeria.'**
+  String get teamDescription;
+
+  /// No description provided for @versionInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Version 1.0.0'**
+  String get versionInfo;
+
+  /// No description provided for @buildInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Build: 2026.01.01'**
+  String get buildInfo;
+
+  /// No description provided for @allRightsReserved.
+  ///
+  /// In en, this message translates to:
+  /// **'© 2025 Ate. All rights reserved.'**
+  String get allRightsReserved;
+
+  /// No description provided for @madeInAlgeria.
+  ///
+  /// In en, this message translates to:
+  /// **'Made in Algeria 🇩🇿'**
+  String get madeInAlgeria;
+
   /// No description provided for @privacySecurity.
   ///
   /// In en, this message translates to:
@@ -424,12 +718,6 @@ abstract class AppLocalizations {
   /// **'Close'**
   String get close;
 
-  /// No description provided for @helpSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'Help & Support'**
-  String get helpSupport;
-
   /// No description provided for @needHelp.
   ///
   /// In en, this message translates to:
@@ -442,36 +730,6 @@ abstract class AppLocalizations {
   /// **'Phone'**
   String get phone;
 
-  /// No description provided for @frequentlyAsked.
-  ///
-  /// In en, this message translates to:
-  /// **'Frequently Asked Questions'**
-  String get frequentlyAsked;
-
-  /// No description provided for @howToEditProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'How to edit my profile?'**
-  String get howToEditProfile;
-
-  /// No description provided for @howToFollowUsers.
-  ///
-  /// In en, this message translates to:
-  /// **'How to follow other users?'**
-  String get howToFollowUsers;
-
-  /// No description provided for @howToPostPhoto.
-  ///
-  /// In en, this message translates to:
-  /// **'How to post a photo?'**
-  String get howToPostPhoto;
-
-  /// No description provided for @howToReportContent.
-  ///
-  /// In en, this message translates to:
-  /// **'How to report content?'**
-  String get howToReportContent;
-
   /// No description provided for @about.
   ///
   /// In en, this message translates to:
@@ -483,12 +741,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Version 1.0.0'**
   String get version;
-
-  /// No description provided for @allRightsReserved.
-  ///
-  /// In en, this message translates to:
-  /// **'© 2025 Ate. All rights reserved.'**
-  String get allRightsReserved;
 
   /// No description provided for @termsPrivacy.
   ///
@@ -603,12 +855,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Theme'**
   String get theme;
-
-  /// No description provided for @darkMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Dark mode'**
-  String get darkMode;
 
   /// No description provided for @support.
   ///
@@ -1083,12 +1329,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Arabic'**
   String get arabic;
-
-  /// No description provided for @emailSupport.
-  ///
-  /// In en, this message translates to:
-  /// **'📧 Email: support@ate-app.com'**
-  String get emailSupport;
 
   /// No description provided for @addComment.
   ///

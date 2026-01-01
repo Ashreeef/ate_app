@@ -101,7 +101,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
@@ -395,7 +394,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                           children: [
                                             // Simple direct heart animation
                                             AnimatedScale(
-                                              scale: post.likesCount > 0 ? 1.1 : 1.0,
+                                              scale: post.likesCount > 0
+                                                  ? 1.1
+                                                  : 1.0,
                                               duration: const Duration(
                                                 milliseconds: 100,
                                               ),

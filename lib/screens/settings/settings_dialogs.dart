@@ -6,6 +6,39 @@ import '../../blocs/settings/settings_cubit.dart';
 import '../../blocs/settings/settings_state.dart';
 
 class SettingsDialogs {
+  // Helper method for FAQ items
+  static Widget _buildFaqItem(String question, String answer) {
+    return Builder(
+      builder: (context) => Padding(
+        padding: EdgeInsets.symmetric(vertical: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              question,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 12, top: 2),
+              child: Text(
+                answer,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.3,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+            SizedBox(height: 4),
+          ],
+        ),
+      ),
+    );
+  }
+
   static void showChangePassword(BuildContext context) {
     final currentPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
@@ -229,45 +262,209 @@ class SettingsDialogs {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.helpSupport),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.needHelp,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
+        title: Row(
+          children: [
+            Icon(
+              Icons.help_outline,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            SizedBox(width: 8),
+            Text(AppLocalizations.of(context)!.helpSupport),
+          ],
+        ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Contact Section
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.contactUs,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        AppLocalizations.of(context)!.emailSupport,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.phoneSupport,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.liveChat,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.supportHours,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: AppSpacing.md),
-              Text('📧 Email: support@ate-app.com'),
-              SizedBox(height: AppSpacing.sm),
-              Text(
-                '📱 ${AppLocalizations.of(context)!.phone}: +33 1 23 45 67 89',
-              ),
-              SizedBox(height: AppSpacing.md),
-              Divider(),
-              SizedBox(height: AppSpacing.md),
-              Text(
-                AppLocalizations.of(context)!.frequentlyAsked,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.bold,
+                SizedBox(height: 16),
+
+                // FAQ Section
+                Text(
+                  AppLocalizations.of(context)!.frequentlyAsked,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
-              ),
-              SizedBox(height: AppSpacing.sm),
-              Text('• ${AppLocalizations.of(context)!.howToEditProfile}'),
-              Text('• ${AppLocalizations.of(context)!.howToFollowUsers}'),
-              Text('• ${AppLocalizations.of(context)!.howToPostPhoto}'),
-              Text('• ${AppLocalizations.of(context)!.howToReportContent}'),
-            ],
+                SizedBox(height: 8),
+                _buildFaqItem(
+                  AppLocalizations.of(context)!.howToEditProfile,
+                  AppLocalizations.of(context)!.howToEditProfileAnswer,
+                ),
+                _buildFaqItem(
+                  AppLocalizations.of(context)!.howToFollowUsers,
+                  AppLocalizations.of(context)!.howToFollowUsersAnswer,
+                ),
+                _buildFaqItem(
+                  AppLocalizations.of(context)!.howToPostPhoto,
+                  AppLocalizations.of(context)!.howToPostPhotoAnswer,
+                ),
+                _buildFaqItem(
+                  AppLocalizations.of(context)!.howToReportContent,
+                  AppLocalizations.of(context)!.howToReportContentAnswer,
+                ),
+                _buildFaqItem(
+                  AppLocalizations.of(context)!.forgotPasswordHelp,
+                  AppLocalizations.of(context)!.forgotPasswordHelpAnswer,
+                ),
+
+                SizedBox(height: 16),
+
+                // Features Section
+                Text(
+                  AppLocalizations.of(context)!.mainFeatures,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.shareculinaryMoments,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.followFriends,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.likeComment,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.savePosts,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.pointsSystem,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.discoverRestaurants,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.darkMode,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+
+                SizedBox(height: 16),
+
+                // Troubleshooting Section
+                Text(
+                  AppLocalizations.of(context)!.troubleshooting,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.restartApp,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.checkInternet,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.updateApp,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.clearCache,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.contactSupport,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Fermer'),
+            child: Text(AppLocalizations.of(context)!.closeDialog),
           ),
         ],
       ),
@@ -280,40 +477,211 @@ class SettingsDialogs {
       builder: (context) => AlertDialog(
         title: Row(
           children: [
+            Icon(
+              Icons.restaurant,
+              color: Theme.of(context).colorScheme.primary,
+              size: 28,
+            ),
+            SizedBox(width: 8),
             Text(
               'Ate',
-              style: AppTextStyles.heading2.copyWith(
-                color: AppColors.primary,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
+                fontSize: 24,
               ),
             ),
           ],
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              AppLocalizations.of(context)!.version,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textMedium,
-              ),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Version Info
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest
+                        .withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.versionInfo,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          Text(
+                            AppLocalizations.of(context)!.buildInfo,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 16),
+
+                // App Description
+                Text(
+                  AppLocalizations.of(context)!.aboutAte,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.appDescription,
+                  style: TextStyle(
+                    height: 1.4,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 16),
+
+                // Mission
+                Text(
+                  AppLocalizations.of(context)!.ourMission,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.missionDescription,
+                  style: TextStyle(
+                    height: 1.4,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 16),
+
+                // Features
+                Text(
+                  AppLocalizations.of(context)!.whatWeOffer,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.shareFoodPhotos,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.discoverNewRestaurants,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.personalizedRecommendations,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.activeCommunity,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.intuitiveInterface,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  AppLocalizations.of(context)!.privacyRespect,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 16),
+
+                // Team
+                Text(
+                  AppLocalizations.of(context)!.theTeam,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.teamDescription,
+                  style: TextStyle(
+                    height: 1.4,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+                SizedBox(height: 16),
+
+                // Legal
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        AppLocalizations.of(context)!.allRightsReserved,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        AppLocalizations.of(context)!.madeInAlgeria,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: AppSpacing.md),
-            Text(AppConstants.appTagline, style: AppTextStyles.body),
-            SizedBox(height: AppSpacing.md),
-            Text(
-              AppLocalizations.of(context)!.allRightsReserved,
-              style: AppTextStyles.caption.copyWith(
-                color: AppColors.textMedium,
-              ),
-            ),
-          ],
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text(AppLocalizations.of(context)!.closeDialog),
           ),
         ],
       ),
