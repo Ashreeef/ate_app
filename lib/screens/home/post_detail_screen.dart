@@ -40,7 +40,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   String? _authorUid;
   String? _currentUserAvatarUrl;
 
-
   @override
   void initState() {
     super.initState();
@@ -51,17 +50,19 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   Future<void> _loadInitialData() async {
     // Basic setup - check both userUid (Firestore) and userId (Legacy)
     _authorUid = _post['userUid'] ?? _post['userId']?.toString();
-    
-    // Safety check: Firestore UIDs are long strings. 
+
+    // Safety check: Firestore UIDs are long strings.
     // If it's a short numeric string, it's a legacy ID and won't work for fetch.
     if (_authorUid != null && _authorUid!.length < 5) {
-       print('PostDetail: Found legacy ID $_authorUid, fetch will likely fail.');
+      print('PostDetail: Found legacy ID $_authorUid, fetch will likely fail.');
     }
-    
+
     // 1. Fetch fresh author data
     if (_authorUid != null) {
       try {
-        final author = await context.read<AuthRepository>().getUserByUid(_authorUid!);
+        final author = await context.read<AuthRepository>().getUserByUid(
+          _authorUid!,
+        );
         if (mounted && author != null) {
           setState(() {
             _authorUsername = author.username;
@@ -77,12 +78,20 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       if (currentUserUid != null) {
         try {
           // Fetch interaction status
-          final isLiked = await LikeRepository().isPostLiked(_post['postId'], currentUserUid);
-          final isSaved = await SavedPostRepository().isPostSaved(_post['postId'], currentUserUid);
-          
+          final isLiked = await LikeRepository().isPostLiked(
+            _post['postId'],
+            currentUserUid,
+          );
+          final isSaved = await SavedPostRepository().isPostSaved(
+            _post['postId'],
+            currentUserUid,
+          );
+
           // Fetch current user avatar
-          final currentUser = await context.read<AuthRepository>().getUserByUid(currentUserUid);
-          
+          final currentUser = await context.read<AuthRepository>().getUserByUid(
+            currentUserUid,
+          );
+
           if (mounted) {
             setState(() {
               _isLiked = isLiked;
@@ -151,7 +160,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
     try {
       // Get current user info for the comment
-      final user = await context.read<AuthRepository>().getUserByUid(currentUserUid);
+      final user = await context.read<AuthRepository>().getUserByUid(
+        currentUserUid,
+      );
       final username = user?.username ?? l10n.unknown;
       final userAvatar = user?.profileImage;
 
@@ -171,12 +182,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
       // Refresh post data to get updated counts
       await _loadInitialData();
-
     } catch (e) {
       print('Error adding comment: $e');
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.failedToAddComment(e.toString()))));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.failedToAddComment(e.toString()),
+          ),
+        ),
+      );
     }
   }
 
@@ -190,7 +204,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       // Optimistically update UI
       setState(() {
         _isLiked = !_isLiked;
-        _post['likes_count'] = (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
+        _post['likes_count'] =
+            (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
       });
 
       final LikeRepository likeRepo = LikeRepository();
@@ -199,7 +214,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       } else {
         await likeRepo.unlikePost(postId, currentUserUid);
       }
-      
+
       // No need to update post manually, repository handles it.
       // Verify state later if needed.
     } catch (e) {
@@ -207,11 +222,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       // Revert on error
       setState(() {
         _isLiked = !_isLiked;
-        _post['likes_count'] = (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
+        _post['likes_count'] =
+            (_post['likes_count'] ?? 0) + (_isLiked ? 1 : -1);
       });
-        ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update like')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to update like')));
     }
   }
 
@@ -240,7 +256,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         _isSaved = !_isSaved;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocalizations.of(context)!.failedToUpdateSave)),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.failedToUpdateSave),
+        ),
       );
     }
   }
@@ -254,12 +272,17 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
-        title: Text(l10n.post, style: AppTextStyles.heading3),
+        title: Text(
+          l10n.post,
+          style: AppTextStyles.heading3.copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(
               Icons.more_vert,
-              color: AppColors.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
               size: AppSizes.icon,
             ),
             onPressed: _showOptions,
@@ -329,16 +352,19 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           GestureDetector(
             onTap: () {
               final userUid = _authorUid ?? _post['userUid'] as String?;
-              final currentUserUid = context.read<AuthRepository>().currentUserId;
+              final currentUserUid = context
+                  .read<AuthRepository>()
+                  .currentUserId;
               if (userUid != null) {
                 if (userUid == currentUserUid) {
                   NavigationShell.selectTab(context, 4);
-                  Navigator.pop(context); 
+                  Navigator.pop(context);
                 } else {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => OtherUserProfileScreen(userId: userUid),
+                      builder: (context) =>
+                          OtherUserProfileScreen(userId: userUid),
                     ),
                   );
                 }
@@ -354,25 +380,31 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         fit: BoxFit.cover,
                         width: AppSizes.avatar,
                         height: AppSizes.avatar,
-                        errorBuilder: (context, error, stackTrace) => Icon(Icons.person),
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(Icons.person),
                       ),
                     )
-                  : ((_post['userAvatarUrl'] != null && _post['userAvatarUrl'].isNotEmpty) || 
-                     (_post['userAvatar'] != null && _post['userAvatar'].isNotEmpty)
-                      ? ClipOval(
-                          child: Image.network(
-                            _post['userAvatarUrl'] ?? _post['userAvatar'],
-                            fit: BoxFit.cover,
-                            width: AppSizes.avatar,
-                            height: AppSizes.avatar,
-                            errorBuilder: (context, error, stackTrace) => Icon(Icons.person),
-                          ),
-                        )
-                      : Icon(
-                          Icons.person,
-                          color: AppColors.textMedium,
-                          size: AppSizes.icon,
-                        )),
+                  : ((_post['userAvatarUrl'] != null &&
+                                _post['userAvatarUrl'].isNotEmpty) ||
+                            (_post['userAvatar'] != null &&
+                                _post['userAvatar'].isNotEmpty)
+                        ? ClipOval(
+                            child: Image.network(
+                              _post['userAvatarUrl'] ?? _post['userAvatar'],
+                              fit: BoxFit.cover,
+                              width: AppSizes.avatar,
+                              height: AppSizes.avatar,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(Icons.person),
+                            ),
+                          )
+                        : Icon(
+                            Icons.person,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
+                            size: AppSizes.icon,
+                          )),
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
@@ -383,7 +415,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 GestureDetector(
                   onTap: () {
                     final userUid = _authorUid ?? _post['userUid'] as String?;
-                    final currentUserUid = context.read<AuthRepository>().currentUserId;
+                    final currentUserUid = context
+                        .read<AuthRepository>()
+                        .currentUserId;
                     if (userUid != null) {
                       if (userUid == currentUserUid) {
                         NavigationShell.selectTab(context, 4);
@@ -392,14 +426,18 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => OtherUserProfileScreen(userId: userUid),
+                            builder: (context) =>
+                                OtherUserProfileScreen(userId: userUid),
                           ),
                         );
                       }
                     }
                   },
                   child: Text(
-                    _authorUsername ?? _post['username'] ?? _post['userName'] ?? 'Unknown User',
+                    _authorUsername ??
+                        _post['username'] ??
+                        _post['userName'] ??
+                        'Unknown User',
                     style: AppTextStyles.username,
                   ),
                 ),
@@ -438,11 +476,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     if (imageUrl == null || imageUrl.isEmpty || imageUrl == 'null') {
       return Container(
         height: 400,
-        color: AppColors.background,
+        color: Theme.of(context).colorScheme.surface,
         child: Center(
           child: Icon(
             Icons.image_not_supported,
-            color: AppColors.textMedium,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             size: AppSizes.iconXl,
           ),
         ),
@@ -464,14 +502,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 if (loadingProgress == null) return child;
                 return Container(
                   height: 400,
-                  color: AppColors.background,
+                  color: Theme.of(context).colorScheme.surface,
                   child: Center(
                     child: CircularProgressIndicator(
                       value: loadingProgress.expectedTotalBytes != null
                           ? loadingProgress.cumulativeBytesLoaded /
                                 loadingProgress.expectedTotalBytes!
                           : null,
-                      color: AppColors.primary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 );
@@ -504,13 +542,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               errorBuilder: (context, error, stackTrace) {
                 return Container(
                   height: 400,
-                  color: AppColors.background,
+                  color: Theme.of(context).colorScheme.surface,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
                         Icons.error_outline,
-                        color: AppColors.textMedium,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                         size: AppSizes.iconXl,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -534,7 +572,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           IconButton(
             icon: Icon(
               _isLiked ? Icons.favorite : Icons.favorite_border,
-              color: _isLiked ? AppColors.primary : AppColors.textDark,
+              color: _isLiked
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurface,
               size: AppSizes.icon,
             ),
             onPressed: _toggleLike,
@@ -542,7 +582,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           IconButton(
             icon: Icon(
               Icons.comment_outlined,
-              color: AppColors.textDark,
+              color: Theme.of(context).colorScheme.onSurface,
               size: AppSizes.icon,
             ),
             onPressed: () {
@@ -558,7 +598,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           IconButton(
             icon: Icon(
               _isSaved ? Icons.bookmark : Icons.bookmark_border,
-              color: _isSaved ? AppColors.primary : AppColors.textDark,
+              color: _isSaved
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.onSurface,
               size: AppSizes.icon,
             ),
             onPressed: _toggleSave,
@@ -610,7 +652,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               text: '${_post['username'] ?? l10n.unknown} ',
               style: AppTextStyles.bodySmall.copyWith(
                 fontWeight: FontWeight.w600,
-                color: AppColors.textDark,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
             TextSpan(text: _post['caption'] ?? ''),
@@ -624,7 +666,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     if (_post['restaurantName'] == null && _post['dish_name'] == null) {
       return const SizedBox.shrink();
     }
-    
+
     return PostRestaurantInfo(
       restaurantId: _post['restaurantId']?.toString(),
       restaurantName: _post['restaurantName'] ?? '',
@@ -668,15 +710,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             const SizedBox(height: AppSpacing.md),
             if (_comments.isEmpty)
               Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 32),
-                    child: Text(
-                      AppLocalizations.of(context)!.noCommentsYet,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textMedium,
-                      ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32),
+                  child: Text(
+                    AppLocalizations.of(context)!.noCommentsYet,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                  )
+                  ),
+                ),
               )
             else
               ListView.builder(
@@ -693,7 +735,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         GestureDetector(
                           onTap: () {
                             if (comment['userId'] != null) {
-                              final currentUserUid = context.read<AuthRepository>().currentUserId;
+                              final currentUserUid = context
+                                  .read<AuthRepository>()
+                                  .currentUserId;
                               if (comment['userId'] == currentUserUid) {
                                 NavigationShell.selectTab(context, 4);
                                 Navigator.pop(context);
@@ -701,7 +745,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => OtherUserProfileScreen(userId: comment['userId']),
+                                    builder: (context) =>
+                                        OtherUserProfileScreen(
+                                          userId: comment['userId'],
+                                        ),
                                   ),
                                 );
                               }
@@ -709,15 +756,23 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                           },
                           child: CircleAvatar(
                             radius: AppSizes.avatarSm / 2,
-                            backgroundColor: AppColors.background,
-                            backgroundImage: comment['userAvatar'] != null && comment['userAvatar'].toString().isNotEmpty
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.surfaceVariant,
+                            backgroundImage:
+                                comment['userAvatar'] != null &&
+                                    comment['userAvatar'].toString().isNotEmpty
                                 ? NetworkImage(comment['userAvatar'])
                                 : null,
-                            child: (comment['userAvatar'] == null || comment['userAvatar'].toString().isEmpty)
+                            child:
+                                (comment['userAvatar'] == null ||
+                                    comment['userAvatar'].toString().isEmpty)
                                 ? Icon(
                                     Icons.person,
                                     size: AppSizes.iconXs,
-                                    color: AppColors.textMedium,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurfaceVariant,
                                   )
                                 : null,
                           ),
@@ -735,20 +790,32 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                       text: '${comment['username']} ',
                                       style: AppTextStyles.bodySmall.copyWith(
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.textDark,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
                                       ),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () {
                                           if (comment['userId'] != null) {
-                                            final currentUserUid = context.read<AuthRepository>().currentUserId;
-                                            if (comment['userId'] == currentUserUid) {
-                                              NavigationShell.selectTab(context, 4);
+                                            final currentUserUid = context
+                                                .read<AuthRepository>()
+                                                .currentUserId;
+                                            if (comment['userId'] ==
+                                                currentUserUid) {
+                                              NavigationShell.selectTab(
+                                                context,
+                                                4,
+                                              );
                                               Navigator.pop(context);
                                             } else {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => OtherUserProfileScreen(userId: comment['userId']),
+                                                  builder: (context) =>
+                                                      OtherUserProfileScreen(
+                                                        userId:
+                                                            comment['userId'],
+                                                      ),
                                                 ),
                                               );
                                             }
@@ -758,7 +825,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     TextSpan(
                                       text: comment['text'],
                                       style: AppTextStyles.bodySmall.copyWith(
-                                        color: AppColors.textDark,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onSurface,
                                       ),
                                     ),
                                   ],
@@ -811,21 +880,30 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        border: Border(top: BorderSide(color: AppColors.border, width: 1)),
+        border: Border(
+          top: BorderSide(
+            color: Theme.of(context).colorScheme.outline,
+            width: 1,
+          ),
+        ),
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: AppSizes.avatarSm / 2,
-            backgroundColor: AppColors.background,
-            backgroundImage: _currentUserAvatarUrl != null && _currentUserAvatarUrl!.isNotEmpty
+            backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+            backgroundImage:
+                _currentUserAvatarUrl != null &&
+                    _currentUserAvatarUrl!.isNotEmpty
                 ? NetworkImage(_currentUserAvatarUrl!)
                 : null,
-            child: (_currentUserAvatarUrl == null || _currentUserAvatarUrl!.isEmpty)
+            child:
+                (_currentUserAvatarUrl == null ||
+                    _currentUserAvatarUrl!.isEmpty)
                 ? Icon(
                     Icons.person,
                     size: AppSizes.iconXs,
-                    color: AppColors.textMedium,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   )
                 : null,
           ),
@@ -836,7 +914,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context)!.addComment,
                 hintStyle: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textMedium,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(
@@ -849,7 +927,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           IconButton(
             icon: Icon(
               Icons.send,
-              color: AppColors.primary,
+              color: Theme.of(context).colorScheme.primary,
               size: AppSizes.icon,
             ),
             onPressed: _addComment,
@@ -864,12 +942,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     final currentUserUid = context.read<AuthRepository>().currentUserId;
     // Use verified author UID from initState if available, else fallback
     final postUserUid = _authorUid ?? _post['userUid'] as String?;
-    
+
     // Debug prints to verify deletion logic
     print('Options Debug: CurrentUser: $currentUserUid');
     print('Options Debug: PostUser: $postUserUid');
-    
-    final isOwner = currentUserUid != null && postUserUid != null && currentUserUid == postUserUid;
+
+    final isOwner =
+        currentUserUid != null &&
+        postUserUid != null &&
+        currentUserUid == postUserUid;
     print('Options Debug: isOwner: $isOwner');
 
     showModalBottomSheet(
@@ -888,10 +969,15 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             children: [
               if (isOwner)
                 ListTile(
-                  leading: Icon(Icons.delete_outline, color: AppColors.error),
+                  leading: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
                   title: Text(
-                    l10n.deleteAction, 
-                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.error)
+                    l10n.deleteAction,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                   ),
                   onTap: () {
                     Navigator.pop(context);
@@ -899,7 +985,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   },
                 ),
               ListTile(
-                leading: Icon(Icons.flag_outlined, color: AppColors.textDark),
+                leading: Icon(
+                  Icons.flag_outlined,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 title: Text(l10n.report, style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
@@ -907,7 +996,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.link, color: AppColors.textDark),
+                leading: Icon(
+                  Icons.link,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 title: Text(l10n.copyLink, style: AppTextStyles.bodyMedium),
                 onTap: () {
                   Navigator.pop(context);
@@ -916,10 +1008,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       content: Text(
                         l10n.linkCopied,
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.white,
+                          color: Theme.of(context).colorScheme.onInverseSurface,
                         ),
                       ),
-                      backgroundColor: AppColors.textDark,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.inverseSurface,
                       behavior: SnackBarBehavior.floating,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
@@ -932,7 +1026,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               ),
               const Divider(height: 1),
               ListTile(
-                leading: Icon(Icons.close, color: AppColors.textDark),
+                leading: Icon(
+                  Icons.close,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 title: Text(l10n.cancel, style: AppTextStyles.bodyMedium),
                 onTap: () => Navigator.pop(context),
               ),
@@ -958,7 +1055,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             onPressed: () => Navigator.pop(context, true),
             child: Text(
               AppLocalizations.of(context)!.deleteAction,
-              style: TextStyle(color: AppColors.error),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
         ],
@@ -976,29 +1073,33 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
     try {
       context.read<PostBloc>().add(DeletePostEvent(postId));
-      
-      // Wait a bit or listen to state? 
+
+      // Wait a bit or listen to state?
       // For simplicity, assume success and pop with result
       // Ideally we should use BlocListener
-      
+
       // But we need to return 'true' to indicate deletion to the previous screen
       // Let's delay/assume success for now or wait for repo
       // Actually, Bloc will emit state.
       // We should really wrap the Scaffold in BlocListener for PostDeletedSuccess
-      
-      // For now, let's just pop immediately after dispatching, 
-      // assuming the Bloc handles it. 
+
+      // For now, let's just pop immediately after dispatching,
+      // assuming the Bloc handles it.
       // But we want to refresh the previous screen.
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.postDeleted)),
-        );
-        Navigator.pop(context, true);
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(AppLocalizations.of(context)!.failedToDeletePost(e.toString()))),
-        );
-      }
+        SnackBar(content: Text(AppLocalizations.of(context)!.postDeleted)),
+      );
+      Navigator.pop(context, true);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocalizations.of(context)!.failedToDeletePost(e.toString()),
+          ),
+        ),
+      );
+    }
   }
 
   @override

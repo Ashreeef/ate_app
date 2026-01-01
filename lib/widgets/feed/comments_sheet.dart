@@ -15,7 +15,7 @@ class CommentsSheet {
           builder: (context, scrollController) {
             return Container(
               decoration: BoxDecoration(
-                color: Theme.of(context).cardTheme.color,
+                color: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(AppSizes.borderRadiusLg),
                   topRight: Radius.circular(AppSizes.borderRadiusLg),
@@ -29,15 +29,24 @@ class CommentsSheet {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Comments', style: AppTextStyles.heading3),
+                        Text(
+                          'Comments',
+                          style: AppTextStyles.heading3.copyWith(
+                            color: Theme.of(context).textTheme.bodyLarge?.color,
+                          ),
+                        ),
                         IconButton(
                           onPressed: () => Navigator.pop(context),
-                          icon: Icon(Icons.close, size: AppSizes.icon),
+                          icon: Icon(
+                            Icons.close,
+                            size: AppSizes.icon,
+                            color: Theme.of(context).iconTheme.color,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Divider(height: 1),
+                  Divider(height: 1, color: Theme.of(context).dividerColor),
                   // Comments list
                   Expanded(
                     child: ListView.builder(
@@ -89,7 +98,11 @@ class CommentsSheet {
                                     SizedBox(height: 4),
                                     Text(
                                       comment['text'],
-                                      style: AppTextStyles.body,
+                                      style: AppTextStyles.body.copyWith(
+                                        color: Theme.of(
+                                          context,
+                                        ).textTheme.bodyLarge?.color,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -103,9 +116,12 @@ class CommentsSheet {
                   // Input field - stays at bottom
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.white,
+                      color: Theme.of(context).cardColor,
                       border: Border(
-                        top: BorderSide(color: AppColors.divider, width: 1),
+                        top: BorderSide(
+                          color: Theme.of(context).dividerColor,
+                          width: 1,
+                        ),
                       ),
                     ),
                     padding: EdgeInsets.only(
@@ -121,17 +137,22 @@ class CommentsSheet {
                         children: [
                           Expanded(
                             child: TextField(
+                              style: TextStyle(
+                                color: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.color,
+                              ),
                               decoration: InputDecoration(
                                 hintText: 'Add a comment...',
                                 hintStyle: AppTextStyles.body.copyWith(
-                                  color: AppColors.textLight,
+                                  color: Theme.of(context).hintColor,
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
                                     AppSizes.borderRadiusRound,
                                   ),
                                   borderSide: BorderSide(
-                                    color: AppColors.divider,
+                                    color: Theme.of(context).dividerColor,
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
@@ -139,7 +160,7 @@ class CommentsSheet {
                                     AppSizes.borderRadiusRound,
                                   ),
                                   borderSide: BorderSide(
-                                    color: AppColors.divider,
+                                    color: Theme.of(context).dividerColor,
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
@@ -151,6 +172,12 @@ class CommentsSheet {
                                     width: 2,
                                   ),
                                 ),
+                                fillColor:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.surface
+                                    : Theme.of(context).colorScheme.background,
+                                filled: true,
                                 contentPadding: EdgeInsets.symmetric(
                                   horizontal: AppSpacing.md,
                                   vertical: AppSpacing.sm,

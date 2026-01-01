@@ -119,9 +119,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   centerTitle: true,
                   title: Text(
                     l10n.profile,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   actions: [
@@ -162,9 +163,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 centerTitle: true,
                 title: Text(
                   '@$username',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 actions: [
@@ -332,21 +334,153 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               );
                               _loadProfileAndPosts();
                             },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: imageUrl.isNotEmpty
-                                    ? DecorationImage(
-                                        image: NetworkImage(imageUrl),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                                color: imageUrl.isEmpty
-                                    ? Colors.grey.withOpacity(0.3)
-                                    : null,
-                              ),
-                              child: imageUrl.isEmpty
-                                  ? const Icon(Icons.image, color: Colors.grey)
-                                  : null,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    image: imageUrl.isNotEmpty
+                                        ? DecorationImage(
+                                            image: NetworkImage(imageUrl),
+                                            fit: BoxFit.cover,
+                                          )
+                                        : null,
+                                    color: imageUrl.isEmpty
+                                        ? Colors.grey.withOpacity(0.3)
+                                        : null,
+                                  ),
+                                  child: imageUrl.isEmpty
+                                      ? const Icon(
+                                          Icons.image,
+                                          color: Colors.grey,
+                                        )
+                                      : null,
+                                ),
+                                // Interaction overlay
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.transparent,
+                                          Colors.black.withOpacity(0.3),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                // Like and comment indicators
+                                Positioned(
+                                  bottom: 8,
+                                  right: 8,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Like indicator with animation
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            AnimatedContainer(
+                                              duration: const Duration(
+                                                milliseconds: 200,
+                                              ),
+                                              child: Icon(
+                                                post.likesCount > 0
+                                                    ? Icons.favorite
+                                                    : Icons.favorite_border,
+                                                color: post.likesCount > 0
+                                                    ? Colors.red
+                                                    : Colors.white,
+                                                size: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '${post.likesCount}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      // Comment indicator
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black54,
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.chat_bubble_outline,
+                                              color: Colors.white,
+                                              size: 14,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              '${post.commentsCount}',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Tap feedback overlay
+                                Positioned.fill(
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        // Add subtle tap animation
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                PostDetailScreen(
+                                                  post: post.toFirestore(),
+                                                ),
+                                          ),
+                                        );
+                                        _loadProfileAndPosts();
+                                      },
+                                      splashColor: AppColors.primary
+                                          .withOpacity(0.2),
+                                      highlightColor: AppColors.primary
+                                          .withOpacity(0.1),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           );
                         }, childCount: _posts.length),
