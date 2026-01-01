@@ -25,7 +25,6 @@ class Post {
   final DateTime createdAt;
   final DateTime? updatedAt;
 
-
   Post({
     this.id,
     this.postId,
@@ -49,12 +48,11 @@ class Post {
     List<String>? savedByUids,
     DateTime? createdAt,
     this.updatedAt,
-  })  : likedBy = likedBy ?? [],
-        likedByUids = likedByUids ?? [],
-        savedBy = savedBy ?? [],
-        savedByUids = savedByUids ?? [],
-        createdAt = createdAt ?? DateTime.now();
-
+  }) : likedBy = likedBy ?? [],
+       likedByUids = likedByUids ?? [],
+       savedBy = savedBy ?? [],
+       savedByUids = savedByUids ?? [],
+       createdAt = createdAt ?? DateTime.now();
 
   /// Convert Post to Map for Firestore
   Map<String, dynamic> toMapForFirestore() {
@@ -64,7 +62,8 @@ class Post {
       'username': username,
       'userAvatarUrl': userAvatarUrl,
       'caption': caption,
-      'restaurantId': restaurantUid, // Firestore uses 'restaurantId' key for the UID string
+      'restaurantId':
+          restaurantUid, // Firestore uses 'restaurantId' key for the UID string
       'restaurantName': restaurantName,
       'dishName': dishName,
       'rating': rating,
@@ -92,10 +91,10 @@ class Post {
       restaurantUid: data['restaurantId'] as String?,
       restaurantName: data['restaurantName'] as String?,
       dishName: data['dishName'] as String?,
-      rating: data['rating'] != null ? (data['rating'] as num).toDouble() : null,
-      images: data['images'] != null
-          ? List<String>.from(data['images'])
-          : [],
+      rating: data['rating'] != null
+          ? (data['rating'] as num).toDouble()
+          : null,
+      images: data['images'] != null ? List<String>.from(data['images']) : [],
       likesCount: data['likesCount'] ?? 0,
       commentsCount: data['commentsCount'] ?? 0,
       likedByUids: data['likedBy'] != null
@@ -112,7 +111,6 @@ class Post {
           : null,
     );
   }
-
 
   Post copyWith({
     int? id,
