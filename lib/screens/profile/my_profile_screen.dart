@@ -27,21 +27,51 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadProfileAndPosts();
+    _initializeProfile();
+  }
+
+  @override
+  void dispose() {
+    // Clear any pending operations
+    super.dispose();
+  }
+
+  /// Initialize profile data safely
+  Future<void> _initializeProfile() async {
+    if (!mounted) return;
+
+    try {
+      await _loadProfileAndPosts();
+    } catch (e) {
+      print(' Error initializing profile: $e');
+    }
   }
 
   /// Reload user profile and their posts from database
   Future<void> _loadProfileAndPosts() async {
-    // Refresh profile data from database
-    final cubit = context.read<ProfileCubit>();
-    await cubit.loadProfile();
+    if (!mounted) return;
 
-    // Load user's posts
-    await _loadPosts();
+    try {
+      // Refresh profile data from database
+      final cubit = context.read<ProfileCubit>();
+      await cubit.loadProfile();
+
+      if (!mounted) return;
+
+      // Load user's posts
+      await _loadPosts();
+    } catch (e) {
+      print(' Error loading profile and posts: $e');
+      if (mounted) {
+        setState(() => _isLoadingPosts = false);
+      }
+    }
   }
 
   /// Fetch posts for current user from database
   Future<void> _loadPosts() async {
+    if (!mounted) return;
+
     final cubit = context.read<ProfileCubit>();
     final user = cubit.state.user;
     final userUid = user?.uid;
@@ -56,6 +86,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           });
         }
       } catch (e) {
+        print(' Error loading posts: $e');
         if (mounted) {
           setState(() => _isLoadingPosts = false);
         }
@@ -77,17 +108,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         // Show loading indicator while profile is being loaded
         if (state.status == ProfileStatus.loading || _isLoadingPosts) {
           return Scaffold(
-            backgroundColor: isDark
-                ? const Color(0xFF101622)
-                : const Color(0xFFF6F6F8),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             body: CustomScrollView(
               slivers: [
                 SliverAppBar(
                   pinned: true,
                   elevation: 1,
-                  backgroundColor: isDark
-                      ? const Color(0xFF101622)
-                      : const Color(0xFFF6F6F8),
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   automaticallyImplyLeading: false,
                   centerTitle: true,
                   title: Text(
@@ -123,18 +150,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         final username = user?.username ?? FakeUserData.username;
 
         return Scaffold(
-          backgroundColor: isDark
-              ? const Color(0xFF101622)
-              : const Color(0xFFF6F6F8),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           body: CustomScrollView(
             slivers: [
               /// ================= TOP BAR =================
               SliverAppBar(
                 pinned: true,
                 elevation: 1,
-                backgroundColor: isDark
-                    ? const Color(0xFF101622)
-                    : const Color(0xFFF6F6F8),
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 automaticallyImplyLeading: false,
                 centerTitle: true,
                 title: Text(
@@ -348,18 +371,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   /// Build enhanced avatar with fallback
   Widget _buildEnhancedAvatar(user) {
-    final username = user?.username ?? FakeUserData.username;
-    final avatar = user?.profileImage ?? _buildDefaultAvatar(username);
+    final username = user?.username ?? '';
+    final avatarUrl = user?.profileImage ?? '';
 
     return Stack(
       children: [
         CircleAvatar(
           radius: 56,
           backgroundColor: AppColors.primary.withOpacity(0.1),
-          child: avatar.isNotEmpty
+          child: avatarUrl.isNotEmpty
               ? ClipOval(
                   child: Image.network(
-                    avatar,
+                    avatarUrl,
                     width: 112,
                     height: 112,
                     fit: BoxFit.cover,

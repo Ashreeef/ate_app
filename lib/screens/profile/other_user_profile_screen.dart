@@ -8,7 +8,6 @@ import '../../repositories/profile_repository.dart';
 import '../../repositories/post_repository.dart';
 import '../../models/user.dart';
 import '../../models/post.dart';
-import '../../widgets/profile/profile_posts_grid.dart';
 import '../home/post_detail_screen.dart';
 
 class OtherUserProfileScreen extends StatefulWidget {
@@ -29,16 +28,45 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   User? _currentUser;
   List<Post> _posts = [];
   bool _isLoading = true;
-  bool _isLoadingPosts = true;
   bool _isFollowing = false;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _loadCurrentUser();
-    _loadUser();
-    _loadPosts();
+    _initializeProfile();
+  }
+
+  @override
+  void dispose() {
+    // Clear any pending operations or listeners
+    super.dispose();
+  }
+
+  /// Initialize profile data in proper sequence
+  Future<void> _initializeProfile() async {
+    if (!mounted) return;
+
+    try {
+      // Load current user first
+      await _loadCurrentUser();
+      if (!mounted) return;
+
+      // Then load the profile user
+      await _loadUser();
+      if (!mounted) return;
+
+      // Finally load posts
+      await _loadPosts();
+    } catch (e) {
+      print('❌ Error initializing profile: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+      }
+    }
   }
 
   Future<void> _checkFollowingStatus() async {
@@ -82,7 +110,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           _user = user;
           _isLoading = false;
         });
-        // Load posts and check follow status after user is loaded
+        // Check follow status after user is loaded
         await _checkFollowingStatus();
       }
     } catch (e) {
@@ -99,23 +127,19 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   Future<void> _loadPosts() async {
     if (!mounted) return;
 
-    setState(() => _isLoadingPosts = true);
-    print('🔍 Loading posts for user: ${widget.userId}');
+    print(' Loading posts for user: ${widget.userId}');
 
     try {
       final posts = await _postRepository.getUserPosts(widget.userId);
-      print('✅ Loaded ${posts.length} posts');
+      print(' Loaded ${posts.length} posts');
       if (mounted) {
         setState(() {
           _posts = posts;
-          _isLoadingPosts = false;
         });
       }
     } catch (e) {
-      print('❌ Error loading posts: $e');
-      if (mounted) {
-        setState(() => _isLoadingPosts = false);
-      }
+      print(' Error loading posts: $e');
+      // Don't change loading state here as it might conflict with user loading
     }
   }
 
@@ -124,7 +148,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
 
     final currentUserId = _currentUser!.uid!;
     final targetUserId = _user!.uid!;
-    print('🔄 Toggle follow: $currentUserId -> $targetUserId');
+    print(' Toggle follow: $currentUserId -> $targetUserId');
 
     try {
       if (_isFollowing) {
@@ -162,7 +186,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
         ).showSnackBar(SnackBar(content: Text('Follow status updated!')));
       }
     } catch (e) {
-      print('❌ Error toggling follow: $e');
+      print(' Error toggling follow: $e');
       if (mounted) {
         ScaffoldMessenger.of(
           context,
@@ -345,7 +369,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  Expanded(child: _PointsCard(points: user.points ?? 0)),
+                  Expanded(child: _PointsCard(points: user.points)),
                 ],
               ),
             ),
@@ -595,18 +619,6 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   /// Handle follow/unfollow action
   Future<void> _handleFollowAction() async {
     await _toggleFollow();
-  }
-
-  List<Map<String, dynamic>> _convertPostsToFakeFormat() {
-    return _posts.map((post) {
-      final images = post.images;
-      return {
-        'id': post.postId,
-        'imageUrl': images.isNotEmpty ? images.first : FakeUserData.avatarUrl,
-        'likes': post.likesCount,
-        'comments': post.commentsCount,
-      };
-    }).toList();
   }
 }
 
