@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../utils/constants.dart';
+import '../../utils/constants.dart' show AppColors, AppSpacing, AppSizes;
+import '../../utils/constants.dart' as constants;
 import '../../l10n/app_localizations.dart';
 import '../../data/fake_data.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -85,7 +86,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               elevation: 0,
               automaticallyImplyLeading: false,
               centerTitle: true,
-              title: Text(l10n.profile, style: AppTextStyles.heading4),
+              title: Text(
+                l10n.profile,
+                style: constants.AppTextStyles.heading4,
+              ),
             ),
             body: Center(child: CircularProgressIndicator()),
           );
@@ -112,7 +116,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             centerTitle: true,
             title: Text(
               '@$username',
-              style: AppTextStyles.heading4.copyWith(
+              style: constants.AppTextStyles.heading4.copyWith(
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
               ),
@@ -137,7 +141,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               Container(
                 height: 1,
                 color: AppColors.divider.withValues(
-                  alpha: AppConstants.opacityMedium,
+                  alpha: constants.AppConstants.opacityMedium,
                 ),
               ),
 
@@ -168,7 +172,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     padding: EdgeInsets.all(AppSpacing.xl),
                                     child: Text(
                                       AppLocalizations.of(context)!.noPosts,
-                                      style: AppTextStyles.bodyMedium,
+                                      style: constants.AppTextStyles.bodyMedium,
                                     ),
                                   )
                                 : ProfilePostsGrid(
@@ -182,8 +186,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                         final result = await Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => 
-                                              PostDetailScreen(post: post.toFirestore()),
+                                            builder: (context) =>
+                                                PostDetailScreen(
+                                                  post: post.toFirestore(),
+                                                ),
                                           ),
                                         );
 
@@ -191,7 +197,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                         if (result == true && mounted) {
                                           _loadPosts();
                                           // Also refresh user profile stats (post count)
-                                          context.read<ProfileCubit>().loadProfile();
+                                          context
+                                              .read<ProfileCubit>()
+                                              .loadProfile();
                                         }
                                       } catch (e) {
                                         print('Error navigating to post: $e');
@@ -243,7 +251,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 title: Text(
                   AppLocalizations.of(context)!.settingsTitle,
-                  style: AppTextStyles.bodyMedium,
+                  style: constants.AppTextStyles.bodyMedium,
                 ),
                 onTap: () {
                   Navigator.pop(context);
@@ -260,13 +268,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 title: Text(
                   AppLocalizations.of(context)!.savedPosts,
-                  style: AppTextStyles.bodyMedium,
+                  style: constants.AppTextStyles.bodyMedium,
                 ),
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SavedPostsScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const SavedPostsScreen(),
+                    ),
                   );
                 },
               ),
@@ -277,7 +287,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 title: Text(
                   AppLocalizations.of(context)!.editProfile,
-                  style: AppTextStyles.bodyMedium,
+                  style: constants.AppTextStyles.bodyMedium,
                 ),
                 onTap: () async {
                   Navigator.pop(context);
@@ -297,7 +307,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 leading: Icon(Icons.share_outlined),
                 title: Text(
                   AppLocalizations.of(context)!.shareProfile,
-                  style: AppTextStyles.bodyMedium,
+                  style: constants.AppTextStyles.bodyMedium,
                 ),
                 onTap: () async {
                   Navigator.pop(context);

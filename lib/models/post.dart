@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Post {
   final int? id; // Deprecated - SQLite only
   final String? postId; // Firestore document ID

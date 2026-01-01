@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Comment {
   final int? id; // Deprecated - SQLite only
   final String? commentId; // Firestore document ID
