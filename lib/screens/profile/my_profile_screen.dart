@@ -393,9 +393,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            AnimatedContainer(
+                                            // Simple direct heart animation
+                                            AnimatedScale(
+                                              scale: post.likesCount > 0 ? 1.1 : 1.0,
                                               duration: const Duration(
-                                                milliseconds: 200,
+                                                milliseconds: 100,
                                               ),
                                               child: Icon(
                                                 post.likesCount > 0
@@ -408,12 +410,42 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                               ),
                                             ),
                                             const SizedBox(width: 4),
-                                            Text(
-                                              '${post.likesCount}',
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w600,
+                                            AnimatedSwitcher(
+                                              duration: const Duration(
+                                                milliseconds: 100,
+                                              ),
+                                              transitionBuilder:
+                                                  (child, animation) {
+                                                    return ScaleTransition(
+                                                      scale: animation,
+                                                      child: child,
+                                                    );
+                                                  },
+                                              child: Text(
+                                                '${post.likesCount}',
+                                                key: ValueKey(post.likesCount),
+                                                style: TextStyle(
+                                                  color: post.likesCount > 0
+                                                      ? Colors.white
+                                                      : Colors.white
+                                                            .withOpacity(0.8),
+                                                  fontSize: 12,
+                                                  fontWeight:
+                                                      post.likesCount > 0
+                                                      ? FontWeight.bold
+                                                      : FontWeight.w600,
+                                                  shadows: post.likesCount > 0
+                                                      ? [
+                                                          Shadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                  0.3,
+                                                                ),
+                                                            blurRadius: 2,
+                                                          ),
+                                                        ]
+                                                      : null,
+                                                ),
                                               ),
                                             ),
                                           ],
