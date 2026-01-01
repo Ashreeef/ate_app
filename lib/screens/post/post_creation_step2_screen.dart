@@ -53,7 +53,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
       // Get current user from AuthRepository
       final authRepo = context.read<AuthRepository>();
       final currentUser = await authRepo.getCurrentUser();
-      
+
       if (currentUser == null) {
         throw Exception('User not authenticated');
       }
@@ -64,19 +64,21 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
           .toList();
 
       // Create post event with new structure
-      context.read<PostBloc>().add(CreatePostEvent(
-        userUid: currentUser.uid!,
-        username: currentUser.username,
-        userAvatarUrl: currentUser.profileImage,
-        caption: _captionController.text,
-        imageFiles: imageFiles,
-        restaurantUid: _selectedRestaurantId,
-        restaurantName: _restaurantController.text,
-        dishName: _dishNameController.text.isNotEmpty
-            ? _dishNameController.text
-            : null,
-        rating: _rating,
-      ));
+      context.read<PostBloc>().add(
+        CreatePostEvent(
+          userUid: currentUser.uid!,
+          username: currentUser.username,
+          userAvatarUrl: currentUser.profileImage,
+          caption: _captionController.text,
+          imageFiles: imageFiles,
+          restaurantUid: _selectedRestaurantId,
+          restaurantName: _restaurantController.text,
+          dishName: _dishNameController.text.isNotEmpty
+              ? _dishNameController.text
+              : null,
+          rating: _rating,
+        ),
+      );
     } catch (e) {
       _showErrorSnackBar('${AppLocalizations.of(context)!.error}: $e');
       setState(() => _isSubmitting = false);
@@ -130,14 +132,14 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
         appBar: AppBar(
           title: Text(
             AppLocalizations.of(context)!.newPost,
-            style: AppTextStyles.heading3,
+            style: Theme.of(context).appBarTheme.titleTextStyle,
           ),
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           elevation: 0,
           leading: IconButton(
             icon: Icon(
               Icons.arrow_back,
-              color: AppColors.textDark,
+              color: Theme.of(context).iconTheme.color,
               size: AppSizes.icon,
             ),
             onPressed: _isSubmitting ? null : () => Navigator.pop(context),
