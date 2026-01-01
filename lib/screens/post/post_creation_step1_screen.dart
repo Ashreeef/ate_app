@@ -234,7 +234,9 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
             SizedBox(height: AppSpacing.lg),
             Text(
               l10n.addPhotos,
-              style: AppTextStyles.heading2.copyWith(color: AppColors.textDark),
+              style: AppTextStyles.heading2.copyWith(
+                color: Theme.of(context).textTheme.headlineMedium?.color,
+              ),
             ),
             SizedBox(height: AppSpacing.sm),
             Text(
