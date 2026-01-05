@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Restaurant {
   final String? id; // UID in Firestore
   final int? legacyId; // Keep for backward compatibility if needed
@@ -57,11 +59,21 @@ class Restaurant {
 
   /// Create Restaurant from Firestore Map
   factory Restaurant.fromFirestore(String id, Map<String, dynamic> data) {
+    // Handle location which might be a String or GeoPoint
+    String? locationString;
+    final locationData = data['location'];
+    if (locationData is String) {
+      locationString = locationData;
+    } else if (locationData is GeoPoint) {
+      // Convert GeoPoint to readable string format
+      locationString = '${locationData.latitude}, ${locationData.longitude}';
+    }
+
     return Restaurant(
       id: id,
       name: data['name'] as String? ?? '',
       searchName: data['searchName'] as String?,
-      location: data['location'] as String?,
+      location: locationString,
       cuisineType: data['cuisineType'] as String?,
       rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
       imageUrl: data['imageUrl'] as String?,
