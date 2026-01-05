@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Like {
   final int? id; // Deprecated - SQLite only
   final int? userId; // Deprecated - SQLite only

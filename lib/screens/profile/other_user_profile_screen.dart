@@ -3,13 +3,10 @@ import 'package:flutter/services.dart';
 import '../../repositories/follow_repository.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
-import '../../data/fake_data.dart';
 import '../../repositories/profile_repository.dart';
 import '../../repositories/post_repository.dart';
 import '../../models/user.dart';
 import '../../models/post.dart';
-import '../../widgets/profile/profile_header.dart';
-import '../../widgets/profile/profile_posts_grid.dart';
 import '../home/post_detail_screen.dart';
 
 class OtherUserProfileScreen extends StatefulWidget {
@@ -25,28 +22,58 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   final ProfileRepository _repository = ProfileRepository();
   final PostRepository _postRepository = PostRepository();
   final FollowRepository _followRepository = FollowRepository();
-  
+
   User? _user;
   User? _currentUser;
   List<Post> _posts = [];
   bool _isLoading = true;
-  bool _isLoadingPosts = true;
   bool _isFollowing = false;
   String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
-    _loadCurrentUser();
-    _loadUser();
+    _initializeProfile();
+  }
+
+  @override
+  void dispose() {
+    // Clear any pending operations or listeners
+    super.dispose();
+  }
+
+  /// Initialize profile data in proper sequence
+  Future<void> _initializeProfile() async {
+    if (!mounted) return;
+
+    try {
+      // Load current user first
+      await _loadCurrentUser();
+      if (!mounted) return;
+
+      // Then load the profile user
+      await _loadUser();
+      if (!mounted) return;
+
+      // Finally load posts
+      await _loadPosts();
+    } catch (e) {
+      print('❌ Error initializing profile: $e');
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = e.toString();
+        });
+      }
+    }
   }
 
   Future<void> _checkFollowingStatus() async {
     if (_currentUser == null || _user == null) return;
     try {
       final isFollowing = await _followRepository.isFollowing(
-        _currentUser!.uid!, 
-        _user!.uid!
+        _currentUser!.uid!,
+        _user!.uid!,
       );
       if (mounted) {
         setState(() => _isFollowing = isFollowing);
@@ -76,115 +103,93 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       // Use Firestore UID
       final user = await _repository.getUserByUid(widget.userId);
       print('✅ User loaded: ${user?.username} (UID: ${user?.uid})');
-      
+
       if (mounted) {
         setState(() {
           _user = user;
           _isLoading = false;
         });
-      }
-
-      // Check follow status after user is loaded
-      if (_currentUser != null) {
+        // Check follow status after user is loaded
         await _checkFollowingStatus();
-      }
-
-      // Load posts after user is loaded
-      if (user != null) {
-        _loadPosts();
       }
     } catch (e) {
       print('❌ Error loading user: $e');
       if (mounted) {
         setState(() {
-          _errorMessage = e.toString();
           _isLoading = false;
-          _isLoadingPosts = false;
+          _errorMessage = e.toString();
         });
       }
     }
   }
 
   Future<void> _loadPosts() async {
+    if (!mounted) return;
+
+    print(' Loading posts for user: ${widget.userId}');
+
     try {
-      setState(() => _isLoadingPosts = true);
-      print(' Loading posts for userId: ${widget.userId}');
-      // Use Firestore method
       final posts = await _postRepository.getUserPosts(widget.userId);
-      print(' Posts loaded: ${posts.length} posts found');
+      print(' Loaded ${posts.length} posts');
       if (mounted) {
         setState(() {
           _posts = posts;
-          _isLoadingPosts = false;
         });
       }
     } catch (e) {
-      print('Error loading posts: $e');
-      if (mounted) {
-        setState(() => _isLoadingPosts = false);
-      }
+      print(' Error loading posts: $e');
+      // Don't change loading state here as it might conflict with user loading
     }
   }
 
   Future<void> _toggleFollow() async {
-    if (_currentUser == null || _user == null) {
-      print('⚠️ Cannot toggle follow: _currentUser or _user is null');
-      return;
-    }
+    if (_currentUser == null || _user == null) return;
 
-    final currentUid = _currentUser!.uid;
-    final targetUid = _user!.uid;
-
-    if (currentUid == null || targetUid == null) {
-      return;
-    }
-
-    // Optimistic update
-    setState(() => _isFollowing = !_isFollowing);
+    final currentUserId = _currentUser!.uid!;
+    final targetUserId = _user!.uid!;
+    print(' Toggle follow: $currentUserId -> $targetUserId');
 
     try {
       if (_isFollowing) {
-        await _followRepository.followUser(
-          currentUserId: currentUid,
-          targetUserId: targetUid,
+        await _followRepository.unfollowUser(
+          currentUserId: currentUserId,
+          targetUserId: targetUserId,
         );
       } else {
-        await _followRepository.unfollowUser(
-          currentUserId: currentUid,
-          targetUserId: targetUid,
+        await _followRepository.followUser(
+          currentUserId: currentUserId,
+          targetUserId: targetUserId,
         );
       }
 
-      // Reload user data to get updated counts
+      // Update user data
       final updatedUser = await _repository.getUserByUid(widget.userId);
-      if (mounted && updatedUser != null) {
+      if (mounted) {
         setState(() => _user = updatedUser);
-        
-        final l10n = AppLocalizations.of(context)!;
-        final message = _isFollowing
-            ? l10n.nowFollowing(_user!.username)
-            : l10n.unfollowed(_user!.username);
-        final bgColor = _isFollowing ? AppColors.success : AppColors.error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(message),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: bgColor,
-            duration: Duration(seconds: 1),
+            content: Text(
+              _isFollowing
+                  ? 'Unfollowed ${_user!.username}'
+                  : AppLocalizations.of(context)!.followed,
+            ),
           ),
         );
       }
-    } catch (e) {
-      // Revert on error
+
+      // Update following status
       if (mounted) {
         setState(() => _isFollowing = !_isFollowing);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.errorUpdatingFollow),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: AppColors.error,
-          ),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Follow status updated!')));
+      }
+    } catch (e) {
+      print(' Error toggling follow: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error updating follow status')));
       }
     }
   }
@@ -193,276 +198,580 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
-          backgroundColor: AppColors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
             icon: Icon(
-              Icons.arrow_back,
-              color: Theme.of(context).iconTheme.color,
+              Icons.arrow_back_ios,
+              color: Theme.of(context).textTheme.bodyLarge!.color,
             ),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (_errorMessage != null || _user == null) {
+    if (_errorMessage != null) {
       return Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
-          backgroundColor: AppColors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
             icon: Icon(
-              Icons.arrow_back,
-              color: Theme.of(context).iconTheme.color,
+              Icons.arrow_back_ios,
+              color: Theme.of(context).textTheme.bodyLarge!.color,
             ),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ),
         body: Center(
-          child: Text(
-            _errorMessage ?? AppLocalizations.of(context)!.userNotFound,
-            style: AppTextStyles.bodyMedium,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _errorMessage!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(onPressed: _loadUser, child: Text('Try Again')),
+            ],
           ),
         ),
       );
     }
 
-    final username = _user!.username;
-    // Use userAvatarUrl if available, fallback to legacy field or fake
-    final avatar = _user!.userAvatarUrl ?? _user!.profileImage ?? FakeUserData.avatarUrl;
+    if (_user == null) return const SizedBox();
+
+    final user = _user!;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        centerTitle: true,
-        title: Text(
-          '@$username',
-          style: AppTextStyles.heading4.copyWith(
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.5,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.more_vert,
-              color: Theme.of(context).iconTheme.color,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: CustomScrollView(
+        slivers: [
+          /// ================= SLIVER APP BAR =================
+          SliverAppBar(
+            expandedHeight: 200,
+            floating: false,
+            pinned: true,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-            tooltip: AppLocalizations.of(context)!.moreOptions,
-            onPressed: () {
-              _showOptionsMenu(context);
-            },
-          ),
-        ],
-      ),
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
+                ),
+                onPressed: () => _showOptionsMenu(context),
+              ),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.primary.withValues(alpha: 0.1),
+                      Theme.of(
+                        context,
+                      ).colorScheme.surface.withValues(alpha: 0.9),
+                    ],
+                  ),
+                ),
+                child: SafeArea(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40),
 
-      body: Column(
-        children: [
-          // Subtle divider under app bar
-          Container(
-            height: 1,
-            color: AppColors.divider.withValues(
-              alpha: AppConstants.opacityMedium,
-            ),
-          ),
-          Expanded(
-            child: _isLoadingPosts
-                ? Center(child: CircularProgressIndicator())
-                : SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        // Profile Header Component
-                        ProfileHeader(
-                          userId: _user!.uid,
-                          avatarUrl: avatar,
-                          username: username,
-                          posts: _posts.length,
-                          followers: _user!.followersCount,
-                          following: _user!.followingCount,
-                          rank: _user!.level,
-                          points: _user!.points,
-                        ),
+                      /// Enhanced Avatar
+                      _buildEnhancedAvatar(user),
 
-                        // Divider Line
-                        Container(height: 1, color: AppColors.divider),
+                      const SizedBox(height: 16),
 
-                        // Follow Button
-                        Padding(
-                          padding: EdgeInsets.all(AppSpacing.lg),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _toggleFollow,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: _isFollowing
-                                    ? Colors.grey[300]
-                                    : AppColors.primary,
-                                padding: EdgeInsets.symmetric(
-                                  vertical: AppSpacing.md,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    AppSizes.borderRadius,
-                                  ),
-                                ),
-                              ),
-                              child: Text(
-                                _isFollowing 
-                                    ? AppLocalizations.of(context)!.followed 
-                                    : AppLocalizations.of(context)!.follow,
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: _isFollowing
-                                      ? AppColors.textDark
-                                      : Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                      /// Username
+                      Text(
+                        user.username,
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(
+                                context,
+                              ).textTheme.bodyLarge!.color,
                             ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      /// Bio
+                      if (user.bio?.isNotEmpty == true)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: Text(
+                            user.bio!,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: Colors.grey[600]),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
 
-                        // Posts Grid Component
-                        _posts.isEmpty
-                            ? Padding(
-                                padding: EdgeInsets.all(AppSpacing.xl),
-                                child: Text(
-                                  AppLocalizations.of(context)!.noPosts,
-                                  style: AppTextStyles.bodyMedium,
-                                ),
-                              )
-                            : ProfilePostsGrid(
-                                posts: _convertPostsToFakeFormat(),
-                                onPostTap: (postId) async {
-                                  try {
-                                    final post = _posts.firstWhere(
-                                      (p) => p.postId == postId,
-                                    );
-                                    // Navigate to detail screen
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => 
-                                          PostDetailScreen(post: post.toFirestore()),
-                                      ),
-                                    );
-                                    
-                                    // Refresh posts when coming back (to update likes/comments counts)
-                                    if (mounted) {
-                                      _loadPosts();
-                                    }
-                                  } catch (e) {
-                                    print('Error navigating to post: $e');
-                                  }
-                                },
+          /// ================= STATS ROW =================
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _StatItem(title: 'Posts', value: '${_posts.length}'),
+                  _VerticalDivider(),
+                  _StatItem(
+                    title: 'Followers',
+                    value: '${user.followersCount}',
+                  ),
+                  _VerticalDivider(),
+                  _StatItem(
+                    title: 'Following',
+                    value: '${user.followingCount}',
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          /// ================= RANK & POINTS CARDS =================
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _RankCard(
+                      rank: (user.level is int) ? user.level as int : 1,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(child: _PointsCard(points: user.points)),
+                ],
+              ),
+            ),
+          ),
+
+          /// ================= ACTION BUTTONS =================
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: _toggleFollow,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _isFollowing
+                            ? Colors.grey[300]
+                            : AppColors.primary,
+                        foregroundColor: _isFollowing
+                            ? Colors.black87
+                            : Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      icon: Icon(
+                        _isFollowing ? Icons.person_remove : Icons.person_add,
+                        size: 20,
+                      ),
+                      label: Text(
+                        _isFollowing
+                            ? AppLocalizations.of(context)!.followed
+                            : AppLocalizations.of(context)!.follow,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
+
+          /// ================= PHOTO GRID =================
+          _posts.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Container(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.photo_library_outlined,
+                          size: 64,
+                          color: Colors.grey.withValues(alpha: 0.5),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          AppLocalizations.of(context)!.noPosts,
+                          style: Theme.of(context).textTheme.bodyLarge
+                              ?.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey,
                               ),
+                        ),
                       ],
                     ),
                   ),
+                )
+              : SliverPadding(
+                  padding: const EdgeInsets.all(1),
+                  sliver: SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 1,
+                          mainAxisSpacing: 1,
+                        ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final post = _posts[index];
+                      final imageUrl = post.images.isNotEmpty
+                          ? post.images.first
+                          : '';
+                      return GestureDetector(
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PostDetailScreen(post: post.toFirestore()),
+                            ),
+                          );
+                        },
+                        child: Stack(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                image: imageUrl.isNotEmpty
+                                    ? DecorationImage(
+                                        image: NetworkImage(imageUrl),
+                                        fit: BoxFit.cover,
+                                      )
+                                    : null,
+                                color: imageUrl.isEmpty
+                                    ? Colors.grey.withValues(alpha: 0.3)
+                                    : null,
+                              ),
+                              child: imageUrl.isEmpty
+                                  ? const Center(
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        color: Colors.grey,
+                                        size: 32,
+                                      ),
+                                    )
+                                  : null,
+                            ),
+                            // Likes count overlay
+                            Positioned(
+                              top: 8,
+                              left: 8,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.favorite,
+                                      color: Colors.red,
+                                      size: 14,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${post.likesCount}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }, childCount: _posts.length),
+                  ),
+                ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 32)),
+        ],
+      ),
+    );
+  }
+
+  /// Build enhanced avatar with fallback
+  Widget _buildEnhancedAvatar(User user) {
+    final avatar = user.profileImage ?? '';
+    final username = user.username;
+
+    return Container(
+      width: 100,
+      height: 100,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(
+          color: AppColors.primary.withValues(alpha: 0.3),
+          width: 3,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: CircleAvatar(
+        radius: 48,
+        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+        backgroundImage: avatar.isNotEmpty ? NetworkImage(avatar) : null,
+        child: avatar.isEmpty
+            ? Text(
+                username.isNotEmpty ? username[0].toUpperCase() : 'U',
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              )
+            : null,
+      ),
+    );
+  }
+
+  /// Show options menu
+  void _showOptionsMenu(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: Icon(
+              _isFollowing ? Icons.person_remove : Icons.person_add,
+            ),
+            title: Text(_isFollowing ? l10n.followed : l10n.follow),
+            onTap: () {
+              Navigator.pop(context);
+              _handleFollowAction();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.share_outlined),
+            title: Text(l10n.shareProfile),
+            onTap: () async {
+              Navigator.pop(context);
+              final shareText =
+                  'Check out @${_user!.username} on Ate!\n\nBio: ${_user!.bio}';
+              await Clipboard.setData(ClipboardData(text: shareText));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Profile link copied to clipboard!'),
+                ),
+              );
+            },
           ),
         ],
       ),
     );
   }
 
-  List<Map<String, dynamic>> _convertPostsToFakeFormat() {
-    return _posts.map((post) {
-      final images = post.images;
-      return {
-        'id': post.postId,
-        'imageUrl': images.isNotEmpty ? images.first : FakeUserData.avatarUrl,
-        'likes': post.likesCount,
-        'comments': post.commentsCount,
-      };
-    }).toList();
+  /// Handle follow/unfollow action
+  Future<void> _handleFollowAction() async {
+    await _toggleFollow();
+  }
+}
+
+/// ================= HELPER WIDGETS =================
+
+class _StatItem extends StatelessWidget {
+  final String title;
+  final String value;
+
+  const _StatItem({required this.title, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          value,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 4),
+        Text(title, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+      ],
+    );
+  }
+}
+
+class _VerticalDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      width: 1,
+      color: Colors.grey.withValues(alpha: 0.3),
+    );
+  }
+}
+
+class _RankCard extends StatelessWidget {
+  final int rank;
+
+  const _RankCard({required this.rank});
+
+  @override
+  Widget build(BuildContext context) {
+    final level = _getRankLevel(rank);
+    final progress = _getLevelProgress(level);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(5, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.stars, color: Colors.amber),
+              SizedBox(width: 6),
+              Text('RANK', style: TextStyle(fontSize: 11, color: Colors.grey)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            level,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: progress,
+            backgroundColor: Colors.grey.withOpacity(0.2),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+          ),
+        ],
+      ),
+    );
   }
 
-  /// Show menu with follow and share options
-  void _showOptionsMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSizes.borderRadiusLg),
-        ),
+  String _getRankLevel(int rank) {
+    if (rank <= 10) return 'Bronze';
+    if (rank <= 25) return 'Silver';
+    if (rank <= 50) return 'Gold';
+    return 'Platinum';
+  }
+
+  double _getLevelProgress(String level) {
+    switch (level.toLowerCase()) {
+      case 'bronze':
+        return 0.25;
+      case 'silver':
+        return 0.5;
+      case 'gold':
+        return 0.75;
+      case 'platinum':
+        return 1.0;
+      default:
+        return 0.1;
+    }
+  }
+}
+
+class _PointsCard extends StatelessWidget {
+  final int points;
+
+  const _PointsCard({required this.points});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              ListTile(
-                leading: Icon(
-                  Icons.person_add_outlined,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-                title: Text(AppLocalizations.of(context)!.follow, style: AppTextStyles.bodyMedium),
-                onTap: () {
-                  Navigator.pop(context);
-                  _toggleFollow();
-                },
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.share_outlined,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-                title: Text(
-                  AppLocalizations.of(context)!.shareProfile,
-                  style: AppTextStyles.bodyMedium,
-                ),
-                onTap: () async {
-                  Navigator.pop(context);
-                  if (_user != null) {
-                    final shareText =
-                        'Check out @${_user!.username} on Ate!\n\n${_user!.bio ?? ""}';
-                    showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text(AppLocalizations.of(context)!.shareUserProfileTitle(_user!.username)),
-                        content: SelectableText(shareText),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(AppLocalizations.of(context)!.close),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Clipboard.setData(ClipboardData(text: shareText));
-                              Navigator.pop(context);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(AppLocalizations.of(context)!.copiedToClipboard),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                            child: Text(AppLocalizations.of(context)!.copy),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                },
+              Icon(Icons.emoji_events, color: AppColors.primary),
+              const SizedBox(width: 6),
+              const Text(
+                'POINTS',
+                style: TextStyle(fontSize: 11, color: Colors.grey),
               ),
             ],
           ),
-        );
-      },
+          const SizedBox(height: 6),
+          Text(
+            points.toString(),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'User points',
+            style: TextStyle(fontSize: 10, color: Colors.grey),
+          ),
+        ],
+      ),
     );
   }
 }

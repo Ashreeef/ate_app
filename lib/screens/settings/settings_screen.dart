@@ -36,7 +36,7 @@ class SettingsScreen extends StatelessWidget {
         centerTitle: true,
         title: Text(
           AppLocalizations.of(context)!.settingsTitle,
-          style: AppTextStyles.heading3.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
       ),
       body: SingleChildScrollView(

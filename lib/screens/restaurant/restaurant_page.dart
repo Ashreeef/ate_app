@@ -67,14 +67,12 @@ class _RestaurantPageState extends State<RestaurantPage> {
 
             return Scaffold(
               appBar: AppBar(
-                backgroundColor: AppColors.white,
+                backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
                 elevation: 0,
                 centerTitle: true,
                 title: Text(
                   restaurant.name,
-                  style: AppTextStyles.heading3.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
               ),
               body: CustomScrollView(
@@ -95,7 +93,9 @@ class _RestaurantPageState extends State<RestaurantPage> {
                           SizedBox(height: AppSpacing.md),
                           if (state.dishes.isEmpty)
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppSpacing.lg,
+                              ),
                               child: Center(
                                 child: Text(
                                   l10n.noDishes,
@@ -106,15 +106,18 @@ class _RestaurantPageState extends State<RestaurantPage> {
                               ),
                             )
                           else
-                            ...state.dishes.map((dish) => MenuItemCard(
-                                  name: dish.name,
-                                  imageUrl: dish.imageUrl,
-                                  rating: dish.rating,
-                                  reviewCount: 0, // TODO: Implement dish review count
-                                  onTap: () {
-                                    // TODO: Navigate to dish detail if needed
-                                  },
-                                )),
+                            ...state.dishes.map(
+                              (dish) => MenuItemCard(
+                                name: dish.name,
+                                imageUrl: dish.imageUrl,
+                                rating: dish.rating,
+                                reviewCount:
+                                    0, // TODO: Implement dish review count
+                                onTap: () {
+                                  // TODO: Navigate to dish detail if needed
+                                },
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -172,7 +175,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
           return Scaffold(
             appBar: AppBar(title: Text(l10n.restaurant)),
             body: Center(
-              child: Text(l10n.restaurantNotFound, style: AppTextStyles.heading3),
+              child: Text(
+                l10n.restaurantNotFound,
+                style: AppTextStyles.heading3,
+              ),
             ),
           );
         },

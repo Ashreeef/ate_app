@@ -73,7 +73,9 @@ class AppTheme {
         elevation: 0,
         centerTitle: false,
         iconTheme: IconThemeData(color: AppColors.textDark),
-        titleTextStyle: AppTextStyles.heading3,
+        titleTextStyle: AppTextStyles.heading3.copyWith(
+          color: AppColors.textDark,
+        ),
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
 

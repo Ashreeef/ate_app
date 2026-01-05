@@ -35,7 +35,7 @@ class PostRestaurantInfo extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(AppSpacing.sm),
           decoration: BoxDecoration(
-            color: AppColors.backgroundLight,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(AppSizes.borderRadius),
           ),
           child: Row(
@@ -43,7 +43,7 @@ class PostRestaurantInfo extends StatelessWidget {
               Icon(
                 Icons.restaurant,
                 size: AppSizes.iconSm,
-                color: AppColors.primary,
+                color: Theme.of(context).colorScheme.primary,
               ),
               SizedBox(width: AppSpacing.sm),
               Expanded(
@@ -54,7 +54,9 @@ class PostRestaurantInfo extends StatelessWidget {
                       restaurantName,
                       style: AppTextStyles.bodySmall.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: restaurantId != null ? AppColors.primary : null,
+                        color: restaurantId != null
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurface,
                         decoration: restaurantId != null
                             ? TextDecoration.underline
                             : null,
@@ -66,10 +68,12 @@ class PostRestaurantInfo extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Icon(Icons.star, color: AppColors.starActive, size: 16),
+                  Icon(Icons.star, color: Colors.amber, size: 16),
                   SizedBox(width: 4),
-                  Text('${rating.toStringAsFixed(1)}',
-                      style: AppTextStyles.captionBold),
+                  Text(
+                    '${rating.toStringAsFixed(1)}',
+                    style: AppTextStyles.captionBold,
+                  ),
                 ],
               ),
             ],

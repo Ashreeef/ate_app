@@ -73,7 +73,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       final cubit = context.read<ProfileCubit>();
       final currentUser = cubit.state.user;
-      
+
       final user = User(
         id: currentUser?.id,
         uid: currentUser?.uid,
@@ -91,16 +91,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         updatedAt: DateTime.now().toIso8601String(),
       );
 
-      final PostRepository _postRepo = PostRepository(); // Instantiated PostRepository
+      final PostRepository _postRepo =
+          PostRepository(); // Instantiated PostRepository
 
       // We need to check if profileImage is a local file and upload it
       if (_tempImageFile != null) {
         // Upload new image
         final imageUrl = await CloudinaryStorageService().uploadProfileImage(
-          _tempImageFile!, 
-          user.uid ?? 'unknown_user'
+          _tempImageFile!,
+          user.uid ?? 'unknown_user',
         );
-        
+
         // Update user with real URL
         final userWithUrl = user.copyWith(profileImage: imageUrl);
         await cubit.saveProfile(userWithUrl);
@@ -115,7 +116,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         }
       } else {
         await cubit.saveProfile(user);
-        
+
         // Sync posts with new username (avatar unchanged)
         if (user.uid != null) {
           await _postRepo.updatePostUserByUid(
@@ -128,7 +129,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       if (mounted) {
         Navigator.pop(context); // Dismiss loading overlay
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context)!.profileUpdated),
@@ -141,9 +142,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } catch (e) {
       if (mounted) {
         Navigator.pop(context); // Dismiss loading
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update profile: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to update profile: $e')));
       }
     }
   }
@@ -241,85 +242,56 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Avatar Section
+            // Enhanced Avatar Section
             Container(
               color: Theme.of(context).cardColor,
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: Center(
-                child: Stack(
+                child: Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.primary, width: 3),
-                      ),
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundColor:
-                            Theme.of(
-                                  context,
-                                ).cardTheme.color?.withOpacity(0.3) ??
-                            Colors.grey[700],
-                        backgroundImage:
-                            _tempImageFile != null
-                                ? FileImage(_tempImageFile!)
-                                : (user != null &&
-                                        (user.profileImage?.isNotEmpty ??
-                                            false))
-                                    ? (user.profileImage!.startsWith('http')
-                                            ? NetworkImage(user.profileImage!)
-                                                as ImageProvider
-                                            : FileImage(
-                                                File(user.profileImage!)))
-                                    : null,
-                        child:
-                            (_tempImageFile == null &&
-                                    (user?.profileImage == null ||
-                                        user!.profileImage!.isEmpty))
-                                ? Icon(
-                                    Icons.person,
-                                    size: 60,
-                                    color: AppColors.textMedium,
-                                  )
-                                : null,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: GestureDetector(
-                        onTap: () async {
-                          final picker = ImagePicker();
-                          final picked = await picker.pickImage(
-                            source: ImageSource.gallery,
-                            imageQuality: 80,
-                          );
-                          if (picked == null) return;
+                    Stack(
+                      children: [
+                        // Enhanced Avatar with default profile picture
+                        _buildEnhancedAvatar(context, user),
 
-                          // Only update local state for preview
-                          setState(() {
-                            _tempImageFile = File(picked.path);
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(AppSpacing.sm),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                            boxShadow: const [
-                              BoxShadow(
-                                color: AppColors.shadow,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
+                        // Enhanced Camera Button
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: _showImageSourceDialog,
+                            child: Container(
+                              padding: const EdgeInsets.all(AppSpacing.sm),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Theme.of(context).cardColor,
+                                  width: 3,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            color: AppColors.white,
-                            size: 20,
+                              child: const Icon(
+                                Icons.camera_alt_rounded,
+                                color: AppColors.white,
+                                size: 20,
+                              ),
+                            ),
                           ),
                         ),
+                      ],
+                    ),
+                    SizedBox(height: AppSpacing.md),
+                    Text(
+                      AppLocalizations.of(context)!.editProfile,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textMedium,
                       ),
                     ),
                   ],
@@ -377,5 +349,195 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  /// Build enhanced avatar with default profile picture
+  Widget _buildEnhancedAvatar(BuildContext context, User? user) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.primary.withOpacity(0.3), width: 3),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.1),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
+      ),
+      child: CircleAvatar(
+        radius: 60,
+        backgroundColor: AppColors.primaryLight.withOpacity(0.1),
+        child: _buildAvatarContent(context, user),
+      ),
+    );
+  }
+
+  /// Build avatar content with fallback to default
+  Widget _buildAvatarContent(BuildContext context, User? user) {
+    // If temporary image is selected, show it
+    if (_tempImageFile != null) {
+      return ClipOval(
+        child: Image.file(
+          _tempImageFile!,
+          width: 120,
+          height: 120,
+          fit: BoxFit.cover,
+        ),
+      );
+    }
+
+    // If user has profile image, show it
+    if (user?.profileImage?.isNotEmpty ?? false) {
+      return ClipOval(
+        child: Image.network(
+          user!.profileImage!,
+          width: 120,
+          height: 120,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return _buildDefaultAvatar(user.username);
+          },
+        ),
+      );
+    }
+
+    // Show default avatar with user initial
+    return _buildDefaultAvatar(user?.username ?? '');
+  }
+
+  /// Build default avatar with user initial
+  Widget _buildDefaultAvatar(String username) {
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.primary, AppColors.primaryLight],
+        ),
+      ),
+      child: Center(
+        child: Text(
+          username.isNotEmpty ? username[0].toUpperCase() : '?',
+          style: TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Show dialog to choose image source
+  Future<void> _showImageSourceDialog() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Select Photo Source',
+              style: AppTextStyles.heading3.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: AppSpacing.lg),
+            Row(
+              children: [
+                Expanded(
+                  child: _buildImageSourceOption(
+                    icon: Icons.camera_alt_rounded,
+                    label: 'Camera',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSource.camera);
+                    },
+                  ),
+                ),
+                SizedBox(width: AppSpacing.md),
+                Expanded(
+                  child: _buildImageSourceOption(
+                    icon: Icons.photo_library_rounded,
+                    label: 'Gallery',
+                    onTap: () {
+                      Navigator.pop(context);
+                      _pickImage(ImageSource.gallery);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: AppSpacing.lg),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Build image source option button
+  Widget _buildImageSourceOption({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.lg),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+          border: Border.all(
+            color: AppColors.primary.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 40, color: AppColors.primary),
+            SizedBox(height: AppSpacing.sm),
+            Text(
+              label,
+              style: AppTextStyles.bodyMedium.copyWith(
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Pick image from source
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(
+        source: source,
+        imageQuality: 80,
+        maxWidth: 800,
+        maxHeight: 800,
+      );
+
+      if (picked != null) {
+        setState(() {
+          _tempImageFile = File(picked.path);
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to pick image: $e'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
   }
 }

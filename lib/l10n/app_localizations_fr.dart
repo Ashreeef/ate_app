@@ -154,6 +154,164 @@ class AppLocalizationsFr extends AppLocalizations {
   String get chooseLanguage => 'Choisir la langue';
 
   @override
+  String get helpSupport => 'Aide et support';
+
+  @override
+  String get contactUs => '📞 Nous Contacter';
+
+  @override
+  String get emailSupport => ' Email : support@ate-app.com';
+
+  @override
+  String get phoneSupport => ' Téléphone: +33 1 23 45 67 89';
+
+  @override
+  String get liveChat => ' Chat en direct: Disponible 24h/7j';
+
+  @override
+  String get supportHours => ' Support: Lun-Ven 9h-18h';
+
+  @override
+  String get frequentlyAsked => 'Questions fréquemment posées';
+
+  @override
+  String get howToEditProfile => 'Comment modifier mon profil ?';
+
+  @override
+  String get howToEditProfileAnswer =>
+      'Allez dans Paramètres > Modifier le profil pour changer vos informations personnelles.';
+
+  @override
+  String get howToFollowUsers => 'Comment suivre d\'autres utilisateurs ?';
+
+  @override
+  String get howToFollowUsersAnswer =>
+      'Visitez leur profil et appuyez sur le bouton \'Suivre\'.';
+
+  @override
+  String get howToPostPhoto => 'Comment poster une photo ?';
+
+  @override
+  String get howToPostPhotoAnswer =>
+      'Appuyez sur le bouton \'+\' en bas de l\'écran, sélectionnez une photo et ajoutez une description.';
+
+  @override
+  String get howToReportContent => 'Comment signaler un contenu ?';
+
+  @override
+  String get howToReportContentAnswer =>
+      'Appuyez sur les trois points sur une publication et sélectionnez \'Signaler\'.';
+
+  @override
+  String get forgotPasswordHelp => 'Mot de passe oublié ?';
+
+  @override
+  String get forgotPasswordHelpAnswer =>
+      'Utilisez le lien \'Mot de passe oublié\' sur l\'écran de connexion.';
+
+  @override
+  String get mainFeatures => ' Fonctionnalités Principales';
+
+  @override
+  String get shareculinaryMoments => '•  Partagez vos moments culinaires';
+
+  @override
+  String get followFriends =>
+      '•  Suivez vos amis et découvrez de nouveaux profils';
+
+  @override
+  String get likeComment => '•  Aimez et commentez les publications';
+
+  @override
+  String get savePosts => '•  Sauvegardez vos publications préférées';
+
+  @override
+  String get pointsSystem => '•  Système de points et de niveaux';
+
+  @override
+  String get discoverRestaurants => '•  Découvrez de nouveaux restaurants';
+
+  @override
+  String get darkMode => 'Mode sombre';
+
+  @override
+  String get troubleshooting => ' Résolution de Problèmes';
+
+  @override
+  String get restartApp =>
+      '• Redémarrez l\'application si elle se comporte étrangement';
+
+  @override
+  String get checkInternet => '• Vérifiez votre connexion internet';
+
+  @override
+  String get updateApp => '• Mettez à jour vers la dernière version';
+
+  @override
+  String get clearCache => '• Videz le cache dans les paramètres';
+
+  @override
+  String get contactSupport => '• Contactez le support si le problème persiste';
+
+  @override
+  String get closeDialog => 'Fermer';
+
+  @override
+  String get aboutAte => ' À propos d\'Ate';
+
+  @override
+  String get appDescription =>
+      'Ate est votre compagnon culinaire ultime ! Partagez vos expériences gastronomiques, découvrez de nouveaux restaurants et connectez-vous avec d\'autres passionnés de cuisine.';
+
+  @override
+  String get ourMission => ' Notre Mission';
+
+  @override
+  String get missionDescription =>
+      'Connecter les amoureux de la gastronomie et rendre chaque repas mémorable en créant une communauté bienveillante autour de la passion culinaire.';
+
+  @override
+  String get whatWeOffer => ' Ce que nous offrons';
+
+  @override
+  String get shareFoodPhotos => '•  Partage de photos de vos plats favoris';
+
+  @override
+  String get discoverNewRestaurants => '•  Découverte de nouveaux restaurants';
+
+  @override
+  String get personalizedRecommendations =>
+      '•  Système de recommandations personnalisées';
+
+  @override
+  String get activeCommunity => '•  Communauté active de food lovers';
+
+  @override
+  String get intuitiveInterface => '•  Interface intuitive et moderne';
+
+  @override
+  String get privacyRespect => '• Respect de votre vie privée';
+
+  @override
+  String get theTeam => ' L\'équipe';
+
+  @override
+  String get teamDescription =>
+      'Développé avec ❤️ par une équipe passionnée de technologie et de gastronomie, basée en Algérie.';
+
+  @override
+  String get versionInfo => 'Version 1.0.0';
+
+  @override
+  String get buildInfo => 'Build: 2026.01.01';
+
+  @override
+  String get allRightsReserved => '© 2025 Ate. Tous droits réservés.';
+
+  @override
+  String get madeInAlgeria => 'Made in Algeria 🇩🇿';
+
+  @override
   String get privacySecurity => 'Confidentialité et sécurité';
 
   @override
@@ -174,37 +332,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get close => 'Fermer';
 
   @override
-  String get helpSupport => 'Aide et support';
-
-  @override
   String get needHelp => 'Besoin d\'aide ?';
 
   @override
   String get phone => 'Téléphone';
 
   @override
-  String get frequentlyAsked => 'Questions fréquemment posées';
-
-  @override
-  String get howToEditProfile => 'Comment modifier mon profil ?';
-
-  @override
-  String get howToFollowUsers => 'Comment suivre d\'autres utilisateurs ?';
-
-  @override
-  String get howToPostPhoto => 'Comment poster une photo ?';
-
-  @override
-  String get howToReportContent => 'Comment signaler un contenu ?';
-
-  @override
   String get about => 'À propos';
 
   @override
   String get version => 'Version 1.0.0';
-
-  @override
-  String get allRightsReserved => '© 2025 Ate. Tous droits réservés.';
 
   @override
   String get termsPrivacy => 'Conditions et confidentialité';
@@ -266,9 +403,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get theme => 'Thème';
-
-  @override
-  String get darkMode => 'Mode sombre';
 
   @override
   String get support => 'Support';
@@ -508,7 +642,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noPostsAvailable => 'Aucun post disponible';
 
   @override
-  String get validationSuccess => '✅ Validation réussie !';
+  String get validationSuccess => ' Validation réussie !';
 
   @override
   String get signIn => 'Se connecter';
@@ -521,9 +655,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get arabic => 'Arabe';
-
-  @override
-  String get emailSupport => '📧 Email : support@ate-app.com';
 
   @override
   String get addComment => 'Ajouter un commentaire...';
