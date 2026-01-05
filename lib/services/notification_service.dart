@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../models/notification.dart' as app_notification;
+import '../models/notification.dart';
 import '../repositories/notification_repository.dart';
 import '../services/firebase_auth_service.dart';
 
@@ -138,18 +139,27 @@ class NotificationService {
     // Parse notification data
     final data = Map<String, dynamic>.from(message.data);
 
+    // Extract notification type
+    final typeString = data['type'] as String? ?? 'follow';
+    final type = NotificationTypeExtension.fromString(typeString);
+
     // Create app notification object
     final notification = app_notification.AppNotification(
       userUid: userUid,
+      type: type,
       title: title,
       body: body,
       imageUrl: imageUrl,
-      data: data,
+      actorUid: data['actorUid'] ?? '',
+      actorUsername: data['actorUsername'] ?? '',
+      actorProfileImage: data['actorProfileImage'],
+      postId: data['postId'],
+      targetUserId: data['targetUserId'],
       createdAt: DateTime.now(),
       isRead: false,
     );
 
-    // Save to local database
+    // Save to Firestore
     await _notificationRepository.saveNotification(notification);
 
     // Show local notification if app is in foreground
@@ -159,7 +169,7 @@ class NotificationService {
 
     // Handle tap (navigate to screen)
     if (fromNotificationTap && _onNotificationTap != null) {
-      _onNotificationTap!(data);
+      _onNotificationTap!(Map<String, dynamic>.from(notification.data));
     }
   }
 
@@ -183,7 +193,8 @@ class NotificationService {
     );
 
     await _localNotifications.show(
-      int.tryParse(notification.id ?? '') ?? DateTime.now().millisecondsSinceEpoch,
+      int.tryParse(notification.id ?? '') ??
+          DateTime.now().millisecondsSinceEpoch,
       notification.title,
       notification.body,
       notificationDetails,
@@ -211,12 +222,21 @@ class NotificationService {
     final userUid = FirebaseAuthService().currentUserId;
     if (userUid == null) return;
 
+    final data = Map<String, dynamic>.from(message.data);
+    final typeString = data['type'] as String? ?? 'follow';
+    final type = NotificationTypeExtension.fromString(typeString);
+
     final notification = app_notification.AppNotification(
       userUid: userUid,
+      type: type,
       title: message.notification?.title ?? 'New Notification',
       body: message.notification?.body ?? '',
       imageUrl: message.notification?.android?.imageUrl,
-      data: Map<String, dynamic>.from(message.data),
+      actorUid: data['actorUid'] ?? '',
+      actorUsername: data['actorUsername'] ?? '',
+      actorProfileImage: data['actorProfileImage'],
+      postId: data['postId'],
+      targetUserId: data['targetUserId'],
       createdAt: DateTime.now(),
       isRead: false,
     );
@@ -286,9 +306,12 @@ class NotificationService {
 
     final notification = app_notification.AppNotification(
       userUid: userUid,
+      type: NotificationType.like,
       title: 'Test Notification',
       body: 'This is a test notification',
-      data: {'type': 'post', 'postId': '1'},
+      actorUid: 'test_user_123',
+      actorUsername: 'TestUser',
+      postId: 'test_post_123',
       createdAt: DateTime.now(),
       isRead: false,
     );

@@ -15,6 +15,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 // Local imports
 import 'blocs/auth/auth_bloc.dart';
 import 'blocs/feed/feed_bloc.dart';
+import 'blocs/notification/notification_bloc.dart';
 import 'blocs/post/post_bloc.dart';
 import 'blocs/profile/profile_cubit.dart';
 import 'blocs/restaurant/restaurant_bloc.dart';
@@ -28,6 +29,7 @@ import 'repositories/auth_repository.dart';
 import 'repositories/comment_repository.dart';
 import 'repositories/follow_repository.dart';
 import 'repositories/like_repository.dart';
+import 'repositories/notification_repository.dart';
 import 'repositories/post_repository.dart';
 import 'repositories/profile_repository.dart';
 import 'repositories/restaurant_repository.dart';
@@ -41,7 +43,9 @@ import 'screens/home/navigation_shell.dart';
 import 'screens/notifications/notifications_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/splash/splash_screen.dart';
+import 'services/firebase_auth_service.dart';
 import 'services/notification_service.dart';
+import 'utils/notification_navigation_helper.dart';
 import 'utils/theme.dart';
 
 // Global repository instances
@@ -55,6 +59,8 @@ final SearchHistoryRepository _searchHistoryRepository =
     SearchHistoryRepository();
 final ProfileRepository _profileRepository = ProfileRepository();
 final AuthRepository _authRepository = AuthRepository();
+final NotificationRepository _notificationRepository = NotificationRepository();
+final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
 
 // Global navigator key for notification handling
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -78,30 +84,15 @@ void main() async {
 
 /// Handle notification tap - navigate to appropriate screen
 void _handleNotificationTap(Map<String, dynamic> data) {
-  final type = data['type'] as String?;
-  final postId = data['postId'] as String?;
-
-  // Navigate based on notification type
-  switch (type) {
-    case 'post':
-      if (postId != null) {
-        navigatorKey.currentState?.pushNamed('/notifications');
-      }
-      break;
-    case 'comment':
-      if (postId != null) {
-        navigatorKey.currentState?.pushNamed('/notifications');
-      }
-      break;
-    case 'like':
-      if (postId != null) {
-        navigatorKey.currentState?.pushNamed('/notifications');
-      }
-      break;
-    default:
-      // Default action - open notifications screen
-      navigatorKey.currentState?.pushNamed('/notifications');
+  final context = navigatorKey.currentContext;
+  if (context == null) {
+    // Fallback: just open notifications screen
+    navigatorKey.currentState?.pushNamed('/notifications');
+    return;
   }
+
+  // Use the notification navigation helper
+  NotificationNavigationHelper.handleNotificationTap(context, data);
 }
 
 class MyApp extends StatelessWidget {
@@ -137,6 +128,9 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<FollowRepository>(
           create: (context) => FollowRepository(),
+        ),
+        RepositoryProvider<NotificationRepository>(
+          create: (context) => _notificationRepository,
         ),
       ],
       child: MultiBlocProvider(
@@ -183,6 +177,12 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider<SettingsCubit>(
             create: (context) => SettingsCubit()..loadSettings(),
+          ),
+          BlocProvider<NotificationBloc>(
+            create: (context) => NotificationBloc(
+              notificationRepository: _notificationRepository,
+              authService: _firebaseAuthService,
+            ),
           ),
         ],
         child: BlocBuilder<SettingsCubit, SettingsState>(

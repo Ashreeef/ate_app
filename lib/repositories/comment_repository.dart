@@ -1,11 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/comment.dart';
+import '../models/notification.dart';
 import '../services/firestore_service.dart';
+import 'notification_repository.dart';
+import 'post_repository.dart';
 
 /// Repository for Comment data operations using Firestore
 /// Comments are stored as subcollections under posts/{postId}/comments
 class CommentRepository {
   final FirestoreService _firestoreService = FirestoreService();
+  final NotificationRepository _notificationRepository =
+      NotificationRepository();
+  final PostRepository _postRepository = PostRepository();
 
   // ==================== CREATE ====================
 
@@ -48,6 +54,24 @@ class CommentRepository {
       });
 
       await batch.commit();
+
+      // Create notification for post author
+      try {
+        final post = await _postRepository.getPostById(postId);
+        if (post != null && post.userUid != null && post.userUid != userUid) {
+          await _notificationRepository.createNotification(
+            recipientUid: post.userUid!,
+            type: NotificationType.comment,
+            actorUid: userUid,
+            actorUsername: username,
+            actorProfileImage: userAvatarUrl,
+            postId: postId,
+          );
+        }
+      } catch (e) {
+        print('Failed to create comment notification: $e');
+        // Don't fail the comment operation if notification fails
+      }
 
       return commentRef.id;
     } catch (e) {
@@ -114,8 +138,11 @@ class CommentRepository {
         .orderBy('createdAt', descending: false)
         .limit(limit)
         .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Comment.fromFirestore(doc.data())).toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => Comment.fromFirestore(doc.data()))
+              .toList(),
+        );
   }
 
   // ==================== UPDATE ====================
@@ -132,9 +159,9 @@ class CommentRepository {
           .collection('comments')
           .doc(commentId)
           .update({
-        'content': content,
-        'updatedAt': DateTime.now().toIso8601String(),
-      });
+            'content': content,
+            'updatedAt': DateTime.now().toIso8601String(),
+          });
     } catch (e) {
       throw Exception('Failed to update comment: $e');
     }
@@ -217,4 +244,3 @@ class CommentRepository {
     return [];
   }
 }
-
