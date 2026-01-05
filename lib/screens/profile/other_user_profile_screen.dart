@@ -8,6 +8,7 @@ import '../../repositories/post_repository.dart';
 import '../../models/user.dart';
 import '../../models/post.dart';
 import '../home/post_detail_screen.dart';
+import '../home/follow_list_screen.dart';
 
 class OtherUserProfileScreen extends StatefulWidget {
   final String userId;
@@ -342,14 +343,40 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                 children: [
                   _StatItem(title: 'Posts', value: '${_posts.length}'),
                   _VerticalDivider(),
-                  _StatItem(
-                    title: 'Followers',
-                    value: '${user.followersCount}',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FollowListScreen(
+                            userId: user.uid!,
+                            isFollowers: true,
+                          ),
+                        ),
+                      );
+                    },
+                    child: _StatItem(
+                      title: 'Followers',
+                      value: '${user.followersCount}',
+                    ),
                   ),
                   _VerticalDivider(),
-                  _StatItem(
-                    title: 'Following',
-                    value: '${user.followingCount}',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FollowListScreen(
+                            userId: user.uid!,
+                            isFollowers: false,
+                          ),
+                        ),
+                      );
+                    },
+                    child: _StatItem(
+                      title: 'Following',
+                      value: '${user.followingCount}',
+                    ),
                   ),
                 ],
               ),

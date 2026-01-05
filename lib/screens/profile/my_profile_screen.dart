@@ -10,6 +10,7 @@ import '../../repositories/post_repository.dart';
 import 'edit_profile_screen.dart';
 import '../settings/settings_screen.dart';
 import '../home/post_detail_screen.dart';
+import '../home/follow_list_screen.dart';
 
 /// Current user's profile screen with posts and profile management
 class MyProfileScreen extends StatefulWidget {
@@ -230,14 +231,44 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     children: [
                       _StatItem(title: 'Posts', value: '${_posts.length}'),
                       const _VerticalDivider(),
-                      _StatItem(
-                        title: 'Followers',
-                        value: '${user?.followersCount ?? 0}',
+                      GestureDetector(
+                        onTap: () {
+                          if (user?.uid != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FollowListScreen(
+                                  userId: user!.uid!,
+                                  isFollowers: true,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: _StatItem(
+                          title: 'Followers',
+                          value: '${user?.followersCount ?? 0}',
+                        ),
                       ),
                       const _VerticalDivider(),
-                      _StatItem(
-                        title: 'Following',
-                        value: '${user?.followingCount ?? 0}',
+                      GestureDetector(
+                        onTap: () {
+                          if (user?.uid != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FollowListScreen(
+                                  userId: user!.uid!,
+                                  isFollowers: false,
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        child: _StatItem(
+                          title: 'Following',
+                          value: '${user?.followingCount ?? 0}',
+                        ),
                       ),
                     ],
                   ),
