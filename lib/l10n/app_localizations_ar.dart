@@ -831,4 +831,37 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noPostsYet => 'لا توجد منشورات حتى الآن';
+
+  @override
+  String get newFollowerTitle => 'متابع جديد';
+
+  @override
+  String startedFollowingYou(Object username) {
+    return '$username بدأ في متابعتك';
+  }
+
+  @override
+  String get newLikeTitle => 'إعجاب جديد';
+
+  @override
+  String likedYourPost(Object username) {
+    return '$username أعجب بمنشورك';
+  }
+
+  @override
+  String get newCommentTitle => 'تعليق جديد';
+
+  @override
+  String commentedOnYourPost(Object username) {
+    return '$username علق على منشورك';
+  }
+
+  @override
+  String get allCaughtUp => 'لقد شاهدت كل شيء!';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get justNow => 'الآن';
 }

@@ -1641,6 +1641,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No posts yet'**
   String get noPostsYet;
+
+  /// No description provided for @newFollowerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Follower'**
+  String get newFollowerTitle;
+
+  /// No description provided for @startedFollowingYou.
+  ///
+  /// In en, this message translates to:
+  /// **'{username} started following you'**
+  String startedFollowingYou(Object username);
+
+  /// No description provided for @newLikeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Like'**
+  String get newLikeTitle;
+
+  /// No description provided for @likedYourPost.
+  ///
+  /// In en, this message translates to:
+  /// **'{username} liked your post'**
+  String likedYourPost(Object username);
+
+  /// No description provided for @newCommentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Comment'**
+  String get newCommentTitle;
+
+  /// No description provided for @commentedOnYourPost.
+  ///
+  /// In en, this message translates to:
+  /// **'{username} commented on your post'**
+  String commentedOnYourPost(Object username);
+
+  /// No description provided for @allCaughtUp.
+  ///
+  /// In en, this message translates to:
+  /// **'You are all caught up!'**
+  String get allCaughtUp;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @justNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get justNow;
 }
 
 class _AppLocalizationsDelegate

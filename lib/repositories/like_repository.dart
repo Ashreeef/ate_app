@@ -1,11 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/firestore_service.dart';
+import '../models/notification.dart';
+import 'notification_repository.dart';
+import 'user_repository.dart';
+import 'post_repository.dart';
 
 /// Repository for Like data operations using Firestore
 /// Likes are stored as subcollections under posts/{postId}/likes
 /// AND as array in post document for quick access
 class LikeRepository {
   final FirestoreService _firestoreService = FirestoreService();
+  final NotificationRepository _notificationRepository =
+      NotificationRepository();
+  final UserRepository _userRepository = UserRepository();
+  final PostRepository _postRepository = PostRepository();
 
   // ==================== CREATE ====================
 
@@ -34,6 +42,27 @@ class LikeRepository {
       });
 
       await batch.commit();
+
+      // Create notification for post author
+      try {
+        final post = await _postRepository.getPostById(postId);
+        if (post != null && post.userUid != null && post.userUid != userUid) {
+          final currentUser = await _userRepository.getUserByUid(userUid);
+          if (currentUser != null) {
+            await _notificationRepository.createNotification(
+              recipientUid: post.userUid!,
+              type: NotificationType.like,
+              actorUid: userUid,
+              actorUsername: currentUser.username,
+              actorProfileImage: currentUser.profileImage,
+              postId: postId,
+            );
+          }
+        }
+      } catch (e) {
+        print('Failed to create like notification: $e');
+        // Don't fail the like operation if notification fails
+      }
     } catch (e) {
       throw Exception('Failed to like post: $e');
     }

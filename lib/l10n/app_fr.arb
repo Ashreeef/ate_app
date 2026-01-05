@@ -264,5 +264,14 @@
   "pointsCount": "{count} Points",
   "likes": "J'aime",
   "noDishes": "Aucun plat trouvé",
-  "noPostsYet": "Aucun post pour le moment"
+  "noPostsYet": "Aucun post pour le moment",
+  "newFollowerTitle": "Nouveau abonné",
+  "startedFollowingYou": "{username} a commencé à vous suivre",
+  "newLikeTitle": "Nouveau J'aime",
+  "likedYourPost": "{username} a aimé votre publication",
+  "newCommentTitle": "Nouveau commentaire",
+  "commentedOnYourPost": "{username} a commenté votre publication",
+  "allCaughtUp": "Vous êtes à jour !",
+  "retry": "Réessayer",
+  "justNow": "À l'instant"
 }

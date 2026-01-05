@@ -264,6 +264,15 @@
   "pointsCount": "{count} نقاط",
   "likes": "تسجيلات الإعجاب",
   "noDishes": "لم يتم العثور على أطباق",
-  "noPostsYet": "لا توجد منشورات حتى الآن"
+  "noPostsYet": "لا توجد منشورات حتى الآن",
+  "newFollowerTitle": "متابع جديد",
+  "startedFollowingYou": "{username} بدأ في متابعتك",
+  "newLikeTitle": "إعجاب جديد",
+  "likedYourPost": "{username} أعجب بمنشورك",
+  "newCommentTitle": "تعليق جديد",
+  "commentedOnYourPost": "{username} علق على منشورك",
+  "allCaughtUp": "لقد شاهدت كل شيء!",
+  "retry": "إعادة المحاولة",
+  "justNow": "الآن"
 }
 

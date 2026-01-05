@@ -841,4 +841,37 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noPostsYet => 'Aucun post pour le moment';
+
+  @override
+  String get newFollowerTitle => 'Nouveau abonné';
+
+  @override
+  String startedFollowingYou(Object username) {
+    return '$username a commencé à vous suivre';
+  }
+
+  @override
+  String get newLikeTitle => 'Nouveau J\'aime';
+
+  @override
+  String likedYourPost(Object username) {
+    return '$username a aimé votre publication';
+  }
+
+  @override
+  String get newCommentTitle => 'Nouveau commentaire';
+
+  @override
+  String commentedOnYourPost(Object username) {
+    return '$username a commenté votre publication';
+  }
+
+  @override
+  String get allCaughtUp => 'Vous êtes à jour !';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get justNow => 'À l\'instant';
 }

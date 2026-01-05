@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/firestore_service.dart';
+import '../models/notification.dart';
+import 'notification_repository.dart';
+import 'user_repository.dart';
 
 /// Repository for managing social graph (follows)
 class FollowRepository {
   final FirestoreService _firestoreService = FirestoreService();
+  final NotificationRepository _notificationRepository =
+      NotificationRepository();
+  final UserRepository _userRepository = UserRepository();
 
   /// Follow a user
   /// Creates a follow document and updates both users' counts atomically
@@ -16,7 +22,9 @@ class FollowRepository {
     }
 
     final followDocId = '${currentUserId}_$targetUserId';
-    final followRef = _firestoreService.instance.collection('follows').doc(followDocId);
+    final followRef = _firestoreService.instance
+        .collection('follows')
+        .doc(followDocId);
 
     // Check if already following to avoid double counting
     final docSnapshot = await followRef.get();
@@ -35,17 +43,30 @@ class FollowRepository {
 
     // 2. Increment "following" count for current user
     final currentUserRef = _firestoreService.users.doc(currentUserId);
-    batch.update(currentUserRef, {
-      'followingCount': FieldValue.increment(1),
-    });
+    batch.update(currentUserRef, {'followingCount': FieldValue.increment(1)});
 
     // 3. Increment "followers" count for target user
     final targetUserRef = _firestoreService.users.doc(targetUserId);
-    batch.update(targetUserRef, {
-      'followersCount': FieldValue.increment(1),
-    });
+    batch.update(targetUserRef, {'followersCount': FieldValue.increment(1)});
 
     await batch.commit();
+
+    // Create notification for the target user
+    try {
+      final currentUser = await _userRepository.getUserByUid(currentUserId);
+      if (currentUser != null) {
+        await _notificationRepository.createNotification(
+          recipientUid: targetUserId,
+          type: NotificationType.follow,
+          actorUid: currentUserId,
+          actorUsername: currentUser.username,
+          actorProfileImage: currentUser.profileImage,
+        );
+      }
+    } catch (e) {
+      print('Failed to create follow notification: $e');
+      // Don't fail the follow operation if notification fails
+    }
   }
 
   /// Unfollow a user
@@ -55,7 +76,9 @@ class FollowRepository {
     required String targetUserId,
   }) async {
     final followDocId = '${currentUserId}_$targetUserId';
-    final followRef = _firestoreService.instance.collection('follows').doc(followDocId);
+    final followRef = _firestoreService.instance
+        .collection('follows')
+        .doc(followDocId);
 
     // Check if following exists
     final docSnapshot = await followRef.get();
@@ -70,15 +93,11 @@ class FollowRepository {
 
     // 2. Decrement "following" count for current user
     final currentUserRef = _firestoreService.users.doc(currentUserId);
-    batch.update(currentUserRef, {
-      'followingCount': FieldValue.increment(-1),
-    });
+    batch.update(currentUserRef, {'followingCount': FieldValue.increment(-1)});
 
     // 3. Decrement "followers" count for target user
     final targetUserRef = _firestoreService.users.doc(targetUserId);
-    batch.update(targetUserRef, {
-      'followersCount': FieldValue.increment(-1),
-    });
+    batch.update(targetUserRef, {'followersCount': FieldValue.increment(-1)});
 
     await batch.commit();
   }
@@ -99,7 +118,7 @@ class FollowRepository {
         .collection('follows')
         .where('followerId', isEqualTo: userId)
         .get();
-    
+
     return snapshot.docs.map((doc) => doc['followingId'] as String).toList();
   }
 
@@ -109,7 +128,7 @@ class FollowRepository {
         .collection('follows')
         .where('followingId', isEqualTo: userId)
         .get();
-    
+
     return snapshot.docs.map((doc) => doc['followerId'] as String).toList();
   }
 }

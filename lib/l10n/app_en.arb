@@ -264,5 +264,14 @@
   "pointsCount": "{count} Points",
   "likes": "Likes",
   "noDishes": "No dishes found",
-  "noPostsYet": "No posts yet"
+  "noPostsYet": "No posts yet",
+  "newFollowerTitle": "New Follower",
+  "startedFollowingYou": "{username} started following you",
+  "newLikeTitle": "New Like",
+  "likedYourPost": "{username} liked your post",
+  "newCommentTitle": "New Comment",
+  "commentedOnYourPost": "{username} commented on your post",
+  "allCaughtUp": "You are all caught up!",
+  "retry": "Retry",
+  "justNow": "Just now"
 }

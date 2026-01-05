@@ -833,4 +833,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noPostsYet => 'No posts yet';
+
+  @override
+  String get newFollowerTitle => 'New Follower';
+
+  @override
+  String startedFollowingYou(Object username) {
+    return '$username started following you';
+  }
+
+  @override
+  String get newLikeTitle => 'New Like';
+
+  @override
+  String likedYourPost(Object username) {
+    return '$username liked your post';
+  }
+
+  @override
+  String get newCommentTitle => 'New Comment';
+
+  @override
+  String commentedOnYourPost(Object username) {
+    return '$username commented on your post';
+  }
+
+  @override
+  String get allCaughtUp => 'You are all caught up!';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get justNow => 'Just now';
 }

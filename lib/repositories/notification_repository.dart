@@ -6,6 +6,54 @@ import '../services/firestore_service.dart';
 class NotificationRepository {
   final FirestoreService _firestoreService = FirestoreService();
 
+  /// Get real-time notifications stream for a user
+  Stream<List<DocumentSnapshot>> getNotificationsStream(String userUid) {
+    return _firestoreService.users
+        .doc(userUid)
+        .collection('notifications')
+        .orderBy('createdAt', descending: true)
+        .limit(50)
+        .snapshots()
+        .map((snapshot) => snapshot.docs);
+  }
+
+  /// Create a notification (used when triggering follow, like, comment actions)
+  Future<void> createNotification({
+    required String recipientUid,
+    required NotificationType type,
+    required String actorUid,
+    required String actorUsername,
+    String? actorProfileImage,
+    String? postId,
+  }) async {
+    try {
+      // Don't create notification if user is notifying themselves
+      if (recipientUid == actorUid) return;
+
+      // Store type-based keys - UI will display localized versions
+      // based on the notification.type enum
+      String title = type.name;
+      String body = actorUsername;
+
+      final notification = AppNotification(
+        userUid: recipientUid,
+        type: type,
+        title: title,
+        body: body,
+        actorUid: actorUid,
+        actorUsername: actorUsername,
+        actorProfileImage: actorProfileImage,
+        postId: postId,
+        createdAt: DateTime.now(),
+        isRead: false,
+      );
+
+      await saveNotification(notification);
+    } catch (e) {
+      throw Exception('Failed to create notification: $e');
+    }
+  }
+
   /// Save a notification to Firestore
   Future<void> saveNotification(AppNotification notification) async {
     try {
@@ -13,7 +61,7 @@ class NotificationRepository {
           .doc(notification.userUid)
           .collection('notifications')
           .doc();
-      
+
       await docRef.set(notification.toFirestore());
     } catch (e) {
       throw Exception('Failed to save notification: $e');
@@ -21,7 +69,10 @@ class NotificationRepository {
   }
 
   /// Get notifications for a user
-  Future<List<AppNotification>> getNotifications(String userUid, {int limit = 50}) async {
+  Future<List<AppNotification>> getNotifications(
+    String userUid, {
+    int limit = 50,
+  }) async {
     try {
       final querySnapshot = await _firestoreService.users
           .doc(userUid)
