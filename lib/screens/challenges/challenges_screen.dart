@@ -106,7 +106,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => const CreateChallengeScreen(),
+                      builder: (_) => CreateChallengeScreen(
+                        restaurantId: authState.user.restaurantId!,
+                      ),
                     ),
                   );
                 },
