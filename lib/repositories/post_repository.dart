@@ -3,11 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
 import '../services/firestore_service.dart';
 import '../services/cloudinary_storage_service.dart';
+import 'challenge_repository.dart';
+import 'user_repository.dart';
 
 /// Repository for Post data operations using Firestore
 class PostRepository {
   final FirestoreService _firestoreService = FirestoreService();
   final CloudinaryStorageService _cloudinaryService = CloudinaryStorageService();
+  final ChallengeRepository _challengeRepository = ChallengeRepository();
+  final UserRepository _userRepository = UserRepository();
 
   // ==================== CREATE ====================
 
@@ -55,9 +59,74 @@ class PostRepository {
 
       await postRef.set(post.toFirestore());
 
+      // Update challenge progress if post tags a restaurant
+      if (restaurantUid != null) {
+        await _updateChallengeProgress(
+          userUid: userUid,
+          restaurantUid: restaurantUid,
+        );
+      }
+
       return postRef.id;
     } catch (e) {
       throw Exception('Failed to create post: $e');
+    }
+  }
+
+  /// Update challenge progress when user posts
+  Future<void> _updateChallengeProgress({
+    required String userUid,
+    required String restaurantUid,
+  }) async {
+    try {
+      final challengeRepo = ChallengeRepository();
+      final userRepo = UserRepository();
+
+      // Get all active challenges
+      final activeChallenges = await challengeRepo.getActiveChallenges();
+
+      // Filter challenges user has joined
+      final userChallenges = <String>[];
+      for (final challenge in activeChallenges) {
+        final participation = await challengeRepo.getChallengeParticipation(
+          challenge.id,
+          userUid,
+        );
+        if (participation != null) {
+          userChallenges.add(challenge.id);
+        }
+      }
+
+      // Update progress for each joined challenge
+      for (final challengeId in userChallenges) {
+        // Increment progress
+        await challengeRepo.incrementProgress(
+          challengeId: challengeId,
+          userId: userUid,
+        );
+
+        // Check if completed
+        final isCompleted = await challengeRepo.isChallengeCompleted(
+          challengeId,
+          userUid,
+        );
+
+        if (isCompleted) {
+          // Award points for completion
+          final user = await userRepo.getUserById(userUid);
+          if (user != null) {
+            await userRepo.updateUser(
+              userUid,
+              {'points': user.points + 100}, // Award 100 points
+            );
+          }
+
+          print('🎉 Challenge $challengeId completed by user $userUid!');
+        }
+      }
+    } catch (e) {
+      print('Error updating challenge progress: $e');
+      // Don't throw - post creation should succeed even if challenge update fails
     }
   }
 

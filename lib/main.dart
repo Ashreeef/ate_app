@@ -14,6 +14,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Local imports
 import 'blocs/auth/auth_bloc.dart';
+import 'blocs/challenge/challenge_bloc.dart';
 import 'blocs/feed/feed_bloc.dart';
 import 'blocs/notification/notification_bloc.dart';
 import 'blocs/post/post_bloc.dart';
@@ -26,6 +27,7 @@ import 'blocs/user/user_bloc.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 import 'repositories/auth_repository.dart';
+import 'repositories/challenge_repository.dart';
 import 'repositories/comment_repository.dart';
 import 'repositories/follow_repository.dart';
 import 'repositories/like_repository.dart';
@@ -45,6 +47,7 @@ import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/splash/splash_screen.dart';
 import 'services/firebase_auth_service.dart';
 import 'services/notification_service.dart';
+import 'services/restaurant_conversion_service.dart';
 import 'utils/notification_navigation_helper.dart';
 import 'utils/theme.dart';
 
@@ -60,6 +63,7 @@ final SearchHistoryRepository _searchHistoryRepository =
 final ProfileRepository _profileRepository = ProfileRepository();
 final AuthRepository _authRepository = AuthRepository();
 final NotificationRepository _notificationRepository = NotificationRepository();
+final ChallengeRepository _challengeRepository = ChallengeRepository();
 final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
 
 // Global navigator key for notification handling
@@ -170,6 +174,10 @@ class MyApp extends StatelessWidget {
             create: (context) => RestaurantBloc(
               restaurantRepository: _restaurantRepository,
               postRepository: _postRepository,
+              conversionService: RestaurantConversionService(
+                userRepository: _userRepository,
+                restaurantRepository: _restaurantRepository,
+              ),
             ),
           ),
           BlocProvider<ProfileCubit>(
@@ -182,6 +190,11 @@ class MyApp extends StatelessWidget {
             create: (context) => NotificationBloc(
               notificationRepository: _notificationRepository,
               authService: _firebaseAuthService,
+            ),
+          ),
+          BlocProvider<ChallengeBloc>(
+            create: (context) => ChallengeBloc(
+              challengeRepository: _challengeRepository,
             ),
           ),
         ],

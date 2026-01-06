@@ -15,6 +15,10 @@ class User {
   final String level;
   final String? createdAt;
   final String? updatedAt;
+  
+  // Restaurant conversion fields
+  final bool isRestaurant;
+  final String? restaurantId;
 
   User({
     this.id,
@@ -32,6 +36,8 @@ class User {
     this.level = 'Bronze',
     this.createdAt,
     this.updatedAt,
+    this.isRestaurant = false,
+    this.restaurantId,
   });
 
   // Convert User to Map for Firestore
@@ -50,6 +56,8 @@ class User {
       'level': level,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'isRestaurant': isRestaurant,
+      'restaurantId': restaurantId,
     };
   }
 
@@ -69,6 +77,8 @@ class User {
       level: data['level'] as String? ?? 'Bronze',
       createdAt: data['createdAt'] as String?,
       updatedAt: data['updatedAt'] as String?,
+      isRestaurant: data['isRestaurant'] as bool? ?? false,
+      restaurantId: data['restaurantId'] as String?,
     );
   }
 
@@ -89,6 +99,8 @@ class User {
     String? level,
     String? createdAt,
     String? updatedAt,
+    bool? isRestaurant,
+    String? restaurantId,
   }) {
     return User(
       id: id ?? this.id,
@@ -106,14 +118,22 @@ class User {
       level: level ?? this.level,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isRestaurant: isRestaurant ?? this.isRestaurant,
+      restaurantId: restaurantId ?? this.restaurantId,
     );
   }
 
   // Alias for profileImage to match Post model naming convention
   String? get userAvatarUrl => profileImage;
 
+  /// Validate if user can convert to restaurant
+  /// Returns true if user is not already a restaurant
+  bool canConvertToRestaurant() {
+    return !isRestaurant;
+  }
+
   @override
   String toString() {
-    return 'User(id: $id, uid: $uid, username: $username, email: $email, displayName: $displayName, followers: $followersCount, following: $followingCount)';
+    return 'User(id: $id, uid: $uid, username: $username, email: $email, displayName: $displayName, followers: $followersCount, following: $followingCount, isRestaurant: $isRestaurant)';
   }
 }

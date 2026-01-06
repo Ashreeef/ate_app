@@ -45,3 +45,28 @@ class RestaurantError extends RestaurantState {
   @override
   List<Object?> get props => [message];
 }
+
+/// State while converting user to restaurant
+class RestaurantConversionLoading extends RestaurantState {
+  const RestaurantConversionLoading();
+}
+
+/// State when conversion succeeds
+class RestaurantConversionSuccess extends RestaurantState {
+  final String restaurantId;
+
+  const RestaurantConversionSuccess({required this.restaurantId});
+
+  @override
+  List<Object?> get props => [restaurantId];
+}
+
+/// State when conversion fails
+class RestaurantConversionError extends RestaurantState {
+  final String message;
+
+  const RestaurantConversionError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

@@ -11,6 +11,8 @@ import 'edit_profile_screen.dart';
 import '../settings/settings_screen.dart';
 import '../home/post_detail_screen.dart';
 import '../home/follow_list_screen.dart';
+import '../restaurant/restaurant_conversion_screen.dart';
+import '../restaurant/restaurant_page.dart';
 
 /// Current user's profile screen with posts and profile management
 class MyProfileScreen extends StatefulWidget {
@@ -293,26 +295,85 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditProfileScreen(),
+                  child: Column(
+                    children: [
+                      // Edit Profile Button
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditProfileScreen(),
+                            ),
+                          );
+                          _loadProfileAndPosts();
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: Text(l10n.editProfile),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size.fromHeight(44),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
                         ),
-                      );
-                      _loadProfileAndPosts();
-                    },
-                    icon: const Icon(Icons.edit),
-                    label: Text(l10n.editProfile),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size.fromHeight(44),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
                       ),
-                    ),
+                      
+                      // Convert to Restaurant Button (only show if not already a restaurant)
+                      if (user?.isRestaurant == false) ...[
+                        const SizedBox(height: 12),
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RestaurantConversionScreen(
+                                  user: user!,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.store),
+                          label: Text(l10n.convertToRestaurant ?? 'Convert to Restaurant'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: BorderSide(color: AppColors.primary),
+                            minimumSize: const Size.fromHeight(44),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                      
+                      // View Restaurant Button (show if already a restaurant)
+                      if (user?.isRestaurant == true && user?.restaurantId != null) ...[
+                        const SizedBox(height: 12),
+                        ElevatedButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RestaurantPage(
+                                  restaurantId: user!.restaurantId!,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.restaurant_menu),
+                          label: Text(l10n.viewRestaurant ?? 'View My Restaurant'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size.fromHeight(44),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ),
