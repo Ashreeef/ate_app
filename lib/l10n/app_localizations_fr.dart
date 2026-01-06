@@ -1007,159 +1007,160 @@ class AppLocalizationsFr extends AppLocalizations {
   String get justNow => 'À l\'instant';
 
   @override
-  String get convertToRestaurant => 'Convert to Restaurant';
+  String get convertToRestaurant => 'Convertir en Restaurant';
 
   @override
-  String get viewRestaurant => 'View My Restaurant';
+  String get viewRestaurant => 'Voir Mon Restaurant';
 
   @override
-  String get createChallenge => 'Create Challenge';
+  String get createChallenge => 'Créer un Défi';
 
   @override
-  String get challengeTitle => 'Challenge Title';
+  String get challengeTitle => 'Titre du Défi';
 
   @override
-  String get challengeDescription => 'Challenge Description';
+  String get challengeDescription => 'Description du Défi';
 
   @override
-  String get targetCount => 'Target Count';
+  String get targetCount => 'Objectif';
 
   @override
-  String get rewardBadge => 'Reward Badge';
+  String get rewardBadge => 'Badge de Récompense';
 
   @override
-  String get joinChallenge => 'Join Challenge';
+  String get joinChallenge => 'Rejoindre le Défi';
 
   @override
-  String get leaveChallenge => 'Leave Challenge';
+  String get leaveChallenge => 'Quitter le Défi';
 
   @override
-  String get yourProgress => 'Your Progress';
+  String get yourProgress => 'Votre Progression';
 
   @override
-  String get daysRemaining => 'Days Remaining';
+  String get daysRemaining => 'Jours Restants';
 
   @override
-  String get challengeEnded => 'Challenge Ended';
+  String get challengeEnded => 'Défi Terminé';
 
   @override
-  String get reward => 'Reward';
+  String get reward => 'Récompense';
 
   @override
-  String get dateRange => 'Date Range';
+  String get dateRange => 'Période';
 
   @override
-  String get startDate => 'Start Date';
+  String get startDate => 'Date de Début';
 
   @override
-  String get endDate => 'End Date';
+  String get endDate => 'Date de Fin';
 
   @override
   String get conversionWarning =>
-      'This action cannot be undone. Once you convert to a restaurant account, you cannot revert back.';
+      'Cette action est irréversible. Une fois converti en compte restaurant, vous ne pourrez pas revenir en arrière.';
 
   @override
-  String get confirmConversion => 'Confirm Conversion';
+  String get confirmConversion => 'Confirmer la Conversion';
 
   @override
   String get conversionSuccessful =>
-      'Successfully converted to restaurant account!';
+      'Compte converti en restaurant avec succès !';
 
   @override
-  String get becomeARestaurant => 'Become a Restaurant';
+  String get becomeARestaurant => 'Devenir un Restaurant';
 
   @override
-  String get fillInRestaurantDetails => 'Fill in your restaurant details below';
+  String get fillInRestaurantDetails =>
+      'Remplissez les détails de votre restaurant ci-dessous';
 
   @override
-  String get restaurantName => 'Restaurant Name';
+  String get restaurantName => 'Nom du Restaurant';
 
   @override
-  String get cuisineType => 'Cuisine Type';
+  String get cuisineType => 'Type de Cuisine';
 
   @override
-  String get hours => 'Hours';
+  String get hours => 'Horaires';
 
   @override
-  String get convertNow => 'Convert Now';
+  String get convertNow => 'Convertir Maintenant';
 
   @override
-  String get createNewChallenge => 'Create a New Challenge';
+  String get createNewChallenge => 'Créer un Nouveau Défi';
 
   @override
   String get challengeInfo =>
-      'Users will earn progress by posting about your restaurant';
+      'Les utilisateurs gagneront des points en publiant à propos de votre restaurant';
 
   @override
-  String get restaurantNameRequired => 'Restaurant name is required';
+  String get restaurantNameRequired => 'Le nom du restaurant est requis';
 
   @override
   String get restaurantNameTooShort =>
-      'Restaurant name must be at least 3 characters';
+      'Le nom du restaurant doit contenir au moins 3 caractères';
 
   @override
-  String get cuisineTypeRequired => 'Cuisine type is required';
+  String get cuisineTypeRequired => 'Le type de cuisine est requis';
 
   @override
-  String get locationRequired => 'Location is required';
+  String get locationRequired => 'L\'emplacement est requis';
 
   @override
-  String get enterRestaurantName => 'Enter restaurant name';
+  String get enterRestaurantName => 'Entrez le nom du restaurant';
 
   @override
-  String get enterCuisineType => 'e.g., Italian, Chinese, French';
+  String get enterCuisineType => 'ex: Italienne, Chinoise, Française';
 
   @override
-  String get enterLocation => 'Enter restaurant location';
+  String get enterLocation => 'Entrez l\'emplacement du restaurant';
 
   @override
-  String get enterHours => 'e.g., Mon-Fri: 9AM-10PM';
+  String get enterHours => 'ex: Lun-Ven: 9h-22h';
 
   @override
-  String get enterDescription => 'Tell us about your restaurant';
+  String get enterDescription => 'Parlez-nous de votre restaurant';
 
   @override
-  String get doYouWantToContinue => 'Do you want to continue?';
+  String get doYouWantToContinue => 'Voulez-vous continuer ?';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'Confirmer';
 
   @override
-  String get errorOccurred => 'An error occurred';
+  String get errorOccurred => 'Une erreur est survenue';
 
   @override
-  String get challengeType => 'Challenge Type';
+  String get challengeType => 'Type de Défi';
 
   @override
-  String get enterChallengeTitle => 'e.g., \"Try 5 Dishes\"';
+  String get enterChallengeTitle => 'ex: \"Essayez 5 Plats\"';
 
   @override
-  String get enterTargetCount => 'e.g., 5 (number of posts required)';
+  String get enterTargetCount => 'ex: 5 (nombre de publications requises)';
 
   @override
-  String get enterRewardBadge => 'e.g., \"Food Explorer 🍕\"';
+  String get enterRewardBadge => 'ex: \"Explorateur Culinaire 🍕\"';
 
   @override
-  String get titleRequired => 'Title is required';
+  String get titleRequired => 'Le titre est requis';
 
   @override
-  String get titleTooShort => 'Title must be at least 5 characters';
+  String get titleTooShort => 'Le titre doit contenir au moins 5 caractères';
 
   @override
-  String get descriptionRequired => 'Description is required';
+  String get descriptionRequired => 'La description est requise';
 
   @override
-  String get targetCountRequired => 'Target count is required';
+  String get targetCountRequired => 'L\'objectif est requis';
 
   @override
-  String get invalidTargetCount => 'Must be at least 1';
+  String get invalidTargetCount => 'Doit être au moins 1';
 
   @override
-  String get targetCountTooHigh => 'Must be 100 or less';
+  String get targetCountTooHigh => 'Doit être 100 ou moins';
 
   @override
-  String get rewardBadgeRequired => 'Reward badge is required';
+  String get rewardBadgeRequired => 'Le badge de récompense est requis';
 
   @override
-  String get challengeDetails => 'Challenge Details';
+  String get challengeDetails => 'Détails du Défi';
 }

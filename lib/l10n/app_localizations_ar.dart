@@ -994,159 +994,157 @@ class AppLocalizationsAr extends AppLocalizations {
   String get justNow => 'الآن';
 
   @override
-  String get convertToRestaurant => 'Convert to Restaurant';
+  String get convertToRestaurant => 'تحويل إلى مطعم';
 
   @override
-  String get viewRestaurant => 'View My Restaurant';
+  String get viewRestaurant => 'عرض مطعمي';
 
   @override
-  String get createChallenge => 'Create Challenge';
+  String get createChallenge => 'إنشاء تحدي';
 
   @override
-  String get challengeTitle => 'Challenge Title';
+  String get challengeTitle => 'عنوان التحدي';
 
   @override
-  String get challengeDescription => 'Challenge Description';
+  String get challengeDescription => 'وصف التحدي';
 
   @override
-  String get targetCount => 'Target Count';
+  String get targetCount => 'الهدف المطلوب';
 
   @override
-  String get rewardBadge => 'Reward Badge';
+  String get rewardBadge => 'شارة المكافأة';
 
   @override
-  String get joinChallenge => 'Join Challenge';
+  String get joinChallenge => 'الانضمام للتحدي';
 
   @override
-  String get leaveChallenge => 'Leave Challenge';
+  String get leaveChallenge => 'مغادرة التحدي';
 
   @override
-  String get yourProgress => 'Your Progress';
+  String get yourProgress => 'تقدمك';
 
   @override
-  String get daysRemaining => 'Days Remaining';
+  String get daysRemaining => 'الأيام المتبقية';
 
   @override
-  String get challengeEnded => 'Challenge Ended';
+  String get challengeEnded => 'انتهى التحدي';
 
   @override
-  String get reward => 'Reward';
+  String get reward => 'المكافأة';
 
   @override
-  String get dateRange => 'Date Range';
+  String get dateRange => 'الفترة الزمنية';
 
   @override
-  String get startDate => 'Start Date';
+  String get startDate => 'تاريخ البدء';
 
   @override
-  String get endDate => 'End Date';
+  String get endDate => 'تاريخ الانتهاء';
 
   @override
   String get conversionWarning =>
-      'This action cannot be undone. Once you convert to a restaurant account, you cannot revert back.';
+      'هذا الإجراء لا رجعة فيه. بمجرد التحويل إلى حساب مطعم، لن تتمكن من العودة.';
 
   @override
-  String get confirmConversion => 'Confirm Conversion';
+  String get confirmConversion => 'تأكيد التحويل';
 
   @override
-  String get conversionSuccessful =>
-      'Successfully converted to restaurant account!';
+  String get conversionSuccessful => 'تم تحويل الحساب إلى مطعم بنجاح!';
 
   @override
-  String get becomeARestaurant => 'Become a Restaurant';
+  String get becomeARestaurant => 'أصبح مطعماً';
 
   @override
-  String get fillInRestaurantDetails => 'Fill in your restaurant details below';
+  String get fillInRestaurantDetails => 'املأ تفاصيل مطعمك أدناه';
 
   @override
-  String get restaurantName => 'Restaurant Name';
+  String get restaurantName => 'اسم المطعم';
 
   @override
-  String get cuisineType => 'Cuisine Type';
+  String get cuisineType => 'نوع المطبخ';
 
   @override
-  String get hours => 'Hours';
+  String get hours => 'ساعات العمل';
 
   @override
-  String get convertNow => 'Convert Now';
+  String get convertNow => 'تحويل الآن';
 
   @override
-  String get createNewChallenge => 'Create a New Challenge';
+  String get createNewChallenge => 'إنشاء تحدي جديد';
 
   @override
-  String get challengeInfo =>
-      'Users will earn progress by posting about your restaurant';
+  String get challengeInfo => 'سيكسب المستخدمون نقاطاً عند النشر عن مطعمك';
 
   @override
-  String get restaurantNameRequired => 'Restaurant name is required';
+  String get restaurantNameRequired => 'اسم المطعم مطلوب';
 
   @override
   String get restaurantNameTooShort =>
-      'Restaurant name must be at least 3 characters';
+      'يجب أن يحتوي اسم المطعم على 3 أحرف على الأقل';
 
   @override
-  String get cuisineTypeRequired => 'Cuisine type is required';
+  String get cuisineTypeRequired => 'نوع المطبخ مطلوب';
 
   @override
-  String get locationRequired => 'Location is required';
+  String get locationRequired => 'الموقع مطلوب';
 
   @override
-  String get enterRestaurantName => 'Enter restaurant name';
+  String get enterRestaurantName => 'أدخل اسم المطعم';
 
   @override
-  String get enterCuisineType => 'e.g., Italian, Chinese, French';
+  String get enterCuisineType => 'مثال: إيطالي، صيني، فرنسي';
 
   @override
-  String get enterLocation => 'Enter restaurant location';
+  String get enterLocation => 'أدخل موقع المطعم';
 
   @override
-  String get enterHours => 'e.g., Mon-Fri: 9AM-10PM';
+  String get enterHours => 'مثال: الإثنين-الجمعة: 9ص-10م';
 
   @override
-  String get enterDescription => 'Tell us about your restaurant';
+  String get enterDescription => 'أخبرنا عن مطعمك';
 
   @override
-  String get doYouWantToContinue => 'Do you want to continue?';
+  String get doYouWantToContinue => 'هل تريد المتابعة؟';
 
   @override
-  String get confirm => 'Confirm';
+  String get confirm => 'تأكيد';
 
   @override
-  String get errorOccurred => 'An error occurred';
+  String get errorOccurred => 'حدث خطأ';
 
   @override
-  String get challengeType => 'Challenge Type';
+  String get challengeType => 'نوع التحدي';
 
   @override
-  String get enterChallengeTitle => 'e.g., \"Try 5 Dishes\"';
+  String get enterChallengeTitle => 'مثال: \"جرب 5 أطباق\"';
 
   @override
-  String get enterTargetCount => 'e.g., 5 (number of posts required)';
+  String get enterTargetCount => 'مثال: 5 (عدد المنشورات المطلوبة)';
 
   @override
-  String get enterRewardBadge => 'e.g., \"Food Explorer 🍕\"';
+  String get enterRewardBadge => 'مثال: \"مستكشف الطعام 🍕\"';
 
   @override
-  String get titleRequired => 'Title is required';
+  String get titleRequired => 'العنوان مطلوب';
 
   @override
-  String get titleTooShort => 'Title must be at least 5 characters';
+  String get titleTooShort => 'يجب أن يحتوي العنوان على 5 أحرف على الأقل';
 
   @override
-  String get descriptionRequired => 'Description is required';
+  String get descriptionRequired => 'الوصف مطلوب';
 
   @override
-  String get targetCountRequired => 'Target count is required';
+  String get targetCountRequired => 'الهدف مطلوب';
 
   @override
-  String get invalidTargetCount => 'Must be at least 1';
+  String get invalidTargetCount => 'يجب أن يكون على الأقل 1';
 
   @override
-  String get targetCountTooHigh => 'Must be 100 or less';
+  String get targetCountTooHigh => 'يجب أن يكون 100 أو أقل';
 
   @override
-  String get rewardBadgeRequired => 'Reward badge is required';
+  String get rewardBadgeRequired => 'شارة المكافأة مطلوبة';
 
   @override
-  String get challengeDetails => 'Challenge Details';
+  String get challengeDetails => 'تفاصيل التحدي';
 }
