@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animated_icons/flutter_animated_icons.dart'; // Just kidding, standard icons
 import 'package:flutter_rating_bar/flutter_rating_bar.dart'; // Need to check if this package is available. If not, I'll build simple star rater.
 // Assuming flutter_rating_bar is NOT available, I will build a simple one.
 // Actually checking pubspec would be wise, but I can implement a simple row of stars.
@@ -53,7 +52,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
       final review = Review(
         authorId: authState.user.uid!,
         authorName: authState.user.displayName ?? 'User',
-        authorAvatarUrl: authState.user.photoURL,
+        authorAvatarUrl: authState.user.profileImage,
         restaurantId: widget.restaurantId,
         dishId: widget.dishId,
         rating: _rating,

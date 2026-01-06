@@ -70,8 +70,9 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
     }
 
     if (_startDate == null || _endDate == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(l10n.selectStartEndDates ?? 'Please select start and end dates'),
           backgroundColor: Colors.red,
         ),

@@ -335,6 +335,7 @@ class ChallengeRepository {
   Challenge _challengeFromFirestore(String id, Map<String, dynamic> data) {
     return Challenge(
       id: id,
+      createdBy: data['createdBy'] as String?,
       title: data['title'] as String? ?? '',
       description: data['description'] as String? ?? '',
       imageUrl: data['imageUrl'] as String?,

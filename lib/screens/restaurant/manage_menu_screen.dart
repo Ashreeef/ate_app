@@ -42,7 +42,7 @@ class ManageMenuScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.deleteDish),
-        content: Text(AppLocalizations.of(context)!.deleteDishConfirm.replaceFirst('{name}', dish.name)),
+        content: Text(AppLocalizations.of(context)!.deleteDishConfirm(dish.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

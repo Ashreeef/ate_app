@@ -1153,4 +1153,95 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get description => 'الوصف';
+
+  @override
+  String get editRestaurant => 'Edit Restaurant';
+
+  @override
+  String get restaurantUpdatedSuccess => 'Restaurant updated successfully';
+
+  @override
+  String get addCoverPhoto => 'Add Cover Photo';
+
+  @override
+  String uploadImageFail(Object error) {
+    return 'Failed to upload image: $error';
+  }
+
+  @override
+  String get manageMenu => 'Manage Menu';
+
+  @override
+  String get deleteDish => 'Delete Dish?';
+
+  @override
+  String deleteDishConfirm(Object name) {
+    return 'Are you sure you want to delete \"$name\"?';
+  }
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get addFirstDish => 'Add First Dish';
+
+  @override
+  String get couldNotLoadMenu => 'Could not load menu';
+
+  @override
+  String get menuEmpty => 'No dishes yet';
+
+  @override
+  String get editDish => 'Edit Dish';
+
+  @override
+  String get addDish => 'Add Dish';
+
+  @override
+  String get addDishPhoto => 'Add Dish Photo';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get category => 'Category (e.g. Starter, Main)';
+
+  @override
+  String get dishDescription => 'Description';
+
+  @override
+  String get challengeTypeGeneral => 'General';
+
+  @override
+  String get challengeTypeRestaurant => 'Restaurant-Specific';
+
+  @override
+  String get challengeTypeDish => 'Dish-Specific';
+
+  @override
+  String get challengeTypeLocation => 'Location-Based';
+
+  @override
+  String get pleaseLoginFirst => 'Please log in first';
+
+  @override
+  String get selectStartEndDates => 'Please select start and end dates';
+
+  @override
+  String get selectChallenge => 'Select a challenge to contribute to';
+
+  @override
+  String get none => 'None';
+
+  @override
+  String get pleaseLoginToJoinChallenges => 'Please log in to join challenges';
+
+  @override
+  String get writeReview => 'Write Review';
+
+  @override
+  String get fieldRequired => 'Field is required';
+
+  @override
+  String get openingHours => 'Opening Hours';
 }

@@ -146,6 +146,14 @@ class CloudinaryStorageService {
     return originalUrl.replaceFirst('/upload/', '/upload/$transformation/');
   }
 
+  /// Upload restaurant image
+  Future<String> uploadRestaurantImage(File imageFile, String restaurantId) async {
+    return uploadImage(
+      imageFile,
+      folder: 'restaurants/$restaurantId',
+    );
+  }
+
   /// Upload generic image (e.g. restaurant cover, dish photo)
   Future<String> uploadImage(
     File imageFile, {

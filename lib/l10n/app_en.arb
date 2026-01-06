@@ -406,5 +406,13 @@
   "selectChallenge": "Select a challenge to contribute to",
   "none": "None",
   "pleaseLoginToJoinChallenges": "Please log in to join challenges",
-  "writeReview": "Write Review"
+  "writeReview": "Write Review",
+  "fieldRequired": "Field is required",
+  "openingHours": "Opening Hours",
+  "reviews": "Reviews",
+  "posts": "Posts",
+  "error": "Error",
+  "noDishes": "No dishes found",
+  "restaurantNotFound": "Restaurant not found",
+  "restaurantHint": "Search for a restaurant..."
 }

@@ -102,8 +102,9 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
       } catch (e) {
         setState(() => _isUploadingImage = false);
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.uploadImageFail.replaceFirst('{error}', '$e'))),
+            SnackBar(content: Text(l10n.uploadImageFail(e.toString()))),
           );
         }
         return;

@@ -9,8 +9,13 @@ class Restaurant {
   final String? cuisineType;
   final double rating;
   final String? imageUrl;
+  final int postsCount;
+  final String? createdAt;
+  final String? updatedAt;
   final bool isClaimed;
   final String? ownerId;
+  final String? hours;
+  final String? description;
 
   Restaurant({
     this.id,
@@ -26,6 +31,8 @@ class Restaurant {
     this.updatedAt,
     this.isClaimed = false,
     this.ownerId,
+    this.hours,
+    this.description,
   });
 
   /// Convert Restaurant to Map for SQLite database
@@ -57,6 +64,8 @@ class Restaurant {
       'updatedAt': updatedAt,
       'isClaimed': isClaimed,
       'ownerId': ownerId,
+      'hours': hours,
+      'description': description,
     };
   }
 
@@ -85,6 +94,8 @@ class Restaurant {
       updatedAt: data['updatedAt'] as String?,
       isClaimed: data['isClaimed'] as bool? ?? false,
       ownerId: data['ownerId'] as String?,
+      hours: data['hours'] as String?,
+      description: data['description'] as String?,
     );
   }
 
@@ -103,6 +114,8 @@ class Restaurant {
     String? updatedAt,
     bool? isClaimed,
     String? ownerId,
+    String? hours,
+    String? description,
   }) {
     return Restaurant(
       id: id ?? this.id,
@@ -118,6 +131,8 @@ class Restaurant {
       updatedAt: updatedAt ?? this.updatedAt,
       isClaimed: isClaimed ?? this.isClaimed,
       ownerId: ownerId ?? this.ownerId,
+      hours: hours ?? this.hours,
+      description: description ?? this.description,
     );
   }
 

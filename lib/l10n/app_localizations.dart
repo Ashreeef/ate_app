@@ -295,7 +295,7 @@ abstract class AppLocalizations {
   /// No description provided for @error.
   ///
   /// In en, this message translates to:
-  /// **'An error occurred'**
+  /// **'Error'**
   String get error;
 
   /// No description provided for @comingSoon.
@@ -985,7 +985,7 @@ abstract class AppLocalizations {
   /// No description provided for @restaurantHint.
   ///
   /// In en, this message translates to:
-  /// **'Type the restaurant name'**
+  /// **'Search for a restaurant...'**
   String get restaurantHint;
 
   /// No description provided for @dishName.
@@ -2253,6 +2253,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description'**
   String get description;
+
+  /// No description provided for @editRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Restaurant'**
+  String get editRestaurant;
+
+  /// No description provided for @restaurantUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant updated successfully'**
+  String get restaurantUpdatedSuccess;
+
+  /// No description provided for @addCoverPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Cover Photo'**
+  String get addCoverPhoto;
+
+  /// No description provided for @uploadImageFail.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload image: {error}'**
+  String uploadImageFail(Object error);
+
+  /// No description provided for @manageMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Menu'**
+  String get manageMenu;
+
+  /// No description provided for @deleteDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Dish?'**
+  String get deleteDish;
+
+  /// No description provided for @deleteDishConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete \"{name}\"?'**
+  String deleteDishConfirm(Object name);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @addFirstDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Add First Dish'**
+  String get addFirstDish;
+
+  /// No description provided for @couldNotLoadMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load menu'**
+  String get couldNotLoadMenu;
+
+  /// No description provided for @menuEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No dishes yet'**
+  String get menuEmpty;
+
+  /// No description provided for @editDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Dish'**
+  String get editDish;
+
+  /// No description provided for @addDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Dish'**
+  String get addDish;
+
+  /// No description provided for @addDishPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Dish Photo'**
+  String get addDishPhoto;
+
+  /// No description provided for @price.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get price;
+
+  /// No description provided for @category.
+  ///
+  /// In en, this message translates to:
+  /// **'Category (e.g. Starter, Main)'**
+  String get category;
+
+  /// No description provided for @dishDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get dishDescription;
+
+  /// No description provided for @challengeTypeGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get challengeTypeGeneral;
+
+  /// No description provided for @challengeTypeRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant-Specific'**
+  String get challengeTypeRestaurant;
+
+  /// No description provided for @challengeTypeDish.
+  ///
+  /// In en, this message translates to:
+  /// **'Dish-Specific'**
+  String get challengeTypeDish;
+
+  /// No description provided for @challengeTypeLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location-Based'**
+  String get challengeTypeLocation;
+
+  /// No description provided for @pleaseLoginFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in first'**
+  String get pleaseLoginFirst;
+
+  /// No description provided for @selectStartEndDates.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select start and end dates'**
+  String get selectStartEndDates;
+
+  /// No description provided for @selectChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a challenge to contribute to'**
+  String get selectChallenge;
+
+  /// No description provided for @none.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get none;
+
+  /// No description provided for @pleaseLoginToJoinChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'Please log in to join challenges'**
+  String get pleaseLoginToJoinChallenges;
+
+  /// No description provided for @writeReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Write Review'**
+  String get writeReview;
+
+  /// No description provided for @fieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Field is required'**
+  String get fieldRequired;
+
+  /// No description provided for @openingHours.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening Hours'**
+  String get openingHours;
 }
 
 class _AppLocalizationsDelegate

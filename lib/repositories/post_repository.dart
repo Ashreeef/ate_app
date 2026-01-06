@@ -5,6 +5,7 @@ import '../services/firestore_service.dart';
 import '../services/cloudinary_storage_service.dart';
 import 'challenge_repository.dart';
 import 'user_repository.dart';
+import '../models/challenge.dart';
 
 /// Repository for Post data operations using Firestore
 class PostRepository {
@@ -183,6 +184,8 @@ class PostRepository {
             
           case ChallengeType.location:
             // Not implemented yet
+            break;
+          default:
             break;
         }
         

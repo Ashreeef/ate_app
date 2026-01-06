@@ -1,6 +1,5 @@
 class User {
-  final int?
-  id; // Deprecated - kept for backward compatibility during migration
+  final int? id; // Deprecated - kept for backward compatibility during migration
   final String? uid; // Firebase User ID (primary identifier)
   final String username;
   final String email;
@@ -29,7 +28,6 @@ class User {
     this.password,
     this.profileImage,
     this.bio,
-    this.bio,
     this.displayName,
     this.searchName,
     this.phone,
@@ -49,8 +47,6 @@ class User {
       'uid': uid,
       'username': username,
       'email': email,
-      'profileImage': profileImage,
-      'bio': bio,
       'profileImage': profileImage,
       'bio': bio,
       'displayName': displayName,
@@ -73,8 +69,6 @@ class User {
       uid: data['uid'] as String?,
       username: data['username'] as String? ?? '',
       email: data['email'] as String? ?? '',
-      profileImage: data['profileImage'] as String?,
-      bio: data['bio'] as String?,
       profileImage: data['profileImage'] as String?,
       bio: data['bio'] as String?,
       displayName: data['displayName'] as String?,
@@ -100,7 +94,6 @@ class User {
     String? password,
     String? profileImage,
     String? bio,
-    String? bio,
     String? displayName,
     String? searchName,
     String? phone,
@@ -120,7 +113,6 @@ class User {
       email: email ?? this.email,
       password: password ?? this.password,
       profileImage: profileImage ?? this.profileImage,
-      bio: bio ?? this.bio,
       bio: bio ?? this.bio,
       displayName: displayName ?? this.displayName,
       searchName: searchName ?? this.searchName,
