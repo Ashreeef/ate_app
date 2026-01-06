@@ -14,12 +14,18 @@ class RestaurantRepository {
     await docRef.set(restaurant.toFirestore());
   }
 
-  /// Create a new dish for a restaurant (used by seeding or admin)
-  Future<String> createDish(Dish dish) async {
+  /// Add a new dish for a restaurant
+  Future<String> addDish(Dish dish) async {
     final docRef = _restaurants.doc(dish.restaurantId).collection('dishes').doc();
     // Ensure the ID is set in the document data
     final dishData = dish.toFirestore();
     dishData['id'] = docRef.id;
+    
+    // Add createdAt if missing
+    if (dish.createdAt == null) {
+      dishData['createdAt'] = DateTime.now().toIso8601String();
+    }
+    
     await docRef.set(dishData);
     return docRef.id;
   }
@@ -119,6 +125,43 @@ class RestaurantRepository {
       'rating': newRating,
       'updatedAt': DateTime.now().toIso8601String(),
     });
+  }
+
+  /// Update restaurant details
+  Future<void> updateRestaurant(Restaurant restaurant) async {
+    if (restaurant.id == null) {
+      throw Exception('Restaurant ID is required for update');
+    }
+    
+    final data = restaurant.toFirestore();
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    
+    // Ensure searchName is updated if name changes
+    data['searchName'] = restaurant.name.toLowerCase();
+
+    await _restaurants.doc(restaurant.id).update(data);
+  }
+
+  /// Update a dish
+  Future<void> updateDish(Dish dish) async {
+    if (dish.id == null) {
+      throw Exception('Dish ID is required for update');
+    }
+    
+    await _restaurants
+        .doc(dish.restaurantId)
+        .collection('dishes')
+        .doc(dish.id)
+        .update(dish.toFirestore());
+  }
+
+  /// Delete a dish
+  Future<void> deleteDish(String restaurantId, String dishId) async {
+    await _restaurants
+        .doc(restaurantId)
+        .collection('dishes')
+        .doc(dishId)
+        .delete();
   }
 
   /// Increment posts count

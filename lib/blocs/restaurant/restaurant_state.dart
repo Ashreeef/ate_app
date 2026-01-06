@@ -70,3 +70,23 @@ class RestaurantConversionError extends RestaurantState {
   @override
   List<Object?> get props => [message];
 }
+
+/// State while updating restaurant details
+class RestaurantUpdateLoading extends RestaurantState {
+  const RestaurantUpdateLoading();
+}
+
+/// State when update succeeds
+class RestaurantUpdateSuccess extends RestaurantState {
+  const RestaurantUpdateSuccess();
+}
+
+/// State when update fails
+class RestaurantUpdateError extends RestaurantState {
+  final String message;
+
+  const RestaurantUpdateError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

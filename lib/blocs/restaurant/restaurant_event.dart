@@ -56,3 +56,35 @@ class ConvertToRestaurantEvent extends RestaurantEvent {
       ];
 }
 
+/// Event to update restaurant details
+class UpdateRestaurantDetails extends RestaurantEvent {
+  final String restaurantId;
+  final String name;
+  final String cuisineType;
+  final String location;
+  final String? hours;
+  final String? description;
+  final String? imageUrl;
+
+  const UpdateRestaurantDetails({
+    required this.restaurantId,
+    required this.name,
+    required this.cuisineType,
+    required this.location,
+    this.hours,
+    this.description,
+    this.imageUrl,
+  });
+
+  @override
+  List<Object?> get props => [
+        restaurantId,
+        name,
+        cuisineType,
+        location,
+        hours,
+        description,
+        imageUrl,
+      ];
+}
+

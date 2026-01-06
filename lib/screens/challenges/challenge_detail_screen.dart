@@ -329,7 +329,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
   void _handleJoinLeave(BuildContext context) {
     final authState = context.read<AuthBloc>().state;
-    if (authState is! AuthAuthenticated || authState.user.uid == null) {
+    if (authState is! Authenticated || authState.user.uid == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please log in first'),

@@ -23,6 +23,10 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
         super(const RestaurantInitial()) {
     on<LoadRestaurantDetails>(_onLoadRestaurantDetails);
     on<ConvertToRestaurantEvent>(_onConvertToRestaurant);
+    on<UpdateRestaurantDetails>(_onUpdateRestaurantDetails);
+    on<AddDishEvent>(_onAddDish);
+    on<UpdateDishEvent>(_onUpdateDish);
+    on<DeleteDishEvent>(_onDeleteDish);
   }
 
   /// Load restaurant details by ID
@@ -108,6 +112,108 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
           message: e.toString().replaceAll('Exception: ', ''),
         ),
       );
+    }
+  }
+
+  /// Update restaurant details
+  Future<void> _onUpdateRestaurantDetails(
+    UpdateRestaurantDetails event,
+    Emitter<RestaurantState> emit,
+  ) async {
+    emit(const RestaurantUpdateLoading());
+
+    try {
+      // Get current restaurant data to update fields
+      final currentRestaurant = await _restaurantRepository.getRestaurantById(
+        event.restaurantId,
+      );
+
+      if (currentRestaurant == null) {
+        emit(const RestaurantUpdateError('Restaurant not found'));
+        return;
+      }
+
+      final updatedRestaurant = currentRestaurant.copyWith(
+        name: event.name,
+        cuisineType: event.cuisineType,
+        location: event.location,
+        hours: event.hours,
+        description: event.description,
+        imageUrl: event.imageUrl,
+      );
+
+      await _restaurantRepository.updateRestaurant(updatedRestaurant);
+      
+      emit(const RestaurantUpdateSuccess());
+      
+      // Reload details to refresh UI if needed
+      add(LoadRestaurantDetails(
+        restaurantId: event.restaurantId,
+        loadDishes: true,
+        loadMentions: true,
+      ));
+    } catch (e) {
+      emit(RestaurantUpdateError(e.toString()));
+    }
+  }
+
+  Future<void> _onAddDish(
+    AddDishEvent event,
+    Emitter<RestaurantState> emit,
+  ) async {
+    emit(const DishActionLoading());
+    try {
+      await _restaurantRepository.addDish(event.dish);
+      emit(const DishActionSuccess('Dish added successfully'));
+      // Refresh list
+      add(LoadRestaurantDetails(
+        restaurantId: event.dish.restaurantId,
+        loadDishes: true,
+        loadMentions: false,
+      ));
+    } catch (e) {
+      emit(DishActionError(e.toString()));
+    }
+  }
+
+  Future<void> _onUpdateDish(
+    UpdateDishEvent event,
+    Emitter<RestaurantState> emit,
+  ) async {
+    emit(const DishActionLoading());
+    try {
+      await _restaurantRepository.updateDish(event.dish);
+      emit(const DishActionSuccess('Dish updated successfully'));
+      // Refresh list
+      add(LoadRestaurantDetails(
+        restaurantId: event.dish.restaurantId,
+        loadDishes: true,
+        loadMentions: false,
+      ));
+    } catch (e) {
+      emit(DishActionError(e.toString()));
+    }
+  }
+
+  Future<void> _onDeleteDish(
+    DeleteDishEvent event,
+    Emitter<RestaurantState> emit,
+  ) async {
+    emit(const DishActionLoading());
+    try {
+      await _restaurantRepository.deleteDish(
+        event.restaurantId,
+        event.dishId,
+      );
+      emit(const DishActionSuccess('Dish deleted successfully'));
+      // Refresh list
+      add(LoadRestaurantDetails(
+        restaurantId: event.restaurantId,
+        loadDishes: true,
+        loadMentions: false,
+      ));
+    } catch (e) {
+      emit(DishActionError(e.toString()));
     }
   }
 }

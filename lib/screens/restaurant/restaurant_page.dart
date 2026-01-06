@@ -10,6 +10,12 @@ import '../../l10n/app_localizations.dart';
 import '../../repositories/restaurant_repository.dart';
 import '../../repositories/post_repository.dart';
 import 'restaurant_posts_screen.dart';
+import '../../blocs/auth/auth_bloc.dart';
+import '../../blocs/auth/auth_state.dart';
+import 'edit_restaurant_screen.dart';
+import 'manage_menu_screen.dart';
+import 'add_review_screen.dart';
+import '../../widgets/review/review_list_widget.dart';
 
 class RestaurantPage extends StatefulWidget {
   final String restaurantId;
@@ -74,6 +80,46 @@ class _RestaurantPageState extends State<RestaurantPage> {
                   restaurant.name,
                   style: Theme.of(context).appBarTheme.titleTextStyle,
                 ),
+                actions: [
+                  BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, authState) {
+                      if (authState is Authenticated &&
+                          authState.user.restaurantId == restaurant.id) {
+                        return Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.menu_book),
+                              tooltip: 'Manage Menu',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ManageMenuScreen(
+                                        restaurantId: restaurant.id!),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              tooltip: 'Edit Restaurant',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        EditRestaurantScreen(restaurant: restaurant),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ],
               ),
               body: CustomScrollView(
                 slivers: [
@@ -163,6 +209,49 @@ class _RestaurantPageState extends State<RestaurantPage> {
                               ),
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Reviews Section
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Divider(),
+                          const SizedBox(height: AppSpacing.md),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Reviews', style: AppTextStyles.heading3),
+                              TextButton.icon(
+                                icon: const Icon(Icons.rate_review),
+                                label: const Text('Write Review'),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => AddReviewScreen(
+                                        restaurantId: restaurant.id!,
+                                      ),
+                                    ),
+                                  ).then((result) {
+                                    if (result == true) {
+                                      // Refresh restaurant details to get updated rating
+                                      context.read<RestaurantBloc>().add(
+                                          LoadRestaurantDetails(
+                                              restaurantId: widget.restaurantId));
+                                    }
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          ReviewListWidget(restaurantId: restaurant.id!),
+                          const SizedBox(height: AppSpacing.xxl), // Bottom padding
                         ],
                       ),
                     ),

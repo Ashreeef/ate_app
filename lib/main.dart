@@ -35,6 +35,7 @@ import 'repositories/notification_repository.dart';
 import 'repositories/post_repository.dart';
 import 'repositories/profile_repository.dart';
 import 'repositories/restaurant_repository.dart';
+import 'repositories/review_repository.dart';
 import 'repositories/saved_post_repository.dart';
 import 'repositories/search_history_repository.dart';
 import 'repositories/user_repository.dart';
@@ -114,6 +115,11 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<RestaurantRepository>(
           create: (context) => _restaurantRepository,
+        ),
+        RepositoryProvider<ReviewRepository>(
+          create: (context) => ReviewRepository(
+            restaurantRepository: _restaurantRepository,
+          ),
         ),
         RepositoryProvider<SearchHistoryRepository>(
           create: (context) => _searchHistoryRepository,
