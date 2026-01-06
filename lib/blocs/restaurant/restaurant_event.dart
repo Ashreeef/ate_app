@@ -90,7 +90,7 @@ class UpdateRestaurantDetails extends RestaurantEvent {
 }
 
 
-import '../../models/dish.dart';
+
 
 class AddDishEvent extends RestaurantEvent {
   final Dish dish;

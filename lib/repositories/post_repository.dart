@@ -26,6 +26,7 @@ class PostRepository {
     String? restaurantName,
     String? dishName,
     double? rating,
+    String? explicitChallengeId, // Added parameter
   }) async {
     try {
       // Upload images to Cloudinary
@@ -38,6 +39,58 @@ class PostRepository {
       final postRef = _firestoreService.posts.doc();
       final now = DateTime.now().toIso8601String();
 
+      // Update challenge progress if post tags a restaurant
+      String? actualRestaurantUid = restaurantUid;
+
+      // Logic to Create Unclaimed Restaurant if ID is null but Name is provided
+      if (restaurantUid == null && restaurantName != null && restaurantName.isNotEmpty) {
+        try {
+          // 1. Check if it exists by SearchName
+          final searchName = restaurantName.toLowerCase();
+          final existingQuery = await _firestoreService.restaurants
+              .where('searchName', isEqualTo: searchName)
+              .limit(1)
+              .get();
+
+          if (existingQuery.docs.isNotEmpty) {
+            actualRestaurantUid = existingQuery.docs.first.id;
+          } else {
+            // 2. Create Unclaimed Restaurant
+            final newRestaurantRef = _firestoreService.restaurants.doc();
+            actualRestaurantUid = newRestaurantRef.id;
+            
+            final nowStr = DateTime.now().toIso8601String();
+            
+            // Note: We are not using the Restaurant model here to avoid circular dependencies
+            // if Restaurant model logic gets complex, but ideally we should.
+            // Constructing map directly for simplicity in this specific operation.
+            await newRestaurantRef.set({
+              'id': actualRestaurantUid,
+              'name': restaurantName,
+              'searchName': searchName,
+              'location': 'Unknown', // Placeholder
+              'cuisineType': 'General', // Placeholder
+              'rating': 0.0,
+              'postsCount': 0,
+              'createdAt': nowStr,
+              'updatedAt': nowStr,
+              'isClaimed': false,
+              'ownerId': null,
+              'imageUrl': imageUrls.isNotEmpty ? imageUrls.first : null, // Use first post image as potential cover
+            });
+          }
+          
+          // Update the post object with the resolved ID before saving?
+          // The Post object was already created above with null ID.
+          // We need to update the post map or re-create the object logic.
+          // Let's refactor: Determine ID FIRST, then create Post object.
+          
+        } catch (e) {
+          print('Error resolving restaurant: $e');
+          // Proceed without ID if error
+        }
+      }
+
       final post = Post(
         postId: postRef.id,
         userUid: userUid,
@@ -45,7 +98,7 @@ class PostRepository {
         userAvatarUrl: userAvatarUrl,
         caption: caption,
         images: imageUrls,
-        restaurantUid: restaurantUid,
+        restaurantUid: actualRestaurantUid, // Use resolved ID
         restaurantName: restaurantName,
         dishName: dishName,
         rating: rating,
@@ -59,11 +112,12 @@ class PostRepository {
 
       await postRef.set(post.toFirestore());
 
-      // Update challenge progress if post tags a restaurant
-      if (restaurantUid != null) {
+      if (actualRestaurantUid != null) {
         await _updateChallengeProgress(
           userUid: userUid,
-          restaurantUid: restaurantUid,
+          restaurantUid: actualRestaurantUid,
+          dishName: dishName,
+          explicitChallengeId: explicitChallengeId,
         );
       }
 
@@ -77,6 +131,8 @@ class PostRepository {
   Future<void> _updateChallengeProgress({
     required String userUid,
     required String restaurantUid,
+    String? dishName, // Added dishName parameter
+    String? explicitChallengeId, // Added optional explicit ID
   }) async {
     try {
       final challengeRepo = ChallengeRepository();
@@ -84,21 +140,62 @@ class PostRepository {
 
       // Get all active challenges
       final activeChallenges = await challengeRepo.getActiveChallenges();
-
-      // Filter challenges user has joined
-      final userChallenges = <String>[];
+      
+      // Filter relevant challenges
+      // 1. User must have joined
+      // 2. Criteria must match (Restaurant ID, Dish Name, etc.)
+      final challengesToUpdate = <String>[];
+      
       for (final challenge in activeChallenges) {
+        // Check participation
         final participation = await challengeRepo.getChallengeParticipation(
           challenge.id,
           userUid,
         );
-        if (participation != null) {
-          userChallenges.add(challenge.id);
+        if (participation == null) continue;
+
+        bool isMatch = false;
+        
+        // Check criteria based on type
+        switch (challenge.type) {
+          case ChallengeType.restaurant:
+            // Match specific restaurant
+            if (challenge.createdBy == restaurantUid) isMatch = true;
+            break;
+            
+          case ChallengeType.dish:
+            // Match specific dish (simple string contains check for MVP)
+            // Ideally should check createdBy (restaurant) AND dish name if specific
+            // Or just dish name if generic. Assuming generic dish challenges for now?
+            // "Eat Pizza" -> dishName contains "Pizza"
+            // For now, let's assume Dish challenges are also restaurant-scoped mostly
+            if (challenge.createdBy == restaurantUid) {
+               // If dish name is required, check it
+               // Current Challenge model doesn't store target dish name, description might
+               // For MVP, if type is Dish and restaurant matches, and user posted a dish, count it.
+               if (dishName != null && dishName.isNotEmpty) isMatch = true;
+            }
+            break;
+            
+          case ChallengeType.general:
+            isMatch = true;
+            break;
+            
+          case ChallengeType.location:
+            // Not implemented yet
+            break;
+        }
+        
+        // Allow explicit override if user selected this challenge
+        if (explicitChallengeId == challenge.id) isMatch = true;
+
+        if (isMatch) {
+          challengesToUpdate.add(challenge.id);
         }
       }
 
-      // Update progress for each joined challenge
-      for (final challengeId in userChallenges) {
+      // Update progress for each verified challenge
+      for (final challengeId in challengesToUpdate) {
         // Increment progress
         await challengeRepo.incrementProgress(
           challengeId: challengeId,
@@ -114,9 +211,12 @@ class PostRepository {
         if (isCompleted) {
           // Award points for completion
           final user = await userRepo.getUserByUid(userUid);
-          if (user != null && user.isRestaurant) {
-            final updatedUser = user.copyWith(points: user.points + 100);
-            await userRepo.updateUserFirestore(updatedUser);
+          if (user != null) { // Award to User, not Restaurant necessarily? Logic says user.isRestaurant?
+             // Original logic: if (user.isRestaurant) award points. 
+             // Regular users should also get points! 
+             // Assuming all users have points field.
+             final updatedUser = user.copyWith(points: user.points + 100);
+             await userRepo.updateUserFirestore(updatedUser);
           }
 
           print('🎉 Challenge $challengeId completed by user $userUid!');

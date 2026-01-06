@@ -144,6 +144,7 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
 
       final updatedRestaurant = currentRestaurant.copyWith(
         name: event.name,
+        searchName: event.name.toLowerCase(),
         cuisineType: event.cuisineType,
         location: event.location,
         hours: event.hours,

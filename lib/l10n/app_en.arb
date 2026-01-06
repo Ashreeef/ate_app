@@ -396,5 +396,15 @@
   "price": "Price",
   "category": "Category (e.g. Starter, Main)",
   "dishDescription": "Description",
-  "dishName": "Dish Name"
+  "dishName": "Dish Name",
+  "challengeTypeGeneral": "General",
+  "challengeTypeRestaurant": "Restaurant-Specific",
+  "challengeTypeDish": "Dish-Specific",
+  "challengeTypeLocation": "Location-Based",
+  "pleaseLoginFirst": "Please log in first",
+  "selectStartEndDates": "Please select start and end dates",
+  "selectChallenge": "Select a challenge to contribute to",
+  "none": "None",
+  "pleaseLoginToJoinChallenges": "Please log in to join challenges",
+  "writeReview": "Write Review"
 }

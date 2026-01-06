@@ -78,7 +78,7 @@ class _RestaurantPostsScreenState extends State<RestaurantPostsScreen> {
         child: Padding(
           padding: EdgeInsets.all(AppSpacing.lg),
           child: Text(
-            'Error: $_error',
+            '${l10n.error}: $_error',
             style: AppTextStyles.bodyMedium,
             textAlign: TextAlign.center,
           ),

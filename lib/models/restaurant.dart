@@ -9,9 +9,8 @@ class Restaurant {
   final String? cuisineType;
   final double rating;
   final String? imageUrl;
-  final int postsCount;
-  final String? createdAt;
-  final String? updatedAt;
+  final bool isClaimed;
+  final String? ownerId;
 
   Restaurant({
     this.id,
@@ -25,6 +24,8 @@ class Restaurant {
     this.postsCount = 0,
     this.createdAt,
     this.updatedAt,
+    this.isClaimed = false,
+    this.ownerId,
   });
 
   /// Convert Restaurant to Map for SQLite database
@@ -54,6 +55,8 @@ class Restaurant {
       'postsCount': postsCount,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'isClaimed': isClaimed,
+      'ownerId': ownerId,
     };
   }
 
@@ -80,6 +83,8 @@ class Restaurant {
       postsCount: data['postsCount'] as int? ?? 0,
       createdAt: data['createdAt'] as String?,
       updatedAt: data['updatedAt'] as String?,
+      isClaimed: data['isClaimed'] as bool? ?? false,
+      ownerId: data['ownerId'] as String?,
     );
   }
 
@@ -96,6 +101,8 @@ class Restaurant {
     int? postsCount,
     String? createdAt,
     String? updatedAt,
+    bool? isClaimed,
+    String? ownerId,
   }) {
     return Restaurant(
       id: id ?? this.id,
@@ -109,11 +116,13 @@ class Restaurant {
       postsCount: postsCount ?? this.postsCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isClaimed: isClaimed ?? this.isClaimed,
+      ownerId: ownerId ?? this.ownerId,
     );
   }
 
   @override
   String toString() {
-    return 'Restaurant(id: $id, name: $name, location: $location, rating: $rating)';
+    return 'Restaurant(id: $id, name: $name, location: $location, rating: $rating, isClaimed: $isClaimed)';
   }
 }

@@ -89,7 +89,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.menu_book),
-                              tooltip: 'Manage Menu',
+                                  tooltip: l10n.manageMenu,
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -102,7 +102,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.edit),
-                              tooltip: 'Edit Restaurant',
+                              tooltip: l10n.editRestaurant,
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -226,10 +226,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Reviews', style: AppTextStyles.heading3),
+                              Text(l10n.reviews, style: AppTextStyles.heading3),
                               TextButton.icon(
                                 icon: const Icon(Icons.rate_review),
-                                label: const Text('Write Review'),
+                                label: Text(l10n.writeReview),
                                 onPressed: () {
                                   Navigator.push(
                                     context,

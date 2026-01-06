@@ -72,7 +72,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
     if (_startDate == null || _endDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please select start and end dates'),
+          content: Text(l10n.selectStartEndDates ?? 'Please select start and end dates'),
           backgroundColor: Colors.red,
         ),
       );
@@ -212,7 +212,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                       items: ChallengeType.values.map((type) {
                         return DropdownMenuItem(
                           value: type,
-                          child: Text(_getChallengeTypeLabel(type)),
+                          child: Text(_getChallengeTypeLabel(context, type)),
                         );
                       }).toList(),
                       onChanged: isLoading
@@ -383,16 +383,17 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
     );
   }
 
-  String _getChallengeTypeLabel(ChallengeType type) {
+  String _getChallengeTypeLabel(BuildContext context, ChallengeType type) {
+    final l10n = AppLocalizations.of(context)!;
     switch (type) {
       case ChallengeType.general:
-        return 'General';
+        return l10n.challengeTypeGeneral ?? 'General';
       case ChallengeType.restaurant:
-        return 'Restaurant-Specific';
+        return l10n.challengeTypeRestaurant ?? 'Restaurant-Specific';
       case ChallengeType.dish:
-        return 'Dish-Specific';
+        return l10n.challengeTypeDish ?? 'Dish-Specific';
       case ChallengeType.location:
-        return 'Location-Based';
+        return l10n.challengeTypeLocation ?? 'Location-Based';
     }
   }
 }

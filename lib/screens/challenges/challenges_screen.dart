@@ -39,8 +39,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     final authState = context.read<AuthBloc>().state;
     if (authState is! Authenticated || authState.user.uid == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please log in to join challenges'),
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseLoginToJoinChallenges),
           backgroundColor: Colors.red,
         ),
       );
@@ -97,7 +97,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(l10n.challengesTitle ?? 'Challenges'),
+          title: Text(l10n.challengesTitle),
           actions: [
             if (authState is Authenticated &&
                 authState.user.isRestaurant) // Check if user is restaurant
@@ -135,7 +135,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                       ),
                       const SizedBox(height: AppSpacing.md),
                       Text(
-                        l10n.errorOccurred ?? 'Error',
+                        l10n.errorOccurred,
                         style: AppTextStyles.heading3,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -147,7 +147,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                       const SizedBox(height: AppSpacing.lg),
                       ElevatedButton(
                         onPressed: _loadChallenges,
-                        child: Text(l10n.retry ?? 'Retry'),
+                        child: Text(l10n.retry),
                       ),
                     ],
                   ),
@@ -186,7 +186,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                     children: [
                       if (activeChallenges.isNotEmpty) ...[
                         Text(
-                          l10n.activeChallengesLabel ?? 'Active Challenges',
+                          l10n.activeChallengesLabel,
                           style: AppTextStyles.heading3,
                         ),
                         const SizedBox(height: AppSpacing.md),
@@ -199,7 +199,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                         const SizedBox(height: AppSpacing.xl),
                       ],
                       Text(
-                        l10n.allChallengesLabel ?? 'All Challenges',
+                        l10n.allChallengesLabel,
                         style: AppTextStyles.heading3,
                       ),
                       const SizedBox(height: AppSpacing.md),
@@ -213,14 +213,12 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                                     size: 64, color: AppColors.textLight),
                                 const SizedBox(height: AppSpacing.md),
                                 Text(
-                                  l10n.noChallengesAvailable ??
-                                      'No Challenges Available',
+                                  l10n.noChallengesAvailable,
                                   style: AppTextStyles.heading4,
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
                                 Text(
-                                  l10n.newChallengesWillAppear ??
-                                      'New challenges will appear here',
+                                  l10n.newChallengesWillAppear,
                                   style: AppTextStyles.bodySmall,
                                 ),
                               ],

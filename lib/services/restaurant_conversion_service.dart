@@ -64,40 +64,70 @@ class RestaurantConversionService {
       }
 
       // 4. Use Firestore transaction for atomicity
+      // 4. Use Firestore transaction for atomicity
       final String restaurantId = await _firestore.runTransaction<String>(
         (transaction) async {
-          // Create restaurant document reference
-          final restaurantRef = _firestore.collection('restaurants').doc();
-          final restaurantId = restaurantRef.id;
+          // Check for existing unclaimed restaurant
+          final searchName = restaurantName.toLowerCase();
+          final existingQuery = _firestore
+              .collection('restaurants')
+              .where('searchName', isEqualTo: searchName)
+              .where('isClaimed', isEqualTo: false)
+              .limit(1);
           
+          final existingDocs = await existingQuery.get();
+          
+          String finalRestaurantId;
           final now = DateTime.now().toIso8601String();
 
-          // Create restaurant data
-          final restaurant = Restaurant(
-            id: restaurantId,
-            name: restaurantName,
-            searchName: restaurantName.toLowerCase(),
-            location: location,
-            cuisineType: cuisineType,
-            rating: 0.0,
-            imageUrl: imageUrl,
-            postsCount: 0,
-            createdAt: now,
-            updatedAt: now,
-          );
+          if (existingDocs.docs.isNotEmpty) {
+            // CLAIM EXISTING
+            final existingDoc = existingDocs.docs.first;
+            finalRestaurantId = existingDoc.id;
+            
+            // Update existing doc
+            transaction.update(existingDoc.reference, {
+              'isClaimed': true,
+              'ownerId': userId,
+              'cuisineType': cuisineType,
+              'location': location,
+              'hours': hours,
+              'description': description,
+              'imageUrl': imageUrl ?? existingDoc.data()['imageUrl'], // Keep existing image if new one is null
+              'updatedAt': now,
+            });
+          } else {
+            // CREATE NEW
+            final restaurantRef = _firestore.collection('restaurants').doc();
+            finalRestaurantId = restaurantRef.id;
+            
+            final restaurant = Restaurant(
+              id: finalRestaurantId,
+              name: restaurantName,
+              searchName: searchName,
+              location: location,
+              cuisineType: cuisineType,
+              rating: 0.0,
+              imageUrl: imageUrl,
+              postsCount: 0,
+              createdAt: now,
+              updatedAt: now,
+              isClaimed: true, // Claimed immediately
+              ownerId: userId,
+            );
 
-          // Create restaurant document in transaction
-          transaction.set(restaurantRef, restaurant.toFirestore());
+            transaction.set(restaurantRef, restaurant.toFirestore());
+          }
 
           // Update user document in transaction
           final userRef = _firestore.collection('users').doc(userId);
           transaction.update(userRef, {
             'isRestaurant': true,
-            'restaurantId': restaurantId,
+            'restaurantId': finalRestaurantId,
             'updatedAt': now,
           });
 
-          return restaurantId;
+          return finalRestaurantId;
         },
       );
 

@@ -122,7 +122,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        _getChallengeTypeLabel(challenge.type),
+                        _getChallengeTypeLabel(context, challenge.type),
                         style: AppTextStyles.bodySmall.copyWith(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
@@ -330,9 +330,10 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
   void _handleJoinLeave(BuildContext context) {
     final authState = context.read<AuthBloc>().state;
     if (authState is! Authenticated || authState.user.uid == null) {
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please log in first'),
+        SnackBar(
+          content: Text(l10n.pleaseLoginFirst ?? 'Please log in first'),
           backgroundColor: Colors.red,
         ),
       );
@@ -358,16 +359,17 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     Navigator.of(context).pop();
   }
 
-  String _getChallengeTypeLabel(ChallengeType type) {
+  String _getChallengeTypeLabel(BuildContext context, ChallengeType type) {
+    final l10n = AppLocalizations.of(context)!;
     switch (type) {
       case ChallengeType.general:
-        return 'General';
+        return l10n.challengeTypeGeneral ?? 'General';
       case ChallengeType.restaurant:
-        return 'Restaurant-Specific';
+        return l10n.challengeTypeRestaurant ?? 'Restaurant-Specific';
       case ChallengeType.dish:
-        return 'Dish-Specific';
+        return l10n.challengeTypeDish ?? 'Dish-Specific';
       case ChallengeType.location:
-        return 'Location-Based';
+        return l10n.challengeTypeLocation ?? 'Location-Based';
     }
   }
 }
