@@ -375,5 +375,7 @@
   "invalidTargetCount": "Doit être au moins 1",
   "targetCountTooHigh": "Doit être 100 ou moins",
   "rewardBadgeRequired": "Le badge de récompense est requis",
-  "challengeDetails": "Détails du Défi"
+  "challengeDetails": "Détails du Défi",
+  "location": "Emplacement",
+  "description": "Description"
 }

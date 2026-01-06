@@ -376,6 +376,8 @@
   "invalidTargetCount": "يجب أن يكون على الأقل 1",
   "targetCountTooHigh": "يجب أن يكون 100 أو أقل",
   "rewardBadgeRequired": "شارة المكافأة مطلوبة",
-  "challengeDetails": "تفاصيل التحدي"
+  "challengeDetails": "تفاصيل التحدي",
+  "location": "الموقع",
+  "description": "الوصف"
 }
 

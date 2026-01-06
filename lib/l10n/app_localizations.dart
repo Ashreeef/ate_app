@@ -2241,6 +2241,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Challenge Details'**
   String get challengeDetails;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get description;
 }
 
 class _AppLocalizationsDelegate

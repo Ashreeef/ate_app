@@ -39,7 +39,7 @@ class RestaurantConversionService {
   }) async {
     try {
       // 1. Fetch current user data
-      final user = await _userRepository.getUserById(userId);
+      final user = await _userRepository.getUserByUid(userId);
       
       if (user == null) {
         throw Exception('User not found');
@@ -111,7 +111,7 @@ class RestaurantConversionService {
   /// Returns a validation result with error message if invalid
   Future<ValidationResult> validateConversion(String userId) async {
     try {
-      final user = await _userRepository.getUserById(userId);
+      final user = await _userRepository.getUserByUid(userId);
       
       if (user == null) {
         return ValidationResult(

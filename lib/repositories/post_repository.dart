@@ -113,12 +113,10 @@ class PostRepository {
 
         if (isCompleted) {
           // Award points for completion
-          final user = await userRepo.getUserById(userUid);
-          if (user != null) {
-            await userRepo.updateUser(
-              userUid,
-              {'points': user.points + 100}, // Award 100 points
-            );
+          final user = await userRepo.getUserByUid(userUid);
+          if (user != null && user.isRestaurant) {
+            final updatedUser = user.copyWith(points: user.points + 100);
+            await userRepo.updateUserFirestore(updatedUser);
           }
 
           print('🎉 Challenge $challengeId completed by user $userUid!');

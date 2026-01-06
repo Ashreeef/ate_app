@@ -1163,4 +1163,10 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get challengeDetails => 'Détails du Défi';
+
+  @override
+  String get location => 'Emplacement';
+
+  @override
+  String get description => 'Description';
 }

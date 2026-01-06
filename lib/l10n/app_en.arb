@@ -376,5 +376,7 @@
   "invalidTargetCount": "Must be at least 1",
   "targetCountTooHigh": "Must be 100 or less",
   "rewardBadgeRequired": "Reward badge is required",
-  "challengeDetails": "Challenge Details"
+  "challengeDetails": "Challenge Details",
+  "location": "Location",
+  "description": "Description"
 }

@@ -1147,4 +1147,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get challengeDetails => 'تفاصيل التحدي';
+
+  @override
+  String get location => 'الموقع';
+
+  @override
+  String get description => 'الوصف';
 }

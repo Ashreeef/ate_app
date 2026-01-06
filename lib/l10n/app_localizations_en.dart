@@ -1152,4 +1152,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get challengeDetails => 'Challenge Details';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get description => 'Description';
 }
