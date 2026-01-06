@@ -1005,4 +1005,161 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get justNow => 'À l\'instant';
+
+  @override
+  String get convertToRestaurant => 'Convert to Restaurant';
+
+  @override
+  String get viewRestaurant => 'View My Restaurant';
+
+  @override
+  String get createChallenge => 'Create Challenge';
+
+  @override
+  String get challengeTitle => 'Challenge Title';
+
+  @override
+  String get challengeDescription => 'Challenge Description';
+
+  @override
+  String get targetCount => 'Target Count';
+
+  @override
+  String get rewardBadge => 'Reward Badge';
+
+  @override
+  String get joinChallenge => 'Join Challenge';
+
+  @override
+  String get leaveChallenge => 'Leave Challenge';
+
+  @override
+  String get yourProgress => 'Your Progress';
+
+  @override
+  String get daysRemaining => 'Days Remaining';
+
+  @override
+  String get challengeEnded => 'Challenge Ended';
+
+  @override
+  String get reward => 'Reward';
+
+  @override
+  String get dateRange => 'Date Range';
+
+  @override
+  String get startDate => 'Start Date';
+
+  @override
+  String get endDate => 'End Date';
+
+  @override
+  String get conversionWarning =>
+      'This action cannot be undone. Once you convert to a restaurant account, you cannot revert back.';
+
+  @override
+  String get confirmConversion => 'Confirm Conversion';
+
+  @override
+  String get conversionSuccessful =>
+      'Successfully converted to restaurant account!';
+
+  @override
+  String get becomeARestaurant => 'Become a Restaurant';
+
+  @override
+  String get fillInRestaurantDetails => 'Fill in your restaurant details below';
+
+  @override
+  String get restaurantName => 'Restaurant Name';
+
+  @override
+  String get cuisineType => 'Cuisine Type';
+
+  @override
+  String get hours => 'Hours';
+
+  @override
+  String get convertNow => 'Convert Now';
+
+  @override
+  String get createNewChallenge => 'Create a New Challenge';
+
+  @override
+  String get challengeInfo =>
+      'Users will earn progress by posting about your restaurant';
+
+  @override
+  String get restaurantNameRequired => 'Restaurant name is required';
+
+  @override
+  String get restaurantNameTooShort =>
+      'Restaurant name must be at least 3 characters';
+
+  @override
+  String get cuisineTypeRequired => 'Cuisine type is required';
+
+  @override
+  String get locationRequired => 'Location is required';
+
+  @override
+  String get enterRestaurantName => 'Enter restaurant name';
+
+  @override
+  String get enterCuisineType => 'e.g., Italian, Chinese, French';
+
+  @override
+  String get enterLocation => 'Enter restaurant location';
+
+  @override
+  String get enterHours => 'e.g., Mon-Fri: 9AM-10PM';
+
+  @override
+  String get enterDescription => 'Tell us about your restaurant';
+
+  @override
+  String get doYouWantToContinue => 'Do you want to continue?';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get errorOccurred => 'An error occurred';
+
+  @override
+  String get challengeType => 'Challenge Type';
+
+  @override
+  String get enterChallengeTitle => 'e.g., \"Try 5 Dishes\"';
+
+  @override
+  String get enterTargetCount => 'e.g., 5 (number of posts required)';
+
+  @override
+  String get enterRewardBadge => 'e.g., \"Food Explorer 🍕\"';
+
+  @override
+  String get titleRequired => 'Title is required';
+
+  @override
+  String get titleTooShort => 'Title must be at least 5 characters';
+
+  @override
+  String get descriptionRequired => 'Description is required';
+
+  @override
+  String get targetCountRequired => 'Target count is required';
+
+  @override
+  String get invalidTargetCount => 'Must be at least 1';
+
+  @override
+  String get targetCountTooHigh => 'Must be 100 or less';
+
+  @override
+  String get rewardBadgeRequired => 'Reward badge is required';
+
+  @override
+  String get challengeDetails => 'Challenge Details';
 }

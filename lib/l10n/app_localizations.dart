@@ -1935,6 +1935,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Just now'**
   String get justNow;
+
+  /// No description provided for @convertToRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert to Restaurant'**
+  String get convertToRestaurant;
+
+  /// No description provided for @viewRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'View My Restaurant'**
+  String get viewRestaurant;
+
+  /// No description provided for @createChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Challenge'**
+  String get createChallenge;
+
+  /// No description provided for @challengeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Title'**
+  String get challengeTitle;
+
+  /// No description provided for @challengeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Description'**
+  String get challengeDescription;
+
+  /// No description provided for @targetCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Count'**
+  String get targetCount;
+
+  /// No description provided for @rewardBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward Badge'**
+  String get rewardBadge;
+
+  /// No description provided for @joinChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Challenge'**
+  String get joinChallenge;
+
+  /// No description provided for @leaveChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave Challenge'**
+  String get leaveChallenge;
+
+  /// No description provided for @yourProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Progress'**
+  String get yourProgress;
+
+  /// No description provided for @daysRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Days Remaining'**
+  String get daysRemaining;
+
+  /// No description provided for @challengeEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Ended'**
+  String get challengeEnded;
+
+  /// No description provided for @reward.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward'**
+  String get reward;
+
+  /// No description provided for @dateRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Date Range'**
+  String get dateRange;
+
+  /// No description provided for @startDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Date'**
+  String get startDate;
+
+  /// No description provided for @endDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End Date'**
+  String get endDate;
+
+  /// No description provided for @conversionWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Once you convert to a restaurant account, you cannot revert back.'**
+  String get conversionWarning;
+
+  /// No description provided for @confirmConversion.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Conversion'**
+  String get confirmConversion;
+
+  /// No description provided for @conversionSuccessful.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully converted to restaurant account!'**
+  String get conversionSuccessful;
+
+  /// No description provided for @becomeARestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Become a Restaurant'**
+  String get becomeARestaurant;
+
+  /// No description provided for @fillInRestaurantDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in your restaurant details below'**
+  String get fillInRestaurantDetails;
+
+  /// No description provided for @restaurantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant Name'**
+  String get restaurantName;
+
+  /// No description provided for @cuisineType.
+  ///
+  /// In en, this message translates to:
+  /// **'Cuisine Type'**
+  String get cuisineType;
+
+  /// No description provided for @hours.
+  ///
+  /// In en, this message translates to:
+  /// **'Hours'**
+  String get hours;
+
+  /// No description provided for @convertNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert Now'**
+  String get convertNow;
+
+  /// No description provided for @createNewChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a New Challenge'**
+  String get createNewChallenge;
+
+  /// No description provided for @challengeInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Users will earn progress by posting about your restaurant'**
+  String get challengeInfo;
+
+  /// No description provided for @restaurantNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant name is required'**
+  String get restaurantNameRequired;
+
+  /// No description provided for @restaurantNameTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant name must be at least 3 characters'**
+  String get restaurantNameTooShort;
+
+  /// No description provided for @cuisineTypeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Cuisine type is required'**
+  String get cuisineTypeRequired;
+
+  /// No description provided for @locationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is required'**
+  String get locationRequired;
+
+  /// No description provided for @enterRestaurantName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter restaurant name'**
+  String get enterRestaurantName;
+
+  /// No description provided for @enterCuisineType.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Italian, Chinese, French'**
+  String get enterCuisineType;
+
+  /// No description provided for @enterLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter restaurant location'**
+  String get enterLocation;
+
+  /// No description provided for @enterHours.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., Mon-Fri: 9AM-10PM'**
+  String get enterHours;
+
+  /// No description provided for @enterDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about your restaurant'**
+  String get enterDescription;
+
+  /// No description provided for @doYouWantToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to continue?'**
+  String get doYouWantToContinue;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get errorOccurred;
+
+  /// No description provided for @challengeType.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Type'**
+  String get challengeType;
+
+  /// No description provided for @enterChallengeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., \"Try 5 Dishes\"'**
+  String get enterChallengeTitle;
+
+  /// No description provided for @enterTargetCount.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., 5 (number of posts required)'**
+  String get enterTargetCount;
+
+  /// No description provided for @enterRewardBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., \"Food Explorer 🍕\"'**
+  String get enterRewardBadge;
+
+  /// No description provided for @titleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Title is required'**
+  String get titleRequired;
+
+  /// No description provided for @titleTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Title must be at least 5 characters'**
+  String get titleTooShort;
+
+  /// No description provided for @descriptionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Description is required'**
+  String get descriptionRequired;
+
+  /// No description provided for @targetCountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Target count is required'**
+  String get targetCountRequired;
+
+  /// No description provided for @invalidTargetCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Must be at least 1'**
+  String get invalidTargetCount;
+
+  /// No description provided for @targetCountTooHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'Must be 100 or less'**
+  String get targetCountTooHigh;
+
+  /// No description provided for @rewardBadgeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward badge is required'**
+  String get rewardBadgeRequired;
+
+  /// No description provided for @challengeDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge Details'**
+  String get challengeDetails;
 }
 
 class _AppLocalizationsDelegate
