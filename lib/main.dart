@@ -46,6 +46,7 @@ import 'screens/home/navigation_shell.dart';
 import 'screens/notifications/notifications_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/splash/splash_screen.dart';
+import 'services/error_service.dart';
 import 'services/firebase_auth_service.dart';
 import 'services/notification_service.dart';
 import 'services/restaurant_conversion_service.dart';
@@ -76,8 +77,8 @@ void main() async {
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Initialize Firebase Crashlytics
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // Initialize ErrorService
+  await ErrorService().initialize();
 
   // Initialize notification service
   await NotificationService.instance.initialize(

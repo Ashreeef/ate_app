@@ -4,6 +4,7 @@ import '../../repositories/post_repository.dart';
 import '../../services/restaurant_conversion_service.dart';
 import '../../models/dish.dart';
 import '../../models/post.dart';
+import '../../services/error_service.dart';
 import 'restaurant_event.dart';
 import 'restaurant_state.dart';
 
@@ -67,8 +68,12 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
           mentions: mentions,
         ),
       );
-    } catch (e) {
-      print('RestaurantBloc Error: $e');
+    } catch (e, stackTrace) {
+      ErrorService().logError(
+        e,
+        stackTrace,
+        context: 'RestaurantBloc._onLoadRestaurantDetails',
+      );
       emit(
         RestaurantError(
           message: 'Failed to load restaurant details: ${e.toString()}',
@@ -105,8 +110,12 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
       );
 
       emit(RestaurantConversionSuccess(restaurantId: restaurantId));
-    } catch (e) {
-      print('RestaurantConversionBloc Error: $e');
+    } catch (e, stackTrace) {
+      ErrorService().logError(
+        e,
+        stackTrace,
+        context: 'RestaurantBloc._onConvertToRestaurant',
+      );
       emit(
         RestaurantConversionError(
           message: e.toString().replaceAll('Exception: ', ''),

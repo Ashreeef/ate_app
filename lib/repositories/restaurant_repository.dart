@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/restaurant.dart';
 import '../models/dish.dart';
+import '../services/error_service.dart';
 
 /// Repository for Restaurant data operations - Firestore Version
 class RestaurantRepository {
@@ -51,8 +52,12 @@ class RestaurantRepository {
       return snapshot.docs
           .map((doc) => Dish.fromFirestore(doc.data()))
           .toList();
-    } catch (e) {
-      print('Error fetching dishes: $e');
+    } catch (e, stackTrace) {
+      ErrorService().logError(
+        e,
+        stackTrace,
+        context: 'RestaurantRepository.getDishesForRestaurant',
+      );
       return [];
     }
   }

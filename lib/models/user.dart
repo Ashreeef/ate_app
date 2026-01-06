@@ -8,6 +8,7 @@ class User {
   final String? profileImage;
   final String? bio;
   final String? displayName;
+  final String? searchName; // Lowercase display name for case-insensitive search
   final String? phone;
   final int followersCount;
   final int followingCount;
@@ -28,7 +29,9 @@ class User {
     this.password,
     this.profileImage,
     this.bio,
+    this.bio,
     this.displayName,
+    this.searchName,
     this.phone,
     this.followersCount = 0,
     this.followingCount = 0,
@@ -48,7 +51,10 @@ class User {
       'email': email,
       'profileImage': profileImage,
       'bio': bio,
+      'profileImage': profileImage,
+      'bio': bio,
       'displayName': displayName,
+      'searchName': searchName ?? (displayName?.toLowerCase() ?? username.toLowerCase()),
       'phone': phone,
       'followersCount': followersCount,
       'followingCount': followingCount,
@@ -69,7 +75,10 @@ class User {
       email: data['email'] as String? ?? '',
       profileImage: data['profileImage'] as String?,
       bio: data['bio'] as String?,
+      profileImage: data['profileImage'] as String?,
+      bio: data['bio'] as String?,
       displayName: data['displayName'] as String?,
+      searchName: data['searchName'] as String?,
       phone: data['phone'] as String?,
       followersCount: data['followersCount'] as int? ?? 0,
       followingCount: data['followingCount'] as int? ?? 0,
@@ -91,7 +100,9 @@ class User {
     String? password,
     String? profileImage,
     String? bio,
+    String? bio,
     String? displayName,
+    String? searchName,
     String? phone,
     int? followersCount,
     int? followingCount,
@@ -110,7 +121,9 @@ class User {
       password: password ?? this.password,
       profileImage: profileImage ?? this.profileImage,
       bio: bio ?? this.bio,
+      bio: bio ?? this.bio,
       displayName: displayName ?? this.displayName,
+      searchName: searchName ?? this.searchName,
       phone: phone ?? this.phone,
       followersCount: followersCount ?? this.followersCount,
       followingCount: followingCount ?? this.followingCount,

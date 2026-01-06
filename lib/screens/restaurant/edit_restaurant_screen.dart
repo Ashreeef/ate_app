@@ -120,14 +120,14 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Restaurant'), // TODO Localize
+        title: Text(l10n.editRestaurant), 
         actions: [
           BlocConsumer<RestaurantBloc, RestaurantState>(
             listener: (context, state) {
               if (state is RestaurantUpdateSuccess) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Restaurant updated successfully'),
+                    content: Text(l10n.restaurantUpdatedSuccess),
                     backgroundColor: AppColors.success,
                   ),
                 );
@@ -196,7 +196,7 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
                           children: [
                             Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
                             SizedBox(height: 8),
-                            Text('Add Cover Photo', style: TextStyle(color: Colors.grey)),
+                            Text(l10n.addCoverPhoto, style: TextStyle(color: Colors.grey)),
                           ],
                         )
                       : null,

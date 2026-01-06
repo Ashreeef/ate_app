@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../models/dish.dart';
 
 /// Base class for all restaurant events
 abstract class RestaurantEvent extends Equatable {
@@ -88,3 +89,33 @@ class UpdateRestaurantDetails extends RestaurantEvent {
       ];
 }
 
+
+import '../../models/dish.dart';
+
+class AddDishEvent extends RestaurantEvent {
+  final Dish dish;
+
+  const AddDishEvent(this.dish);
+
+  @override
+  List<Object?> get props => [dish];
+}
+
+class UpdateDishEvent extends RestaurantEvent {
+  final Dish dish;
+
+  const UpdateDishEvent(this.dish);
+
+  @override
+  List<Object?> get props => [dish];
+}
+
+class DeleteDishEvent extends RestaurantEvent {
+  final String restaurantId;
+  final String dishId;
+
+  const DeleteDishEvent({required this.restaurantId, required this.dishId});
+
+  @override
+  List<Object?> get props => [restaurantId, dishId];
+}

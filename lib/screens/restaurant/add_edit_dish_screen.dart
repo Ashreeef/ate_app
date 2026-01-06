@@ -103,7 +103,7 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
         setState(() => _isUploadingImage = false);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload image: $e')),
+            SnackBar(content: Text(l10n.uploadImageFail.replaceFirst('{error}', '$e'))),
           );
         }
         return;
@@ -137,7 +137,7 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(isEditing ? 'Edit Dish' : 'Add Dish'), 
+        title: Text(isEditing ? l10n.editDish : l10n.addDish), 
         actions: [
            BlocConsumer<RestaurantBloc, RestaurantState>(
             listener: (context, state) {
@@ -213,7 +213,7 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
                           children: [
                             Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
                             SizedBox(height: 8),
-                            Text('Add Dish Photo', style: TextStyle(color: Colors.grey)),
+                            Text(l10n.addDishPhoto, style: TextStyle(color: Colors.grey)),
                           ],
                         )
                       : null,
@@ -224,7 +224,7 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
               TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
-                  labelText: 'Dish Name', // TODO Localize
+                  labelText: l10n.dishName,
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) => 
@@ -235,7 +235,7 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
               TextFormField(
                 controller: _descriptionController,
                 decoration: InputDecoration(
-                  labelText: 'Description',
+                  labelText: l10n.dishDescription,
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 2,
@@ -245,7 +245,7 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
               TextFormField(
                 controller: _priceController,
                 decoration: InputDecoration(
-                  labelText: 'Price',
+                  labelText: l10n.price,
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.attach_money),
                 ),
@@ -256,7 +256,7 @@ class _AddEditDishScreenState extends State<AddEditDishScreen> {
               TextFormField(
                 controller: _categoryController,
                 decoration: InputDecoration(
-                  labelText: 'Category (e.g. Starter, Main)',
+                  labelText: l10n.category,
                   border: OutlineInputBorder(),
                 ),
               ),

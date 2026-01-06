@@ -41,12 +41,12 @@ class ManageMenuScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Delete Dish?'),
-        content: Text('Are you sure you want to delete "${dish.name}"?'),
+        title: Text(AppLocalizations.of(context)!.deleteDish),
+        content: Text(AppLocalizations.of(context)!.deleteDishConfirm.replaceFirst('{name}', dish.name)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancel'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -58,7 +58,7 @@ class ManageMenuScreen extends StatelessWidget {
                     ),
                   );
             },
-            child: Text('Delete', style: TextStyle(color: AppColors.error)),
+            child: Text(AppLocalizations.of(context)!.delete, style: TextStyle(color: AppColors.error)),
           ),
         ],
       ),
@@ -73,7 +73,7 @@ class ManageMenuScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Menu'),
+        title: Text(AppLocalizations.of(context)!.manageMenu),
         actions: [
           IconButton(
             icon: Icon(Icons.add),
@@ -97,12 +97,12 @@ class ManageMenuScreen extends StatelessWidget {
                    children: [
                      Icon(Icons.restaurant_menu, size: 64, color: AppColors.textLight),
                      SizedBox(height: 16),
-                     Text('No dishes yet', style: AppTextStyles.heading3),
-                     SizedBox(height: 8),
-                     ElevatedButton(
-                       onPressed: () => _navigateToAddDish(context),
-                       child: Text('Add First Dish'),
-                     ),
+                      Text(AppLocalizations.of(context)!.menuEmpty, style: AppTextStyles.heading3),
+                      SizedBox(height: 8),
+                      ElevatedButton(
+                        onPressed: () => _navigateToAddDish(context),
+                        child: Text(AppLocalizations.of(context)!.addFirstDish),
+                      ),
                    ],
                  ),
                );
@@ -156,7 +156,7 @@ class ManageMenuScreen extends StatelessWidget {
              );
           }
           
-          return Center(child: Text('Could not load menu'));
+          return Center(child: Text(AppLocalizations.of(context)!.couldNotLoadMenu));
         },
       ),
       floatingActionButton: FloatingActionButton(
