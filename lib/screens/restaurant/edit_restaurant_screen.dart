@@ -8,15 +8,12 @@ import '../../blocs/restaurant/restaurant_bloc.dart';
 import '../../blocs/restaurant/restaurant_event.dart';
 import '../../blocs/restaurant/restaurant_state.dart';
 import '../../models/restaurant.dart';
-import '../../services/cloudinary_storage_service.dart';
+import '../../services/backend_service.dart';
 
 class EditRestaurantScreen extends StatefulWidget {
   final Restaurant restaurant;
 
-  const EditRestaurantScreen({
-    super.key,
-    required this.restaurant,
-  });
+  const EditRestaurantScreen({super.key, required this.restaurant});
 
   @override
   State<EditRestaurantScreen> createState() => _EditRestaurantScreenState();
@@ -29,7 +26,7 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
   late TextEditingController _locationController;
   late TextEditingController _hoursController;
   late TextEditingController _descriptionController;
-  
+
   File? _imageFile;
   String? _currentImageUrl;
   bool _isUploadingImage = false;
@@ -38,10 +35,16 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.restaurant.name);
-    _cuisineController = TextEditingController(text: widget.restaurant.cuisineType);
-    _locationController = TextEditingController(text: widget.restaurant.location);
+    _cuisineController = TextEditingController(
+      text: widget.restaurant.cuisineType,
+    );
+    _locationController = TextEditingController(
+      text: widget.restaurant.location,
+    );
     _hoursController = TextEditingController(text: widget.restaurant.hours);
-    _descriptionController = TextEditingController(text: widget.restaurant.description);
+    _descriptionController = TextEditingController(
+      text: widget.restaurant.description,
+    );
     _currentImageUrl = widget.restaurant.imageUrl;
   }
 
@@ -81,17 +84,20 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
     if (_imageFile != null) {
       setState(() => _isUploadingImage = true);
       try {
-        final storageService = CloudinaryStorageService();
-        imageUrl = await storageService.uploadRestaurantImage(
-          _imageFile!,
-          widget.restaurant.id!,
-        );
+        final backendService = BackendService();
+        final result = await backendService.uploadImage(_imageFile!);
+
+        if (!result.isSuccess || result.url == null) {
+          throw Exception(result.error ?? 'Upload failed');
+        }
+
+        imageUrl = result.url;
       } catch (e) {
         setState(() => _isUploadingImage = false);
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload image: $e')),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Failed to upload image: $e')));
         }
         return;
       }
@@ -118,7 +124,7 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.editRestaurant), 
+        title: Text(l10n.editRestaurant),
         actions: [
           BlocConsumer<RestaurantBloc, RestaurantState>(
             listener: (context, state) {
@@ -182,19 +188,26 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
                             fit: BoxFit.cover,
                           )
                         : (_currentImageUrl != null
-                            ? DecorationImage(
-                                image: NetworkImage(_currentImageUrl!),
-                                fit: BoxFit.cover,
-                              )
-                            : null),
+                              ? DecorationImage(
+                                  image: NetworkImage(_currentImageUrl!),
+                                  fit: BoxFit.cover,
+                                )
+                              : null),
                   ),
                   child: (_imageFile == null && _currentImageUrl == null)
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
+                            Icon(
+                              Icons.add_a_photo,
+                              size: 50,
+                              color: Colors.grey,
+                            ),
                             SizedBox(height: 8),
-                            Text(l10n.addCoverPhoto, style: TextStyle(color: Colors.grey)),
+                            Text(
+                              l10n.addCoverPhoto,
+                              style: TextStyle(color: Colors.grey),
+                            ),
                           ],
                         )
                       : null,

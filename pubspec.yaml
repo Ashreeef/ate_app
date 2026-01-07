@@ -81,6 +81,9 @@ dependencies:
   # For local notifications display
   flutter_local_notifications: ^19.5.0
   
+  # HTTP client for backend API
+  http: ^1.2.0
+  
   # Image handling
   cached_network_image: ^3.3.1
 

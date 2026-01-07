@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/post.dart';
 import '../services/firestore_service.dart';
-import '../services/cloudinary_storage_service.dart';
+import '../services/backend_service.dart';
 import 'challenge_repository.dart';
 import 'user_repository.dart';
 import 'restaurant_repository.dart';
@@ -11,8 +11,7 @@ import '../models/challenge.dart';
 /// Repository for Post data operations using Firestore
 class PostRepository {
   final FirestoreService _firestoreService = FirestoreService();
-  final CloudinaryStorageService _cloudinaryService =
-      CloudinaryStorageService();
+  final BackendService _backendService = BackendService();
 
   // ==================== CREATE ====================
 
@@ -30,11 +29,23 @@ class PostRepository {
     String? explicitChallengeId, // Added parameter
   }) async {
     try {
-      // Upload images to Cloudinary
-      final imageUrls = await _cloudinaryService.uploadPostImages(
-        imageFiles,
-        userUid,
-      );
+      // Upload images via backend to cloudinary
+      List<String> imageUrls = [];
+
+      final result = await _backendService.uploadMultipleImages(imageFiles);
+      if (result.isSuccess && result.images != null) {
+        imageUrls = result.images!
+            .where((img) => img.isSuccess && img.url != null)
+            .map((img) => img.url!)
+            .toList();
+      }
+
+      // Throw error if upload failed
+      if (imageUrls.isEmpty && imageFiles.isNotEmpty) {
+        throw Exception(
+          'Failed to upload images: ${result.error ?? "Unknown error"}',
+        );
+      }
 
       // Create post document
       final postRef = _firestoreService.posts.doc();

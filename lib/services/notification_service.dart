@@ -57,8 +57,8 @@ class NotificationService {
     _localNotifications = FlutterLocalNotificationsPlugin();
 
     const androidSettings = AndroidInitializationSettings(
-      'app_icon',
-    ); // Use your app's icon
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,

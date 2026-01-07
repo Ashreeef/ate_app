@@ -6,7 +6,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import '../../blocs/profile/profile_cubit.dart';
 import '../../models/user.dart';
-import '../../services/cloudinary_storage_service.dart';
+import '../../services/backend_service.dart';
 import '../../repositories/post_repository.dart';
 
 /// Screen for editing user profile (bio, display name, phone, avatar)
@@ -96,11 +96,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
       // We need to check if profileImage is a local file and upload it
       if (_tempImageFile != null) {
-        // Upload new image
-        final imageUrl = await CloudinaryStorageService().uploadProfileImage(
-          _tempImageFile!,
-          user.uid ?? 'unknown_user',
-        );
+        final backendService = BackendService();
+        final result = await backendService.uploadImage(_tempImageFile!);
+
+        if (!result.isSuccess || result.url == null) {
+          throw Exception(
+            'Failed to upload image: ${result.error ?? "Unknown error"}',
+          );
+        }
+
+        final imageUrl = result.url!;
 
         // Update user with real URL
         final userWithUrl = user.copyWith(profileImage: imageUrl);
