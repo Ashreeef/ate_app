@@ -171,8 +171,8 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           SnackBar(
             content: Text(
               _isFollowing
-                  ? 'Unfollowed ${_user!.username}'
-                  : AppLocalizations.of(context)!.followed,
+                  ? l10n.unfollowedUser(_user!.username)
+                  : l10n.followedUser(_user!.username),
             ),
           ),
         );
@@ -341,7 +341,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _StatItem(title: 'Posts', value: '${_posts.length}'),
+                  _StatItem(title: AppLocalizations.of(context)!.posts, value: '${_posts.length}'),
                   _VerticalDivider(),
                   GestureDetector(
                     onTap: () {
@@ -356,7 +356,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                       );
                     },
                     child: _StatItem(
-                      title: 'Followers',
+                      title: AppLocalizations.of(context)!.followers,
                       value: '${user.followersCount}',
                     ),
                   ),
@@ -374,7 +374,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                       );
                     },
                     child: _StatItem(
-                      title: 'Following',
+                      title: AppLocalizations.of(context)!.following,
                       value: '${user.followingCount}',
                     ),
                   ),
@@ -708,11 +708,11 @@ class _RankCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+           Row(
             children: [
-              Icon(Icons.stars, color: Colors.amber),
-              SizedBox(width: 6),
-              Text('RANK', style: TextStyle(fontSize: 11, color: Colors.grey)),
+              const Icon(Icons.stars, color: Colors.amber),
+              const SizedBox(width: 6),
+              Text(AppLocalizations.of(context)!.rank.toUpperCase(), style: const TextStyle(fontSize: 11, color: Colors.grey)),
             ],
           ),
           const SizedBox(height: 6),
@@ -781,9 +781,9 @@ class _PointsCard extends StatelessWidget {
             children: [
               Icon(Icons.emoji_events, color: AppColors.primary),
               const SizedBox(width: 6),
-              const Text(
-                'POINTS',
-                style: TextStyle(fontSize: 11, color: Colors.grey),
+              Text(
+                AppLocalizations.of(context)!.points.toUpperCase(),
+                style: const TextStyle(fontSize: 11, color: Colors.grey),
               ),
             ],
           ),
@@ -793,9 +793,9 @@ class _PointsCard extends StatelessWidget {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'User points',
-            style: TextStyle(fontSize: 10, color: Colors.grey),
+          Text(
+            AppLocalizations.of(context)!.userPoints,
+            style: const TextStyle(fontSize: 10, color: Colors.grey),
           ),
         ],
       ),

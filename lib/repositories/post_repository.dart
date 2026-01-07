@@ -5,6 +5,7 @@ import '../services/firestore_service.dart';
 import '../services/cloudinary_storage_service.dart';
 import 'challenge_repository.dart';
 import 'user_repository.dart';
+import 'restaurant_repository.dart';
 import '../models/challenge.dart';
 
 /// Repository for Post data operations using Firestore
@@ -113,7 +114,16 @@ class PostRepository {
 
       await postRef.set(post.toFirestore());
 
+      // Update Restaurant Stats
       if (actualRestaurantUid != null) {
+        final restaurantRepo = RestaurantRepository();
+        await restaurantRepo.incrementPostsCount(actualRestaurantUid);
+        
+        // If the post has a rating, update the restaurant's average rating
+        if (rating != null && rating > 0) {
+           await restaurantRepo.recalculateAverageRating(actualRestaurantUid);
+        }
+
         await _updateChallengeProgress(
           userUid: userUid,
           restaurantUid: actualRestaurantUid,
@@ -230,6 +240,7 @@ class PostRepository {
       // Don't throw - post creation should succeed even if challenge update fails
     }
   }
+
 
   // ==================== READ ====================
 

@@ -24,6 +24,13 @@ class _PostCreationStep1ScreenState extends State<PostCreationStep1Screen> {
   //  Getter for navigation shell to check if images are selected
   bool get hasSelectedImages => _selectedImages.isNotEmpty;
 
+  // Method to clear selected images
+  void clearImages() {
+    setState(() {
+      _selectedImages.clear();
+    });
+  }
+
   //  Method for navigation shell to trigger navigation
   void navigateToNextStep() {
     _navigateToStep2();

@@ -44,19 +44,18 @@ class _RestaurantConversionScreenState
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.confirmConversion ?? 'Confirm Conversion'),
+        title: Text(l10n.confirmConversion),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n.conversionWarning ??
-                  'This action cannot be undone. Once you convert to a restaurant account, you will not be able to revert back to a regular user account.',
+              l10n.conversionWarning,
               style: AppTextStyles.bodyMedium,
             ),
             const SizedBox(height: 16),
             Text(
-              l10n.doYouWantToContinue ?? 'Do you want to continue?',
+              l10n.doYouWantToContinue,
               style: AppTextStyles.bodyMedium.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -66,7 +65,7 @@ class _RestaurantConversionScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
-            child: Text(l10n.cancel ?? 'Cancel'),
+            child: Text(l10n.cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -76,7 +75,7 @@ class _RestaurantConversionScreenState
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
             ),
-            child: Text(l10n.confirm ?? 'Confirm'),
+            child: Text(l10n.confirm),
           ),
         ],
       ),
@@ -124,7 +123,7 @@ class _RestaurantConversionScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.convertToRestaurant ?? 'Convert to Restaurant'),
+        title: Text(l10n.convertToRestaurant),
         centerTitle: true,
       ),
       body: BlocListener<RestaurantBloc, RestaurantState>(
@@ -134,8 +133,7 @@ class _RestaurantConversionScreenState
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  l10n.conversionSuccessful ??
-                      'Successfully converted to restaurant account!',
+                  l10n.conversionSuccessful,
                 ),
                 backgroundColor: Colors.green,
               ),
@@ -179,14 +177,13 @@ class _RestaurantConversionScreenState
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      l10n.becomeARestaurant ?? 'Become a Restaurant',
+                      l10n.becomeARestaurant,
                       style: AppTextStyles.heading2,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      l10n.fillInRestaurantDetails ??
-                          'Fill in your restaurant details below',
+                      l10n.fillInRestaurantDetails,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textLight,
                       ),
@@ -199,9 +196,8 @@ class _RestaurantConversionScreenState
                       controller: _restaurantNameController,
                       decoration: InputDecoration(
                         labelText:
-                            l10n.restaurantName ?? 'Restaurant Name *',
-                        hintText: l10n.enterRestaurantName ??
-                            'Enter restaurant name',
+                            l10n.restaurantName,
+                        hintText: l10n.enterRestaurantName,
                         prefixIcon: const Icon(Icons.restaurant),
                         border: const OutlineInputBorder(),
                       ),
@@ -308,8 +304,7 @@ class _RestaurantConversionScreenState
                           const SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: Text(
-                              l10n.conversionWarning ??
-                                  'This action cannot be undone!',
+                              l10n.conversionWarningCompact,
                               style: AppTextStyles.bodySmall.copyWith(
                                 color: Colors.orange.shade900,
                               ),
@@ -340,7 +335,7 @@ class _RestaurantConversionScreenState
                               ),
                             )
                           : Text(
-                              l10n.convertNow ?? 'Convert Now',
+                              l10n.convertNow,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

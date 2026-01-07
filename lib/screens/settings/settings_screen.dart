@@ -99,6 +99,7 @@ class SettingsScreen extends StatelessWidget {
                     AppLocalizations.of(context)!.notifications,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                   subtitle: Text(
@@ -133,6 +134,7 @@ class SettingsScreen extends StatelessWidget {
                     AppLocalizations.of(context)!.theme,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                   subtitle: Text(
@@ -311,6 +313,7 @@ class SettingsScreen extends StatelessWidget {
                       title,
                       style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                       ),
                     ),
                     SizedBox(height: 2),
@@ -341,7 +344,7 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(AppLocalizations.of(context)!.logout),
-        content: Text('Êtes-vous sûr de vouloir vous déconnecter ?'),
+        content: Text(AppLocalizations.of(context)!.logoutConfirm),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

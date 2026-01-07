@@ -132,6 +132,53 @@ class RestaurantRepository {
     });
   }
 
+  /// Recalculate and update restaurant average rating based on all posts and reviews
+  Future<void> recalculateAverageRating(String restaurantId) async {
+    try {
+      // 1. Get all post ratings
+      final postsQuery = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('restaurantId', isEqualTo: restaurantId)
+          .get();
+
+      // 2. Get all review ratings
+      final reviewsQuery = await FirebaseFirestore.instance
+          .collection('reviews')
+          .where('restaurantId', isEqualTo: restaurantId)
+          .get();
+
+      double totalRating = 0;
+      int totalCount = 0;
+
+      for (var doc in postsQuery.docs) {
+        final data = doc.data();
+        final rating = (data['rating'] as num?)?.toDouble();
+        if (rating != null && rating > 0) {
+          totalRating += rating;
+          totalCount++;
+        }
+      }
+
+      for (var doc in reviewsQuery.docs) {
+        final data = doc.data();
+        final rating = (data['rating'] as num?)?.toDouble();
+        if (rating != null && rating > 0) {
+          totalRating += rating;
+          totalCount++;
+        }
+      }
+
+      if (totalCount > 0) {
+        final average = totalRating / totalCount;
+        await updateRating(restaurantId, average);
+      } else {
+        await updateRating(restaurantId, 0.0);
+      }
+    } catch (e) {
+      print('Error recalculating restaurant average rating: $e');
+    }
+  }
+
   /// Update restaurant details
   Future<void> updateRestaurant(Restaurant restaurant) async {
     if (restaurant.id == null) {

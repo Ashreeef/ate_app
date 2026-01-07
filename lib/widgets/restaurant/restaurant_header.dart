@@ -5,8 +5,13 @@ import '../../l10n/app_localizations.dart';
 
 class RestaurantHeader extends StatelessWidget {
   final Restaurant restaurant;
+  final VoidCallback? onMentionsTap;
 
-  const RestaurantHeader({super.key, required this.restaurant});
+  const RestaurantHeader({
+    super.key,
+    required this.restaurant,
+    this.onMentionsTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +67,7 @@ class RestaurantHeader extends StatelessWidget {
                   ),
                   // Mentions link (placeholder)
                   TextButton(
-                    onPressed: () {
-                      // TODO: Navigate to mentions
-                    },
+                    onPressed: onMentionsTap,
                     child: Text(l10n.mentions, style: AppTextStyles.link),
                   ),
                 ],

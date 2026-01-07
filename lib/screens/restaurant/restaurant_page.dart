@@ -125,7 +125,20 @@ class _RestaurantPageState extends State<RestaurantPage> {
                 slivers: [
                   // Header
                   SliverToBoxAdapter(
-                    child: RestaurantHeader(restaurant: restaurant),
+                    child: RestaurantHeader(
+                      restaurant: restaurant,
+                      onMentionsTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RestaurantPostsScreen(
+                              restaurantId: widget.restaurantId,
+                              restaurantName: restaurant.name,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   // Menu Section
                   SliverToBoxAdapter(

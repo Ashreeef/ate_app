@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/auth/auth_event.dart';
 import '../../blocs/auth/auth_state.dart';
@@ -20,6 +21,38 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = prefs.getString('remembered_email');
+    final rememberMe = prefs.getBool('remember_me') ?? false;
+
+    if (rememberMe && savedEmail != null) {
+      if (mounted) {
+        setState(() {
+          _emailController.text = savedEmail;
+          _rememberMe = true;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setString('remembered_email', _emailController.text.trim());
+      await prefs.setBool('remember_me', true);
+    } else {
+      await prefs.remove('remembered_email');
+      await prefs.setBool('remember_me', false);
+    }
+  }
 
   @override
   void dispose() {
@@ -65,6 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is Authenticated) {
+          // Save credentials if remember me is checked
+          _saveCredentials();
           // Navigate to home screen and clear the stack to prevent going back to onboarding/login
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         } else if (state is AuthError) {
@@ -237,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Text(
               l10n.rememberMe,
               style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textDark,
+                color: Theme.of(context).textTheme.bodySmall?.color,
               ),
             ),
           ],
@@ -263,7 +298,8 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Text(
           l10n.continueWithSocial,
-          style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
+          style: AppTextStyles.bodySmall.copyWith(
+              color: Theme.of(context).colorScheme.primary),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -301,11 +337,11 @@ class _LoginScreenState extends State<LoginScreen> {
         width: 56,
         height: 56,
         decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         ),
         child: Center(
-          child: Icon(iconData, size: 32, color: AppColors.textDark),
+          child: Icon(iconData, size: 32, color: Theme.of(context).iconTheme.color),
         ),
       ),
     );
@@ -319,7 +355,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: RichText(
           text: TextSpan(
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textMedium,
+              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
               fontFamily: 'DM Sans',
             ),
             children: [

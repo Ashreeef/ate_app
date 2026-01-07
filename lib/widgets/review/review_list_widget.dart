@@ -33,8 +33,8 @@ class ReviewListWidget extends StatelessWidget {
                 padding: const EdgeInsets.all(AppSpacing.md),
                 child: Center(
                   child: Text(
-                    'No reviews yet. Be the first to review!',
-                    style: TextStyle(color: Colors.grey),
+                    AppLocalizations.of(context)!.noReviewsRow,
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ),
               );
@@ -55,11 +55,11 @@ class ReviewListWidget extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 16,
-                          backgroundImage: review.authorAvatarUrl != null
+                          backgroundImage: review.authorAvatarUrl != null && review.authorAvatarUrl!.isNotEmpty
                               ? NetworkImage(review.authorAvatarUrl!)
                               : null,
-                          child: review.authorAvatarUrl == null
-                              ? Text(review.authorName[0].toUpperCase())
+                          child: (review.authorAvatarUrl == null || review.authorAvatarUrl!.isEmpty)
+                              ? Text(review.authorName.isNotEmpty ? review.authorName[0].toUpperCase() : '?')
                               : null,
                         ),
                         const SizedBox(width: AppSpacing.sm),
@@ -94,7 +94,7 @@ class ReviewListWidget extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.star,
                                 size: 14,
                                 color: AppColors.primary,
@@ -121,7 +121,7 @@ class ReviewListWidget extends StatelessWidget {
           }
 
           if (state is ReviewError) {
-             return Center(child: Text('Failed to load reviews'));
+             return Center(child: Text(AppLocalizations.of(context)!.failedToLoadReviews));
           }
           
           return const SizedBox.shrink();

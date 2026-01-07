@@ -124,6 +124,8 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
         final l10n = AppLocalizations.of(context)!;
         if (state is PostSuccess) {
           _showSuccessSnackBar(l10n.postPublished);
+          // Clear images in step 1 so they don't stay next time
+          PostCreationStep1Screen.globalKey.currentState?.clearImages();
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         } else if (state is PostFailure) {
           _showErrorSnackBar('${l10n.error}: ${state.error}');

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart'; // Need to check if this package is available. If not, I'll build simple star rater.
-// Assuming flutter_rating_bar is NOT available, I will build a simple one.
-// Actually checking pubspec would be wise, but I can implement a simple row of stars.
-
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../utils/constants.dart';
 import '../../models/review.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/auth/auth_state.dart';
 import '../../repositories/review_repository.dart';
+import '../../l10n/app_localizations.dart';
 
 class AddReviewScreen extends StatefulWidget {
   final String restaurantId;
@@ -36,9 +34,10 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
   }
 
   Future<void> _submitReview() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_commentController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please write a comment')),
+        SnackBar(content: Text(l10n.fieldRequired)),
       );
       return;
     }
@@ -52,7 +51,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
       final review = Review(
         authorId: authState.user.uid!,
         authorName: authState.user.displayName ?? 'User',
-        authorAvatarUrl: authState.user.profileImage,
+        authorAvatarUrl: authState.user.photoURL, // Corrected from profileImage
         restaurantId: widget.restaurantId,
         dishId: widget.dishId,
         rating: _rating,
@@ -64,15 +63,15 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Review submitted!')),
+          SnackBar(content: Text(l10n.reviewSuccess)),
         );
-        Navigator.pop(context, true); // Return true to indicate success
+        Navigator.pop(context, true);
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          SnackBar(content: Text('${l10n.error}: $e')),
         );
       }
     }
@@ -80,9 +79,10 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Write Review'),
+        title: Text(l10n.writeReview),
         actions: [
           if (_isSubmitting)
             const Center(
@@ -102,38 +102,42 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
             ),
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           children: [
-            const Text('Rate your experience'),
-            const SizedBox(height: AppSpacing.sm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(5, (index) {
-                return IconButton(
-                  icon: Icon(
-                    index < _rating ? Icons.star : Icons.star_border,
-                    color: Colors.amber,
-                    size: 32,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _rating = index + 1.0;
-                    });
-                  },
-                );
-              }),
+            Text(
+              l10n.rateExperience,
+              style: AppTextStyles.heading4,
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.md),
+            RatingBar.builder(
+              initialRating: _rating,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                setState(() {
+                  _rating = rating;
+                });
+              },
+            ),
+            const SizedBox(height: AppSpacing.xl),
             TextField(
               controller: _commentController,
-              decoration: const InputDecoration(
-                labelText: 'Your Review',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.yourReview,
+                hintText: l10n.writeReviewHint,
+                border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
-              maxLines: 5,
+              maxLines: 8,
             ),
           ],
         ),

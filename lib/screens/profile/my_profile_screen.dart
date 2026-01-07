@@ -195,7 +195,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${user?.level ?? 'Bronze'} Member ⭐',
+                      l10n.memberLevel(user?.level ?? 'Bronze'),
                       style: const TextStyle(fontSize: 13, color: Colors.grey),
                     ),
                     if (user?.bio?.isNotEmpty ?? false) ...[
@@ -231,7 +231,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _StatItem(title: 'Posts', value: '${_posts.length}'),
+                      _StatItem(title: l10n.posts, value: '${_posts.length}'),
                       const _VerticalDivider(),
                       GestureDetector(
                         onTap: () {
@@ -248,7 +248,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           }
                         },
                         child: _StatItem(
-                          title: 'Followers',
+                          title: l10n.followers,
                           value: '${user?.followersCount ?? 0}',
                         ),
                       ),
@@ -268,7 +268,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           }
                         },
                         child: _StatItem(
-                          title: 'Following',
+                          title: l10n.following,
                           value: '${user?.followingCount ?? 0}',
                         ),
                       ),
@@ -335,7 +335,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             );
                           },
                           icon: const Icon(Icons.store),
-                          label: Text(l10n.convertToRestaurant ?? 'Convert to Restaurant'),
+                          label: Text(l10n.convertToRestaurant),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.primary,
                             side: BorderSide(color: AppColors.primary),
@@ -362,7 +362,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             );
                           },
                           icon: const Icon(Icons.restaurant_menu),
-                          label: Text(l10n.viewRestaurant ?? 'View My Restaurant'),
+                          label: Text(l10n.viewRestaurant),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,
                             foregroundColor: Colors.white,

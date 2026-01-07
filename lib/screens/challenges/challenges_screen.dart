@@ -10,6 +10,7 @@ import '../../blocs/challenge/challenge_state.dart';
 import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/auth/auth_state.dart';
 import 'create_challenge_screen.dart';
+import 'challenge_detail_screen.dart';
 
 class ChallengesScreen extends StatefulWidget {
   const ChallengesScreen({super.key});
@@ -194,6 +195,13 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                           (c) => ChallengeCard(
                             challenge: c,
                             onJoinTap: () => _handleLeaveChallenge(c),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ChallengeDetailScreen(challenge: c),
+                                ),
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xl),
@@ -230,6 +238,13 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                           (c) => ChallengeCard(
                             challenge: c,
                             onJoinTap: () => _handleJoinChallenge(c),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ChallengeDetailScreen(challenge: c),
+                                ),
+                              );
+                            },
                           ),
                         ),
                     ],

@@ -20,41 +20,24 @@ class ReviewRepository {
     await docRef.set(reviewData);
 
     // Update Restaurant average rating
-    // NOTE: This is a simplified approach. For production, use Cloud Functions or distributed counters.
-    await _updateRestaurantRating(review.restaurantId, review.rating);
+    await _restaurantRepository.recalculateAverageRating(review.restaurantId);
   }
 
   /// Get reviews for a restaurant
   Future<List<Review>> getReviewsForRestaurant(String restaurantId) async {
     final snapshot = await _reviews
         .where('restaurantId', isEqualTo: restaurantId)
-        .orderBy('createdAt', descending: true)
         .limit(20)
         .get();
 
-    return snapshot.docs
+    final reviews = snapshot.docs
         .map((doc) => Review.fromFirestore(doc.data() as Map<String, dynamic>))
         .toList();
+
+    // Sort in memory to avoid Firestore index requirement for where + orderBy
+    reviews.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+    
+    return reviews;
   }
 
-  /// Recalculate and update restaurant rating
-  Future<void> _updateRestaurantRating(String restaurantId, double newRating) async {
-    // Fetch current rating and count from Restaurant (need to ensure Restaurant model has reviewCount)
-    // For now, let's just fetch all reviews and average them (inefficient but accurate for small scale)
-    
-    final snapshot = await _reviews.where('restaurantId', isEqualTo: restaurantId).get();
-    
-    if (snapshot.docs.isEmpty) return;
-    
-    double totalRating = 0;
-    for (var doc in snapshot.docs) {
-      final data = doc.data() as Map<String, dynamic>;
-      totalRating += (data['rating'] as num?)?.toDouble() ?? 0.0;
-    }
-    
-    final average = totalRating / snapshot.docs.length;
-    
-    // Update restaurant
-    await _restaurantRepository.updateRating(restaurantId, average);
-  }
 }
