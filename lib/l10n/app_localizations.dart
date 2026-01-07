@@ -955,7 +955,7 @@ abstract class AppLocalizations {
   /// No description provided for @rateExperience.
   ///
   /// In en, this message translates to:
-  /// **'Please rate your experience'**
+  /// **'Rate your experience'**
   String get rateExperience;
 
   /// No description provided for @caption.
@@ -1549,7 +1549,7 @@ abstract class AppLocalizations {
   /// No description provided for @followed.
   ///
   /// In en, this message translates to:
-  /// **'Followed'**
+  /// **'Followed!'**
   String get followed;
 
   /// No description provided for @shareProfileCheck.
@@ -2035,7 +2035,7 @@ abstract class AppLocalizations {
   /// No description provided for @conversionWarning.
   ///
   /// In en, this message translates to:
-  /// **'This action cannot be undone. Once you convert to a restaurant account, you cannot revert back.'**
+  /// **'This action cannot be undone. Once you convert to a restaurant account, you will not be able to revert back to a regular user account.'**
   String get conversionWarning;
 
   /// No description provided for @confirmConversion.
@@ -2065,7 +2065,7 @@ abstract class AppLocalizations {
   /// No description provided for @restaurantName.
   ///
   /// In en, this message translates to:
-  /// **'Restaurant Name'**
+  /// **'Restaurant Name *'**
   String get restaurantName;
 
   /// No description provided for @cuisineType.
@@ -2427,6 +2427,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Opening Hours'**
   String get openingHours;
+
+  /// No description provided for @reviewSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Review submitted successfully!'**
+  String get reviewSuccess;
+
+  /// No description provided for @yourReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Review'**
+  String get yourReview;
+
+  /// No description provided for @writeReviewHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Share details of your experience...'**
+  String get writeReviewHint;
+
+  /// No description provided for @noReviewsRow.
+  ///
+  /// In en, this message translates to:
+  /// **'No reviews yet. Be the first to review!'**
+  String get noReviewsRow;
+
+  /// No description provided for @failedToLoadReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load reviews'**
+  String get failedToLoadReviews;
+
+  /// No description provided for @onboardingDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover the true '**
+  String get onboardingDiscover;
+
+  /// No description provided for @onboardingFlavor.
+  ///
+  /// In en, this message translates to:
+  /// **'flavor'**
+  String get onboardingFlavor;
+
+  /// No description provided for @onboardingOf.
+  ///
+  /// In en, this message translates to:
+  /// **' of '**
+  String get onboardingOf;
+
+  /// No description provided for @onboardingSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'sharing'**
+  String get onboardingSharing;
+
+  /// No description provided for @onboardingWith.
+  ///
+  /// In en, this message translates to:
+  /// **' with '**
+  String get onboardingWith;
+
+  /// No description provided for @onboardingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Ate is your food companion, designed for lovers of good food. Every day, explore new dishes thanks to recommendations from your friends, share your discoveries, take on food challenges and earn rewards.'**
+  String get onboardingDescription;
+
+  /// No description provided for @memberLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'{level} Member ⭐'**
+  String memberLevel(Object level);
+
+  /// No description provided for @rank.
+  ///
+  /// In en, this message translates to:
+  /// **'Rank'**
+  String get rank;
+
+  /// No description provided for @userPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'User points'**
+  String get userPoints;
+
+  /// No description provided for @followedUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Followed {username}'**
+  String followedUser(Object username);
+
+  /// No description provided for @unfollowedUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollowed {username}'**
+  String unfollowedUser(Object username);
+
+  /// No description provided for @conversionWarningCompact.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone!'**
+  String get conversionWarningCompact;
 }
 
 class _AppLocalizationsDelegate

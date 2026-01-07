@@ -247,7 +247,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                               children: [
                                 Text(
                                   challenge.rewardBadge,
-                                  style: AppTextStyles.bodyLarge.copyWith(
+                                  style: AppTextStyles.heading3.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

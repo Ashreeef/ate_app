@@ -454,7 +454,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterRestaurant => 'Please enter a restaurant';
 
   @override
-  String get rateExperience => 'Please rate your experience';
+  String get rateExperience => 'Rate your experience';
 
   @override
   String get caption => 'Caption';
@@ -769,7 +769,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userNotFound => 'User not found';
 
   @override
-  String get followed => 'Followed';
+  String get followed => 'Followed!';
 
   @override
   String shareProfileCheck(Object bio, Object username) {
@@ -1046,7 +1046,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get conversionWarning =>
-      'This action cannot be undone. Once you convert to a restaurant account, you cannot revert back.';
+      'This action cannot be undone. Once you convert to a restaurant account, you will not be able to revert back to a regular user account.';
 
   @override
   String get confirmConversion => 'Confirm Conversion';
@@ -1062,7 +1062,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fillInRestaurantDetails => 'Fill in your restaurant details below';
 
   @override
-  String get restaurantName => 'Restaurant Name';
+  String get restaurantName => 'Restaurant Name *';
 
   @override
   String get cuisineType => 'Cuisine Type';
@@ -1249,4 +1249,62 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get openingHours => 'Opening Hours';
+
+  @override
+  String get reviewSuccess => 'Review submitted successfully!';
+
+  @override
+  String get yourReview => 'Your Review';
+
+  @override
+  String get writeReviewHint => 'Share details of your experience...';
+
+  @override
+  String get noReviewsRow => 'No reviews yet. Be the first to review!';
+
+  @override
+  String get failedToLoadReviews => 'Failed to load reviews';
+
+  @override
+  String get onboardingDiscover => 'Discover the true ';
+
+  @override
+  String get onboardingFlavor => 'flavor';
+
+  @override
+  String get onboardingOf => ' of ';
+
+  @override
+  String get onboardingSharing => 'sharing';
+
+  @override
+  String get onboardingWith => ' with ';
+
+  @override
+  String get onboardingDescription =>
+      'Ate is your food companion, designed for lovers of good food. Every day, explore new dishes thanks to recommendations from your friends, share your discoveries, take on food challenges and earn rewards.';
+
+  @override
+  String memberLevel(Object level) {
+    return '$level Member ⭐';
+  }
+
+  @override
+  String get rank => 'Rank';
+
+  @override
+  String get userPoints => 'User points';
+
+  @override
+  String followedUser(Object username) {
+    return 'Followed $username';
+  }
+
+  @override
+  String unfollowedUser(Object username) {
+    return 'Unfollowed $username';
+  }
+
+  @override
+  String get conversionWarningCompact => 'This action cannot be undone!';
 }

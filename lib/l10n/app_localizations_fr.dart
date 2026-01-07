@@ -105,7 +105,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loading => 'Chargement...';
 
   @override
-  String get error => 'Une erreur est survenue';
+  String get error => 'Erreur';
 
   @override
   String get comingSoon => 'Bientôt disponible !';
@@ -459,7 +459,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get enterRestaurant => 'Veuillez entrer un restaurant';
 
   @override
-  String get rateExperience => 'Veuillez évaluer votre expérience';
+  String get rateExperience => 'Évaluez votre expérience';
 
   @override
   String get caption => 'Légende';
@@ -474,7 +474,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get restaurantPlaceholder => 'Nom du restaurant...';
 
   @override
-  String get restaurantHint => 'Tapez le nom du restaurant';
+  String get restaurantHint => 'Rechercher un restaurant...';
 
   @override
   String get dishName => 'Nom du plat';
@@ -776,7 +776,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get userNotFound => 'Utilisateur non trouvé';
 
   @override
-  String get followed => 'Abonné';
+  String get followed => 'Suivi !';
 
   @override
   String shareProfileCheck(Object bio, Object username) {
@@ -1010,7 +1010,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get convertToRestaurant => 'Convertir en Restaurant';
 
   @override
-  String get viewRestaurant => 'Voir Mon Restaurant';
+  String get viewRestaurant => 'Voir mon Restaurant';
 
   @override
   String get createChallenge => 'Créer un Défi';
@@ -1056,14 +1056,14 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get conversionWarning =>
-      'Cette action est irréversible. Une fois converti en compte restaurant, vous ne pourrez pas revenir en arrière.';
+      'Cette action est irréversible. Une fois converti en compte restaurant, vous ne pourrez plus revenir à un compte utilisateur standard.';
 
   @override
   String get confirmConversion => 'Confirmer la Conversion';
 
   @override
   String get conversionSuccessful =>
-      'Compte converti en restaurant avec succès !';
+      'Conversion en compte restaurant réussie !';
 
   @override
   String get becomeARestaurant => 'Devenir un Restaurant';
@@ -1073,7 +1073,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Remplissez les détails de votre restaurant ci-dessous';
 
   @override
-  String get restaurantName => 'Nom du Restaurant';
+  String get restaurantName => 'Nom du Restaurant *';
 
   @override
   String get cuisineType => 'Type de Cuisine';
@@ -1171,93 +1171,154 @@ class AppLocalizationsFr extends AppLocalizations {
   String get description => 'Description';
 
   @override
-  String get editRestaurant => 'Edit Restaurant';
+  String get editRestaurant => 'Modifier le restaurant';
 
   @override
-  String get restaurantUpdatedSuccess => 'Restaurant updated successfully';
+  String get restaurantUpdatedSuccess => 'Restaurant mis à jour avec succès';
 
   @override
-  String get addCoverPhoto => 'Add Cover Photo';
+  String get addCoverPhoto => 'Ajouter une photo de couverture';
 
   @override
   String uploadImageFail(Object error) {
-    return 'Failed to upload image: $error';
+    return 'Échec du téléchargement de l\'image : $error';
   }
 
   @override
-  String get manageMenu => 'Manage Menu';
+  String get manageMenu => 'Gérer le menu';
 
   @override
-  String get deleteDish => 'Delete Dish?';
+  String get deleteDish => 'Supprimer le plat ?';
 
   @override
   String deleteDishConfirm(Object name) {
-    return 'Are you sure you want to delete \"$name\"?';
+    return 'Voulez-vous vraiment supprimer \"$name\" ?';
   }
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'Supprimer';
 
   @override
-  String get addFirstDish => 'Add First Dish';
+  String get addFirstDish => 'Ajouter le premier plat';
 
   @override
-  String get couldNotLoadMenu => 'Could not load menu';
+  String get couldNotLoadMenu => 'Impossible de charger le menu';
 
   @override
-  String get menuEmpty => 'No dishes yet';
+  String get menuEmpty => 'Aucun plat pour le moment';
 
   @override
-  String get editDish => 'Edit Dish';
+  String get editDish => 'Modifier le plat';
 
   @override
-  String get addDish => 'Add Dish';
+  String get addDish => 'Ajouter un plat';
 
   @override
-  String get addDishPhoto => 'Add Dish Photo';
+  String get addDishPhoto => 'Ajouter une photo du plat';
 
   @override
-  String get price => 'Price';
+  String get price => 'Prix';
 
   @override
-  String get category => 'Category (e.g. Starter, Main)';
+  String get category => 'Catégorie (ex: Entrée, Plat)';
 
   @override
   String get dishDescription => 'Description';
 
   @override
-  String get challengeTypeGeneral => 'General';
+  String get challengeTypeGeneral => 'Général';
 
   @override
-  String get challengeTypeRestaurant => 'Restaurant-Specific';
+  String get challengeTypeRestaurant => 'Spécifique au restaurant';
 
   @override
-  String get challengeTypeDish => 'Dish-Specific';
+  String get challengeTypeDish => 'Spécifique au plat';
 
   @override
-  String get challengeTypeLocation => 'Location-Based';
+  String get challengeTypeLocation => 'Basé sur la localisation';
 
   @override
-  String get pleaseLoginFirst => 'Please log in first';
+  String get pleaseLoginFirst => 'Veuillez vous connecter d\'abord';
 
   @override
-  String get selectStartEndDates => 'Please select start and end dates';
+  String get selectStartEndDates =>
+      'Veuillez sélectionner les dates de début et de fin';
 
   @override
-  String get selectChallenge => 'Select a challenge to contribute to';
+  String get selectChallenge => 'Sélectionnez un défi auquel contribuer';
 
   @override
-  String get none => 'None';
+  String get none => 'Aucun';
 
   @override
-  String get pleaseLoginToJoinChallenges => 'Please log in to join challenges';
+  String get pleaseLoginToJoinChallenges =>
+      'Veuillez vous connecter pour rejoindre les défis';
 
   @override
-  String get writeReview => 'Write Review';
+  String get writeReview => 'Écrire un avis';
 
   @override
-  String get fieldRequired => 'Field is required';
+  String get fieldRequired => 'Ce champ est requis';
 
   @override
-  String get openingHours => 'Opening Hours';
+  String get openingHours => 'Horaires d\'ouverture';
+
+  @override
+  String get reviewSuccess => 'Avis envoyé avec succès !';
+
+  @override
+  String get yourReview => 'Votre avis';
+
+  @override
+  String get writeReviewHint => 'Partagez les détails de votre expérience...';
+
+  @override
+  String get noReviewsRow =>
+      'Pas encore d\'avis. Soyez le premier à donner le vôtre !';
+
+  @override
+  String get failedToLoadReviews => 'Échec du chargement des avis';
+
+  @override
+  String get onboardingDiscover => 'Découvre la vraie ';
+
+  @override
+  String get onboardingFlavor => 'saveur';
+
+  @override
+  String get onboardingOf => ' du ';
+
+  @override
+  String get onboardingSharing => 'partage';
+
+  @override
+  String get onboardingWith => ' avec ';
+
+  @override
+  String get onboardingDescription =>
+      'Ate est ton compagnon food, pensé pour les amoureux de la bonne bouffe. Chaque jour, explore de nouveaux plats grâce aux recommandations de tes amis, partage tes découvertes, relève des défis gourmands et gagne des récompenses.';
+
+  @override
+  String memberLevel(Object level) {
+    return 'Membre $level ⭐';
+  }
+
+  @override
+  String get rank => 'Rang';
+
+  @override
+  String get userPoints => 'Points utilisateur';
+
+  @override
+  String followedUser(Object username) {
+    return 'Vous suivez maintenant $username';
+  }
+
+  @override
+  String unfollowedUser(Object username) {
+    return 'Vous ne suivez plus $username';
+  }
+
+  @override
+  String get conversionWarningCompact => 'Cette action est irréversible !';
 }

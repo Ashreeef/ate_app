@@ -11,6 +11,7 @@ import '../../repositories/auth_repository.dart';
 import '../../widgets/post/restaurant_selection_widget.dart';
 import '../../models/challenge.dart';
 import '../../repositories/challenge_repository.dart';
+import 'post_creation_step1_screen.dart';
 
 class PostCreationStep2Screen extends StatefulWidget {
   final List<XFile> selectedImages;

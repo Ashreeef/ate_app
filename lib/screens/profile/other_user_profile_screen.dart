@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:flutter/services.dart';
 import '../../repositories/follow_repository.dart';
 import '../../utils/constants.dart';
-import '../../l10n/app_localizations.dart';
 import '../../repositories/profile_repository.dart';
 import '../../repositories/post_repository.dart';
 import '../../models/user.dart';
@@ -145,6 +145,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
 
   Future<void> _toggleFollow() async {
     if (_currentUser == null || _user == null) return;
+    final l10n = AppLocalizations.of(context)!;
 
     final currentUserId = _currentUser!.uid!;
     final targetUserId = _user!.uid!;
@@ -282,10 +283,10 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      AppColors.primary.withValues(alpha: 0.1),
+                      AppColors.primary.withOpacity(0.1),
                       Theme.of(
                         context,
-                      ).colorScheme.surface.withValues(alpha: 0.9),
+                      ).colorScheme.surface.withOpacity(0.9),
                     ],
                   ),
                 ),
@@ -452,7 +453,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                         Icon(
                           Icons.photo_library_outlined,
                           size: 64,
-                          color: Colors.grey.withValues(alpha: 0.5),
+                          color: Colors.grey.withOpacity(0.5),
                         ),
                         const SizedBox(height: 16),
                         Text(
@@ -504,7 +505,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
                                       )
                                     : null,
                                 color: imageUrl.isEmpty
-                                    ? Colors.grey.withValues(alpha: 0.3)
+                                    ? Colors.grey.withOpacity(0.3)
                                     : null,
                               ),
                               child: imageUrl.isEmpty
@@ -575,12 +576,12 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.3),
+          color: AppColors.primary.withOpacity(0.3),
           width: 3,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.2),
+            color: AppColors.primary.withOpacity(0.2),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -588,7 +589,7 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
       ),
       child: CircleAvatar(
         radius: 48,
-        backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+        backgroundColor: AppColors.primary.withOpacity(0.1),
         backgroundImage: avatar.isNotEmpty ? NetworkImage(avatar) : null,
         child: avatar.isEmpty
             ? Text(

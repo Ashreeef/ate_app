@@ -105,7 +105,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loading => 'جاري التحميل...';
 
   @override
-  String get error => 'حدث خطأ';
+  String get error => 'خطأ';
 
   @override
   String get comingSoon => 'قريباً!';
@@ -452,7 +452,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterRestaurant => 'يرجى إدخال اسم المطعم';
 
   @override
-  String get rateExperience => 'يرجى تقييم تجربتك';
+  String get rateExperience => 'قيم تجربتك';
 
   @override
   String get caption => 'التعليق';
@@ -467,7 +467,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restaurantPlaceholder => 'اسم المطعم...';
 
   @override
-  String get restaurantHint => 'اكتب اسم المطعم';
+  String get restaurantHint => 'ابحث عن مطعم...';
 
   @override
   String get dishName => 'اسم الطبق';
@@ -767,7 +767,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get userNotFound => 'المستخدم غير موجود';
 
   @override
-  String get followed => 'تمت المتابعة';
+  String get followed => 'تتم المتابعة !';
 
   @override
   String shareProfileCheck(Object bio, Object username) {
@@ -1043,22 +1043,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get conversionWarning =>
-      'هذا الإجراء لا رجعة فيه. بمجرد التحويل إلى حساب مطعم، لن تتمكن من العودة.';
+      'هذا الإجراء لا يمكن التراجع عنه. بمجرد التحويل إلى حساب مطعم، لن تتمكن من العودة إلى حساب مستخدم عادي.';
 
   @override
   String get confirmConversion => 'تأكيد التحويل';
 
   @override
-  String get conversionSuccessful => 'تم تحويل الحساب إلى مطعم بنجاح!';
+  String get conversionSuccessful => 'تم التحويل إلى حساب مطعم بنجاح!';
 
   @override
-  String get becomeARestaurant => 'أصبح مطعماً';
+  String get becomeARestaurant => 'كن مطعماً';
 
   @override
   String get fillInRestaurantDetails => 'املأ تفاصيل مطعمك أدناه';
 
   @override
-  String get restaurantName => 'اسم المطعم';
+  String get restaurantName => 'اسم المطعم *';
 
   @override
   String get cuisineType => 'نوع المطبخ';
@@ -1155,93 +1155,152 @@ class AppLocalizationsAr extends AppLocalizations {
   String get description => 'الوصف';
 
   @override
-  String get editRestaurant => 'Edit Restaurant';
+  String get editRestaurant => 'تعديل المطعم';
 
   @override
-  String get restaurantUpdatedSuccess => 'Restaurant updated successfully';
+  String get restaurantUpdatedSuccess => 'تم تحديث المطعم بنجاح';
 
   @override
-  String get addCoverPhoto => 'Add Cover Photo';
+  String get addCoverPhoto => 'إضافة صورة غلاف';
 
   @override
   String uploadImageFail(Object error) {
-    return 'Failed to upload image: $error';
+    return 'فشل رفع الصورة: $error';
   }
 
   @override
-  String get manageMenu => 'Manage Menu';
+  String get manageMenu => 'إدارة القائمة';
 
   @override
-  String get deleteDish => 'Delete Dish?';
+  String get deleteDish => 'حذف الطبق؟';
 
   @override
   String deleteDishConfirm(Object name) {
-    return 'Are you sure you want to delete \"$name\"?';
+    return 'هل أنت متأكد من حذف \"$name\"؟';
   }
 
   @override
-  String get delete => 'Delete';
+  String get delete => 'حذف';
 
   @override
-  String get addFirstDish => 'Add First Dish';
+  String get addFirstDish => 'إضافة أول طبق';
 
   @override
-  String get couldNotLoadMenu => 'Could not load menu';
+  String get couldNotLoadMenu => 'تعذر تحميل القائمة';
 
   @override
-  String get menuEmpty => 'No dishes yet';
+  String get menuEmpty => 'لا توجد أطباق بعد';
 
   @override
-  String get editDish => 'Edit Dish';
+  String get editDish => 'تعديل الطبق';
 
   @override
-  String get addDish => 'Add Dish';
+  String get addDish => 'إضافة طبق';
 
   @override
-  String get addDishPhoto => 'Add Dish Photo';
+  String get addDishPhoto => 'إضافة صورة للطبق';
 
   @override
-  String get price => 'Price';
+  String get price => 'السعر';
 
   @override
-  String get category => 'Category (e.g. Starter, Main)';
+  String get category => 'الفئة (مثال: مقبلات، رئيسي)';
 
   @override
-  String get dishDescription => 'Description';
+  String get dishDescription => 'الوصف';
 
   @override
-  String get challengeTypeGeneral => 'General';
+  String get challengeTypeGeneral => 'عام';
 
   @override
-  String get challengeTypeRestaurant => 'Restaurant-Specific';
+  String get challengeTypeRestaurant => 'خاص بالمطعم';
 
   @override
-  String get challengeTypeDish => 'Dish-Specific';
+  String get challengeTypeDish => 'خاص بالطبق';
 
   @override
-  String get challengeTypeLocation => 'Location-Based';
+  String get challengeTypeLocation => 'حسب الموقع';
 
   @override
-  String get pleaseLoginFirst => 'Please log in first';
+  String get pleaseLoginFirst => 'يرجى تسجيل الدخول أولاً';
 
   @override
-  String get selectStartEndDates => 'Please select start and end dates';
+  String get selectStartEndDates => 'يرجى اختيار تاريخ البدء والانتهاء';
 
   @override
-  String get selectChallenge => 'Select a challenge to contribute to';
+  String get selectChallenge => 'اختر تحدياً للمساهمة فيه';
 
   @override
-  String get none => 'None';
+  String get none => 'لا يوجد';
 
   @override
-  String get pleaseLoginToJoinChallenges => 'Please log in to join challenges';
+  String get pleaseLoginToJoinChallenges =>
+      'يرجى تسجيل الدخول للانضمام إلى التحديات';
 
   @override
-  String get writeReview => 'Write Review';
+  String get writeReview => 'اكتب تقييمًا';
 
   @override
-  String get fieldRequired => 'Field is required';
+  String get fieldRequired => 'هذا الحقل مطلوب';
 
   @override
-  String get openingHours => 'Opening Hours';
+  String get openingHours => 'ساعات العمل';
+
+  @override
+  String get reviewSuccess => 'تم إرسال التقييم بنجاح!';
+
+  @override
+  String get yourReview => 'تقييمك';
+
+  @override
+  String get writeReviewHint => 'شارك تفاصيل تجربتك...';
+
+  @override
+  String get noReviewsRow => 'لا توجد تقييمات بعد. كن أول من يقيم!';
+
+  @override
+  String get failedToLoadReviews => 'فشل تحميل التقييمات';
+
+  @override
+  String get onboardingDiscover => 'اكتشف ';
+
+  @override
+  String get onboardingFlavor => 'النكهة';
+
+  @override
+  String get onboardingOf => ' الحقيقية لـ ';
+
+  @override
+  String get onboardingSharing => 'المشاركة';
+
+  @override
+  String get onboardingWith => ' مع ';
+
+  @override
+  String get onboardingDescription =>
+      'أكل هو رفيقك في الطعام، مصمم لعشاق الأكل الجيد. كل يوم، استكشف أطباقاً جديدة بفضل توصيات أصدقائك، وشارك اكتشافاتك، وخُض تحديات الطعام واكسب الجوائز.';
+
+  @override
+  String memberLevel(Object level) {
+    return 'عضو $level ⭐';
+  }
+
+  @override
+  String get rank => 'الرتبة';
+
+  @override
+  String get userPoints => 'نقاط المستخدم';
+
+  @override
+  String followedUser(Object username) {
+    return 'أنت تتبع $username الآن';
+  }
+
+  @override
+  String unfollowedUser(Object username) {
+    return 'لقد ألغيت متابعة $username';
+  }
+
+  @override
+  String get conversionWarningCompact => 'لا يمكن التراجع عن هذا الإجراء!';
 }

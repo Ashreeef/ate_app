@@ -51,7 +51,7 @@ class _AddReviewScreenState extends State<AddReviewScreen> {
       final review = Review(
         authorId: authState.user.uid!,
         authorName: authState.user.displayName ?? 'User',
-        authorAvatarUrl: authState.user.photoURL, // Corrected from profileImage
+        authorAvatarUrl: authState.user.profileImage, // Corrected from photoURL
         restaurantId: widget.restaurantId,
         dishId: widget.dishId,
         rating: _rating,
