@@ -81,6 +81,14 @@ class Restaurant {
       locationString = '${locationData.latitude}, ${locationData.longitude}';
     }
 
+    // Helper to convert Timestamp or String to String
+    String? toStringValue(dynamic value) {
+      if (value == null) return null;
+      if (value is String) return value;
+      if (value is Timestamp) return value.toDate().toIso8601String();
+      return null;
+    }
+
     return Restaurant(
       id: id,
       name: data['name'] as String? ?? '',
@@ -90,8 +98,8 @@ class Restaurant {
       rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
       imageUrl: data['imageUrl'] as String?,
       postsCount: data['postsCount'] as int? ?? 0,
-      createdAt: data['createdAt'] as String?,
-      updatedAt: data['updatedAt'] as String?,
+      createdAt: toStringValue(data['createdAt']),
+      updatedAt: toStringValue(data['updatedAt']),
       isClaimed: data['isClaimed'] as bool? ?? false,
       ownerId: data['ownerId'] as String?,
       hours: data['hours'] as String?,

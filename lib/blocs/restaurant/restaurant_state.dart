@@ -26,7 +26,7 @@ class RestaurantLoaded extends RestaurantState {
   final List<Dish> dishes;
   final List<Post> mentions;
 
-  RestaurantLoaded({
+  const RestaurantLoaded({
     required this.restaurant,
     required this.dishes,
     required this.mentions,

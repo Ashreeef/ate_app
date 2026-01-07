@@ -1,16 +1,10 @@
-import 'dart:async';
-import 'dart:io' show Platform;
-
 // Flutter imports
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 // Third-party imports
-import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Local imports
 import 'blocs/auth/auth_bloc.dart';
@@ -28,7 +22,6 @@ import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 import 'repositories/auth_repository.dart';
 import 'repositories/challenge_repository.dart';
-import 'repositories/comment_repository.dart';
 import 'repositories/follow_repository.dart';
 import 'repositories/like_repository.dart';
 import 'repositories/notification_repository.dart';
@@ -57,7 +50,6 @@ import 'utils/theme.dart';
 final UserRepository _userRepository = UserRepository();
 final RestaurantRepository _restaurantRepository = RestaurantRepository();
 final PostRepository _postRepository = PostRepository();
-final CommentRepository _commentRepository = CommentRepository();
 final LikeRepository _likeRepository = LikeRepository();
 final SavedPostRepository _savedPostRepository = SavedPostRepository();
 final SearchHistoryRepository _searchHistoryRepository =
@@ -118,9 +110,8 @@ class MyApp extends StatelessWidget {
           create: (context) => _restaurantRepository,
         ),
         RepositoryProvider<ReviewRepository>(
-          create: (context) => ReviewRepository(
-            restaurantRepository: _restaurantRepository,
-          ),
+          create: (context) =>
+              ReviewRepository(restaurantRepository: _restaurantRepository),
         ),
         RepositoryProvider<SearchHistoryRepository>(
           create: (context) => _searchHistoryRepository,
@@ -183,7 +174,6 @@ class MyApp extends StatelessWidget {
               postRepository: _postRepository,
               conversionService: RestaurantConversionService(
                 userRepository: _userRepository,
-                restaurantRepository: _restaurantRepository,
               ),
             ),
           ),
@@ -200,9 +190,8 @@ class MyApp extends StatelessWidget {
             ),
           ),
           BlocProvider<ChallengeBloc>(
-            create: (context) => ChallengeBloc(
-              challengeRepository: _challengeRepository,
-            ),
+            create: (context) =>
+                ChallengeBloc(challengeRepository: _challengeRepository),
           ),
         ],
         child: BlocBuilder<SettingsCubit, SettingsState>(
