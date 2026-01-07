@@ -11,9 +11,8 @@ import '../models/challenge.dart';
 /// Repository for Post data operations using Firestore
 class PostRepository {
   final FirestoreService _firestoreService = FirestoreService();
-  final CloudinaryStorageService _cloudinaryService = CloudinaryStorageService();
-  final ChallengeRepository _challengeRepository = ChallengeRepository();
-  final UserRepository _userRepository = UserRepository();
+  final CloudinaryStorageService _cloudinaryService =
+      CloudinaryStorageService();
 
   // ==================== CREATE ====================
 
@@ -45,7 +44,9 @@ class PostRepository {
       String? actualRestaurantUid = restaurantUid;
 
       // Logic to Create Unclaimed Restaurant if ID is null but Name is provided
-      if (restaurantUid == null && restaurantName != null && restaurantName.isNotEmpty) {
+      if (restaurantUid == null &&
+          restaurantName != null &&
+          restaurantName.isNotEmpty) {
         try {
           // 1. Check if it exists by SearchName
           final searchName = restaurantName.toLowerCase();
@@ -60,9 +61,9 @@ class PostRepository {
             // 2. Create Unclaimed Restaurant
             final newRestaurantRef = _firestoreService.restaurants.doc();
             actualRestaurantUid = newRestaurantRef.id;
-            
+
             final nowStr = DateTime.now().toIso8601String();
-            
+
             // Note: We are not using the Restaurant model here to avoid circular dependencies
             // if Restaurant model logic gets complex, but ideally we should.
             // Constructing map directly for simplicity in this specific operation.
@@ -78,15 +79,16 @@ class PostRepository {
               'updatedAt': nowStr,
               'isClaimed': false,
               'ownerId': null,
-              'imageUrl': imageUrls.isNotEmpty ? imageUrls.first : null, // Use first post image as potential cover
+              'imageUrl': imageUrls.isNotEmpty
+                  ? imageUrls.first
+                  : null, // Use first post image as potential cover
             });
           }
-          
+
           // Update the post object with the resolved ID before saving?
           // The Post object was already created above with null ID.
           // We need to update the post map or re-create the object logic.
           // Let's refactor: Determine ID FIRST, then create Post object.
-          
         } catch (e) {
           print('Error resolving restaurant: $e');
           // Proceed without ID if error
@@ -118,10 +120,10 @@ class PostRepository {
       if (actualRestaurantUid != null) {
         final restaurantRepo = RestaurantRepository();
         await restaurantRepo.incrementPostsCount(actualRestaurantUid);
-        
+
         // If the post has a rating, update the restaurant's average rating
         if (rating != null && rating > 0) {
-           await restaurantRepo.recalculateAverageRating(actualRestaurantUid);
+          await restaurantRepo.recalculateAverageRating(actualRestaurantUid);
         }
 
         await _updateChallengeProgress(
@@ -151,12 +153,12 @@ class PostRepository {
 
       // Get all active challenges
       final activeChallenges = await challengeRepo.getActiveChallenges();
-      
+
       // Filter relevant challenges
       // 1. User must have joined
       // 2. Criteria must match (Restaurant ID, Dish Name, etc.)
       final challengesToUpdate = <String>[];
-      
+
       for (final challenge in activeChallenges) {
         // Check participation
         final participation = await challengeRepo.getChallengeParticipation(
@@ -166,14 +168,14 @@ class PostRepository {
         if (participation == null) continue;
 
         bool isMatch = false;
-        
+
         // Check criteria based on type
         switch (challenge.type) {
           case ChallengeType.restaurant:
             // Match specific restaurant
             if (challenge.createdBy == restaurantUid) isMatch = true;
             break;
-            
+
           case ChallengeType.dish:
             // Match specific dish (simple string contains check for MVP)
             // Ideally should check createdBy (restaurant) AND dish name if specific
@@ -181,24 +183,22 @@ class PostRepository {
             // "Eat Pizza" -> dishName contains "Pizza"
             // For now, let's assume Dish challenges are also restaurant-scoped mostly
             if (challenge.createdBy == restaurantUid) {
-               // If dish name is required, check it
-               // Current Challenge model doesn't store target dish name, description might
-               // For MVP, if type is Dish and restaurant matches, and user posted a dish, count it.
-               if (dishName != null && dishName.isNotEmpty) isMatch = true;
+              // If dish name is required, check it
+              // Current Challenge model doesn't store target dish name, description might
+              // For MVP, if type is Dish and restaurant matches, and user posted a dish, count it.
+              if (dishName != null && dishName.isNotEmpty) isMatch = true;
             }
             break;
-            
+
           case ChallengeType.general:
             isMatch = true;
             break;
-            
+
           case ChallengeType.location:
             // Not implemented yet
             break;
-          default:
-            break;
         }
-        
+
         // Allow explicit override if user selected this challenge
         if (explicitChallengeId == challenge.id) isMatch = true;
 
@@ -224,12 +224,13 @@ class PostRepository {
         if (isCompleted) {
           // Award points for completion
           final user = await userRepo.getUserByUid(userUid);
-          if (user != null) { // Award to User, not Restaurant necessarily? Logic says user.isRestaurant?
-             // Original logic: if (user.isRestaurant) award points. 
-             // Regular users should also get points! 
-             // Assuming all users have points field.
-             final updatedUser = user.copyWith(points: user.points + 100);
-             await userRepo.updateUserFirestore(updatedUser);
+          if (user != null) {
+            // Award to User, not Restaurant necessarily? Logic says user.isRestaurant?
+            // Original logic: if (user.isRestaurant) award points.
+            // Regular users should also get points!
+            // Assuming all users have points field.
+            final updatedUser = user.copyWith(points: user.points + 100);
+            await userRepo.updateUserFirestore(updatedUser);
           }
 
           print('🎉 Challenge $challengeId completed by user $userUid!');
@@ -240,7 +241,6 @@ class PostRepository {
       // Don't throw - post creation should succeed even if challenge update fails
     }
   }
-
 
   // ==================== READ ====================
 
@@ -269,10 +269,10 @@ class PostRepository {
       final posts = querySnapshot.docs
           .map((doc) => Post.fromFirestore(doc.data() as Map<String, dynamic>))
           .toList();
-      
+
       // Sort client-side
       posts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      
+
       return posts;
     } catch (e) {
       print('Error getting user posts: $e');
@@ -281,7 +281,10 @@ class PostRepository {
   }
 
   /// Get posts by restaurant UID
-  Future<List<Post>> getRestaurantPosts(String restaurantUid, {int limit = 20}) async {
+  Future<List<Post>> getRestaurantPosts(
+    String restaurantUid, {
+    int limit = 20,
+  }) async {
     try {
       final querySnapshot = await _firestoreService.posts
           .where('restaurantId', isEqualTo: restaurantUid)
@@ -309,8 +312,10 @@ class PostRepository {
     List<String>? userIds,
   }) async {
     try {
-      Query query = _firestoreService.posts
-          .orderBy('createdAt', descending: true);
+      Query query = _firestoreService.posts.orderBy(
+        'createdAt',
+        descending: true,
+      );
 
       if (userIds != null && userIds.isNotEmpty) {
         // Firestore whereIn supports up to 30 elements
@@ -349,9 +354,12 @@ class PostRepository {
 
       final posts = querySnapshot.docs
           .map((doc) => Post.fromFirestore(doc.data() as Map<String, dynamic>))
-          .where((post) =>
-              post.caption.toLowerCase().contains(query.toLowerCase()) ||
-              (post.dishName?.toLowerCase().contains(query.toLowerCase()) ?? false))
+          .where(
+            (post) =>
+                post.caption.toLowerCase().contains(query.toLowerCase()) ||
+                (post.dishName?.toLowerCase().contains(query.toLowerCase()) ??
+                    false),
+          )
           .toList();
 
       return posts;
@@ -394,9 +402,13 @@ class PostRepository {
         .orderBy('createdAt', descending: true)
         .limit(limit)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Post.fromFirestore(doc.data() as Map<String, dynamic>))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => Post.fromFirestore(doc.data() as Map<String, dynamic>),
+              )
+              .toList(),
+        );
   }
 
   /// Stream user posts in real-time
@@ -406,9 +418,13 @@ class PostRepository {
         .orderBy('createdAt', descending: true)
         .limit(limit)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => Post.fromFirestore(doc.data() as Map<String, dynamic>))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => Post.fromFirestore(doc.data() as Map<String, dynamic>),
+              )
+              .toList(),
+        );
   }
 
   // ==================== UPDATE ====================
@@ -420,9 +436,7 @@ class PostRepository {
         throw Exception('Post ID is required for update');
       }
 
-      final updatedPost = post.copyWith(
-        updatedAt: DateTime.now(),
-      );
+      final updatedPost = post.copyWith(updatedAt: DateTime.now());
 
       await _firestoreService.posts
           .doc(post.postId)
@@ -448,7 +462,7 @@ class PostRepository {
       if (snapshot.docs.isEmpty) return;
 
       final batch = _firestoreService.batch();
-      
+
       // 2. Queue updates for each post
       for (var doc in snapshot.docs) {
         batch.update(doc.reference, {

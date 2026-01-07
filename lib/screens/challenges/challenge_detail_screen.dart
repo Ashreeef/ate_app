@@ -41,7 +41,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.challengeDetails ?? 'Challenge Details'),
+        title: Text(l10n.challengeDetails),
         centerTitle: true,
       ),
       body: BlocListener<ChallengeBloc, ChallengeState>(
@@ -142,8 +142,8 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                         const SizedBox(width: AppSpacing.xs),
                         Text(
                           isActive
-                              ? '${l10n.daysRemaining ?? "Days Remaining"}: $daysRemaining'
-                              : l10n.challengeEnded ?? 'Challenge Ended',
+                              ? '${l10n.daysRemaining}: $daysRemaining'
+                              : l10n.challengeEnded,
                           style: AppTextStyles.bodySmall.copyWith(
                             color: isActive ? Colors.green : Colors.grey,
                             fontWeight: FontWeight.bold,
@@ -155,7 +155,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
                     // Description
                     Text(
-                      l10n.description ?? 'Description',
+                      l10n.description,
                       style: AppTextStyles.heading4,
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -168,7 +168,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                     // Progress Section (if joined)
                     if (challenge.isJoined) ...[
                       Text(
-                        l10n.yourProgress ?? 'Your Progress',
+                        l10n.yourProgress,
                         style: AppTextStyles.heading4,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -217,7 +217,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
                     // Reward Section
                     Text(
-                      l10n.reward ?? 'Reward',
+                      l10n.reward,
                       style: AppTextStyles.heading4,
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -267,7 +267,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
 
                     // Date Range
                     Text(
-                      l10n.dateRange ?? 'Date Range',
+                      l10n.dateRange,
                       style: AppTextStyles.heading4,
                     ),
                     const SizedBox(height: AppSpacing.xs),
@@ -275,7 +275,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                       children: [
                         Expanded(
                           child: _DateCard(
-                            label: l10n.startDate ?? 'Start',
+                            label: l10n.startDate,
                             date: challenge.startDate,
                           ),
                         ),
@@ -284,7 +284,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: _DateCard(
-                            label: l10n.endDate ?? 'End',
+                            label: l10n.endDate,
                             date: challenge.endDate,
                           ),
                         ),
@@ -308,8 +308,8 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
                           ),
                           child: Text(
                             challenge.isJoined
-                                ? (l10n.leaveChallenge ?? 'Leave Challenge')
-                                : (l10n.joinChallenge ?? 'Join Challenge'),
+                                ? l10n.leaveChallenge
+                                : l10n.joinChallenge,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -333,7 +333,7 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.pleaseLoginFirst ?? 'Please log in first'),
+          content: Text(l10n.pleaseLoginFirst),
           backgroundColor: Colors.red,
         ),
       );
@@ -363,13 +363,13 @@ class _ChallengeDetailScreenState extends State<ChallengeDetailScreen> {
     final l10n = AppLocalizations.of(context)!;
     switch (type) {
       case ChallengeType.general:
-        return l10n.challengeTypeGeneral ?? 'General';
+        return l10n.challengeTypeGeneral;
       case ChallengeType.restaurant:
-        return l10n.challengeTypeRestaurant ?? 'Restaurant-Specific';
+        return l10n.challengeTypeRestaurant;
       case ChallengeType.dish:
-        return l10n.challengeTypeDish ?? 'Dish-Specific';
+        return l10n.challengeTypeDish;
       case ChallengeType.location:
-        return l10n.challengeTypeLocation ?? 'Location-Based';
+        return l10n.challengeTypeLocation;
     }
   }
 }

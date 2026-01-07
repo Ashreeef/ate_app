@@ -204,12 +204,10 @@ class _RestaurantConversionScreenState
                       enabled: !isLoading,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return l10n.restaurantNameRequired ??
-                              'Restaurant name is required';
+                          return l10n.restaurantNameRequired;
                         }
                         if (value.trim().length < 3) {
-                          return l10n.restaurantNameTooShort ??
-                              'Restaurant name must be at least 3 characters';
+                          return l10n.restaurantNameTooShort;
                         }
                         return null;
                       },
@@ -220,17 +218,15 @@ class _RestaurantConversionScreenState
                     TextFormField(
                       controller: _cuisineController,
                       decoration: InputDecoration(
-                        labelText: l10n.cuisineType ?? 'Cuisine Type *',
-                        hintText: l10n.enterCuisineType ??
-                            'e.g., Italian, Chinese, French',
+                        labelText: l10n.cuisineType,
+                        hintText: l10n.enterCuisineType,
                         prefixIcon: const Icon(Icons.fastfood),
                         border: const OutlineInputBorder(),
                       ),
                       enabled: !isLoading,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return l10n.cuisineTypeRequired ??
-                              'Cuisine type is required';
+                          return l10n.cuisineTypeRequired;
                         }
                         return null;
                       },
@@ -241,17 +237,15 @@ class _RestaurantConversionScreenState
                     TextFormField(
                       controller: _locationController,
                       decoration: InputDecoration(
-                        labelText: l10n.location ?? 'Location *',
-                        hintText: l10n.enterLocation ??
-                            'Enter restaurant location',
+                        labelText: l10n.location,
+                        hintText: l10n.enterLocation,
                         prefixIcon: const Icon(Icons.location_on),
                         border: const OutlineInputBorder(),
                       ),
                       enabled: !isLoading,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return l10n.locationRequired ??
-                              'Location is required';
+                          return l10n.locationRequired;
                         }
                         return null;
                       },
@@ -262,9 +256,8 @@ class _RestaurantConversionScreenState
                     TextFormField(
                       controller: _hoursController,
                       decoration: InputDecoration(
-                        labelText: l10n.hours ?? 'Hours (Optional)',
-                        hintText: l10n.enterHours ??
-                            'e.g., Mon-Fri: 9AM-10PM',
+                        labelText: l10n.hours,
+                        hintText: l10n.enterHours,
                         prefixIcon: const Icon(Icons.access_time),
                         border: const OutlineInputBorder(),
                       ),
@@ -276,9 +269,8 @@ class _RestaurantConversionScreenState
                     TextFormField(
                       controller: _descriptionController,
                       decoration: InputDecoration(
-                        labelText: l10n.description ?? 'Description (Optional)',
-                        hintText: l10n.enterDescription ??
-                            'Tell us about your restaurant',
+                        labelText: l10n.description,
+                        hintText: l10n.enterDescription,
                         prefixIcon: const Icon(Icons.description),
                         border: const OutlineInputBorder(),
                       ),

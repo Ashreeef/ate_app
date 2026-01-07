@@ -73,7 +73,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.selectStartEndDates ?? 'Please select start and end dates'),
+          content: Text(l10n.selectStartEndDates),
           backgroundColor: Colors.red,
         ),
       );
@@ -100,7 +100,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.createChallenge ?? 'Create Challenge'),
+        title: Text(l10n.createChallenge),
         centerTitle: true,
       ),
       body: BlocListener<ChallengeBloc, ChallengeState>(
@@ -141,14 +141,13 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      l10n.createNewChallenge ?? 'Create a New Challenge',
+                      l10n.createNewChallenge,
                       style: AppTextStyles.heading2,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     Text(
-                      l10n.challengeDescription ??
-                          'Challenge your customers to visit your restaurant',
+                      l10n.challengeDescription,
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textLight,
                       ),
@@ -160,20 +159,18 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                     TextFormField(
                       controller: _titleController,
                       decoration: InputDecoration(
-                        labelText: l10n.challengeTitle ?? 'Challenge Title *',
-                        hintText:
-                            l10n.enterChallengeTitle ?? 'e.g., "Try 5 Dishes"',
+                        labelText: l10n.challengeTitle,
+                        hintText: l10n.enterChallengeTitle,
                         prefixIcon: const Icon(Icons.title),
                         border: const OutlineInputBorder(),
                       ),
                       enabled: !isLoading,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return l10n.titleRequired ?? 'Title is required';
+                          return l10n.titleRequired;
                         }
                         if (value.trim().length < 5) {
-                          return l10n.titleTooShort ??
-                              'Title must be at least 5 characters';
+                          return l10n.titleTooShort;
                         }
                         return null;
                       },
@@ -184,9 +181,8 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                     TextFormField(
                       controller: _descriptionController,
                       decoration: InputDecoration(
-                        labelText: l10n.description ?? 'Description *',
-                        hintText: l10n.enterDescription ??
-                            'Describe the challenge...',
+                        labelText: l10n.description,
+                        hintText: l10n.enterDescription,
                         prefixIcon: const Icon(Icons.description),
                         border: const OutlineInputBorder(),
                       ),
@@ -194,8 +190,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                       enabled: !isLoading,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return l10n.descriptionRequired ??
-                              'Description is required';
+                          return l10n.descriptionRequired;
                         }
                         return null;
                       },
@@ -206,7 +201,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                     DropdownButtonFormField<ChallengeType>(
                       value: _selectedType,
                       decoration: InputDecoration(
-                        labelText: l10n.challengeType ?? 'Challenge Type',
+                        labelText: l10n.challengeType,
                         prefixIcon: const Icon(Icons.category),
                         border: const OutlineInputBorder(),
                       ),
@@ -230,9 +225,8 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                     TextFormField(
                       controller: _targetCountController,
                       decoration: InputDecoration(
-                        labelText: l10n.targetCount ?? 'Target Count *',
-                        hintText: l10n.enterTargetCount ??
-                            'e.g., 5 (number of posts required)',
+                        labelText: l10n.targetCount,
+                        hintText: l10n.enterTargetCount,
                         prefixIcon: const Icon(Icons.confirmation_number),
                         border: const OutlineInputBorder(),
                       ),
@@ -240,17 +234,14 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                       enabled: !isLoading,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return l10n.targetCountRequired ??
-                              'Target count is required';
+                          return l10n.targetCountRequired;
                         }
                         final count = int.tryParse(value.trim());
                         if (count == null || count < 1) {
-                          return l10n.invalidTargetCount ??
-                              'Must be at least 1';
+                          return l10n.invalidTargetCount;
                         }
                         if (count > 100) {
-                          return l10n.targetCountTooHigh ??
-                              'Must be 100 or less';
+                          return l10n.targetCountTooHigh;
                         }
                         return null;
                       },
@@ -261,17 +252,15 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                     TextFormField(
                       controller: _rewardBadgeController,
                       decoration: InputDecoration(
-                        labelText: l10n.rewardBadge ?? 'Reward Badge *',
-                        hintText: l10n.enterRewardBadge ??
-                            'e.g., "Food Explorer 🍕"',
+                        labelText: l10n.rewardBadge,
+                        hintText: l10n.enterRewardBadge,
                         prefixIcon: const Icon(Icons.emoji_events_outlined),
                         border: const OutlineInputBorder(),
                       ),
                       enabled: !isLoading,
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
-                          return l10n.rewardBadgeRequired ??
-                              'Reward badge is required';
+                          return l10n.rewardBadgeRequired;
                         }
                         return null;
                       },
@@ -287,7 +276,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             icon: const Icon(Icons.calendar_today),
                             label: Text(
                               _startDate == null
-                                  ? (l10n.startDate ?? 'Start Date')
+                                  ? l10n.startDate
                                   : '${_startDate!.month}/${_startDate!.day}/${_startDate!.year}',
                             ),
                             style: OutlinedButton.styleFrom(
@@ -304,7 +293,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                             icon: const Icon(Icons.event),
                             label: Text(
                               _endDate == null
-                                  ? (l10n.endDate ?? 'End Date')
+                                  ? l10n.endDate
                                   : '${_endDate!.month}/${_endDate!.day}/${_endDate!.year}',
                             ),
                             style: OutlinedButton.styleFrom(
@@ -335,8 +324,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                           const SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: Text(
-                              l10n.challengeInfo ??
-                                  'Users will earn progress by posting about your restaurant',
+                              l10n.challengeInfo,
                               style: AppTextStyles.bodySmall.copyWith(
                                 color: Colors.blue.shade900,
                               ),
@@ -367,7 +355,7 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
                               ),
                             )
                           : Text(
-                              l10n.createChallenge ?? 'Create Challenge',
+                              l10n.createChallenge,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -388,13 +376,13 @@ class _CreateChallengeScreenState extends State<CreateChallengeScreen> {
     final l10n = AppLocalizations.of(context)!;
     switch (type) {
       case ChallengeType.general:
-        return l10n.challengeTypeGeneral ?? 'General';
+        return l10n.challengeTypeGeneral;
       case ChallengeType.restaurant:
-        return l10n.challengeTypeRestaurant ?? 'Restaurant-Specific';
+        return l10n.challengeTypeRestaurant;
       case ChallengeType.dish:
-        return l10n.challengeTypeDish ?? 'Dish-Specific';
+        return l10n.challengeTypeDish;
       case ChallengeType.location:
-        return l10n.challengeTypeLocation ?? 'Location-Based';
+        return l10n.challengeTypeLocation;
     }
   }
 }

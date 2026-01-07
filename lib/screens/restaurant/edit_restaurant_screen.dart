@@ -75,8 +75,6 @@ class _EditRestaurantScreenState extends State<EditRestaurantScreen> {
     if (!_formKey.currentState!.validate()) return;
     if (_isUploadingImage) return;
 
-    final l10n = AppLocalizations.of(context)!;
-
     String? imageUrl = _currentImageUrl;
 
     // Handle image upload if new image selected

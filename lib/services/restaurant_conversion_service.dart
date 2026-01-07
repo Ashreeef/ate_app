@@ -1,31 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/user.dart';
 import '../models/restaurant.dart';
 import '../repositories/user_repository.dart';
-import '../repositories/restaurant_repository.dart';
 
 /// Service for converting a regular user account to a restaurant account
 /// This is a one-way conversion that cannot be reversed
 class RestaurantConversionService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final UserRepository _userRepository;
-  final RestaurantRepository _restaurantRepository;
 
-  RestaurantConversionService({
-    required UserRepository userRepository,
-    required RestaurantRepository restaurantRepository,
-  })  : _userRepository = userRepository,
-        _restaurantRepository = restaurantRepository;
+  RestaurantConversionService({required UserRepository userRepository})
+    : _userRepository = userRepository;
 
   /// Convert a user account to a restaurant account
-  /// 
+  ///
   /// This operation:
   /// 1. Validates the user can be converted
   /// 2. Creates a new restaurant document
   /// 3. Updates the user document with restaurant info
-  /// 
+  ///
   /// Uses a Firestore transaction to ensure atomicity
-  /// 
+  ///
   /// Returns the created restaurant ID on success
   /// Throws an exception on failure
   Future<String> convertUserToRestaurant({
@@ -40,7 +34,7 @@ class RestaurantConversionService {
     try {
       // 1. Fetch current user data
       final user = await _userRepository.getUserByUid(userId);
-      
+
       if (user == null) {
         throw Exception('User not found');
       }
@@ -54,82 +48,85 @@ class RestaurantConversionService {
       if (restaurantName.trim().isEmpty) {
         throw Exception('Restaurant name is required');
       }
-      
+
       if (cuisineType.trim().isEmpty) {
         throw Exception('Cuisine type is required');
       }
-      
+
       if (location.trim().isEmpty) {
         throw Exception('Location is required');
       }
 
       // 4. Use Firestore transaction for atomicity
       // 4. Use Firestore transaction for atomicity
-      final String restaurantId = await _firestore.runTransaction<String>(
-        (transaction) async {
-          // Check for existing unclaimed restaurant
-          final searchName = restaurantName.toLowerCase();
-          final existingQuery = _firestore
-              .collection('restaurants')
-              .where('searchName', isEqualTo: searchName)
-              .where('isClaimed', isEqualTo: false)
-              .limit(1);
-          
-          final existingDocs = await existingQuery.get();
-          
-          String finalRestaurantId;
-          final now = DateTime.now().toIso8601String();
+      final String restaurantId = await _firestore.runTransaction<String>((
+        transaction,
+      ) async {
+        // Check for existing unclaimed restaurant
+        final searchName = restaurantName.toLowerCase();
+        final existingQuery = _firestore
+            .collection('restaurants')
+            .where('searchName', isEqualTo: searchName)
+            .where('isClaimed', isEqualTo: false)
+            .limit(1);
 
-          if (existingDocs.docs.isNotEmpty) {
-            // CLAIM EXISTING
-            final existingDoc = existingDocs.docs.first;
-            finalRestaurantId = existingDoc.id;
-            
-            // Update existing doc
-            transaction.update(existingDoc.reference, {
-              'isClaimed': true,
-              'ownerId': userId,
-              'cuisineType': cuisineType,
-              'location': location,
-              'hours': hours,
-              'description': description,
-              'imageUrl': imageUrl ?? existingDoc.data()['imageUrl'], // Keep existing image if new one is null
-              'updatedAt': now,
-            });
-          } else {
-            // CREATE NEW
-            final restaurantRef = _firestore.collection('restaurants').doc();
-            finalRestaurantId = restaurantRef.id;
-            
-            final restaurant = Restaurant(
-              id: finalRestaurantId,
-              name: restaurantName,
-              searchName: searchName,
-              location: location,
-              cuisineType: cuisineType,
-              rating: 0.0,
-              imageUrl: imageUrl,
-              postsCount: 0,
-              createdAt: now,
-              updatedAt: now,
-              isClaimed: true, // Claimed immediately
-              ownerId: userId,
-            );
+        final existingDocs = await existingQuery.get();
 
-            transaction.set(restaurantRef, restaurant.toFirestore());
-          }
+        String finalRestaurantId;
+        final now = DateTime.now().toIso8601String();
 
-          // Update user document in transaction
-          final userRef = _firestore.collection('users').doc(userId);
-          transaction.update(userRef, {
-            'isRestaurant': true,
-            'restaurantId': finalRestaurantId,
+        if (existingDocs.docs.isNotEmpty) {
+          // CLAIM EXISTING
+          final existingDoc = existingDocs.docs.first;
+          finalRestaurantId = existingDoc.id;
+
+          // Update existing doc
+          transaction.update(existingDoc.reference, {
+            'isClaimed': true,
+            'ownerId': userId,
+            'cuisineType': cuisineType,
+            'location': location,
+            'hours': hours,
+            'description': description,
+            'imageUrl':
+                imageUrl ??
+                existingDoc
+                    .data()['imageUrl'], // Keep existing image if new one is null
             'updatedAt': now,
           });
+        } else {
+          // CREATE NEW
+          final restaurantRef = _firestore.collection('restaurants').doc();
+          finalRestaurantId = restaurantRef.id;
 
-          return finalRestaurantId;
-        },
-      );
+          final restaurant = Restaurant(
+            id: finalRestaurantId,
+            name: restaurantName,
+            searchName: searchName,
+            location: location,
+            cuisineType: cuisineType,
+            rating: 0.0,
+            imageUrl: imageUrl,
+            postsCount: 0,
+            createdAt: now,
+            updatedAt: now,
+            isClaimed: true, // Claimed immediately
+            ownerId: userId,
+          );
+
+          transaction.set(restaurantRef, restaurant.toFirestore());
+        }
+
+        // Update user document in transaction
+        final userRef = _firestore.collection('users').doc(userId);
+        transaction.update(userRef, {
+          'isRestaurant': true,
+          'restaurantId': finalRestaurantId,
+          'updatedAt': now,
+        });
+
+        return finalRestaurantId;
+      });
 
       return restaurantId;
     } catch (e) {
@@ -142,12 +139,9 @@ class RestaurantConversionService {
   Future<ValidationResult> validateConversion(String userId) async {
     try {
       final user = await _userRepository.getUserByUid(userId);
-      
+
       if (user == null) {
-        return ValidationResult(
-          isValid: false,
-          errorMessage: 'User not found',
-        );
+        return ValidationResult(isValid: false, errorMessage: 'User not found');
       }
 
       if (!user.canConvertToRestaurant()) {
@@ -172,8 +166,5 @@ class ValidationResult {
   final bool isValid;
   final String? errorMessage;
 
-  ValidationResult({
-    required this.isValid,
-    this.errorMessage,
-  });
+  ValidationResult({required this.isValid, this.errorMessage});
 }
