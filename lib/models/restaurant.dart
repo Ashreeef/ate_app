@@ -12,6 +12,10 @@ class Restaurant {
   final int postsCount;
   final String? createdAt;
   final String? updatedAt;
+  final bool isClaimed;
+  final String? ownerId;
+  final String? hours;
+  final String? description;
 
   Restaurant({
     this.id,
@@ -25,6 +29,10 @@ class Restaurant {
     this.postsCount = 0,
     this.createdAt,
     this.updatedAt,
+    this.isClaimed = false,
+    this.ownerId,
+    this.hours,
+    this.description,
   });
 
   /// Convert Restaurant to Map for SQLite database
@@ -54,6 +62,10 @@ class Restaurant {
       'postsCount': postsCount,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'isClaimed': isClaimed,
+      'ownerId': ownerId,
+      'hours': hours,
+      'description': description,
     };
   }
 
@@ -69,6 +81,14 @@ class Restaurant {
       locationString = '${locationData.latitude}, ${locationData.longitude}';
     }
 
+    // Helper to convert Timestamp or String to String
+    String? toStringValue(dynamic value) {
+      if (value == null) return null;
+      if (value is String) return value;
+      if (value is Timestamp) return value.toDate().toIso8601String();
+      return null;
+    }
+
     return Restaurant(
       id: id,
       name: data['name'] as String? ?? '',
@@ -78,8 +98,12 @@ class Restaurant {
       rating: (data['rating'] as num?)?.toDouble() ?? 0.0,
       imageUrl: data['imageUrl'] as String?,
       postsCount: data['postsCount'] as int? ?? 0,
-      createdAt: data['createdAt'] as String?,
-      updatedAt: data['updatedAt'] as String?,
+      createdAt: toStringValue(data['createdAt']),
+      updatedAt: toStringValue(data['updatedAt']),
+      isClaimed: data['isClaimed'] as bool? ?? false,
+      ownerId: data['ownerId'] as String?,
+      hours: data['hours'] as String?,
+      description: data['description'] as String?,
     );
   }
 
@@ -96,6 +120,10 @@ class Restaurant {
     int? postsCount,
     String? createdAt,
     String? updatedAt,
+    bool? isClaimed,
+    String? ownerId,
+    String? hours,
+    String? description,
   }) {
     return Restaurant(
       id: id ?? this.id,
@@ -109,11 +137,15 @@ class Restaurant {
       postsCount: postsCount ?? this.postsCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isClaimed: isClaimed ?? this.isClaimed,
+      ownerId: ownerId ?? this.ownerId,
+      hours: hours ?? this.hours,
+      description: description ?? this.description,
     );
   }
 
   @override
   String toString() {
-    return 'Restaurant(id: $id, name: $name, location: $location, rating: $rating)';
+    return 'Restaurant(id: $id, name: $name, location: $location, rating: $rating, isClaimed: $isClaimed)';
   }
 }

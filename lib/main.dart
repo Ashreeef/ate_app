@@ -1,19 +1,14 @@
-import 'dart:async';
-import 'dart:io' show Platform;
-
 // Flutter imports
-import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 // Third-party imports
-import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Local imports
 import 'blocs/auth/auth_bloc.dart';
+import 'blocs/challenge/challenge_bloc.dart';
 import 'blocs/feed/feed_bloc.dart';
 import 'blocs/notification/notification_bloc.dart';
 import 'blocs/post/post_bloc.dart';
@@ -26,13 +21,14 @@ import 'blocs/user/user_bloc.dart';
 import 'firebase_options.dart';
 import 'l10n/app_localizations.dart';
 import 'repositories/auth_repository.dart';
-import 'repositories/comment_repository.dart';
+import 'repositories/challenge_repository.dart';
 import 'repositories/follow_repository.dart';
 import 'repositories/like_repository.dart';
 import 'repositories/notification_repository.dart';
 import 'repositories/post_repository.dart';
 import 'repositories/profile_repository.dart';
 import 'repositories/restaurant_repository.dart';
+import 'repositories/review_repository.dart';
 import 'repositories/saved_post_repository.dart';
 import 'repositories/search_history_repository.dart';
 import 'repositories/user_repository.dart';
@@ -43,8 +39,10 @@ import 'screens/home/navigation_shell.dart';
 import 'screens/notifications/notifications_screen.dart';
 import 'screens/onboarding/onboarding_screen.dart';
 import 'screens/splash/splash_screen.dart';
+import 'services/error_service.dart';
 import 'services/firebase_auth_service.dart';
 import 'services/notification_service.dart';
+import 'services/restaurant_conversion_service.dart';
 import 'utils/notification_navigation_helper.dart';
 import 'utils/theme.dart';
 
@@ -52,7 +50,6 @@ import 'utils/theme.dart';
 final UserRepository _userRepository = UserRepository();
 final RestaurantRepository _restaurantRepository = RestaurantRepository();
 final PostRepository _postRepository = PostRepository();
-final CommentRepository _commentRepository = CommentRepository();
 final LikeRepository _likeRepository = LikeRepository();
 final SavedPostRepository _savedPostRepository = SavedPostRepository();
 final SearchHistoryRepository _searchHistoryRepository =
@@ -60,6 +57,7 @@ final SearchHistoryRepository _searchHistoryRepository =
 final ProfileRepository _profileRepository = ProfileRepository();
 final AuthRepository _authRepository = AuthRepository();
 final NotificationRepository _notificationRepository = NotificationRepository();
+final ChallengeRepository _challengeRepository = ChallengeRepository();
 final FirebaseAuthService _firebaseAuthService = FirebaseAuthService();
 
 // Global navigator key for notification handling
@@ -71,8 +69,8 @@ void main() async {
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Initialize Firebase Crashlytics
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  // Initialize ErrorService
+  await ErrorService().initialize();
 
   // Initialize notification service
   await NotificationService.instance.initialize(
@@ -110,6 +108,10 @@ class MyApp extends StatelessWidget {
         ),
         RepositoryProvider<RestaurantRepository>(
           create: (context) => _restaurantRepository,
+        ),
+        RepositoryProvider<ReviewRepository>(
+          create: (context) =>
+              ReviewRepository(restaurantRepository: _restaurantRepository),
         ),
         RepositoryProvider<SearchHistoryRepository>(
           create: (context) => _searchHistoryRepository,
@@ -170,6 +172,9 @@ class MyApp extends StatelessWidget {
             create: (context) => RestaurantBloc(
               restaurantRepository: _restaurantRepository,
               postRepository: _postRepository,
+              conversionService: RestaurantConversionService(
+                userRepository: _userRepository,
+              ),
             ),
           ),
           BlocProvider<ProfileCubit>(
@@ -183,6 +188,10 @@ class MyApp extends StatelessWidget {
               notificationRepository: _notificationRepository,
               authService: _firebaseAuthService,
             ),
+          ),
+          BlocProvider<ChallengeBloc>(
+            create: (context) =>
+                ChallengeBloc(challengeRepository: _challengeRepository),
           ),
         ],
         child: BlocBuilder<SettingsCubit, SettingsState>(

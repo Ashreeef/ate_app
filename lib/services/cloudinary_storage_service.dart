@@ -146,6 +146,38 @@ class CloudinaryStorageService {
     return originalUrl.replaceFirst('/upload/', '/upload/$transformation/');
   }
 
+  /// Upload restaurant image
+  Future<String> uploadRestaurantImage(File imageFile, String restaurantId) async {
+    return uploadImage(
+      imageFile,
+      folder: 'restaurants/$restaurantId',
+    );
+  }
+
+  /// Upload generic image (e.g. restaurant cover, dish photo)
+  Future<String> uploadImage(
+    File imageFile, {
+    required String folder,
+    String? publicId,
+  }) async {
+    try {
+      final compressed = await _compressImage(imageFile);
+      
+      final response = await _cloudinary.uploadFile(
+        CloudinaryFile.fromFile(
+          compressed.path,
+          folder: folder,
+          publicId: publicId,
+          resourceType: CloudinaryResourceType.Image,
+        ),
+      );
+
+      return response.secureUrl;
+    } catch (e) {
+      throw Exception('Failed to upload image: $e');
+    }
+  }
+
   /// Get thumbnail URL (for feed previews)
   String getThumbnailUrl(String originalUrl) {
     return getOptimizedUrl(originalUrl, width: 400, height: 400, quality: '80');

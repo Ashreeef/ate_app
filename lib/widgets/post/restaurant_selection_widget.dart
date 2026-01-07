@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/restaurant.dart';
 import '../../repositories/restaurant_repository.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class RestaurantSelectionWidget extends StatefulWidget {
   final TextEditingController controller;
@@ -138,7 +139,7 @@ class _RestaurantSelectionWidgetState extends State<RestaurantSelectionWidget> {
           onChanged: _onChanged,
           style: AppTextStyles.body,
           decoration: InputDecoration(
-            hintText: 'Restaurant name...', // TODO: Localize
+            hintText: AppLocalizations.of(context)!.restaurantHint,
             hintStyle: AppTextStyles.body.copyWith(color: AppColors.textLight),
             border: InputBorder.none,
             contentPadding: EdgeInsets.all(AppSpacing.md),

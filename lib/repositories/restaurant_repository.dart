@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/restaurant.dart';
 import '../models/dish.dart';
+import '../services/error_service.dart';
 
 /// Repository for Restaurant data operations - Firestore Version
 class RestaurantRepository {
@@ -14,12 +15,18 @@ class RestaurantRepository {
     await docRef.set(restaurant.toFirestore());
   }
 
-  /// Create a new dish for a restaurant (used by seeding or admin)
-  Future<String> createDish(Dish dish) async {
+  /// Add a new dish for a restaurant
+  Future<String> addDish(Dish dish) async {
     final docRef = _restaurants.doc(dish.restaurantId).collection('dishes').doc();
     // Ensure the ID is set in the document data
     final dishData = dish.toFirestore();
     dishData['id'] = docRef.id;
+    
+    // Add createdAt if missing
+    if (dish.createdAt == null) {
+      dishData['createdAt'] = DateTime.now().toIso8601String();
+    }
+    
     await docRef.set(dishData);
     return docRef.id;
   }
@@ -45,8 +52,12 @@ class RestaurantRepository {
       return snapshot.docs
           .map((doc) => Dish.fromFirestore(doc.data()))
           .toList();
-    } catch (e) {
-      print('Error fetching dishes: $e');
+    } catch (e, stackTrace) {
+      ErrorService().logError(
+        e,
+        stackTrace,
+        context: 'RestaurantRepository.getDishesForRestaurant',
+      );
       return [];
     }
   }
@@ -119,6 +130,90 @@ class RestaurantRepository {
       'rating': newRating,
       'updatedAt': DateTime.now().toIso8601String(),
     });
+  }
+
+  /// Recalculate and update restaurant average rating based on all posts and reviews
+  Future<void> recalculateAverageRating(String restaurantId) async {
+    try {
+      // 1. Get all post ratings
+      final postsQuery = await FirebaseFirestore.instance
+          .collection('posts')
+          .where('restaurantId', isEqualTo: restaurantId)
+          .get();
+
+      // 2. Get all review ratings
+      final reviewsQuery = await FirebaseFirestore.instance
+          .collection('reviews')
+          .where('restaurantId', isEqualTo: restaurantId)
+          .get();
+
+      double totalRating = 0;
+      int totalCount = 0;
+
+      for (var doc in postsQuery.docs) {
+        final data = doc.data();
+        final rating = (data['rating'] as num?)?.toDouble();
+        if (rating != null && rating > 0) {
+          totalRating += rating;
+          totalCount++;
+        }
+      }
+
+      for (var doc in reviewsQuery.docs) {
+        final data = doc.data();
+        final rating = (data['rating'] as num?)?.toDouble();
+        if (rating != null && rating > 0) {
+          totalRating += rating;
+          totalCount++;
+        }
+      }
+
+      if (totalCount > 0) {
+        final average = totalRating / totalCount;
+        await updateRating(restaurantId, average);
+      } else {
+        await updateRating(restaurantId, 0.0);
+      }
+    } catch (e) {
+      print('Error recalculating restaurant average rating: $e');
+    }
+  }
+
+  /// Update restaurant details
+  Future<void> updateRestaurant(Restaurant restaurant) async {
+    if (restaurant.id == null) {
+      throw Exception('Restaurant ID is required for update');
+    }
+    
+    final data = restaurant.toFirestore();
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    
+    // Ensure searchName is updated if name changes
+    data['searchName'] = restaurant.name.toLowerCase();
+
+    await _restaurants.doc(restaurant.id).update(data);
+  }
+
+  /// Update a dish
+  Future<void> updateDish(Dish dish) async {
+    if (dish.id == null) {
+      throw Exception('Dish ID is required for update');
+    }
+    
+    await _restaurants
+        .doc(dish.restaurantId)
+        .collection('dishes')
+        .doc(dish.id)
+        .update(dish.toFirestore());
+  }
+
+  /// Delete a dish
+  Future<void> deleteDish(String restaurantId, String dishId) async {
+    await _restaurants
+        .doc(restaurantId)
+        .collection('dishes')
+        .doc(dishId)
+        .delete();
   }
 
   /// Increment posts count

@@ -7,6 +7,7 @@ import '../../blocs/feed/feed_bloc.dart';
 import '../../blocs/feed/feed_event.dart';
 import '../../blocs/feed/feed_state.dart';
 import '../../models/post.dart';
+import '../../services/error_service.dart';
 import 'package:ate_app/repositories/post_repository.dart';
 import 'package:ate_app/repositories/like_repository.dart';
 import 'package:ate_app/repositories/saved_post_repository.dart';
@@ -156,8 +157,8 @@ class _FeedScreenState extends State<FeedScreen> {
 
       // Refresh feed
       context.read<FeedBloc>().add(const LoadFeed());
-    } catch (e) {
-      print('Error toggling like: $e');
+    } catch (e, stackTrace) {
+      ErrorService().logError(e, stackTrace, context: 'FeedScreen._toggleLike');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to update like')));
@@ -188,8 +189,8 @@ class _FeedScreenState extends State<FeedScreen> {
 
       // Refresh feed
       context.read<FeedBloc>().add(const LoadFeed());
-    } catch (e) {
-      print('Error toggling save: $e');
+    } catch (e, stackTrace) {
+      ErrorService().logError(e, stackTrace, context: 'FeedScreen._toggleSave');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Failed to update save')));

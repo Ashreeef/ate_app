@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../utils/constants.dart';
 import '../../widgets/challenges/challenge_card.dart';
-import '../../data/fake_restaurants.dart';
 import '../../models/challenge.dart';
 import '../../l10n/app_localizations.dart';
+import '../../blocs/challenge/challenge_bloc.dart';
+import '../../blocs/challenge/challenge_event.dart';
+import '../../blocs/challenge/challenge_state.dart';
+import '../../blocs/auth/auth_bloc.dart';
+import '../../blocs/auth/auth_state.dart';
+import 'create_challenge_screen.dart';
+import 'challenge_detail_screen.dart';
 
 class ChallengesScreen extends StatefulWidget {
   const ChallengesScreen({super.key});
@@ -13,9 +20,6 @@ class ChallengesScreen extends StatefulWidget {
 }
 
 class _ChallengesScreenState extends State<ChallengesScreen> {
-  List<Challenge> _allChallenges = [];
-  List<Challenge> _activeChallenges = [];
-
   @override
   void initState() {
     super.initState();
@@ -23,37 +27,45 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   }
 
   void _loadChallenges() {
-    try {
-      _allChallenges = FakeData.getChallenges();
-      _activeChallenges = FakeData.getActiveChallenges();
-    } catch (e) {
-      _allChallenges = [];
-      _activeChallenges = [];
-    }
+    // Get current user ID for participation status
+    final authState = context.read<AuthBloc>().state;
+    final userId = authState is Authenticated ? authState.user.uid : null;
+    
+    context.read<ChallengeBloc>().add(
+      LoadActiveChallenges(userId: userId),
+    );
   }
 
   void _handleJoinChallenge(Challenge challenge) {
-    setState(() {
-      // Update in all challenges
-      final index = _allChallenges.indexWhere((c) => c.id == challenge.id);
-      if (index != -1) {
-        _allChallenges[index] = challenge.copyWith(isJoined: true);
-      }
-      // Update in active challenges if present
-      final activeIndex = _activeChallenges.indexWhere(
-        (c) => c.id == challenge.id,
+    final authState = context.read<AuthBloc>().state;
+    if (authState is! Authenticated || authState.user.uid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.pleaseLoginToJoinChallenges),
+          backgroundColor: Colors.red,
+        ),
       );
-      if (activeIndex != -1) {
-        _activeChallenges[activeIndex] = challenge.copyWith(isJoined: true);
-      }
-    });
+      return;
+    }
 
-    // Show snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.joined),
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
+    context.read<ChallengeBloc>().add(
+      JoinChallenge(
+        challengeId: challenge.id,
+        userId: authState.user.uid!,
+      ),
+    );
+  }
+
+  void _handleLeaveChallenge(Challenge challenge) {
+    final authState = context.read<AuthBloc>().state;
+    if (authState is! Authenticated || authState.user.uid == null) {
+      return;
+    }
+
+    context.read<ChallengeBloc>().add(
+      LeaveChallenge(
+        challengeId: challenge.id,
+        userId: authState.user.uid!,
       ),
     );
   }
@@ -61,67 +73,188 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(AppSpacing.md),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Active Challenges Section (at top)
-              if (_activeChallenges.isNotEmpty) ...[
-                Text(l10n.activeChallengesLabel, style: AppTextStyles.heading3),
-                SizedBox(height: AppSpacing.md),
-                ..._activeChallenges.map((challenge) {
-                  return ChallengeCard(
-                    challenge: challenge,
-                    onJoinTap: challenge.isJoined
-                        ? null
-                        : () => _handleJoinChallenge(challenge),
-                  );
-                }),
-                SizedBox(height: AppSpacing.xl),
-              ],
+    final authState = context.watch<AuthBloc>().state; // Watch auth state for UI updates
 
-              // All Challenges Section
-              Text(l10n.allChallengesLabel, style: AppTextStyles.heading3),
-              SizedBox(height: AppSpacing.md),
-              if (_allChallenges.isEmpty)
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(AppSpacing.xxl),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.emoji_events_outlined,
-                          size: 64,
-                          color: AppColors.textLight,
-                        ),
-                        SizedBox(height: AppSpacing.md),
-                        Text(
-                          l10n.noChallengesAvailable,
-                          style: AppTextStyles.heading4,
-                        ),
-                        SizedBox(height: AppSpacing.xs),
-                        Text(
-                          l10n.newChallengesWillAppear,
-                          style: AppTextStyles.bodySmall,
-                        ),
-                      ],
+    return BlocListener<ChallengeBloc, ChallengeState>(
+      listener: (context, state) {
+        if (state is ChallengeActionSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+          _loadChallenges(); // Reload challenges after success
+        } else if (state is ChallengeError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.challengesTitle),
+          actions: [
+            if (authState is Authenticated &&
+                authState.user.isRestaurant) // Check if user is restaurant
+              IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => CreateChallengeScreen(
+                        restaurantId: authState.user.restaurantId!,
+                      ),
                     ),
-                  ),
-                )
-              else
-                ..._allChallenges.map((challenge) {
-                  return ChallengeCard(
-                    challenge: challenge,
-                    onJoinTap: challenge.isJoined
-                        ? null
-                        : () => _handleJoinChallenge(challenge),
                   );
-                }),
-            ],
-          ),
+                },
+              ),
+          ],
+        ),
+        body: BlocBuilder<ChallengeBloc, ChallengeState>(
+          builder: (context, state) {
+            if (state is ChallengeLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is ChallengeError) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        l10n.errorOccurred,
+                        style: AppTextStyles.heading3,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        state.message,
+                        style: AppTextStyles.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      ElevatedButton(
+                        onPressed: _loadChallenges,
+                        child: Text(l10n.retry),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            if (state is ChallengesLoaded) {
+              final challenges = state.challenges;
+              final participations = state.userParticipations;
+
+              // Update challenges with participation data
+              final updatedChallenges = challenges.map((challenge) {
+                final participation = participations[challenge.id];
+                if (participation != null) {
+                  return challenge.copyWith(
+                    isJoined: true,
+                    currentCount: participation['currentProgress'] as int? ?? 0,
+                  );
+                }
+                return challenge;
+              }).toList();
+
+              // Separate active (joined) and all challenges
+              final activeChallenges = updatedChallenges.where((c) => c.isJoined).toList();
+              final availableChallenges = updatedChallenges.where((c) => !c.isJoined).toList();
+
+              return RefreshIndicator(
+                onRefresh: () async {
+                  _loadChallenges();
+                },
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (activeChallenges.isNotEmpty) ...[
+                        Text(
+                          l10n.activeChallengesLabel,
+                          style: AppTextStyles.heading3,
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        ...activeChallenges.map(
+                          (c) => ChallengeCard(
+                            challenge: c,
+                            onJoinTap: () => _handleLeaveChallenge(c),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ChallengeDetailScreen(challenge: c),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+                      ],
+                      Text(
+                        l10n.allChallengesLabel,
+                        style: AppTextStyles.heading3,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      if (availableChallenges.isEmpty && activeChallenges.isEmpty)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppSpacing.xxl),
+                            child: Column(
+                              children: [
+                                Icon(Icons.emoji_events_outlined,
+                                    size: 64, color: AppColors.textLight),
+                                const SizedBox(height: AppSpacing.md),
+                                Text(
+                                  l10n.noChallengesAvailable,
+                                  style: AppTextStyles.heading4,
+                                ),
+                                const SizedBox(height: AppSpacing.xs),
+                                Text(
+                                  l10n.newChallengesWillAppear,
+                                  style: AppTextStyles.bodySmall,
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      else
+                        ...availableChallenges.map(
+                          (c) => ChallengeCard(
+                            challenge: c,
+                            onJoinTap: () => _handleJoinChallenge(c),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => ChallengeDetailScreen(challenge: c),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            return const Center(child: CircularProgressIndicator());
+          },
         ),
       ),
     );

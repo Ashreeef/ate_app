@@ -1,6 +1,7 @@
 import '../models/user.dart';
 import '../services/firestore_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/error_service.dart';
 
 /// Repository for user data operations using Firestore
 class UserRepository {
@@ -101,22 +102,26 @@ class UserRepository {
     }
   }
 
-  /// Search users by username (Firestore)
+  /// Search users by searchName (Firestore)
   Future<List<User>> searchUsersFirestore(String query) async {
     try {
-      // Firestore doesn't support case-insensitive LIKE queries
-      // We'll fetch all users and filter client-side (consider using Algolia for production)
-      final querySnapshot = await _firestoreService.users.get();
+      final lowerQuery = query.toLowerCase();
+      final querySnapshot = await _firestoreService.users
+          .where('searchName', isGreaterThanOrEqualTo: lowerQuery)
+          .where('searchName', isLessThanOrEqualTo: '$lowerQuery\uf8ff')
+          .limit(20)
+          .get();
 
       final users = querySnapshot.docs
           .map((doc) => User.fromFirestore(doc.data() as Map<String, dynamic>))
-          .where(
-            (user) => user.username.toLowerCase().contains(query.toLowerCase()),
-          )
           .toList();
-
       return users;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      ErrorService().logError(
+        e,
+        stackTrace,
+        context: 'UserRepository.searchUsersFirestore',
+      );
       return [];
     }
   }

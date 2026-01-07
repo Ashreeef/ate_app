@@ -26,7 +26,7 @@ class RestaurantLoaded extends RestaurantState {
   final List<Dish> dishes;
   final List<Post> mentions;
 
-  RestaurantLoaded({
+  const RestaurantLoaded({
     required this.restaurant,
     required this.dishes,
     required this.mentions,
@@ -41,6 +41,76 @@ class RestaurantError extends RestaurantState {
   final String message;
 
   const RestaurantError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+/// State while converting user to restaurant
+class RestaurantConversionLoading extends RestaurantState {
+  const RestaurantConversionLoading();
+}
+
+/// State when conversion succeeds
+class RestaurantConversionSuccess extends RestaurantState {
+  final String restaurantId;
+
+  const RestaurantConversionSuccess({required this.restaurantId});
+
+  @override
+  List<Object?> get props => [restaurantId];
+}
+
+/// State when conversion fails
+class RestaurantConversionError extends RestaurantState {
+  final String message;
+
+  const RestaurantConversionError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+/// State while updating restaurant details
+class RestaurantUpdateLoading extends RestaurantState {
+  const RestaurantUpdateLoading();
+}
+
+/// State when update succeeds
+class RestaurantUpdateSuccess extends RestaurantState {
+  const RestaurantUpdateSuccess();
+}
+
+/// State when update fails
+class RestaurantUpdateError extends RestaurantState {
+  final String message;
+
+  const RestaurantUpdateError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+/// State while performing action on dish
+class DishActionLoading extends RestaurantState {
+  const DishActionLoading();
+}
+
+/// State when dish action succeeds
+class DishActionSuccess extends RestaurantState {
+  final String message;
+
+  const DishActionSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+/// State when dish action fails
+class DishActionError extends RestaurantState {
+  final String message;
+
+  const DishActionError(this.message);
 
   @override
   List<Object?> get props => [message];

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -30,11 +31,11 @@ class OnboardingScreen extends StatelessWidget {
 
               const SizedBox(height: AppSpacing.xl),
 
-              _buildHeading(),
+              _buildHeading(context),
 
               const SizedBox(height: AppSpacing.lg),
 
-              _buildDescription(),
+              _buildDescription(context),
 
               const SizedBox(height: AppSpacing.xl),
 
@@ -51,7 +52,11 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeading() {
+  Widget _buildHeading(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDarkMode ? Colors.white : AppColors.textDark;
+
     return RichText(
       textAlign: TextAlign.left,
       text: TextSpan(
@@ -61,13 +66,13 @@ class OnboardingScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
         ),
         children: [
-          const TextSpan(
-            text: 'Découvre la vraie ',
-            style: TextStyle(color: AppColors.textDark),
+          TextSpan(
+            text: l10n.onboardingDiscover,
+            style: TextStyle(color: textColor),
           ),
-          const TextSpan(
-            text: 'saveur',
-            style: TextStyle(
+          TextSpan(
+            text: l10n.onboardingFlavor,
+            style: const TextStyle(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline,
@@ -75,13 +80,13 @@ class OnboardingScreen extends StatelessWidget {
               decorationThickness: 2,
             ),
           ),
-          const TextSpan(
-            text: ' du ',
-            style: TextStyle(color: AppColors.textDark),
+          TextSpan(
+            text: l10n.onboardingOf,
+            style: TextStyle(color: textColor),
           ),
-          const TextSpan(
-            text: 'partage',
-            style: TextStyle(
+          TextSpan(
+            text: l10n.onboardingSharing,
+            style: const TextStyle(
               color: AppColors.primary,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline,
@@ -89,9 +94,9 @@ class OnboardingScreen extends StatelessWidget {
               decorationThickness: 2,
             ),
           ),
-          const TextSpan(
-            text: ' avec ',
-            style: TextStyle(color: AppColors.textDark),
+          TextSpan(
+            text: l10n.onboardingWith,
+            style: TextStyle(color: textColor),
           ),
           // Ate logo inline
           WidgetSpan(
@@ -99,26 +104,24 @@ class OnboardingScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: SvgPicture.asset(
-                'assets/images/logo.svg',
+                isDarkMode ? 'assets/images/logo_white.svg' : 'assets/images/logo.svg',
                 width: 55,
                 height: 40,
               ),
             ),
           ),
-          const TextSpan(
+          TextSpan(
             text: ' !',
-            style: TextStyle(color: AppColors.textDark),
+            style: TextStyle(color: textColor),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDescription() {
+  Widget _buildDescription(BuildContext context) {
     return Text(
-      'Ate est ton compagnon food, pensé pour les amoureux de la bonne bouffe. '
-      'Chaque jour, explore de nouveaux plats grâce aux recommandations de tes amis, '
-      'partage tes découvertes, relève des défis gourmands et gagne des récompenses.',
+      AppLocalizations.of(context)!.onboardingDescription,
       textAlign: TextAlign.left,
       style: AppTextStyles.bodySmall.copyWith(
         color: AppColors.textLight,

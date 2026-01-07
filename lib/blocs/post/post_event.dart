@@ -19,6 +19,7 @@ class CreatePostEvent extends PostEvent {
   final String? restaurantName;
   final String? dishName;
   final double? rating;
+  final String? explicitChallengeId;
 
   const CreatePostEvent({
     required this.userUid,
@@ -30,6 +31,7 @@ class CreatePostEvent extends PostEvent {
     this.restaurantName,
     this.dishName,
     this.rating,
+    this.explicitChallengeId,
   });
 
   @override
@@ -43,6 +45,7 @@ class CreatePostEvent extends PostEvent {
         restaurantName,
         dishName,
         rating,
+        explicitChallengeId,
       ];
 }
 

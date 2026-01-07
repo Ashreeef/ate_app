@@ -259,7 +259,7 @@ class _SignupScreenState extends State<SignupScreen> {
             Text(
               l10n.rememberMe,
               style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textDark,
+                color: Theme.of(context).textTheme.bodySmall?.color,
               ),
             ),
           ],
@@ -285,7 +285,8 @@ class _SignupScreenState extends State<SignupScreen> {
       children: [
         Text(
           l10n.continueWith,
-          style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
+          style: AppTextStyles.bodySmall.copyWith(
+              color: Theme.of(context).colorScheme.primary),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: AppSpacing.md),
@@ -323,11 +324,11 @@ class _SignupScreenState extends State<SignupScreen> {
         width: 56,
         height: 56,
         decoration: BoxDecoration(
-          color: AppColors.backgroundLight,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSizes.borderRadius),
         ),
         child: Center(
-          child: Icon(iconData, size: 32, color: AppColors.textDark),
+          child: Icon(iconData, size: 32, color: Theme.of(context).iconTheme.color),
         ),
       ),
     );
@@ -341,7 +342,7 @@ class _SignupScreenState extends State<SignupScreen> {
         child: RichText(
           text: TextSpan(
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textMedium,
+              color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.7),
               fontFamily: 'DM Sans',
             ),
             children: [

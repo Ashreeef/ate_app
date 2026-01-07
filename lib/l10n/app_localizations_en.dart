@@ -105,7 +105,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loading => 'Loading...';
 
   @override
-  String get error => 'An error occurred';
+  String get error => 'Error';
 
   @override
   String get comingSoon => 'Coming soon!';
@@ -454,7 +454,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get enterRestaurant => 'Please enter a restaurant';
 
   @override
-  String get rateExperience => 'Please rate your experience';
+  String get rateExperience => 'Rate your experience';
 
   @override
   String get caption => 'Caption';
@@ -469,7 +469,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restaurantPlaceholder => 'Restaurant name...';
 
   @override
-  String get restaurantHint => 'Type the restaurant name';
+  String get restaurantHint => 'Search for a restaurant...';
 
   @override
   String get dishName => 'Dish Name';
@@ -769,7 +769,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get userNotFound => 'User not found';
 
   @override
-  String get followed => 'Followed';
+  String get followed => 'Followed!';
 
   @override
   String shareProfileCheck(Object bio, Object username) {
@@ -995,4 +995,316 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get justNow => 'Just now';
+
+  @override
+  String get convertToRestaurant => 'Convert to Restaurant';
+
+  @override
+  String get viewRestaurant => 'View My Restaurant';
+
+  @override
+  String get createChallenge => 'Create Challenge';
+
+  @override
+  String get challengeTitle => 'Challenge Title';
+
+  @override
+  String get challengeDescription => 'Challenge Description';
+
+  @override
+  String get targetCount => 'Target Count';
+
+  @override
+  String get rewardBadge => 'Reward Badge';
+
+  @override
+  String get joinChallenge => 'Join Challenge';
+
+  @override
+  String get leaveChallenge => 'Leave Challenge';
+
+  @override
+  String get yourProgress => 'Your Progress';
+
+  @override
+  String get daysRemaining => 'Days Remaining';
+
+  @override
+  String get challengeEnded => 'Challenge Ended';
+
+  @override
+  String get reward => 'Reward';
+
+  @override
+  String get dateRange => 'Date Range';
+
+  @override
+  String get startDate => 'Start Date';
+
+  @override
+  String get endDate => 'End Date';
+
+  @override
+  String get conversionWarning =>
+      'This action cannot be undone. Once you convert to a restaurant account, you will not be able to revert back to a regular user account.';
+
+  @override
+  String get confirmConversion => 'Confirm Conversion';
+
+  @override
+  String get conversionSuccessful =>
+      'Successfully converted to restaurant account!';
+
+  @override
+  String get becomeARestaurant => 'Become a Restaurant';
+
+  @override
+  String get fillInRestaurantDetails => 'Fill in your restaurant details below';
+
+  @override
+  String get restaurantName => 'Restaurant Name *';
+
+  @override
+  String get cuisineType => 'Cuisine Type';
+
+  @override
+  String get hours => 'Hours';
+
+  @override
+  String get convertNow => 'Convert Now';
+
+  @override
+  String get createNewChallenge => 'Create a New Challenge';
+
+  @override
+  String get challengeInfo =>
+      'Users will earn progress by posting about your restaurant';
+
+  @override
+  String get restaurantNameRequired => 'Restaurant name is required';
+
+  @override
+  String get restaurantNameTooShort =>
+      'Restaurant name must be at least 3 characters';
+
+  @override
+  String get cuisineTypeRequired => 'Cuisine type is required';
+
+  @override
+  String get locationRequired => 'Location is required';
+
+  @override
+  String get enterRestaurantName => 'Enter restaurant name';
+
+  @override
+  String get enterCuisineType => 'e.g., Italian, Chinese, French';
+
+  @override
+  String get enterLocation => 'Enter restaurant location';
+
+  @override
+  String get enterHours => 'e.g., Mon-Fri: 9AM-10PM';
+
+  @override
+  String get enterDescription => 'Tell us about your restaurant';
+
+  @override
+  String get doYouWantToContinue => 'Do you want to continue?';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get errorOccurred => 'An error occurred';
+
+  @override
+  String get challengeType => 'Challenge Type';
+
+  @override
+  String get enterChallengeTitle => 'e.g., \"Try 5 Dishes\"';
+
+  @override
+  String get enterTargetCount => 'e.g., 5 (number of posts required)';
+
+  @override
+  String get enterRewardBadge => 'e.g., \"Food Explorer 🍕\"';
+
+  @override
+  String get titleRequired => 'Title is required';
+
+  @override
+  String get titleTooShort => 'Title must be at least 5 characters';
+
+  @override
+  String get descriptionRequired => 'Description is required';
+
+  @override
+  String get targetCountRequired => 'Target count is required';
+
+  @override
+  String get invalidTargetCount => 'Must be at least 1';
+
+  @override
+  String get targetCountTooHigh => 'Must be 100 or less';
+
+  @override
+  String get rewardBadgeRequired => 'Reward badge is required';
+
+  @override
+  String get challengeDetails => 'Challenge Details';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get description => 'Description';
+
+  @override
+  String get editRestaurant => 'Edit Restaurant';
+
+  @override
+  String get restaurantUpdatedSuccess => 'Restaurant updated successfully';
+
+  @override
+  String get addCoverPhoto => 'Add Cover Photo';
+
+  @override
+  String uploadImageFail(Object error) {
+    return 'Failed to upload image: $error';
+  }
+
+  @override
+  String get manageMenu => 'Manage Menu';
+
+  @override
+  String get deleteDish => 'Delete Dish?';
+
+  @override
+  String deleteDishConfirm(Object name) {
+    return 'Are you sure you want to delete \"$name\"?';
+  }
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get addFirstDish => 'Add First Dish';
+
+  @override
+  String get couldNotLoadMenu => 'Could not load menu';
+
+  @override
+  String get menuEmpty => 'No dishes yet';
+
+  @override
+  String get editDish => 'Edit Dish';
+
+  @override
+  String get addDish => 'Add Dish';
+
+  @override
+  String get addDishPhoto => 'Add Dish Photo';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get category => 'Category (e.g. Starter, Main)';
+
+  @override
+  String get dishDescription => 'Description';
+
+  @override
+  String get challengeTypeGeneral => 'General';
+
+  @override
+  String get challengeTypeRestaurant => 'Restaurant-Specific';
+
+  @override
+  String get challengeTypeDish => 'Dish-Specific';
+
+  @override
+  String get challengeTypeLocation => 'Location-Based';
+
+  @override
+  String get pleaseLoginFirst => 'Please log in first';
+
+  @override
+  String get selectStartEndDates => 'Please select start and end dates';
+
+  @override
+  String get selectChallenge => 'Select a challenge to contribute to';
+
+  @override
+  String get none => 'None';
+
+  @override
+  String get pleaseLoginToJoinChallenges => 'Please log in to join challenges';
+
+  @override
+  String get writeReview => 'Write Review';
+
+  @override
+  String get fieldRequired => 'Field is required';
+
+  @override
+  String get openingHours => 'Opening Hours';
+
+  @override
+  String get reviewSuccess => 'Review submitted successfully!';
+
+  @override
+  String get yourReview => 'Your Review';
+
+  @override
+  String get writeReviewHint => 'Share details of your experience...';
+
+  @override
+  String get noReviewsRow => 'No reviews yet. Be the first to review!';
+
+  @override
+  String get failedToLoadReviews => 'Failed to load reviews';
+
+  @override
+  String get onboardingDiscover => 'Discover the true ';
+
+  @override
+  String get onboardingFlavor => 'flavor';
+
+  @override
+  String get onboardingOf => ' of ';
+
+  @override
+  String get onboardingSharing => 'sharing';
+
+  @override
+  String get onboardingWith => ' with ';
+
+  @override
+  String get onboardingDescription =>
+      'Ate is your food companion, designed for lovers of good food. Every day, explore new dishes thanks to recommendations from your friends, share your discoveries, take on food challenges and earn rewards.';
+
+  @override
+  String memberLevel(Object level) {
+    return '$level Member ⭐';
+  }
+
+  @override
+  String get rank => 'Rank';
+
+  @override
+  String get userPoints => 'User points';
+
+  @override
+  String followedUser(Object username) {
+    return 'Followed $username';
+  }
+
+  @override
+  String unfollowedUser(Object username) {
+    return 'Unfollowed $username';
+  }
+
+  @override
+  String get conversionWarningCompact => 'This action cannot be undone!';
 }

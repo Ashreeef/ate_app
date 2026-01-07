@@ -10,10 +10,12 @@ class Challenge {
   final DateTime endDate;
   final bool isActive;
   final bool isJoined;
+  final String? createdBy;
   final ChallengeType type;
 
   Challenge({
     required this.id,
+    this.createdBy,
     required this.title,
     required this.description,
     this.imageUrl,
@@ -38,6 +40,7 @@ class Challenge {
   factory Challenge.fromJson(Map<String, dynamic> json) {
     return Challenge(
       id: json['id'] as String,
+      createdBy: json['createdBy'] as String?,
       title: json['title'] as String,
       description: json['description'] as String,
       imageUrl: json['imageUrl'] as String?,
@@ -59,6 +62,7 @@ class Challenge {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'createdBy': createdBy,
       'title': title,
       'description': description,
       'imageUrl': imageUrl,
@@ -76,6 +80,7 @@ class Challenge {
   // Copy with method for updating joined status
   Challenge copyWith({
     String? id,
+    String? createdBy,
     String? title,
     String? description,
     String? imageUrl,
@@ -90,6 +95,7 @@ class Challenge {
   }) {
     return Challenge(
       id: id ?? this.id,
+      createdBy: createdBy ?? this.createdBy,
       title: title ?? this.title,
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,

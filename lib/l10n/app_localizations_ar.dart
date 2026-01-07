@@ -105,7 +105,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loading => 'جاري التحميل...';
 
   @override
-  String get error => 'حدث خطأ';
+  String get error => 'خطأ';
 
   @override
   String get comingSoon => 'قريباً!';
@@ -452,7 +452,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterRestaurant => 'يرجى إدخال اسم المطعم';
 
   @override
-  String get rateExperience => 'يرجى تقييم تجربتك';
+  String get rateExperience => 'قيم تجربتك';
 
   @override
   String get caption => 'التعليق';
@@ -467,7 +467,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restaurantPlaceholder => 'اسم المطعم...';
 
   @override
-  String get restaurantHint => 'اكتب اسم المطعم';
+  String get restaurantHint => 'ابحث عن مطعم...';
 
   @override
   String get dishName => 'اسم الطبق';
@@ -767,7 +767,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get userNotFound => 'المستخدم غير موجود';
 
   @override
-  String get followed => 'تمت المتابعة';
+  String get followed => 'تتم المتابعة !';
 
   @override
   String shareProfileCheck(Object bio, Object username) {
@@ -992,4 +992,315 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get justNow => 'الآن';
+
+  @override
+  String get convertToRestaurant => 'تحويل إلى مطعم';
+
+  @override
+  String get viewRestaurant => 'عرض مطعمي';
+
+  @override
+  String get createChallenge => 'إنشاء تحدي';
+
+  @override
+  String get challengeTitle => 'عنوان التحدي';
+
+  @override
+  String get challengeDescription => 'وصف التحدي';
+
+  @override
+  String get targetCount => 'الهدف المطلوب';
+
+  @override
+  String get rewardBadge => 'شارة المكافأة';
+
+  @override
+  String get joinChallenge => 'الانضمام للتحدي';
+
+  @override
+  String get leaveChallenge => 'مغادرة التحدي';
+
+  @override
+  String get yourProgress => 'تقدمك';
+
+  @override
+  String get daysRemaining => 'الأيام المتبقية';
+
+  @override
+  String get challengeEnded => 'انتهى التحدي';
+
+  @override
+  String get reward => 'المكافأة';
+
+  @override
+  String get dateRange => 'الفترة الزمنية';
+
+  @override
+  String get startDate => 'تاريخ البدء';
+
+  @override
+  String get endDate => 'تاريخ الانتهاء';
+
+  @override
+  String get conversionWarning =>
+      'هذا الإجراء لا يمكن التراجع عنه. بمجرد التحويل إلى حساب مطعم، لن تتمكن من العودة إلى حساب مستخدم عادي.';
+
+  @override
+  String get confirmConversion => 'تأكيد التحويل';
+
+  @override
+  String get conversionSuccessful => 'تم التحويل إلى حساب مطعم بنجاح!';
+
+  @override
+  String get becomeARestaurant => 'كن مطعماً';
+
+  @override
+  String get fillInRestaurantDetails => 'املأ تفاصيل مطعمك أدناه';
+
+  @override
+  String get restaurantName => 'اسم المطعم *';
+
+  @override
+  String get cuisineType => 'نوع المطبخ';
+
+  @override
+  String get hours => 'ساعات العمل';
+
+  @override
+  String get convertNow => 'تحويل الآن';
+
+  @override
+  String get createNewChallenge => 'إنشاء تحدي جديد';
+
+  @override
+  String get challengeInfo => 'سيكسب المستخدمون نقاطاً عند النشر عن مطعمك';
+
+  @override
+  String get restaurantNameRequired => 'اسم المطعم مطلوب';
+
+  @override
+  String get restaurantNameTooShort =>
+      'يجب أن يحتوي اسم المطعم على 3 أحرف على الأقل';
+
+  @override
+  String get cuisineTypeRequired => 'نوع المطبخ مطلوب';
+
+  @override
+  String get locationRequired => 'الموقع مطلوب';
+
+  @override
+  String get enterRestaurantName => 'أدخل اسم المطعم';
+
+  @override
+  String get enterCuisineType => 'مثال: إيطالي، صيني، فرنسي';
+
+  @override
+  String get enterLocation => 'أدخل موقع المطعم';
+
+  @override
+  String get enterHours => 'مثال: الإثنين-الجمعة: 9ص-10م';
+
+  @override
+  String get enterDescription => 'أخبرنا عن مطعمك';
+
+  @override
+  String get doYouWantToContinue => 'هل تريد المتابعة؟';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get errorOccurred => 'حدث خطأ';
+
+  @override
+  String get challengeType => 'نوع التحدي';
+
+  @override
+  String get enterChallengeTitle => 'مثال: \"جرب 5 أطباق\"';
+
+  @override
+  String get enterTargetCount => 'مثال: 5 (عدد المنشورات المطلوبة)';
+
+  @override
+  String get enterRewardBadge => 'مثال: \"مستكشف الطعام 🍕\"';
+
+  @override
+  String get titleRequired => 'العنوان مطلوب';
+
+  @override
+  String get titleTooShort => 'يجب أن يحتوي العنوان على 5 أحرف على الأقل';
+
+  @override
+  String get descriptionRequired => 'الوصف مطلوب';
+
+  @override
+  String get targetCountRequired => 'الهدف مطلوب';
+
+  @override
+  String get invalidTargetCount => 'يجب أن يكون على الأقل 1';
+
+  @override
+  String get targetCountTooHigh => 'يجب أن يكون 100 أو أقل';
+
+  @override
+  String get rewardBadgeRequired => 'شارة المكافأة مطلوبة';
+
+  @override
+  String get challengeDetails => 'تفاصيل التحدي';
+
+  @override
+  String get location => 'الموقع';
+
+  @override
+  String get description => 'الوصف';
+
+  @override
+  String get editRestaurant => 'تعديل المطعم';
+
+  @override
+  String get restaurantUpdatedSuccess => 'تم تحديث المطعم بنجاح';
+
+  @override
+  String get addCoverPhoto => 'إضافة صورة غلاف';
+
+  @override
+  String uploadImageFail(Object error) {
+    return 'فشل رفع الصورة: $error';
+  }
+
+  @override
+  String get manageMenu => 'إدارة القائمة';
+
+  @override
+  String get deleteDish => 'حذف الطبق؟';
+
+  @override
+  String deleteDishConfirm(Object name) {
+    return 'هل أنت متأكد من حذف \"$name\"؟';
+  }
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get addFirstDish => 'إضافة أول طبق';
+
+  @override
+  String get couldNotLoadMenu => 'تعذر تحميل القائمة';
+
+  @override
+  String get menuEmpty => 'لا توجد أطباق بعد';
+
+  @override
+  String get editDish => 'تعديل الطبق';
+
+  @override
+  String get addDish => 'إضافة طبق';
+
+  @override
+  String get addDishPhoto => 'إضافة صورة للطبق';
+
+  @override
+  String get price => 'السعر';
+
+  @override
+  String get category => 'الفئة (مثال: مقبلات، رئيسي)';
+
+  @override
+  String get dishDescription => 'الوصف';
+
+  @override
+  String get challengeTypeGeneral => 'عام';
+
+  @override
+  String get challengeTypeRestaurant => 'خاص بالمطعم';
+
+  @override
+  String get challengeTypeDish => 'خاص بالطبق';
+
+  @override
+  String get challengeTypeLocation => 'حسب الموقع';
+
+  @override
+  String get pleaseLoginFirst => 'يرجى تسجيل الدخول أولاً';
+
+  @override
+  String get selectStartEndDates => 'يرجى اختيار تاريخ البدء والانتهاء';
+
+  @override
+  String get selectChallenge => 'اختر تحدياً للمساهمة فيه';
+
+  @override
+  String get none => 'لا يوجد';
+
+  @override
+  String get pleaseLoginToJoinChallenges =>
+      'يرجى تسجيل الدخول للانضمام إلى التحديات';
+
+  @override
+  String get writeReview => 'اكتب تقييمًا';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب';
+
+  @override
+  String get openingHours => 'ساعات العمل';
+
+  @override
+  String get reviewSuccess => 'تم إرسال التقييم بنجاح!';
+
+  @override
+  String get yourReview => 'تقييمك';
+
+  @override
+  String get writeReviewHint => 'شارك تفاصيل تجربتك...';
+
+  @override
+  String get noReviewsRow => 'لا توجد تقييمات بعد. كن أول من يقيم!';
+
+  @override
+  String get failedToLoadReviews => 'فشل تحميل التقييمات';
+
+  @override
+  String get onboardingDiscover => 'اكتشف ';
+
+  @override
+  String get onboardingFlavor => 'النكهة';
+
+  @override
+  String get onboardingOf => ' الحقيقية لـ ';
+
+  @override
+  String get onboardingSharing => 'المشاركة';
+
+  @override
+  String get onboardingWith => ' مع ';
+
+  @override
+  String get onboardingDescription =>
+      'أكل هو رفيقك في الطعام، مصمم لعشاق الأكل الجيد. كل يوم، استكشف أطباقاً جديدة بفضل توصيات أصدقائك، وشارك اكتشافاتك، وخُض تحديات الطعام واكسب الجوائز.';
+
+  @override
+  String memberLevel(Object level) {
+    return 'عضو $level ⭐';
+  }
+
+  @override
+  String get rank => 'الرتبة';
+
+  @override
+  String get userPoints => 'نقاط المستخدم';
+
+  @override
+  String followedUser(Object username) {
+    return 'أنت تتبع $username الآن';
+  }
+
+  @override
+  String unfollowedUser(Object username) {
+    return 'لقد ألغيت متابعة $username';
+  }
+
+  @override
+  String get conversionWarningCompact => 'لا يمكن التراجع عن هذا الإجراء!';
 }

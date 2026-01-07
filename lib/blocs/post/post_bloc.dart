@@ -40,6 +40,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         restaurantName: e.restaurantName,
         dishName: e.dishName,
         rating: e.rating,
+        explicitChallengeId: e.explicitChallengeId,
       );
 
       // Refresh feed to show new post

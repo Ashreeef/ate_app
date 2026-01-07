@@ -9,6 +9,9 @@ import '../../blocs/post/post_event.dart';
 import '../../blocs/post/post_state.dart';
 import '../../repositories/auth_repository.dart';
 import '../../widgets/post/restaurant_selection_widget.dart';
+import '../../models/challenge.dart';
+import '../../repositories/challenge_repository.dart';
+import 'post_creation_step1_screen.dart';
 
 class PostCreationStep2Screen extends StatefulWidget {
   final List<XFile> selectedImages;
@@ -77,6 +80,7 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               ? _dishNameController.text
               : null,
           rating: _rating,
+          explicitChallengeId: _selectedChallengeId,
         ),
       );
     } catch (e) {
@@ -121,6 +125,8 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
         final l10n = AppLocalizations.of(context)!;
         if (state is PostSuccess) {
           _showSuccessSnackBar(l10n.postPublished);
+          // Clear images in step 1 so they don't stay next time
+          PostCreationStep1Screen.globalKey.currentState?.clearImages();
           Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
         } else if (state is PostFailure) {
           _showErrorSnackBar('${l10n.error}: ${state.error}');
@@ -167,6 +173,8 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
               _buildRestaurantInput(),
               SizedBox(height: AppSpacing.lg),
               _buildDishNameInput(),
+              SizedBox(height: AppSpacing.lg),
+              _buildChallengeSelection(), // New Widget
               SizedBox(height: AppSpacing.lg),
               _buildRatingInput(),
               SizedBox(height: AppSpacing.xl * 2),
@@ -459,5 +467,107 @@ class _PostCreationStep2ScreenState extends State<PostCreationStep2Screen> {
       default:
         return '';
     }
+  }
+
+  // State for challenges
+  String? _selectedChallengeId;
+  List<Challenge> _activeChallenges = [];
+  bool _isLoadingChallenges = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserChallenges();
+  }
+
+  Future<void> _loadUserChallenges() async {
+    setState(() => _isLoadingChallenges = true);
+    try {
+      final authRepo = context.read<AuthRepository>();
+      final currentUser = await authRepo.getCurrentUser();
+      
+      if (currentUser?.uid != null) {
+        final challengeRepo = ChallengeRepository();
+        final challenges = await challengeRepo.getUserActiveChallenges(currentUser!.uid!);
+        if (mounted) {
+          setState(() {
+            _activeChallenges = challenges;
+            _isLoadingChallenges = false;
+          });
+        }
+      } else {
+        setState(() => _isLoadingChallenges = false);
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isLoadingChallenges = false);
+    }
+  }
+
+  Widget _buildChallengeSelection() {
+    if (_activeChallenges.isEmpty) return SizedBox.shrink();
+
+    final l10n = AppLocalizations.of(context)!;
+    
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.emoji_events, size: 20, color: Colors.orange),
+              SizedBox(width: AppSpacing.xs),
+              Text(l10n.challengesTitle, style: AppTextStyles.heading4),
+              SizedBox(width: AppSpacing.xs),
+              Text(
+                l10n.dishNameOptional, // Removed extra parentheses
+                style: AppTextStyles.caption.copyWith(
+                  color: AppColors.textMedium,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: AppSpacing.sm),
+          _isLoadingChallenges 
+              ? Center(child: CircularProgressIndicator()) 
+              : Container(
+                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: _selectedChallengeId,
+                      hint: Text(l10n.selectChallenge),
+                      items: [
+                        DropdownMenuItem<String>(
+                          value: null,
+                          child: Text(l10n.none),
+                        ),
+                        ..._activeChallenges.map((challenge) {
+                          return DropdownMenuItem<String>(
+                            value: challenge.id,
+                            child: Text(
+                              challenge.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedChallengeId = value;
+                        });
+                      },
+                    ),
+                  ),
+                ),
+        ],
+      ),
+    );
   }
 }

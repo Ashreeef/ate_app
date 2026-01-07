@@ -82,18 +82,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
 
       // Create new user with Firebase
-      await _authRepository.signUp(
+      final user = await _authRepository.signUp(
         username: event.username.trim(),
         email: event.email.trim(),
         password: event.password,
         displayName: event.username.trim(),
       );
 
-      emit(
-        const SignupSuccess(
-          message: 'Account created successfully! Please login.',
-        ),
-      );
+      emit(Authenticated(user: user));
     } on Exception catch (e) {
       // Firebase auth exceptions are already formatted by FirebaseAuthService
       emit(AuthError(message: e.toString()));
