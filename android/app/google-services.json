@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "976563320192",
+    "project_id": "ate-app-112",
+    "storage_bucket": "ate-app-112.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976563320192:android:065ab6b59e01be91b3fd65",
+        "android_client_info": {
+          "package_name": "com.example.ate_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjgU5CLqpI0lKlTyGTuV6Md_1Wl8pnrfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
