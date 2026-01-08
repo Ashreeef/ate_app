@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../models/post.dart';
 import '../../repositories/post_repository.dart';
 import '../../utils/constants.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../home/post_detail_screen.dart';
 import '../../repositories/auth_repository.dart';
 import '../home/navigation_shell.dart';
 import '../profile/other_user_profile_screen.dart';
+import '../../widgets/feed/post_card.dart';
 
 class RestaurantPostsScreen extends StatefulWidget {
   final String restaurantId;
@@ -58,6 +60,7 @@ class _RestaurantPostsScreenState extends State<RestaurantPostsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(widget.restaurantName),
         centerTitle: true,
@@ -108,153 +111,75 @@ class _RestaurantPostsScreenState extends State<RestaurantPostsScreen> {
 
     return ListView.builder(
       itemCount: _posts.length,
-      padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+      padding: EdgeInsets.zero,
       itemBuilder: (context, index) {
         final post = _posts[index];
-        final currentUserUid = context.read<AuthRepository>().currentUserId;
-        final isLiked = currentUserUid != null && post.likedByUids.contains(currentUserUid);
-        final isSaved = currentUserUid != null && post.savedByUids.contains(currentUserUid);
+        final currentUserUid = context.read<AuthRepository>().currentUserId ?? '';
 
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 6),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                leading: GestureDetector(
-                  onTap: () {
-                    if (post.userUid == currentUserUid) {
-                      NavigationShell.selectTab(context, 4);
-                    } else if (post.userUid != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              OtherUserProfileScreen(userId: post.userUid!),
-                        ),
-                      );
-                    }
-                  },
-                  child: post.userAvatarUrl != null && post.userAvatarUrl!.isNotEmpty
-                      ? CircleAvatar(
-                          backgroundImage: NetworkImage(post.userAvatarUrl!),
-                        )
-                      : const CircleAvatar(child: Icon(Icons.person)),
-                ),
-                title: GestureDetector(
-                  onTap: () {
-                    if (post.userUid == currentUserUid) {
-                      NavigationShell.selectTab(context, 4);
-                    } else if (post.userUid != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              OtherUserProfileScreen(userId: post.userUid!),
-                        ),
-                      );
-                    }
-                  },
-                  child: Text(
-                    post.username,
-                    style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                subtitle: Text(post.createdAt.toLocal().toString().split('.')[0]),
+        return PostCard(
+          post: post,
+          currentUserId: currentUserUid,
+          onLike: () {
+            // Re-use logic or handle locally
+            setState(() {
+              final isLiked = post.likedByUids.contains(currentUserUid);
+              List<String> newLikedByUids = List.from(post.likedByUids);
+              int newLikesCount = post.likesCount;
+
+              if (isLiked) {
+                newLikedByUids.remove(currentUserUid);
+                newLikesCount = newLikesCount > 0 ? newLikesCount - 1 : 0;
+              } else {
+                newLikedByUids.add(currentUserUid);
+                newLikesCount++;
+              }
+              
+              _posts[index] = post.copyWith(
+                likedByUids: newLikedByUids,
+                likesCount: newLikesCount,
+              );
+            });
+            // TODO: Call repository to persist optionally
+          },
+          onComment: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PostDetailScreen(post: post.toFirestore()),
               ),
-              if (post.images.isNotEmpty)
-                GestureDetector(
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PostDetailScreen(post: post.toFirestore()),
-                      ),
-                    );
-                    _loadPosts(); // Refresh on return
-                  },
-                  child: Container(
-                    height: 200,
-                    color: AppColors.backgroundLight,
-                    child: Image.network(
-                      post.images.first,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.broken_image),
-                    ),
-                  ),
+            ).then((_) => _loadPosts());
+          },
+          onShare: () {
+            final String shareLink = 'https://ate-app.com/post/${post.id}';
+            Share.share('Check out this meal at ${post.restaurantName} on Ate!\n\n$shareLink');
+          },
+          onSave: () {
+            setState(() {
+              final isSaved = post.savedByUids.contains(currentUserUid);
+              List<String> newSavedByUids = List.from(post.savedByUids);
+              
+              if (isSaved) {
+                newSavedByUids.remove(currentUserUid);
+              } else {
+                newSavedByUids.add(currentUserUid);
+              }
+
+              _posts[index] = post.copyWith(savedByUids: newSavedByUids);
+            });
+          },
+          onProfileTap: () {
+            if (post.userUid == currentUserUid) {
+              NavigationShell.selectTab(context, 4);
+            } else if (post.userUid != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      OtherUserProfileScreen(userId: post.userUid!),
                 ),
-              Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (post.dishName != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(AppSizes.borderRadiusSm),
-                        ),
-                        child: Text(
-                          post.dishName!,
-                          style: AppTextStyles.caption.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(post.caption, style: AppTextStyles.body),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            isLiked ? Icons.favorite : Icons.favorite_border,
-                            color: isLiked ? Colors.red : AppColors.textMedium,
-                          ),
-                          onPressed: () {}, // Interaction logic can be added/reused
-                        ),
-                        Text('${post.likesCount}', style: AppTextStyles.body),
-                        const SizedBox(width: AppSpacing.sm),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.chat_bubble_outline,
-                            color: AppColors.textMedium,
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    PostDetailScreen(post: post.toFirestore()),
-                              ),
-                            );
-                          },
-                        ),
-                        Text('${post.commentsCount}', style: AppTextStyles.body),
-                      ],
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        isSaved ? Icons.bookmark : Icons.bookmark_border,
-                        color: isSaved ? AppColors.primary : AppColors.textMedium,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+              );
+            }
+          },
         );
       },
     );

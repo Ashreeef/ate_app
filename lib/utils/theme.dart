@@ -235,8 +235,8 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
         ),
-        titleTextStyle: AppTextStyles.heading3,
-        contentTextStyle: AppTextStyles.body,
+        titleTextStyle: AppTextStyles.heading3.copyWith(color: AppColors.textDark),
+        contentTextStyle: AppTextStyles.body.copyWith(color: AppColors.textDark),
       ),
     );
   }

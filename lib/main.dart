@@ -151,6 +151,8 @@ class MyApp extends StatelessWidget {
               repo: _postRepository,
               followRepo: context.read<FollowRepository>(),
               authRepo: _authRepository,
+              likeRepo: _likeRepository,
+              savedPostRepo: _savedPostRepository,
             ),
           ),
           BlocProvider<PostBloc>(

@@ -300,26 +300,9 @@ class SettingsDialogs {
                         ),
                       ),
                       SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Text(
                         AppLocalizations.of(context)!.emailSupport,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.phoneSupport,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.liveChat,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.supportHours,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
@@ -702,36 +685,45 @@ class SettingsDialogs {
                 AppLocalizations.of(context)!.termsOfUse,
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                 ),
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
                 AppLocalizations.of(context)!.termsOfUseDesc,
-                style: AppTextStyles.body,
+                style: AppTextStyles.body.copyWith(
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                ),
               ),
               SizedBox(height: AppSpacing.md),
               Text(
                 AppLocalizations.of(context)!.privacyPolicy,
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                 ),
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
                 AppLocalizations.of(context)!.privacyPolicyDesc,
-                style: AppTextStyles.body,
+                style: AppTextStyles.body.copyWith(
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                ),
               ),
               SizedBox(height: AppSpacing.md),
               Text(
                 AppLocalizations.of(context)!.dataCollection,
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
                 ),
               ),
               SizedBox(height: AppSpacing.sm),
               Text(
                 AppLocalizations.of(context)!.dataCollectionDesc,
-                style: AppTextStyles.body,
+                style: AppTextStyles.body.copyWith(
+                  color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+                ),
               ),
             ],
           ),

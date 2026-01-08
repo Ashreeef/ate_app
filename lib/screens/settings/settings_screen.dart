@@ -99,13 +99,13 @@ class SettingsScreen extends StatelessWidget {
                     AppLocalizations.of(context)!.notifications,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   subtitle: Text(
                     AppLocalizations.of(context)!.manageNotifications,
                     style: AppTextStyles.caption.copyWith(
-                      color: Theme.of(context).textTheme.bodySmall?.color,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   onChanged: (v) =>
@@ -134,13 +134,13 @@ class SettingsScreen extends StatelessWidget {
                     AppLocalizations.of(context)!.theme,
                     style: AppTextStyles.bodyMedium.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   subtitle: Text(
                     AppLocalizations.of(context)!.darkMode,
                     style: AppTextStyles.caption.copyWith(
-                      color: Theme.of(context).textTheme.bodySmall?.color,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                   onChanged: (v) =>
@@ -225,7 +225,7 @@ class SettingsScreen extends StatelessWidget {
               child: Text(
                 'Ate v1.0.0',
                 style: AppTextStyles.caption.copyWith(
-                  color: Theme.of(context).textTheme.bodySmall?.color,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
             ),
@@ -245,7 +245,7 @@ class SettingsScreen extends StatelessWidget {
       child: Text(
         title.toUpperCase(),
         style: AppTextStyles.overline.copyWith(
-          color: Theme.of(context).textTheme.bodySmall?.color,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -313,14 +313,14 @@ class SettingsScreen extends StatelessWidget {
                       title,
                       style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     SizedBox(height: 2),
                     Text(
                       subtitle,
                       style: AppTextStyles.caption.copyWith(
-                        color: Theme.of(context).textTheme.bodySmall?.color,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -343,8 +343,18 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.logout),
-        content: Text(AppLocalizations.of(context)!.logoutConfirm),
+        title: Text(
+          AppLocalizations.of(context)!.logout,
+          style: TextStyle(
+             color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+          ),
+        ),
+        content: Text(
+          AppLocalizations.of(context)!.logoutConfirm,
+          style: TextStyle(
+             color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -383,7 +393,9 @@ class SettingsScreen extends StatelessWidget {
         ),
         content: Text(
           AppLocalizations.of(context)!.deleteAccountWarning,
-          style: AppTextStyles.body,
+          style: AppTextStyles.body.copyWith(
+            color: Theme.of(context).brightness == Brightness.light ? Colors.black : Colors.white,
+          ),
         ),
         actions: [
           TextButton(

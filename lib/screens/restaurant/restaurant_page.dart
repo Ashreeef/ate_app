@@ -16,6 +16,9 @@ import 'edit_restaurant_screen.dart';
 import 'manage_menu_screen.dart';
 import 'add_review_screen.dart';
 import '../../widgets/review/review_list_widget.dart';
+import '../../widgets/restaurant/restaurant_map.dart';
+import '../../services/geocoding_service.dart';
+import '../home/post_detail_screen.dart';
 
 class RestaurantPage extends StatefulWidget {
   final String restaurantId;
@@ -140,6 +143,123 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       },
                     ),
                   ),
+                  // Map Section
+                  if (state.restaurant.latitude != null &&
+                      state.restaurant.longitude != null)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(AppSpacing.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(l10n.location, style: AppTextStyles.heading3),
+                            SizedBox(height: AppSpacing.md),
+                            RestaurantMap(
+                              latitude: state.restaurant.latitude!,
+                              longitude: state.restaurant.longitude!,
+                              restaurantName: state.restaurant.name,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  else if (state.restaurant.location != null &&
+                      state.restaurant.location!.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: FutureBuilder(
+                        future: GeocodingService.getCoordinatesFromAddress(
+                            state.restaurant.location!),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData && snapshot.data != null) {
+                            final coords = snapshot.data!;
+                            return Padding(
+                              padding: EdgeInsets.all(AppSpacing.md),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(l10n.location, style: AppTextStyles.heading3),
+                                  SizedBox(height: AppSpacing.md),
+                                  RestaurantMap(
+                                    latitude: coords.latitude,
+                                    longitude: coords.longitude,
+                                    restaurantName: state.restaurant.name,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+
+                  // Mentions Section (New)
+                  if (state.mentions.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: AppSpacing.lg),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('${l10n.posts} (${state.mentions.length})', 
+                                  style: AppTextStyles.heading3),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RestaurantPostsScreen(
+                                          restaurantId: widget.restaurantId,
+                                          restaurantName: state.restaurant.name,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(l10n.viewRestaurant, 
+                                    style: AppTextStyles.link),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: AppSpacing.md),
+                            SizedBox(
+                              height: 150,
+                              child: ListView.separated(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: state.mentions.length > 5 ? 5 : state.mentions.length,
+                                separatorBuilder: (_, __) => SizedBox(width: AppSpacing.sm),
+                                itemBuilder: (context, index) {
+                                  final post = state.mentions[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => PostDetailScreen(post: post.toFirestore()),
+                                        ),
+                                      );
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        post.images.first,
+                                        width: 150,
+                                        height: 150,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ),
+
                   // Menu Section
                   SliverToBoxAdapter(
                     child: Padding(
@@ -181,6 +301,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                       ),
                     ),
                   ),
+
                   // Stats Section
                   SliverToBoxAdapter(
                     child: Padding(

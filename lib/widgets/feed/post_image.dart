@@ -1,43 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../utils/constants.dart';
 
 class PostImage extends StatelessWidget {
   final String imageUrl;
   final VoidCallback onDoubleTap;
 
-  const PostImage({super.key, required this.imageUrl, required this.onDoubleTap});
+  const PostImage({
+    super.key,
+    required this.imageUrl,
+    required this.onDoubleTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onDoubleTap: onDoubleTap,
-      child: SizedBox(
-        height: AppSizes.postImageHeight,
-        width: double.infinity,
-        child: Image.network(
-          imageUrl,
+      child: AspectRatio(
+        aspectRatio: 1.0,
+        child: CachedNetworkImage(
+          imageUrl: imageUrl,
           fit: BoxFit.cover,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Container(
-              color: AppColors.backgroundLight,
-              child: Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+          placeholder: (context, url) => Container(
+            color: AppColors.backgroundLight,
+            child: const Center(
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.primary,
               ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              color: AppColors.backgroundLight,
-              child: Center(
-                child: Icon(
-                  Icons.photo,
-                  color: AppColors.textLight,
-                  size: AppSizes.iconXl,
-                ),
+            ),
+          ),
+          errorWidget: (context, url, error) => Container(
+            color: AppColors.backgroundLight,
+            child: const Center(
+              child: Icon(
+                Icons.photo_outlined,
+                color: AppColors.textLight,
+                size: AppSizes.iconXl,
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

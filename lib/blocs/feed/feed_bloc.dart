@@ -4,6 +4,8 @@ import 'package:ate_app/models/post.dart';
 import 'package:ate_app/repositories/post_repository.dart';
 import 'package:ate_app/repositories/follow_repository.dart';
 import 'package:ate_app/repositories/auth_repository.dart';
+import 'package:ate_app/repositories/like_repository.dart';
+import 'package:ate_app/repositories/saved_post_repository.dart';
 import 'feed_event.dart';
 import 'feed_state.dart';
 
@@ -12,6 +14,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final PostRepository repo;
   final FollowRepository followRepo;
   final AuthRepository authRepo;
+  final LikeRepository likeRepo;
+  final SavedPostRepository savedPostRepo;
+  
   final int _pageSize = 20;
   List<Post> _posts = [];
   DocumentSnapshot? _lastDocument;
@@ -21,10 +26,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     required this.repo,
     required this.followRepo,
     required this.authRepo,
+    required this.likeRepo,
+    required this.savedPostRepo,
   }) : super(const FeedInitial()) {
     on<LoadFeed>(_onLoadFeed);
     on<LoadMoreFeed>(_onLoadMore);
     on<RefreshFeed>(_onRefresh);
+    on<ToggleLike>(_onToggleLike);
+    on<ToggleSave>(_onToggleSave);
   }
 
   /// Load initial feed
@@ -42,14 +51,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       
       if (event.type == FeedType.friends) {
         if (currentUserId == null) {
-          print('ℹ️ FeedBloc: No current user, friends feed empty.');
           emit(FeedLoaded([], hasMore: false));
           return;
         }
         
-        print('🔍 FeedBloc: Fetching friends for user: $currentUserId');
         friendIds = await followRepo.getFollowingIds(currentUserId);
-        print('👥 FeedBloc: Found ${friendIds.length} friends: $friendIds');
         
         if (friendIds.isEmpty) {
           emit(FeedLoaded([], hasMore: false));
@@ -57,15 +63,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         }
       }
 
-      print('🚀 FeedBloc: Fetching posts (Type: ${event.type}, Friends: ${friendIds?.length ?? "ALL"})');
-      
       // Fetch first page
       final posts = await repo.getFeedPosts(
         limit: _pageSize,
         userIds: friendIds,
       );
-      
-      print('✅ FeedBloc: Fetched ${posts.length} posts');
       
       _posts = posts;
       _hasMore = posts.length == _pageSize;
@@ -84,7 +86,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(FeedLoaded(_posts, hasMore: _hasMore));
     } catch (e) {
-      print('❌ FeedBloc Error: $e');
       emit(FeedError(e.toString()));
     }
   }
@@ -135,7 +136,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       emit(FeedLoaded(_posts, hasMore: _hasMore));
     } catch (e) {
-      print('❌ FeedBloc LoadMore Error: $e');
       emit(FeedError(e.toString()));
     }
   }
@@ -145,9 +145,93 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     _posts = [];
     _lastDocument = null;
     _hasMore = true;
-
-    // We don't know the current type easily here unless we store it in state or Bloc
-    // Defaulting to global for now, but FeedScreen usually calls LoadFeed anyway.
     add(const LoadFeed());
+  }
+
+  /// Toggle like optimistically
+  Future<void> _onToggleLike(ToggleLike event, Emitter<FeedState> emit) async {
+    final postId = event.post.postId;
+    final currentUserId = authRepo.currentUserId;
+    if (postId == null || currentUserId == null) return;
+
+    // 1. Prepare optimistic state
+    final index = _posts.indexWhere((p) => p.postId == postId);
+    if (index == -1) return;
+
+    final post = _posts[index];
+    final isLiked = post.likedByUids.contains(currentUserId);
+    
+    // Create updated post object
+    final updatedLikedBy = List<String>.from(post.likedByUids);
+    if (isLiked) {
+      updatedLikedBy.remove(currentUserId);
+    } else {
+      updatedLikedBy.add(currentUserId);
+    }
+
+    final updatedPost = post.copyWith(
+      likedByUids: updatedLikedBy,
+      likesCount: isLiked ? post.likesCount - 1 : post.likesCount + 1,
+    );
+
+    // Update local list and emit
+    _posts[index] = updatedPost;
+    emit(FeedLoaded(List.from(_posts), hasMore: _hasMore));
+
+    // 2. Perform background sync
+    try {
+      if (isLiked) {
+        await likeRepo.unlikePost(postId, currentUserId);
+      } else {
+        await likeRepo.likePost(postId, currentUserId);
+      }
+    } catch (e) {
+      // Rollback on error
+      _posts[index] = post;
+      emit(FeedLoaded(List.from(_posts), hasMore: _hasMore));
+    }
+  }
+
+  /// Toggle save optimistically
+  Future<void> _onToggleSave(ToggleSave event, Emitter<FeedState> emit) async {
+    final postId = event.post.postId;
+    final currentUserId = authRepo.currentUserId;
+    if (postId == null || currentUserId == null) return;
+
+    // 1. Prepare optimistic state
+    final index = _posts.indexWhere((p) => p.postId == postId);
+    if (index == -1) return;
+
+    final post = _posts[index];
+    final isSaved = post.savedByUids.contains(currentUserId);
+    
+    // Create updated post object
+    final updatedSavedBy = List<String>.from(post.savedByUids);
+    if (isSaved) {
+      updatedSavedBy.remove(currentUserId);
+    } else {
+      updatedSavedBy.add(currentUserId);
+    }
+
+    final updatedPost = post.copyWith(
+      savedByUids: updatedSavedBy,
+    );
+
+    // Update local list and emit
+    _posts[index] = updatedPost;
+    emit(FeedLoaded(List.from(_posts), hasMore: _hasMore));
+
+    // 2. Perform background sync
+    try {
+      if (isSaved) {
+        await savedPostRepo.unsavePost(postId, currentUserId);
+      } else {
+        await savedPostRepo.savePost(postId, currentUserId);
+      }
+    } catch (e) {
+      // Rollback on error
+      _posts[index] = post;
+      emit(FeedLoaded(List.from(_posts), hasMore: _hasMore));
+    }
   }
 }

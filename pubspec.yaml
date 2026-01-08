@@ -49,6 +49,7 @@ dependencies:
 
   # Media & Images
   shared_preferences: ^2.5.3
+  share_plus: ^10.1.4
   
   image_picker: ^1.0.7
   flutter_image_compress: ^2.1.0
@@ -60,6 +61,8 @@ dependencies:
   # UI extras
   flutter_svg: ^2.0.9
   flutter_rating_bar: ^4.0.1
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
 
   # Fonts
   google_fonts: ^6.3.2

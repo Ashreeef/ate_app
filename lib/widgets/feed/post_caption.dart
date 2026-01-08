@@ -21,7 +21,12 @@ class PostCaption extends StatelessWidget {
                 color: AppColors.primary,
               ),
             ),
-            TextSpan(text: caption, style: AppTextStyles.body),
+            TextSpan(
+              text: caption,
+              style: AppTextStyles.body.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
           ],
         ),
       ),

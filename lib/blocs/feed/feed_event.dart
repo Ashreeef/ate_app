@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../models/post.dart';
 
 enum FeedType { global, friends }
 
@@ -28,5 +29,21 @@ class LoadMoreFeed extends FeedEvent {
 
 class RefreshFeed extends FeedEvent {
   const RefreshFeed();
+}
+
+class ToggleLike extends FeedEvent {
+  final Post post;
+  const ToggleLike(this.post);
+
+  @override
+  List<Object?> get props => [post];
+}
+
+class ToggleSave extends FeedEvent {
+  final Post post;
+  const ToggleSave(this.post);
+
+  @override
+  List<Object?> get props => [post];
 }
 

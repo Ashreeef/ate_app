@@ -12,6 +12,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'أكل';
 
   @override
+  String viewAllComments(Object count) {
+    return 'عرض كل $count تعليقات';
+  }
+
+  @override
   String get loginTitle => 'مرحباً بعودتك';
 
   @override
@@ -49,6 +54,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get profileTitle => 'الملف الشخصي';
+
+  @override
+  String get profile => 'الملف الشخصي';
 
   @override
   String get settingsTitle => 'الإعدادات';
@@ -123,6 +131,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shareProfile => 'مشاركة الملف الشخصي';
 
   @override
+  String shareProfileMessage(Object url, Object username) {
+    return 'شاهد @$username على Ate! اكتشف رحلته في عالم الطبخ هنا: $url';
+  }
+
+  @override
+  String get linkCopied => 'تم نسخ الرابط!';
+
+  @override
   String get changePassword => 'تغيير كلمة المرور';
 
   @override
@@ -160,19 +176,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get contactUs => '📞 تواصل معنا';
 
   @override
-  String get emailSupport => ' البريد الإلكتروني: support@ate-app.com';
+  String get emailSupport => ' البريد الإلكتروني: Contact.ate.app@gmail.com';
 
   @override
-  String get phoneSupport => ' الهاتف: +33 1 23 45 67 89';
+  String get phoneSupport => '';
 
   @override
-  String get liveChat => ' الدردشة المباشرة: متوفرة 24/7';
+  String get liveChat => '';
 
   @override
-  String get supportHours => ' الدعم: الإثنين-الجمعة 9 صباحاً-6 مساءً';
+  String get supportHours => ' وقت الاستجابة: عادةً خلال 24 ساعة';
 
   @override
-  String get frequentlyAsked => 'الأسئلة الشائعة';
+  String get frequentlyAsked => ' الأسئلة الشائعة';
 
   @override
   String get howToEditProfile => 'كيف أعدل ملفي الشخصي؟';
@@ -182,7 +198,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'اذهب إلى الإعدادات > تعديل الملف الشخصي لتغيير معلوماتك الشخصية.';
 
   @override
-  String get howToFollowUsers => 'كيف أتابع مستخدمين آخرين؟';
+  String get howToFollowUsers => 'كيف أتابع المستخدمين الآخرين؟';
 
   @override
   String get howToFollowUsersAnswer =>
@@ -231,7 +247,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get discoverRestaurants => '•  اكتشف مطاعم جديدة';
 
   @override
-  String get darkMode => 'الوضع الداكن';
+  String get darkMode => '•  الوضع المظلم متوفر';
 
   @override
   String get troubleshooting => ' حل المشاكل';
@@ -303,7 +319,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get buildInfo => 'البناء: 2026.01.01';
 
   @override
-  String get allRightsReserved => '© 2025 أكل. جميع الحقوق محفوظة.';
+  String get allRightsReserved => '© 2026 Ate App. جميع الحقوق محفوظة.';
 
   @override
   String get madeInAlgeria => 'صُنع في الجزائر 🇩🇿';
@@ -438,456 +454,134 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get postPublished => 'تم نشر المنشور بنجاح!';
+  String get retry => 'إعادة المحاولة';
 
   @override
-  String postPublishError(Object error) {
-    return 'خطأ في نشر المنشور: $error';
+  String get justNow => 'الآن';
+
+  @override
+  String minutesAgo(Object count) {
+    return 'منذ $count دقيقة';
   }
 
   @override
-  String get writeCaption => 'يرجى كتابة تعليق';
-
-  @override
-  String get enterRestaurant => 'يرجى إدخال اسم المطعم';
-
-  @override
-  String get rateExperience => 'قيم تجربتك';
-
-  @override
-  String get caption => 'التعليق';
-
-  @override
-  String get captionPlaceholder => 'شارك تجربتك الطهي...';
-
-  @override
-  String get restaurant => 'المطعم';
-
-  @override
-  String get restaurantPlaceholder => 'اسم المطعم...';
-
-  @override
-  String get restaurantHint => 'ابحث عن مطعم...';
-
-  @override
-  String get dishName => 'اسم الطبق';
-
-  @override
-  String get dishNamePlaceholder => 'مثال: كسكس ملكي، سمك مشوي...';
-
-  @override
-  String get dishNameOptional => '(اختياري)';
-
-  @override
-  String get yourRating => 'تقييمك';
-
-  @override
-  String get newPost => 'منشور جديد';
-
-  @override
-  String get publish => 'نشر';
-
-  @override
-  String get disappointing => 'مخيب للآمال';
-
-  @override
-  String get fair => 'متوسط';
-
-  @override
-  String get good => 'جيد';
-
-  @override
-  String get veryGood => 'جيد جداً';
-
-  @override
-  String get excellent => 'ممتاز!';
-
-  @override
-  String get myFeed => 'تغذيتي';
-
-  @override
-  String get friendsFeed => 'الأصدقاء';
-
-  @override
-  String get loadMore => 'تحميل المزيد';
-
-  @override
-  String get search => 'بحث';
-
-  @override
-  String get searchRestaurants => 'ابحث عن المطاعم...';
-
-  @override
-  String get trendingNearYou => 'الرائج بالقرب منك';
-
-  @override
-  String get recentSearches => 'عمليات البحث الأخيرة';
-
-  @override
-  String get seeAll => 'عرض الكل';
-
-  @override
-  String get allRestaurants => 'جميع المطاعم';
-
-  @override
-  String get results => 'النتائج';
-
-  @override
-  String resultsFor(Object query) {
-    return 'نتائج لـ \"$query\"';
+  String hoursAgo(Object count) {
+    return 'منذ $count ساعة';
   }
 
   @override
-  String get noRestaurantsAvailable => 'لا توجد مطاعم متاحة';
-
-  @override
-  String get noResultsFound => 'لم يتم العثور على نتائج';
-
-  @override
-  String get tryOtherKeywords => 'جرب كلمات مفتاحية أخرى';
-
-  @override
-  String get restaurantNotFound => 'المطعم غير موجود';
-
-  @override
-  String get menu => 'القائمة';
-
-  @override
-  String get rating => 'التقييم';
-
-  @override
-  String get dish => 'طبق';
-
-  @override
-  String get next => 'التالي';
-
-  @override
-  String get activeChallenges => 'التحديات النشطة';
-
-  @override
-  String get allChallenges => 'جميع التحديات';
-
-  @override
-  String get joined => 'تم الانضمام!';
-
-  @override
-  String get resetEmailSent => 'تم إرسال بريد إعادة التعيين!';
-
-  @override
-  String get gallery => 'المعرض';
-
-  @override
-  String get takePhoto => 'التقط صورة';
-
-  @override
-  String get selectPhotos => 'اختر الصور';
-
-  @override
-  String maxImagesMessage(Object maxImages) {
-    return 'يمكنك اختيار ما يصل إلى $maxImages صور';
+  String daysAgo(Object count) {
+    return 'منذ $count يوم';
   }
-
-  @override
-  String imageSelectionError(Object error) {
-    return 'فشل اختيار الصورة: $error';
-  }
-
-  @override
-  String get selectAtLeastOne => 'يرجى اختيار صورة واحدة على الأقل';
-
-  @override
-  String get comments => 'التعليقات';
-
-  @override
-  String get sharePost => 'مشاركة المنشور';
-
-  @override
-  String get ok => 'حسناً';
-
-  @override
-  String get report => 'إبلاغ';
 
   @override
   String get copyLink => 'نسخ الرابط';
 
   @override
-  String get follow => 'متابعة';
+  String get report => 'إبلاغ';
 
   @override
-  String shareUserProfile(Object username) {
-    return 'مشاركة ملف $username الشخصي';
-  }
+  String get convertToRestaurant => 'تحويل إلى مطعم';
 
   @override
-  String get copy => 'نسخ';
+  String get viewRestaurant => 'عرض مطعمي';
 
   @override
-  String get copiedToClipboard => 'تم النسخ إلى الحافظة';
+  String get createChallenge => 'إنشاء تحدي';
 
   @override
-  String get errorUpdatingFollowStatus => 'خطأ في تحديث حالة المتابعة';
+  String get challengeTitle => 'عنوان التحدي';
 
   @override
-  String get post => 'منشور';
+  String get challengeDescription => 'وصف التحدي';
 
   @override
-  String get noPostsAvailable => 'لا توجد منشورات متاحة';
+  String get targetCount => 'الهدف المطلوب';
 
   @override
-  String get validationSuccess => '✅ تم التحقق بنجاح!';
+  String get rewardBadge => 'شارة المكافأة';
 
   @override
-  String get signIn => 'تسجيل الدخول';
+  String get joinChallenge => 'الانضمام للتحدي';
 
   @override
-  String get french => 'الفرنسية';
+  String get leaveChallenge => 'مغادرة التحدي';
 
   @override
-  String get english => 'الإنجليزية';
+  String get yourProgress => 'تقدمك';
 
   @override
-  String get arabic => 'العربية';
+  String get daysRemaining => 'الأيام المتبقية';
 
   @override
-  String get addComment => 'أضف تعليقاً...';
+  String get challengeEnded => 'انتهى التحدي';
 
   @override
-  String get imageLoadFailed => 'فشل تحميل الصورة';
+  String get reward => 'المكافأة';
 
   @override
-  String get sharePostDescription =>
-      'يمكنك مشاركة هذا المنشور عن طريق أخذ لقطة شاشة أو نسخ الرابط. ميزات المشاركة الاجتماعية قادمة قريبًا!';
+  String get dateRange => 'الفترة الزمنية';
 
   @override
-  String get reportAction => 'إبلاغ';
+  String get startDate => 'تاريخ البدء';
 
   @override
-  String get linkCopied => 'تم نسخ الرابط إلى الحافظة';
+  String get endDate => 'تاريخ الانتهاء';
 
   @override
-  String hoursAgo(Object hours) {
-    return 'منذ $hours ساعة';
-  }
+  String get conversionWarning =>
+      'هذا الإجراء لا رجعة فيه. بمجرد التحويل إلى حساب مطعم، لن تتمكن من العودة.';
 
   @override
-  String get dishDetail => 'تفاصيل الطبق';
+  String get confirmConversion => 'تأكيد التحويل';
 
   @override
-  String get reviews => 'التقييمات';
+  String get conversionSuccessful => 'تم تحويل الحساب إلى مطعم بنجاح!';
 
   @override
-  String get restaurantPosts => 'منشورات المطعم';
+  String get becomeARestaurant => 'أصبح مطعماً';
 
   @override
-  String get timeToEat => 'حان وقت الأكل!';
+  String get fillInRestaurantDetails => 'املأ تفاصيل مطعمك أدناه';
 
   @override
-  String get loginSubtitle =>
-      'قم بتسجيل الدخول للعثور على أصدقائك واكتشاف أطباق جديدة ومشاركة لحظاتك اللذيذة.';
+  String get restaurantName => 'اسم المطعم';
 
   @override
-  String get rememberMe => 'تذكرني';
+  String get cuisineType => 'نوع المطبخ';
 
   @override
-  String get loggingIn => 'جاري تسجيل الدخول...';
+  String get location => 'الموقع';
 
   @override
-  String get signInButton => 'تسجيل الدخول';
+  String get phoneNumber => 'Phone Number';
 
   @override
-  String get forgotPasswordTitle => 'نسيت كلمة المرور؟';
+  String get website => 'Website';
 
   @override
-  String get forgotPasswordSubtitle =>
-      'لا تقلق! أدخل عنوان بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور الخاصة بك.';
+  String get openingHours => 'ساعات العمل';
 
   @override
-  String get resetPassword => 'إعادة تعيين';
+  String get description => 'الوصف';
 
   @override
-  String get rememberPasswordQuestion => 'تتذكر كلمة المرور الخاصة بك؟ ';
+  String get saveChanges => 'Save Changes';
 
   @override
-  String get signInLink => 'تسجيل الدخول';
+  String get restaurantCreated => 'Restaurant profile created';
 
   @override
-  String get welcomeToCommunity => 'مرحبًا بك في مجتمع Ate!';
+  String get myFeed => 'خيطي';
 
   @override
-  String get signupSubtitle =>
-      'أنشئ ملفك الشخصي وابدأ في استكشاف أطباق أصدقائك المفضلة — اكتشف وشارك واستمتع بكل لحظة.';
-
-  @override
-  String get fullName => 'الاسم الكامل';
-
-  @override
-  String get email => 'البريد الإلكتروني';
-
-  @override
-  String get password => 'كلمة المرور';
-
-  @override
-  String get forgotPasswordQuestion => 'نسيت كلمة المرور؟';
-
-  @override
-  String get registeringAccount => 'جاري التسجيل...';
-
-  @override
-  String get signUp => 'إنشاء حساب';
-
-  @override
-  String get continueWith => 'المتابعة مع';
-
-  @override
-  String get alreadyHaveAccountQuestion => 'هل لديك حساب بالفعل؟ ';
-
-  @override
-  String get signInNow => 'تسجيل الدخول';
-
-  @override
-  String get profile => 'الملف الشخصي';
-
-  @override
-  String get moreOptions => 'المزيد من الخيارات';
-
-  @override
-  String nowFollowing(Object username) {
-    return 'تتابع الآن $username';
-  }
-
-  @override
-  String unfollowed(Object username) {
-    return 'ألغيت متابعة $username';
-  }
-
-  @override
-  String get errorUpdatingFollow => 'خطأ في تحديث حالة المتابعة';
-
-  @override
-  String get userNotFound => 'المستخدم غير موجود';
-
-  @override
-  String get followed => 'تتم المتابعة !';
-
-  @override
-  String shareProfileCheck(Object bio, Object username) {
-    return 'تحقق من @$username على Ate!\n\n$bio';
-  }
-
-  @override
-  String shareUserProfileTitle(Object username) {
-    return 'مشاركة ملف $username';
-  }
-
-  @override
-  String shareMyProfile(Object bio, Object username) {
-    return 'تحقق من ملفي الشخصي على Ate!\n\nاسم المستخدم: @$username\nنبذة: $bio';
-  }
-
-  @override
-  String get shareProfileTitle => 'مشاركة الملف الشخصي';
-
-  @override
-  String get username => 'اسم المستخدم';
-
-  @override
-  String get bio => 'نبذة';
-
-  @override
-  String get appVersion => 'Ate الإصدار 1.0.0';
-
-  @override
-  String get deleteAccountWarning =>
-      'هذا الإجراء لا رجعة فيه. سيتم حذف جميع بياناتك نهائيًا.';
-
-  @override
-  String get closeButton => 'إغلاق';
-
-  @override
-  String get appName => 'Ate';
-
-  @override
-  String get markAllRead => 'تعليم الكل كمقروء';
-
-  @override
-  String get noNotifications => 'لا توجد إشعارات بعد';
-
-  @override
-  String minutesAgo(Object minutes) {
-    return 'منذ $minutes دقيقة';
-  }
-
-  @override
-  String daysAgo(Object days) {
-    return 'منذ $days يوم';
-  }
-
-  @override
-  String get noSavedPosts => 'لا توجد منشورات محفوظة';
-
-  @override
-  String get savedPostsHint =>
-      'اضغط على أيقونة الإشارة المرجعية لحفظ المنشورات هنا';
-
-  @override
-  String get postUnsaved => 'تم إزالة المنشور من المحفوظات';
-
-  @override
-  String get noFollowers => 'لا يوجد متابعون بعد';
+  String get friendsFeed => 'خيط الأصدقاء';
 
   @override
   String get noFollowing => 'لا تتابع أي شخص بعد';
 
   @override
-  String get continueWithSocial => 'المتابعة عبر';
-
-  @override
-  String get noAccount => 'ليس لديك حساب؟';
-
-  @override
-  String get createAccount => 'إنشاء حساب';
-
-  @override
-  String get choosePhoto => 'اختر صورة';
-
-  @override
-  String get addPhotos => 'إضافة صور';
-
-  @override
-  String get shareYourCulinaryExperience => 'شارك تجربتك الطهوية\nمع صور جميلة';
-
-  @override
-  String get add => 'إضافة';
-
-  @override
-  String get trending => 'رائج';
-
-  @override
-  String get mentions => 'الإشارات';
-
-  @override
-  String get locationNotSpecified => 'الموقع غير محدد';
-
-  @override
-  String get activeChallengesLabel => 'التحديات النشطة';
-
-  @override
-  String get allChallengesLabel => 'جميع التحديات';
-
-  @override
-  String get noChallengesAvailable => 'لا توجد تحديات متاحة';
-
-  @override
-  String get newChallengesWillAppear => 'ستظهر التحديات الجديدة هنا';
-
-  @override
-  String get markAllAsRead => 'تعليم الكل كمقروء';
-
-  @override
-  String get deletePost => 'حذف المنشور؟';
-
-  @override
-  String get deletePostConfirm => 'هذا الإجراء لا يمكن التراجع عنه.';
+  String get search => 'بحث';
 
   @override
   String get postDeleted => 'تم حذف المنشور';
@@ -988,228 +682,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allCaughtUp => 'لقد شاهدت كل شيء!';
 
   @override
-  String get retry => 'إعادة المحاولة';
-
-  @override
-  String get justNow => 'الآن';
-
-  @override
-  String get convertToRestaurant => 'تحويل إلى مطعم';
-
-  @override
-  String get viewRestaurant => 'عرض مطعمي';
-
-  @override
-  String get createChallenge => 'إنشاء تحدي';
-
-  @override
-  String get challengeTitle => 'عنوان التحدي';
-
-  @override
-  String get challengeDescription => 'وصف التحدي';
-
-  @override
-  String get targetCount => 'الهدف المطلوب';
-
-  @override
-  String get rewardBadge => 'شارة المكافأة';
-
-  @override
-  String get joinChallenge => 'الانضمام للتحدي';
-
-  @override
-  String get leaveChallenge => 'مغادرة التحدي';
-
-  @override
-  String get yourProgress => 'تقدمك';
-
-  @override
-  String get daysRemaining => 'الأيام المتبقية';
-
-  @override
-  String get challengeEnded => 'انتهى التحدي';
-
-  @override
-  String get reward => 'المكافأة';
-
-  @override
-  String get dateRange => 'الفترة الزمنية';
-
-  @override
-  String get startDate => 'تاريخ البدء';
-
-  @override
-  String get endDate => 'تاريخ الانتهاء';
-
-  @override
-  String get conversionWarning =>
-      'هذا الإجراء لا يمكن التراجع عنه. بمجرد التحويل إلى حساب مطعم، لن تتمكن من العودة إلى حساب مستخدم عادي.';
-
-  @override
-  String get confirmConversion => 'تأكيد التحويل';
-
-  @override
-  String get conversionSuccessful => 'تم التحويل إلى حساب مطعم بنجاح!';
-
-  @override
-  String get becomeARestaurant => 'كن مطعماً';
-
-  @override
-  String get fillInRestaurantDetails => 'املأ تفاصيل مطعمك أدناه';
-
-  @override
-  String get restaurantName => 'اسم المطعم *';
-
-  @override
-  String get cuisineType => 'نوع المطبخ';
-
-  @override
-  String get hours => 'ساعات العمل';
-
-  @override
-  String get convertNow => 'تحويل الآن';
-
-  @override
-  String get createNewChallenge => 'إنشاء تحدي جديد';
-
-  @override
-  String get challengeInfo => 'سيكسب المستخدمون نقاطاً عند النشر عن مطعمك';
-
-  @override
-  String get restaurantNameRequired => 'اسم المطعم مطلوب';
-
-  @override
-  String get restaurantNameTooShort =>
-      'يجب أن يحتوي اسم المطعم على 3 أحرف على الأقل';
-
-  @override
-  String get cuisineTypeRequired => 'نوع المطبخ مطلوب';
-
-  @override
-  String get locationRequired => 'الموقع مطلوب';
-
-  @override
-  String get enterRestaurantName => 'أدخل اسم المطعم';
-
-  @override
-  String get enterCuisineType => 'مثال: إيطالي، صيني، فرنسي';
-
-  @override
-  String get enterLocation => 'أدخل موقع المطعم';
-
-  @override
-  String get enterHours => 'مثال: الإثنين-الجمعة: 9ص-10م';
-
-  @override
-  String get enterDescription => 'أخبرنا عن مطعمك';
-
-  @override
-  String get doYouWantToContinue => 'هل تريد المتابعة؟';
-
-  @override
-  String get confirm => 'تأكيد';
-
-  @override
-  String get errorOccurred => 'حدث خطأ';
-
-  @override
-  String get challengeType => 'نوع التحدي';
-
-  @override
-  String get enterChallengeTitle => 'مثال: \"جرب 5 أطباق\"';
-
-  @override
-  String get enterTargetCount => 'مثال: 5 (عدد المنشورات المطلوبة)';
-
-  @override
-  String get enterRewardBadge => 'مثال: \"مستكشف الطعام 🍕\"';
-
-  @override
-  String get titleRequired => 'العنوان مطلوب';
-
-  @override
-  String get titleTooShort => 'يجب أن يحتوي العنوان على 5 أحرف على الأقل';
-
-  @override
-  String get descriptionRequired => 'الوصف مطلوب';
-
-  @override
-  String get targetCountRequired => 'الهدف مطلوب';
-
-  @override
-  String get invalidTargetCount => 'يجب أن يكون على الأقل 1';
-
-  @override
-  String get targetCountTooHigh => 'يجب أن يكون 100 أو أقل';
-
-  @override
-  String get rewardBadgeRequired => 'شارة المكافأة مطلوبة';
-
-  @override
-  String get challengeDetails => 'تفاصيل التحدي';
-
-  @override
-  String get location => 'الموقع';
-
-  @override
-  String get description => 'الوصف';
-
-  @override
-  String get editRestaurant => 'تعديل المطعم';
-
-  @override
-  String get restaurantUpdatedSuccess => 'تم تحديث المطعم بنجاح';
-
-  @override
-  String get addCoverPhoto => 'إضافة صورة غلاف';
-
-  @override
-  String uploadImageFail(Object error) {
-    return 'فشل رفع الصورة: $error';
-  }
-
-  @override
-  String get manageMenu => 'إدارة القائمة';
-
-  @override
-  String get deleteDish => 'حذف الطبق؟';
-
-  @override
-  String deleteDishConfirm(Object name) {
-    return 'هل أنت متأكد من حذف \"$name\"؟';
-  }
-
-  @override
-  String get delete => 'حذف';
-
-  @override
-  String get addFirstDish => 'إضافة أول طبق';
-
-  @override
-  String get couldNotLoadMenu => 'تعذر تحميل القائمة';
-
-  @override
-  String get menuEmpty => 'لا توجد أطباق بعد';
-
-  @override
-  String get editDish => 'تعديل الطبق';
-
-  @override
-  String get addDish => 'إضافة طبق';
-
-  @override
-  String get addDishPhoto => 'إضافة صورة للطبق';
-
-  @override
-  String get price => 'السعر';
-
-  @override
-  String get category => 'الفئة (مثال: مقبلات، رئيسي)';
-
-  @override
-  String get dishDescription => 'الوصف';
-
-  @override
   String get challengeTypeGeneral => 'عام';
 
   @override
@@ -1244,10 +716,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fieldRequired => 'هذا الحقل مطلوب';
 
   @override
-  String get openingHours => 'ساعات العمل';
+  String get reviews => 'التقييمات';
+
+  @override
+  String get restaurantNotFound => 'المطعم غير موجود';
+
+  @override
+  String get restaurantHint => 'ابحث عن مطعم...';
 
   @override
   String get reviewSuccess => 'تم إرسال التقييم بنجاح!';
+
+  @override
+  String get rateExperience => 'يرجى تقييم تجربتك';
 
   @override
   String get yourReview => 'تقييمك';
@@ -1281,6 +762,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'أكل هو رفيقك في الطعام، مصمم لعشاق الأكل الجيد. كل يوم، استكشف أطباقاً جديدة بفضل توصيات أصدقائك، وشارك اكتشافاتك، وخُض تحديات الطعام واكسب الجوائز.';
 
   @override
+  String get closeButton => 'إغلاق';
+
+  @override
   String memberLevel(Object level) {
     return 'عضو $level ⭐';
   }
@@ -1303,4 +787,409 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get conversionWarningCompact => 'لا يمكن التراجع عن هذا الإجراء!';
+
+  @override
+  String get followed => 'تتم المتابعة !';
+
+  @override
+  String get manageMenu => 'إدارة القائمة';
+
+  @override
+  String get editRestaurant => 'تعديل المطعم';
+
+  @override
+  String get menu => 'القائمة';
+
+  @override
+  String get restaurant => 'المطعم';
+
+  @override
+  String get rating => 'التقييم';
+
+  @override
+  String get deleteAccountWarning =>
+      'هذا الإجراء لا رجعة فيه. سيتم حذف جميع بياناتك نهائيًا.';
+
+  @override
+  String get writeCaption => 'يرجى كتابة تعليق';
+
+  @override
+  String get enterRestaurant => 'يرجى إدخال اسم المطعم';
+
+  @override
+  String get newPost => 'منشور جديد';
+
+  @override
+  String get caption => 'التعليق';
+
+  @override
+  String get captionPlaceholder => 'شارك تجربتك الطهي...';
+
+  @override
+  String get dishName => 'اسم الطبق';
+
+  @override
+  String get dishNameOptional => '(اختياري)';
+
+  @override
+  String get dishNamePlaceholder => 'مثال: كسكس ملكي، سمك مشوي...';
+
+  @override
+  String get yourRating => 'تقييمك';
+
+  @override
+  String get disappointing => 'مخيب للآمال';
+
+  @override
+  String get fair => 'متوسط';
+
+  @override
+  String get good => 'جيد';
+
+  @override
+  String get veryGood => 'جيد جداً';
+
+  @override
+  String get excellent => 'ممتاز!';
+
+  @override
+  String get createNewChallenge => 'إنشاء تحدي جديد';
+
+  @override
+  String get enterChallengeTitle => 'مثال: \"جرب 5 أطباق\"';
+
+  @override
+  String get titleRequired => 'العنوان مطلوب';
+
+  @override
+  String get titleTooShort => 'يجب أن يحتوي العنوان على 5 أحرف على الأقل';
+
+  @override
+  String get enterDescription => 'أخبرنا عن مطعمك';
+
+  @override
+  String get descriptionRequired => 'الوصف مطلوب';
+
+  @override
+  String get challengeType => 'نوع التحدي';
+
+  @override
+  String get enterTargetCount => 'مثال: 5 (عدد المنشورات المطلوبة)';
+
+  @override
+  String get targetCountRequired => 'الهدف مطلوب';
+
+  @override
+  String get invalidTargetCount => 'يجب أن يكون على الأقل 1';
+
+  @override
+  String get targetCountTooHigh => 'يجب أن يكون 100 أو أقل';
+
+  @override
+  String get enterRewardBadge => 'مثال: \"مستكشف الطعام 🍕\"';
+
+  @override
+  String get rewardBadgeRequired => 'شارة المكافأة مطلوبة';
+
+  @override
+  String get challengeInfo => 'سيكسب المستخدمون نقاطاً عند النشر عن مطعمك';
+
+  @override
+  String get challengeDetails => 'تفاصيل التحدي';
+
+  @override
+  String get fullName => 'الاسم الكامل';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get bio => 'نبذة';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get errorOccurred => 'حدث خطأ';
+
+  @override
+  String get enterRestaurantName => 'أدخل اسم المطعم';
+
+  @override
+  String get restaurantNameRequired => 'اسم المطعم مطلوب';
+
+  @override
+  String get restaurantNameTooShort =>
+      'يجب أن يحتوي اسم المطعم على 3 أحرف على الأقل';
+
+  @override
+  String get enterCuisineType => 'مثال: إيطالي، صيني، فرنسي';
+
+  @override
+  String get cuisineTypeRequired => 'نوع المطبخ مطلوب';
+
+  @override
+  String get enterLocation => 'أدخل موقع المطعم';
+
+  @override
+  String get locationRequired => 'الموقع مطلوب';
+
+  @override
+  String get hours => 'ساعات العمل';
+
+  @override
+  String get enterHours => 'مثال: الإثنين-الجمعة: 9ص-10م';
+
+  @override
+  String get convertNow => 'تحويل الآن';
+
+  @override
+  String get mentions => 'الإشارات';
+
+  @override
+  String get locationNotSpecified => 'الموقع غير محدد';
+
+  @override
+  String get restaurantUpdatedSuccess => 'تم تحديث المطعم بنجاح';
+
+  @override
+  String get addCoverPhoto => 'إضافة صورة غلاف';
+
+  @override
+  String get deleteDish => 'حذف الطبق؟';
+
+  @override
+  String deleteDishConfirm(Object name) {
+    return 'هل أنت متأكد من حذف \"$name\"؟';
+  }
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get menuEmpty => 'لا توجد أطباق بعد';
+
+  @override
+  String get addFirstDish => 'إضافة أول طبق';
+
+  @override
+  String get couldNotLoadMenu => 'تعذر تحميل القائمة';
+
+  @override
+  String uploadImageFail(Object error) {
+    return 'فشل رفع الصورة: $error';
+  }
+
+  @override
+  String get editDish => 'تعديل الطبق';
+
+  @override
+  String get addDish => 'إضافة طبق';
+
+  @override
+  String get addDishPhoto => 'إضافة صورة للطبق';
+
+  @override
+  String get price => 'السعر';
+
+  @override
+  String get category => 'الفئة (مثال: مقبلات، رئيسي)';
+
+  @override
+  String get dishDescription => 'الوصف';
+
+  @override
+  String get doYouWantToContinue => 'هل تريد المتابعة؟';
+
+  @override
+  String get trending => 'رائج';
+
+  @override
+  String get allRestaurants => 'جميع المطاعم';
+
+  @override
+  String get results => 'النتائج';
+
+  @override
+  String resultsFor(Object query) {
+    return 'نتائج لـ \"$query\"';
+  }
+
+  @override
+  String get noRestaurantsAvailable => 'لا توجد مطاعم متاحة';
+
+  @override
+  String get noResultsFound => 'لم يتم العثور على نتائج';
+
+  @override
+  String get tryOtherKeywords => 'جرب كلمات مفتاحية أخرى';
+
+  @override
+  String get noFollowers => 'لا يوجد متابعون بعد';
+
+  @override
+  String get resetPassword => 'إعادة تعيين';
+
+  @override
+  String get forgotPasswordTitle => 'نسيت كلمة المرور؟';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'لا تقلق! أدخل عنوان بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور الخاصة بك.';
+
+  @override
+  String get rememberPasswordQuestion => 'تتذكر كلمة المرور الخاصة بك؟ ';
+
+  @override
+  String get signInLink => 'تسجيل الدخول';
+
+  @override
+  String get loggingIn => 'جاري تسجيل الدخول...';
+
+  @override
+  String get signInButton => 'تسجيل الدخول';
+
+  @override
+  String get timeToEat => 'حان وقت الأكل!';
+
+  @override
+  String get loginSubtitle =>
+      'قم بتسجيل الدخول للعثور على أصدقائك واكتشاف أطباق جديدة ومشاركة لحظاتك اللذيذة.';
+
+  @override
+  String get rememberMe => 'تذكرني';
+
+  @override
+  String get continueWithSocial => 'المتابعة عبر';
+
+  @override
+  String get noAccount => 'ليس لديك حساب؟';
+
+  @override
+  String get createAccount => 'إنشاء حساب';
+
+  @override
+  String get registeringAccount => 'جاري التسجيل...';
+
+  @override
+  String get signUp => 'إنشاء حساب';
+
+  @override
+  String get welcomeToCommunity => 'مرحبًا بك في مجتمع Ate!';
+
+  @override
+  String get signupSubtitle =>
+      'أنشئ ملفك الشخصي وابدأ في استكشاف أطباق أصدقائك المفضلة — اكتشف وشارك واستمتع بكل لحظة.';
+
+  @override
+  String get password => 'كلمة المرور';
+
+  @override
+  String get forgotPasswordQuestion => 'نسيت كلمة المرور؟';
+
+  @override
+  String get continueWith => 'المتابعة مع';
+
+  @override
+  String get alreadyHaveAccountQuestion => 'هل لديك حساب بالفعل؟ ';
+
+  @override
+  String get signInNow => 'تسجيل الدخول';
+
+  @override
+  String get next => 'التالي';
+
+  @override
+  String get markAllAsRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get noNotifications => 'لا توجد إشعارات بعد';
+
+  @override
+  String get searchRestaurants => 'ابحث عن المطاعم...';
+
+  @override
+  String get trendingNearYou => 'الرائج بالقرب منك';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get recentSearches => 'عمليات البحث الأخيرة';
+
+  @override
+  String maxImagesMessage(Object maxImages) {
+    return 'يمكنك اختيار ما يصل إلى $maxImages صور';
+  }
+
+  @override
+  String imageSelectionError(Object error) {
+    return 'فشل اختيار الصورة: $error';
+  }
+
+  @override
+  String get selectAtLeastOne => 'يرجى اختيار صورة واحدة على الأقل';
+
+  @override
+  String get choosePhoto => 'اختر صورة';
+
+  @override
+  String get gallery => 'المعرض';
+
+  @override
+  String get takePhoto => 'التقط صورة';
+
+  @override
+  String get addPhotos => 'إضافة صور';
+
+  @override
+  String get shareYourCulinaryExperience => 'شارك تجربتك الطهوية\nمع صور جميلة';
+
+  @override
+  String get selectPhotos => 'اختر الصور';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get activeChallengesLabel => 'التحديات النشطة';
+
+  @override
+  String get allChallengesLabel => 'جميع التحديات';
+
+  @override
+  String get noChallengesAvailable => 'لا توجد تحديات متاحة';
+
+  @override
+  String get newChallengesWillAppear => 'ستظهر التحديات الجديدة هنا';
+
+  @override
+  String get post => 'منشور';
+
+  @override
+  String get imageLoadFailed => 'فشل تحميل الصورة';
+
+  @override
+  String get comments => 'التعليقات';
+
+  @override
+  String get addComment => 'أضف تعليقاً...';
+
+  @override
+  String get deletePost => 'حذف المنشور؟';
+
+  @override
+  String get deletePostConfirm => 'هذا الإجراء لا يمكن التراجع عنه.';
+
+  @override
+  String get publish => 'نشر';
+
+  @override
+  String get postPublished => 'تم نشر المنشور بنجاح!';
+
+  @override
+  String get follow => 'متابعة';
 }

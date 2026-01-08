@@ -132,10 +132,8 @@ class PostRepository {
         final restaurantRepo = RestaurantRepository();
         await restaurantRepo.incrementPostsCount(actualRestaurantUid);
 
-        // If the post has a rating, update the restaurant's average rating
-        if (rating != null && rating > 0) {
-          await restaurantRepo.recalculateAverageRating(actualRestaurantUid);
-        }
+        // Always recalculate to ensure accuracy
+        await restaurantRepo.recalculateAverageRating(actualRestaurantUid);
 
         await _updateChallengeProgress(
           userUid: userUid,
@@ -452,6 +450,11 @@ class PostRepository {
       await _firestoreService.posts
           .doc(post.postId)
           .update(updatedPost.toFirestore());
+
+      // If the post has a restaurant, recalculate rating
+      if (post.restaurantUid != null) {
+        await RestaurantRepository().recalculateAverageRating(post.restaurantUid!);
+      }
     } catch (e) {
       throw Exception('Failed to update post: $e');
     }
@@ -593,8 +596,16 @@ class PostRepository {
         await doc.reference.delete();
       }
 
+      // Get post details before deleting to check for restaurantId
+      final post = await getPostById(postId);
+
       // Delete the post document
       await _firestoreService.posts.doc(postId).delete();
+
+      // If the post had a restaurant, recalculate rating
+      if (post?.restaurantUid != null) {
+        await RestaurantRepository().recalculateAverageRating(post!.restaurantUid!);
+      }
     } catch (e) {
       throw Exception('Failed to delete post: $e');
     }

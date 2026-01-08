@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
+import '../../utils/helpers.dart';
 import '../../screens/profile/other_user_profile_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/profile/profile_cubit.dart';
@@ -9,6 +10,7 @@ class PostHeader extends StatelessWidget {
   final String? userId; // User UID for profile navigation
   final String userName;
   final String userAvatar;
+  final DateTime createdAt;
   final VoidCallback onProfileTap; // Legacy callback, kept for compatibility
   final VoidCallback onMoreTap;
 
@@ -17,6 +19,7 @@ class PostHeader extends StatelessWidget {
     this.userId,
     required this.userName,
     required this.userAvatar,
+    required this.createdAt,
     required this.onProfileTap,
     required this.onMoreTap,
   });
@@ -47,7 +50,10 @@ class PostHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(AppSpacing.md),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
       child: Row(
         children: [
           // Clickable avatar - navigates to user profile
@@ -57,21 +63,21 @@ class PostHeader extends StatelessWidget {
               backgroundColor: AppColors.primary.withValues(
                 alpha: AppConstants.opacityOverlay,
               ),
-              radius: AppSizes.avatarSm / 2,
+              radius: 18,
               backgroundImage:
                   (userAvatar.isNotEmpty &&
-                      (userAvatar.startsWith('http') ||
-                          userAvatar.startsWith('https')))
+                       (userAvatar.startsWith('http') ||
+                        userAvatar.startsWith('https')))
                   ? NetworkImage(userAvatar)
                   : null,
               child:
                   (userAvatar.isEmpty ||
                       (!userAvatar.startsWith('http') &&
-                          !userAvatar.startsWith('https')))
-                  ? Icon(
+                       !userAvatar.startsWith('https')))
+                  ? const Icon(
                       Icons.person,
                       color: AppColors.primary,
-                      size: AppSizes.avatarSm / 2,
+                      size: 20,
                     )
                   : null,
             ),
@@ -84,17 +90,19 @@ class PostHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Text(
-                      userName,
-                      style: AppTextStyles.heading4.copyWith(
-                        color: AppColors.primary,
-                      ),
+                  Text(
+                    userName,
+                    style: AppTextStyles.body.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
-                  SizedBox(height: 2),
-                  Text('2 hours ago', style: AppTextStyles.timestamp),
+                  Text(
+                    AppHelpers.formatTimeAgo(context, createdAt),
+                    style: AppTextStyles.caption.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -102,10 +110,12 @@ class PostHeader extends StatelessWidget {
           IconButton(
             onPressed: onMoreTap,
             icon: Icon(
-              Icons.more_vert,
-              color: AppColors.textLight,
+              Icons.more_horiz,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
               size: AppSizes.icon,
             ),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
           ),
         ],
       ),

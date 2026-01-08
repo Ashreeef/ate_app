@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../../utils/sharing_utils.dart';
 import '../../utils/constants.dart' show AppColors;
 import '../../l10n/app_localizations.dart';
 import '../../data/fake_data.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/profile/profile_cubit.dart';
 import '../../blocs/profile/profile_state.dart';
 import '../../models/post.dart';
+import '../../models/user.dart';
 import '../../repositories/post_repository.dart';
 import 'edit_profile_screen.dart';
 import '../settings/settings_screen.dart';
@@ -120,7 +123,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   automaticallyImplyLeading: false,
                   centerTitle: true,
                   title: Text(
-                    l10n.profile,
+                    l10n.profileTitle,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -710,39 +713,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               l10n.shareProfile,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            onTap: () async {
+            onTap: () {
               Navigator.pop(context);
               final user = context.read<ProfileCubit>().state.user;
               if (user != null) {
-                final shareText =
-                    'Check out my profile on Ate!\n\nUsername: @${user.username}\nBio: ${user.bio}';
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: Text('Share Profile'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(shareText),
-                        SizedBox(height: 16),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Profile link copied to clipboard!',
-                                ),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          },
-                          child: Text('Copy'),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                SharingUtils.shareProfile(context, user);
               }
             },
           ),
@@ -788,7 +763,7 @@ class _VerticalDivider extends StatelessWidget {
 }
 
 class _RankCard extends StatelessWidget {
-  final user;
+  final User? user;
 
   const _RankCard({required this.user});
 
@@ -854,7 +829,7 @@ class _RankCard extends StatelessWidget {
 }
 
 class _PointsCard extends StatelessWidget {
-  final user;
+  final User? user;
 
   const _PointsCard({required this.user});
 

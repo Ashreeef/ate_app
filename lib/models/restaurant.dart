@@ -16,6 +16,8 @@ class Restaurant {
   final String? ownerId;
   final String? hours;
   final String? description;
+  final double? latitude;
+  final double? longitude;
 
   Restaurant({
     this.id,
@@ -33,6 +35,8 @@ class Restaurant {
     this.ownerId,
     this.hours,
     this.description,
+    this.latitude,
+    this.longitude,
   });
 
   /// Convert Restaurant to Map for SQLite database
@@ -66,6 +70,8 @@ class Restaurant {
       'ownerId': ownerId,
       'hours': hours,
       'description': description,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 
@@ -104,6 +110,8 @@ class Restaurant {
       ownerId: data['ownerId'] as String?,
       hours: data['hours'] as String?,
       description: data['description'] as String?,
+      latitude: (data['latitude'] as num?)?.toDouble(),
+      longitude: (data['longitude'] as num?)?.toDouble(),
     );
   }
 
@@ -141,6 +149,8 @@ class Restaurant {
       ownerId: ownerId ?? this.ownerId,
       hours: hours ?? this.hours,
       description: description ?? this.description,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
     );
   }
 

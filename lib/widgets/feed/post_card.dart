@@ -1,419 +1,140 @@
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
+import 'package:ate_app/utils/constants.dart';
+import '../../models/post.dart';
 import 'post_header.dart';
-import 'post_image.dart';
+import 'post_image_carousel.dart';
 import 'post_engagement_bar.dart';
 import 'post_caption.dart';
 import 'post_restaurant_info.dart';
+import 'post_options_sheet.dart';
+import 'package:ate_app/l10n/app_localizations.dart';
 
 class PostCard extends StatelessWidget {
-  final Map<String, dynamic> post;
-  final VoidCallback onTap;
+  final Post post;
+  final String currentUserId;
   final VoidCallback onLike;
   final VoidCallback onComment;
   final VoidCallback onShare;
   final VoidCallback onSave;
+  final VoidCallback onProfileTap;
 
   const PostCard({
     super.key,
     required this.post,
-    required this.onTap,
+    required this.currentUserId,
     required this.onLike,
     required this.onComment,
     required this.onShare,
     required this.onSave,
+    required this.onProfileTap,
   });
 
   void _showOptionsMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Theme.of(context).cardTheme.color,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(AppSizes.borderRadiusLg),
-          topRight: Radius.circular(AppSizes.borderRadiusLg),
-        ),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Report option
-              _buildMenuOption(
-                context,
-                icon: Icons.flag_outlined,
-                title: 'Report Post',
-                color: AppColors.error,
-                onTap: () {
-                  Navigator.pop(context);
-                  _showReportDialog(context);
-                },
-              ),
-
-              // Hide option
-              _buildMenuOption(
-                context,
-                icon: Icons.visibility_off_outlined,
-                title: 'Hide Post',
-                onTap: () {
-                  Navigator.pop(context);
-                  _showHideConfirmation(context);
-                },
-              ),
-
-              // Not interested option
-              _buildMenuOption(
-                context,
-                icon: Icons.do_not_disturb_on_outlined,
-                title: 'Not Interested',
-                onTap: () {
-                  Navigator.pop(context);
-                  _showNotInterestedConfirmation(context);
-                },
-              ),
-
-              // Unfollow user option
-              _buildMenuOption(
-                context,
-                icon: Icons.person_remove_outlined,
-                title: 'Unfollow ${post['userName']}',
-                onTap: () {
-                  Navigator.pop(context);
-                  _showUnfollowConfirmation(context);
-                },
-              ),
-
-              // Copy link option
-              _buildMenuOption(
-                context,
-                icon: Icons.link_outlined,
-                title: 'Copy Link',
-                onTap: () {
-                  Navigator.pop(context);
-                  _copyPostLink(context);
-                },
-              ),
-
-              // Share to option
-              _buildMenuOption(
-                context,
-                icon: Icons.share_outlined,
-                title: 'Share to...',
-                onTap: () {
-                  Navigator.pop(context);
-                  onShare();
-                },
-              ),
-
-              const Divider(height: 1),
-
-              // Cancel option
-              _buildMenuOption(
-                context,
-                icon: Icons.close,
-                title: 'Cancel',
-                onTap: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMenuOption(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-    Color? color,
-  }) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: color ?? AppColors.textDark,
-        size: AppSizes.icon,
-      ),
-      title: Text(
-        title,
-        style: AppTextStyles.bodyMedium.copyWith(
-          color: color ?? AppColors.textDark,
-        ),
-      ),
-      onTap: onTap,
-    );
-  }
-
-  void _showReportDialog(BuildContext context) {
-    String? selectedReason;
-    final reasons = [
-      'Spam or misleading',
-      'Harassment or hate speech',
-      'Violence or dangerous content',
-      'Nudity or sexual content',
-      'False information',
-      'Intellectual property violation',
-      'Something else',
-    ];
-
-    showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
-          ),
-          title: Row(
-            children: [
-              Icon(Icons.flag_outlined, color: AppColors.error),
-              SizedBox(width: AppSpacing.sm),
-              Text('Report Post', style: AppTextStyles.heading3),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Why are you reporting this post?',
-                  style: AppTextStyles.body.copyWith(
-                    color: AppColors.textMedium,
-                  ),
-                ),
-                SizedBox(height: AppSpacing.md),
-                ...reasons.map((reason) {
-                  return RadioListTile<String>(
-                    value: reason,
-                    groupValue: selectedReason,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedReason = value;
-                      });
-                    },
-                    title: Text(reason, style: AppTextStyles.bodyMedium),
-                    activeColor: AppColors.primary,
-                    contentPadding: EdgeInsets.zero,
-                    visualDensity: VisualDensity.compact,
-                  );
-                }),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text(
-                'Cancel',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textMedium,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: selectedReason == null
-                  ? null
-                  : () {
-                      Navigator.pop(context);
-                      _showReportSuccess(context, selectedReason!);
-                    },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.error,
-                disabledBackgroundColor: AppColors.error.withValues(
-                  alpha: AppConstants.opacityDisabled,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-                ),
-              ),
-              child: Text(
-                'Report',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showReportSuccess(BuildContext context, String reason) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.check_circle, color: AppColors.white),
-            SizedBox(width: AppSpacing.sm),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Thanks for reporting',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  Text(
-                    'We\'ll review this post and take appropriate action',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColors.white.withValues(
-                        alpha: AppConstants.opacityStrong,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: AppColors.success,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        ),
-        duration: Duration(seconds: 4),
-      ),
-    );
-  }
-
-  void _showHideConfirmation(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Post hidden from your feed',
-          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
-        ),
-        backgroundColor: AppColors.textDark,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        ),
-        action: SnackBarAction(
-          label: 'Undo',
-          textColor: AppColors.primary,
-          onPressed: () {
-            // Undo hide action
-          },
-        ),
-      ),
-    );
-  }
-
-  void _showNotInterestedConfirmation(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'We\'ll show less content like this',
-          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
-        ),
-        backgroundColor: AppColors.textDark,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        ),
-      ),
-    );
-  }
-
-  void _showUnfollowConfirmation(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Unfollowed ${post['userName']}',
-          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
-        ),
-        backgroundColor: AppColors.textDark,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        ),
-        action: SnackBarAction(
-          label: 'Undo',
-          textColor: AppColors.primary,
-          onPressed: () {
-            // Undo unfollow action
-          },
-        ),
-      ),
-    );
-  }
-
-  void _copyPostLink(BuildContext context) {
-    // In a real app, you would copy the actual post link
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Link copied to clipboard',
-          style: AppTextStyles.bodySmall.copyWith(color: AppColors.white),
-        ),
-        backgroundColor: AppColors.textDark,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-        ),
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => PostOptionsSheet(
+        post: post,
+        isOwnPost: post.userUid == currentUserId,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final String userName = post['username'] ?? post['userName'] ?? 'User';
-    final String userAvatar = post['userAvatarUrl'] ?? post['userAvatar'] ?? '';
-    final List? images = post['images'] as List?;
-    final String imageUrl = images?.isNotEmpty == true ? images!.first : (post['imageUrl'] ?? '');
+    final l10n = AppLocalizations.of(context)!;
+    final isLiked = post.likedByUids.contains(currentUserId);
+    final isSaved = post.savedByUids.contains(currentUserId);
 
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.only(bottom: AppSpacing.lg),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSizes.borderRadiusLg),
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Post header with profile navigation enabled
+          // Post Header
           PostHeader(
-            userId: post['userId'] as String?, // Pass userId for profile lookup
-            userName: userName,
-            userAvatar: userAvatar,
-            onProfileTap: onTap,
+            userId: post.userUid,
+            userName: post.username,
+            userAvatar: post.userAvatarUrl ?? '',
+            createdAt: post.createdAt,
+            onProfileTap: onProfileTap,
             onMoreTap: () => _showOptionsMenu(context),
           ),
-          PostImage(imageUrl: imageUrl, onDoubleTap: onLike),
+
+          // Post Media (Carousel if multiple, single image if one)
+          if (post.images.isNotEmpty)
+            PostImageCarousel(
+              images: post.images,
+              onDoubleTap: onLike,
+            ),
+
+          // Post Engagement Bar
           PostEngagementBar(
-            isLiked: post['isLiked'] ?? false,
-            isSaved: post['isSaved'] ?? false,
+            isLiked: isLiked,
+            isSaved: isSaved,
             onLikeTap: onLike,
             onCommentTap: onComment,
             onSaveTap: onSave,
+            onShareTap: onShare,
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-            child: Text(
-              '${post['likesCount'] ?? post['likes'] ?? 0} likes',
-              style: AppTextStyles.bodySmall.copyWith(
-                fontWeight: FontWeight.w600,
+
+          // Likes Count
+          if (post.likesCount > 0)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Text(
+                l10n.likesCountText(post.likesCount),
+                style: AppTextStyles.bodySmall.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
               ),
             ),
-          ),
-          SizedBox(height: AppSpacing.sm),
-          PostCaption(userName: userName, caption: post['caption'] ?? ''),
-          SizedBox(height: AppSpacing.sm),
-          PostRestaurantInfo(
-            restaurantId: (post['restaurantId'] ?? post['restaurantUid'])?.toString(),
-            restaurantName: post['restaurantName'] ?? '',
-            dishName: post['dishName'] ?? '',
-            rating: (post['rating'] as num?)?.toDouble() ?? 0.0,
-          ),
-          SizedBox(height: AppSpacing.md),
+
+          const SizedBox(height: AppSpacing.xs),
+
+          // Post Caption
+          if (post.caption.isNotEmpty)
+            PostCaption(
+              userName: post.username,
+              caption: post.caption,
+            ),
+
+          const SizedBox(height: AppSpacing.sm),
+
+          // Restaurant Info
+          if (post.restaurantName != null)
+            PostRestaurantInfo(
+              restaurantId: post.restaurantUid,
+              restaurantName: post.restaurantName!,
+              dishName: post.dishName ?? '',
+              rating: post.rating ?? 0.0,
+            ),
+
+          // View Comments
+          if (post.commentsCount > 0)
+            Padding(
+              padding: const EdgeInsets.only(
+                left: AppSpacing.md,
+                right: AppSpacing.md,
+                top: AppSpacing.xs,
+              ),
+              child: GestureDetector(
+                onTap: onComment,
+                child: Text(
+                  l10n.viewAllComments(post.commentsCount),
+                  style: AppTextStyles.caption.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ),
+
+          const SizedBox(height: AppSpacing.md),
         ],
       ),
     );

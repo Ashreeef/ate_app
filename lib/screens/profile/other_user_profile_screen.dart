@@ -9,6 +9,7 @@ import '../../models/user.dart';
 import '../../models/post.dart';
 import '../home/post_detail_screen.dart';
 import '../home/follow_list_screen.dart';
+import '../../utils/sharing_utils.dart';
 
 class OtherUserProfileScreen extends StatefulWidget {
   final String userId;
@@ -626,16 +627,11 @@ class _OtherUserProfileScreenState extends State<OtherUserProfileScreen> {
           ListTile(
             leading: const Icon(Icons.share_outlined),
             title: Text(l10n.shareProfile),
-            onTap: () async {
+            onTap: () {
               Navigator.pop(context);
-              final shareText =
-                  'Check out @${_user!.username} on Ate!\n\nBio: ${_user!.bio}';
-              await Clipboard.setData(ClipboardData(text: shareText));
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Profile link copied to clipboard!'),
-                ),
-              );
+              if (_user != null) {
+                SharingUtils.shareProfile(context, _user!);
+              }
             },
           ),
         ],
