@@ -376,5 +376,10 @@
   "deletePostConfirm": "This action cannot be undone.",
   "publish": "Publish",
   "postPublished": "Post published successfully!",
-  "follow": "Follow"
+  "follow": "Follow",
+  "noSavedPosts": "There is no saved posts !",
+  "progress": "Progress",
+  "joined": "Joined!",
+  "percentCompleted": "% completed",
+  "join": "Join"
 }

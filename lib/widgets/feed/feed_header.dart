@@ -39,22 +39,17 @@ class FeedHeader extends StatelessWidget {
       child: Row(
         children: [
           // Logo
-          Text(
-            'arslene.',
-            style: AppTextStyles.heading2.copyWith(
-              color: AppColors.primary,
-              fontFamily: 'Outfit',
-              letterSpacing: -1,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
+          SvgPicture.asset('assets/images/logo.svg', height: 32, width: 32),
+
           const Expanded(child: SizedBox()),
-          
-          // Feed Toggle
+
+          // Feed Toggle - Centered
           Container(
             padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
-              color: isDarkMode ? Colors.white10 : Colors.black.withValues(alpha: 0.05),
+              color: isDarkMode
+                  ? Colors.white10
+                  : Colors.black.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(AppSizes.borderRadiusRound),
             ),
             child: Row(
@@ -73,9 +68,9 @@ class FeedHeader extends StatelessWidget {
               ],
             ),
           ),
-          
-          const SizedBox(width: AppSpacing.sm),
-          
+
+          const Expanded(child: SizedBox()),
+
           // Notifications / Activity Icon
           IconButton(
             onPressed: () => Navigator.pushNamed(context, '/notifications'),
@@ -107,7 +102,7 @@ class _FeedToggleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -117,7 +112,7 @@ class _FeedToggleButton extends StatelessWidget {
           vertical: 6,
         ),
         decoration: BoxDecoration(
-          color: isSelected 
+          color: isSelected
               ? (isDarkMode ? Colors.white12 : Colors.white)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(AppSizes.borderRadiusRound),

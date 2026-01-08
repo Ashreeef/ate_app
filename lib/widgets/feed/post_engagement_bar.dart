@@ -29,7 +29,9 @@ class PostEngagementBar extends StatelessWidget {
             onPressed: onLikeTap,
             icon: Icon(
               isLiked ? Icons.favorite : Icons.favorite_border,
-              color: isLiked ? Colors.red : Theme.of(context).colorScheme.onSurface,
+              color: isLiked
+                  ? Colors.red
+                  : Theme.of(context).colorScheme.onSurface,
               size: 26,
             ),
             padding: const EdgeInsets.all(8),
@@ -39,16 +41,6 @@ class PostEngagementBar extends StatelessWidget {
             onPressed: onCommentTap,
             icon: Icon(
               Icons.mode_comment_outlined,
-              color: Theme.of(context).colorScheme.onSurface,
-              size: 24,
-            ),
-            padding: const EdgeInsets.all(8),
-            constraints: const BoxConstraints(),
-          ),
-          IconButton(
-            onPressed: onShareTap,
-            icon: Icon(
-              Icons.send_outlined,
               color: Theme.of(context).colorScheme.onSurface,
               size: 24,
             ),

@@ -82,7 +82,8 @@ class PostRepository {
               'id': actualRestaurantUid,
               'name': restaurantName,
               'searchName': searchName,
-              'location': 'Unknown', // Placeholder
+              'location':
+                  'Algeria', // Default location - can be updated later by owner
               'cuisineType': 'General', // Placeholder
               'rating': 0.0,
               'postsCount': 0,
@@ -453,7 +454,9 @@ class PostRepository {
 
       // If the post has a restaurant, recalculate rating
       if (post.restaurantUid != null) {
-        await RestaurantRepository().recalculateAverageRating(post.restaurantUid!);
+        await RestaurantRepository().recalculateAverageRating(
+          post.restaurantUid!,
+        );
       }
     } catch (e) {
       throw Exception('Failed to update post: $e');
@@ -604,7 +607,9 @@ class PostRepository {
 
       // If the post had a restaurant, recalculate rating
       if (post?.restaurantUid != null) {
-        await RestaurantRepository().recalculateAverageRating(post!.restaurantUid!);
+        await RestaurantRepository().recalculateAverageRating(
+          post!.restaurantUid!,
+        );
       }
     } catch (e) {
       throw Exception('Failed to delete post: $e');

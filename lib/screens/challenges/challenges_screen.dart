@@ -186,11 +186,18 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (activeChallenges.isNotEmpty) ...[
-                        Text(
-                          l10n.activeChallengesLabel,
-                          style: AppTextStyles.heading3,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.sm,
+                          ),
+                          child: Text(
+                            l10n.activeChallengesLabel,
+                            style: AppTextStyles.heading3.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        const SizedBox(height: AppSpacing.md),
+                        const SizedBox(height: AppSpacing.sm),
                         ...activeChallenges.map(
                           (c) => ChallengeCard(
                             challenge: c,
@@ -198,7 +205,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => ChallengeDetailScreen(challenge: c),
+                                  builder:
+                                      (_) => ChallengeDetailScreen(challenge: c),
                                 ),
                               );
                             },
@@ -206,11 +214,18 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                         ),
                         const SizedBox(height: AppSpacing.xl),
                       ],
-                      Text(
-                        l10n.allChallengesLabel,
-                        style: AppTextStyles.heading3,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.sm,
+                        ),
+                        child: Text(
+                          l10n.allChallengesLabel,
+                          style: AppTextStyles.heading3.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                      const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.sm),
                       if (availableChallenges.isEmpty && activeChallenges.isEmpty)
                         Center(
                           child: Padding(

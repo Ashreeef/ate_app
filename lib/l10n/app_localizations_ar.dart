@@ -572,10 +572,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restaurantCreated => 'Restaurant profile created';
 
   @override
-  String get myFeed => 'خيطي';
+  String get myFeed => 'اخر التحديثات';
 
   @override
-  String get friendsFeed => 'خيط الأصدقاء';
+  String get friendsFeed => 'الاصدقاء';
 
   @override
   String get noFollowing => 'لا تتابع أي شخص بعد';
@@ -1192,4 +1192,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get follow => 'متابعة';
+
+  @override
+  String get noSavedPosts => 'لا توجد منشورات محفوظة';
+
+  @override
+  String get progress => 'Progress';
+
+  @override
+  String get joined => 'تم الانضمام!';
+
+  @override
+  String get percentCompleted => '% completed';
+
+  @override
+  String get join => 'Join';
 }

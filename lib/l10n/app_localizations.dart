@@ -2331,6 +2331,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Follow'**
   String get follow;
+
+  /// No description provided for @noSavedPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no saved posts !'**
+  String get noSavedPosts;
+
+  /// No description provided for @progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get progress;
+
+  /// No description provided for @joined.
+  ///
+  /// In en, this message translates to:
+  /// **'Joined!'**
+  String get joined;
+
+  /// No description provided for @percentCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'% completed'**
+  String get percentCompleted;
+
+  /// No description provided for @join.
+  ///
+  /// In en, this message translates to:
+  /// **'Join'**
+  String get join;
 }
 
 class _AppLocalizationsDelegate

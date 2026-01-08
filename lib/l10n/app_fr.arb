@@ -213,7 +213,7 @@
   "likedYourPost": "{username} a aimé votre post",
   "newCommentTitle": "Nouveau Commentaire",
   "commentedOnYourPost": "{username} a commenté votre post",
-  "allCaughtUp": "Vous êtes à jour",
+  "allCaughtUp": "Vous êtes à jour!",
   "challengeTypeGeneral": "Général",
   "challengeTypeRestaurant": "Restaurant",
   "challengeTypeDish": "Plat",
@@ -324,5 +324,14 @@
   "noRestaurantsAvailable": "Aucun restaurant",
   "noResultsFound": "Aucun résultat",
   "tryOtherKeywords": "Essayez d'autres mots",
-  "noFollowers": "Aucun abonné"
+  "noFollowers": "Aucun abonné",
+  "noSavedPosts": "Aucun posts enregistrés !",
+  "progress": "Progression",
+  "joined": "Rejoint !",
+  "percentCompleted": "% complété",
+  "activeChallengesLabel": "Défis en cours",
+  "allChallengesLabel": "Tous les défis",
+  "noChallengesAvailable": "Aucun défi disponible",
+  "newChallengesWillAppear": "De nouveaux défis apparaîtront ici",
+  "join": "Rejoindre"
 }

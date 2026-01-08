@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/challenge.dart';
 import '../../utils/constants.dart';
+import '../../l10n/app_localizations.dart';
 
 class ChallengeCard extends StatelessWidget {
   final Challenge challenge;
@@ -99,7 +100,7 @@ class ChallengeCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Progrès',
+                            AppLocalizations.of(context)!.progress,
                             style: AppTextStyles.bodySmall.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
@@ -130,7 +131,7 @@ class ChallengeCard extends StatelessWidget {
                       ),
                       SizedBox(height: AppSpacing.xs),
                       Text(
-                        '${(challenge.progress * 100).toStringAsFixed(0)}% complété',
+                        '${(challenge.progress * 100).toStringAsFixed(0)} ${AppLocalizations.of(context)!.percentCompleted}',
                         style: AppTextStyles.caption,
                       ),
                     ],
@@ -150,7 +151,9 @@ class ChallengeCard extends StatelessWidget {
                             : AppColors.white,
                       ),
                       child: Text(
-                        challenge.isJoined ? 'Rejoint!' : 'Rejoindre',
+                        challenge.isJoined
+                            ? AppLocalizations.of(context)!.joined
+                            : AppLocalizations.of(context)!.join,
                         style: AppTextStyles.buttonSmall,
                       ),
                     ),

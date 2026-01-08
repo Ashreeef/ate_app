@@ -78,7 +78,7 @@ class _NavigationShellState extends State<NavigationShell> {
         );
 
       case 3: // Challenges
-        return AppBar(title: Text(l10n.challengesTitle));
+        return null; // Challenges screen has its own app bar
 
       case 4: // Profile
         return null; // Profile screen has its own app bar

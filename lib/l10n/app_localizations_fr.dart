@@ -682,7 +682,7 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get allCaughtUp => 'Vous êtes à jour';
+  String get allCaughtUp => 'Vous êtes à jour!';
 
   @override
   String get challengeTypeGeneral => 'Général';
@@ -1155,16 +1155,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get add => 'Add';
 
   @override
-  String get activeChallengesLabel => 'Active Challenges';
+  String get activeChallengesLabel => 'Défis en cours';
 
   @override
-  String get allChallengesLabel => 'All Challenges';
+  String get allChallengesLabel => 'Tous les défis';
 
   @override
-  String get noChallengesAvailable => 'No challenges available';
+  String get noChallengesAvailable => 'Aucun défi disponible';
 
   @override
-  String get newChallengesWillAppear => 'New challenges will appear here';
+  String get newChallengesWillAppear => 'De nouveaux défis apparaîtront ici';
 
   @override
   String get post => 'Post';
@@ -1192,4 +1192,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get follow => 'Follow';
+
+  @override
+  String get noSavedPosts => 'Aucun posts enregistrés !';
+
+  @override
+  String get progress => 'Progression';
+
+  @override
+  String get joined => 'Rejoint !';
+
+  @override
+  String get percentCompleted => '% complété';
+
+  @override
+  String get join => 'Rejoindre';
 }

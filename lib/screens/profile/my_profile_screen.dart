@@ -16,6 +16,7 @@ import '../home/post_detail_screen.dart';
 import '../home/follow_list_screen.dart';
 import '../restaurant/restaurant_conversion_screen.dart';
 import '../restaurant/restaurant_page.dart';
+import '../saved/saved_posts_screen.dart';
 
 /// Current user's profile screen with posts and profile management
 class MyProfileScreen extends StatefulWidget {
@@ -176,6 +177,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
                 actions: [
                   IconButton(
+                    icon: const Icon(Icons.bookmark_border),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SavedPostsScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.more_horiz),
                     onPressed: () => _showOptionsMenu(context),
                   ),
@@ -322,36 +334,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                         ),
                       ),
-                      
-                      // Convert to Restaurant Button (only show if not already a restaurant)
-                      if (user?.isRestaurant == false) ...[
-                        const SizedBox(height: 12),
-                        OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => RestaurantConversionScreen(
-                                  user: user!,
-                                ),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.store),
-                          label: Text(l10n.convertToRestaurant),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primary,
-                            side: BorderSide(color: AppColors.primary),
-                            minimumSize: const Size.fromHeight(44),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                          ),
-                        ),
-                      ],
-                      
+
                       // View Restaurant Button (show if already a restaurant)
-                      if (user?.isRestaurant == true && user?.restaurantId != null) ...[
+                      if (user?.isRestaurant == true &&
+                          user?.restaurantId != null) ...[
                         const SizedBox(height: 12),
                         ElevatedButton.icon(
                           onPressed: () {
@@ -688,6 +674,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   /// Show options menu
   void _showOptionsMenu(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final user = context.read<ProfileCubit>().state.user;
+
     showModalBottomSheet(
       context: context,
       builder: (context) => Column(
@@ -707,6 +695,27 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               );
             },
           ),
+          // Convert to Restaurant (only show if not already a restaurant)
+          if (user?.isRestaurant == false)
+            ListTile(
+              leading: const Icon(Icons.store_outlined),
+              title: Text(
+                l10n.convertToRestaurant,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                if (user != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RestaurantConversionScreen(user: user),
+                    ),
+                  );
+                }
+              },
+            ),
           ListTile(
             leading: const Icon(Icons.share_outlined),
             title: Text(
@@ -715,7 +724,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             ),
             onTap: () {
               Navigator.pop(context);
-              final user = context.read<ProfileCubit>().state.user;
               if (user != null) {
                 SharingUtils.shareProfile(context, user);
               }

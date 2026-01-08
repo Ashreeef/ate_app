@@ -1186,4 +1186,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get follow => 'Follow';
+
+  @override
+  String get noSavedPosts => 'There is no saved posts !';
+
+  @override
+  String get progress => 'Progress';
+
+  @override
+  String get joined => 'Joined!';
+
+  @override
+  String get percentCompleted => '% completed';
+
+  @override
+  String get join => 'Join';
 }
