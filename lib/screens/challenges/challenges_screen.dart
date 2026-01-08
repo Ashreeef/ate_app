@@ -30,10 +30,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     // Get current user ID for participation status
     final authState = context.read<AuthBloc>().state;
     final userId = authState is Authenticated ? authState.user.uid : null;
-    
-    context.read<ChallengeBloc>().add(
-      LoadActiveChallenges(userId: userId),
-    );
+
+    context.read<ChallengeBloc>().add(LoadActiveChallenges(userId: userId));
   }
 
   void _handleJoinChallenge(Challenge challenge) {
@@ -41,7 +39,9 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     if (authState is! Authenticated || authState.user.uid == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)!.pleaseLoginToJoinChallenges),
+          content: Text(
+            AppLocalizations.of(context)!.pleaseLoginToJoinChallenges,
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -49,10 +49,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     }
 
     context.read<ChallengeBloc>().add(
-      JoinChallenge(
-        challengeId: challenge.id,
-        userId: authState.user.uid!,
-      ),
+      JoinChallenge(challengeId: challenge.id, userId: authState.user.uid!),
     );
   }
 
@@ -63,17 +60,16 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
     }
 
     context.read<ChallengeBloc>().add(
-      LeaveChallenge(
-        challengeId: challenge.id,
-        userId: authState.user.uid!,
-      ),
+      LeaveChallenge(challengeId: challenge.id, userId: authState.user.uid!),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final authState = context.watch<AuthBloc>().state; // Watch auth state for UI updates
+    final authState = context
+        .watch<AuthBloc>()
+        .state; // Watch auth state for UI updates
 
     return BlocListener<ChallengeBloc, ChallengeState>(
       listener: (context, state) {
@@ -135,10 +131,7 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                         color: Colors.red,
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      Text(
-                        l10n.errorOccurred,
-                        style: AppTextStyles.heading3,
-                      ),
+                      Text(l10n.errorOccurred, style: AppTextStyles.heading3),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         state.message,
@@ -173,8 +166,12 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
               }).toList();
 
               // Separate active (joined) and all challenges
-              final activeChallenges = updatedChallenges.where((c) => c.isJoined).toList();
-              final availableChallenges = updatedChallenges.where((c) => !c.isJoined).toList();
+              final activeChallenges = updatedChallenges
+                  .where((c) => c.isJoined)
+                  .toList();
+              final availableChallenges = updatedChallenges
+                  .where((c) => !c.isJoined)
+                  .toList();
 
               return RefreshIndicator(
                 onRefresh: () async {
@@ -205,8 +202,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder:
-                                      (_) => ChallengeDetailScreen(challenge: c),
+                                  builder: (_) =>
+                                      ChallengeDetailScreen(challenge: c),
                                 ),
                               );
                             },
@@ -226,14 +223,18 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
-                      if (availableChallenges.isEmpty && activeChallenges.isEmpty)
+                      if (availableChallenges.isEmpty &&
+                          activeChallenges.isEmpty)
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.all(AppSpacing.xxl),
                             child: Column(
                               children: [
-                                Icon(Icons.emoji_events_outlined,
-                                    size: 64, color: AppColors.textLight),
+                                Icon(
+                                  Icons.emoji_events_outlined,
+                                  size: 64,
+                                  color: AppColors.textLight,
+                                ),
                                 const SizedBox(height: AppSpacing.md),
                                 Text(
                                   l10n.noChallengesAvailable,
@@ -256,7 +257,8 @@ class _ChallengesScreenState extends State<ChallengesScreen> {
                             onTap: () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (_) => ChallengeDetailScreen(challenge: c),
+                                  builder: (_) =>
+                                      ChallengeDetailScreen(challenge: c),
                                 ),
                               );
                             },
