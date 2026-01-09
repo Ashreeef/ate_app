@@ -106,6 +106,12 @@ abstract class AppLocalizations {
   /// **'Ate'**
   String get appTitle;
 
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'Ate'**
+  String get appName;
+
   /// No description provided for @viewAllComments.
   ///
   /// In en, this message translates to:
@@ -307,7 +313,7 @@ abstract class AppLocalizations {
   /// No description provided for @error.
   ///
   /// In en, this message translates to:
-  /// **'Error'**
+  /// **'An error occurred'**
   String get error;
 
   /// No description provided for @comingSoon.
@@ -559,7 +565,7 @@ abstract class AppLocalizations {
   /// No description provided for @darkMode.
   ///
   /// In en, this message translates to:
-  /// **'Dark mode'**
+  /// **'• Dark mode support'**
   String get darkMode;
 
   /// No description provided for @troubleshooting.
@@ -805,7 +811,7 @@ abstract class AppLocalizations {
   /// No description provided for @dataCollectionDesc.
   ///
   /// In en, this message translates to:
-  /// **'• Profile info\\n• Photos and posts\\n• Interaction data'**
+  /// **'• Profile info\n• Photos and posts\n• Interaction data'**
   String get dataCollectionDesc;
 
   /// No description provided for @accountDeleted.
@@ -2335,7 +2341,7 @@ abstract class AppLocalizations {
   /// No description provided for @noSavedPosts.
   ///
   /// In en, this message translates to:
-  /// **'There is no saved posts !'**
+  /// **'There is no saved posts!'**
   String get noSavedPosts;
 
   /// No description provided for @progress.
@@ -2361,6 +2367,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Join'**
   String get join;
+
+  /// No description provided for @resetEmailSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset email sent!'**
+  String get resetEmailSent;
+
+  /// No description provided for @postPublishError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error publishing post: {error}'**
+  String postPublishError(Object error);
+
+  /// No description provided for @dish.
+  ///
+  /// In en, this message translates to:
+  /// **'Dish'**
+  String get dish;
+
+  /// No description provided for @loadMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Load More'**
+  String get loadMore;
+
+  /// No description provided for @activeChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Challenges'**
+  String get activeChallenges;
+
+  /// No description provided for @allChallenges.
+  ///
+  /// In en, this message translates to:
+  /// **'All Challenges'**
+  String get allChallenges;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @sharePost.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Post'**
+  String get sharePost;
+
+  /// No description provided for @shareUserProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Share {username}\'s profile'**
+  String shareUserProfile(Object username);
+
+  /// No description provided for @copy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get copy;
+
+  /// No description provided for @copiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copiedToClipboard;
+
+  /// No description provided for @errorUpdatingFollowStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating follow status'**
+  String get errorUpdatingFollowStatus;
+
+  /// No description provided for @noPostsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No posts available'**
+  String get noPostsAvailable;
+
+  /// No description provided for @validationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Validation successful!'**
+  String get validationSuccess;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign In'**
+  String get signIn;
+
+  /// No description provided for @french.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get french;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get arabic;
+
+  /// No description provided for @sharePostDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You can share this post by taking a screenshot or copying the link. Social sharing features coming soon!'**
+  String get sharePostDescription;
+
+  /// No description provided for @reportAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Report'**
+  String get reportAction;
+
+  /// No description provided for @dishDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Dish Details'**
+  String get dishDetail;
+
+  /// No description provided for @restaurantPosts.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant Posts'**
+  String get restaurantPosts;
+
+  /// No description provided for @moreOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'More Options'**
+  String get moreOptions;
+
+  /// No description provided for @nowFollowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Now following {username}'**
+  String nowFollowing(Object username);
+
+  /// No description provided for @unfollowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unfollowed {username}'**
+  String unfollowed(Object username);
+
+  /// No description provided for @errorUpdatingFollow.
+  ///
+  /// In en, this message translates to:
+  /// **'Error updating follow status'**
+  String get errorUpdatingFollow;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found'**
+  String get userNotFound;
+
+  /// No description provided for @shareProfileCheck.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out @{username} on Ate!\n\n{bio}'**
+  String shareProfileCheck(Object bio, Object username);
+
+  /// No description provided for @shareUserProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share {username}\'s profile'**
+  String shareUserProfileTitle(Object username);
+
+  /// No description provided for @shareMyProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Check out my profile on Ate!\n\nUsername: @{username}\nBio: {bio}'**
+  String shareMyProfile(Object bio, Object username);
+
+  /// No description provided for @shareProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Profile'**
+  String get shareProfileTitle;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Ate Version 1.0.0'**
+  String get appVersion;
+
+  /// No description provided for @markAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get markAllRead;
+
+  /// No description provided for @postUnsaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Post removed from saved'**
+  String get postUnsaved;
+
+  /// No description provided for @savedPostsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the bookmark icon to save posts here'**
+  String get savedPostsHint;
 }
 
 class _AppLocalizationsDelegate
