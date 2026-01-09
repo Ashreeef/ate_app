@@ -9,7 +9,7 @@ Ate is a social network dedicated to food lovers, combining Instagram-like conte
 ## Tech Stack
 - **Frontend:** Flutter (Dart)
 - **Backend:** Firebase (Auth, Firestore, Storage, Cloud Functions)
-- **State Management:** Riverpod
+- **State Management:** BLoC/Cubit
 - **Design:** Figma
 
 ## Setup Instructions
