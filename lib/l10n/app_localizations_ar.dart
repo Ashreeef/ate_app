@@ -12,6 +12,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'أكل';
 
   @override
+  String get appName => 'Ate';
+
+  @override
   String viewAllComments(Object count) {
     return 'عرض كل $count تعليقات';
   }
@@ -113,7 +116,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loading => 'جاري التحميل...';
 
   @override
-  String get error => 'خطأ';
+  String get error => 'حدث خطأ';
 
   @override
   String get comingSoon => 'قريباً!';
@@ -554,10 +557,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get location => 'الموقع';
 
   @override
-  String get phoneNumber => 'Phone Number';
+  String get phoneNumber => 'رقم الهاتف';
 
   @override
-  String get website => 'Website';
+  String get website => 'الموقع الإلكتروني';
 
   @override
   String get openingHours => 'ساعات العمل';
@@ -566,10 +569,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get description => 'الوصف';
 
   @override
-  String get saveChanges => 'Save Changes';
+  String get saveChanges => 'حفظ التغييرات';
 
   @override
-  String get restaurantCreated => 'Restaurant profile created';
+  String get restaurantCreated => 'تم إنشاء ملف المطعم';
 
   @override
   String get myFeed => 'اخر التحديثات';
@@ -722,7 +725,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restaurantNotFound => 'المطعم غير موجود';
 
   @override
-  String get restaurantHint => 'ابحث عن مطعم...';
+  String get restaurantHint => 'اكتب اسم المطعم';
 
   @override
   String get reviewSuccess => 'تم إرسال التقييم بنجاح!';
@@ -789,7 +792,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get conversionWarningCompact => 'لا يمكن التراجع عن هذا الإجراء!';
 
   @override
-  String get followed => 'تتم المتابعة !';
+  String get followed => 'تمت المتابعة';
 
   @override
   String get manageMenu => 'إدارة القائمة';
@@ -1197,14 +1200,135 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noSavedPosts => 'لا توجد منشورات محفوظة';
 
   @override
-  String get progress => 'Progress';
+  String get progress => 'التقدم';
 
   @override
   String get joined => 'تم الانضمام!';
 
   @override
-  String get percentCompleted => '% completed';
+  String get percentCompleted => '% مكتمل';
 
   @override
-  String get join => 'Join';
+  String get join => 'انضم';
+
+  @override
+  String get resetEmailSent => 'تم إرسال بريد إعادة التعيين!';
+
+  @override
+  String postPublishError(Object error) {
+    return 'خطأ في نشر المنشور: $error';
+  }
+
+  @override
+  String get dish => 'طبق';
+
+  @override
+  String get loadMore => 'تحميل المزيد';
+
+  @override
+  String get activeChallenges => 'التحديات النشطة';
+
+  @override
+  String get allChallenges => 'جميع التحديات';
+
+  @override
+  String get ok => 'حسناً';
+
+  @override
+  String get sharePost => 'مشاركة المنشور';
+
+  @override
+  String shareUserProfile(Object username) {
+    return 'مشاركة ملف $username الشخصي';
+  }
+
+  @override
+  String get copy => 'نسخ';
+
+  @override
+  String get copiedToClipboard => 'تم النسخ إلى الحافظة';
+
+  @override
+  String get errorUpdatingFollowStatus => 'خطأ في تحديث حالة المتابعة';
+
+  @override
+  String get noPostsAvailable => 'لا توجد منشورات متاحة';
+
+  @override
+  String get validationSuccess => '✅ تم التحقق بنجاح!';
+
+  @override
+  String get signIn => 'تسجيل الدخول';
+
+  @override
+  String get french => 'الفرنسية';
+
+  @override
+  String get english => 'الإنجليزية';
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get sharePostDescription =>
+      'يمكنك مشاركة هذا المنشور عن طريق أخذ لقطة شاشة أو نسخ الرابط. ميزات المشاركة الاجتماعية قادمة قريبًا!';
+
+  @override
+  String get reportAction => 'إبلاغ';
+
+  @override
+  String get dishDetail => 'تفاصيل الطبق';
+
+  @override
+  String get restaurantPosts => 'منشورات المطعم';
+
+  @override
+  String get moreOptions => 'المزيد من الخيارات';
+
+  @override
+  String nowFollowing(Object username) {
+    return 'تتابع الآن $username';
+  }
+
+  @override
+  String unfollowed(Object username) {
+    return 'ألغيت متابعة $username';
+  }
+
+  @override
+  String get errorUpdatingFollow => 'خطأ في تحديث حالة المتابعة';
+
+  @override
+  String get userNotFound => 'المستخدم غير موجود';
+
+  @override
+  String shareProfileCheck(Object bio, Object username) {
+    return 'تحقق من @$username على Ate!\n\n$bio';
+  }
+
+  @override
+  String shareUserProfileTitle(Object username) {
+    return 'مشاركة ملف $username';
+  }
+
+  @override
+  String shareMyProfile(Object bio, Object username) {
+    return 'تحقق من ملفي الشخصي على Ate!\n\nاسم المستخدم: @$username\nنبذة: $bio';
+  }
+
+  @override
+  String get shareProfileTitle => 'مشاركة الملف الشخصي';
+
+  @override
+  String get appVersion => 'Ate الإصدار 1.0.0';
+
+  @override
+  String get markAllRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get postUnsaved => 'تم إزالة المنشور من المحفوظات';
+
+  @override
+  String get savedPostsHint =>
+      'اضغط على أيقونة الإشارة المرجعية لحفظ المنشورات هنا';
 }

@@ -12,6 +12,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appTitle => 'Ate';
 
   @override
+  String get appName => 'Ate';
+
+  @override
   String viewAllComments(Object count) {
     return 'Voir les $count commentaires';
   }
@@ -113,7 +116,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get loading => 'Chargement...';
 
   @override
-  String get error => 'Erreur';
+  String get error => 'Une erreur est survenue';
 
   @override
   String get comingSoon => 'Bientôt disponible !';
@@ -248,7 +251,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get discoverRestaurants => '• Découvrez de nouveaux restaurants';
 
   @override
-  String get darkMode => 'Mode sombre';
+  String get darkMode => '• Mode sombre disponible';
 
   @override
   String get troubleshooting => ' Résolution de Problèmes';
@@ -379,7 +382,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dataCollectionDesc =>
-      '• Infos de profil\\n• Photos et posts\\n• Données d\'interaction';
+      '• Infos de profil\n• Photos et posts\n• Données d\'interaction';
 
   @override
   String get accountDeleted => 'Compte supprimé avec succès';
@@ -1030,129 +1033,130 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noFollowers => 'Aucun abonné';
 
   @override
-  String get resetPassword => 'Reset Password';
+  String get resetPassword => 'Réinitialiser';
 
   @override
-  String get forgotPasswordTitle => 'Forgot Password?';
+  String get forgotPasswordTitle => 'Mot de passe oublié ?';
 
   @override
   String get forgotPasswordSubtitle =>
-      'Don\'t worry! Enter your email address below and we will send you a link to reset your password.';
+      'Ne vous inquiétez pas ! Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.';
 
   @override
-  String get rememberPasswordQuestion => 'Remember your password? ';
+  String get rememberPasswordQuestion =>
+      'Vous vous souvenez de votre mot de passe ? ';
 
   @override
-  String get signInLink => 'Sign In';
+  String get signInLink => 'Se connecter';
 
   @override
-  String get loggingIn => 'Logging In...';
+  String get loggingIn => 'Connexion en cours...';
 
   @override
-  String get signInButton => 'Sign In';
+  String get signInButton => 'Se connecter';
 
   @override
-  String get timeToEat => 'It\'s time to eat!';
+  String get timeToEat => 'C\'est l\'heure de manger !';
 
   @override
   String get loginSubtitle =>
-      'Sign in to find your friends, discover new dishes, and share your delicious moments.';
+      'Connectez-vous pour retrouver vos amis, découvrir de nouveaux plats et partager vos moments délicieux.';
 
   @override
-  String get rememberMe => 'Remember me';
+  String get rememberMe => 'Se souvenir de moi';
 
   @override
-  String get continueWithSocial => 'Or continue with';
+  String get continueWithSocial => 'Ou continuer avec';
 
   @override
-  String get noAccount => 'Don\'t have an account?';
+  String get noAccount => 'Vous n\'avez pas de compte ?';
 
   @override
-  String get createAccount => 'Create Account';
+  String get createAccount => 'Créer un compte';
 
   @override
-  String get registeringAccount => 'Registering...';
+  String get registeringAccount => 'Inscription en cours...';
 
   @override
-  String get signUp => 'Sign Up';
+  String get signUp => 'S\'inscrire';
 
   @override
-  String get welcomeToCommunity => 'Welcome to the Ate Community!';
+  String get welcomeToCommunity => 'Bienvenue dans la communauté Ate !';
 
   @override
   String get signupSubtitle =>
-      'Create your profile and start exploring your friends\' favorite dishes — discover, share, and savor every moment.';
+      'Créez votre profil et commencez à explorer les plats préférés de vos amis — découvrez, partagez et savourez chaque instant.';
 
   @override
-  String get password => 'Password';
+  String get password => 'Mot de passe';
 
   @override
-  String get forgotPasswordQuestion => 'Forgot Password?';
+  String get forgotPasswordQuestion => 'Mot de passe oublié ?';
 
   @override
-  String get continueWith => 'Continue With';
+  String get continueWith => 'Continuer avec';
 
   @override
-  String get alreadyHaveAccountQuestion => 'Already have an account? ';
+  String get alreadyHaveAccountQuestion => 'Vous avez déjà un compte ? ';
 
   @override
-  String get signInNow => 'Sign In';
+  String get signInNow => 'Se connecter';
 
   @override
-  String get next => 'Next';
+  String get next => 'Suivant';
 
   @override
-  String get markAllAsRead => 'Mark all as read';
+  String get markAllAsRead => 'Tout marquer comme lu';
 
   @override
-  String get noNotifications => 'No notifications yet';
+  String get noNotifications => 'Aucune notification';
 
   @override
-  String get searchRestaurants => 'Search restaurants...';
+  String get searchRestaurants => 'Rechercher des restaurants...';
 
   @override
-  String get trendingNearYou => 'Trending Near You';
+  String get trendingNearYou => 'Tendances près de chez vous';
 
   @override
-  String get seeAll => 'See All';
+  String get seeAll => 'Voir tout';
 
   @override
-  String get recentSearches => 'Recent Searches';
+  String get recentSearches => 'Recherches récentes';
 
   @override
   String maxImagesMessage(Object maxImages) {
-    return 'You can only select $maxImages images';
+    return 'Vous ne pouvez sélectionner que $maxImages images';
   }
 
   @override
   String imageSelectionError(Object error) {
-    return 'Failed to pick image: $error';
+    return 'Échec sélection image : $error';
   }
 
   @override
-  String get selectAtLeastOne => 'Select at least one image';
+  String get selectAtLeastOne => 'Sélectionnez au moins une image';
 
   @override
-  String get choosePhoto => 'Choose Photo';
+  String get choosePhoto => 'Choisir une photo';
 
   @override
-  String get gallery => 'Gallery';
+  String get gallery => 'Galerie';
 
   @override
-  String get takePhoto => 'Take Photo';
+  String get takePhoto => 'Prendre une photo';
 
   @override
-  String get addPhotos => 'Add Photos';
+  String get addPhotos => 'Ajouter des photos';
 
   @override
   String get shareYourCulinaryExperience =>
-      'Share your culinary experience\nwith beautiful photos';
+      'Partagez votre expérience culinaire\navec de belles photos';
 
   @override
-  String get selectPhotos => 'Select Photos';
+  String get selectPhotos => 'Sélectionner des photos';
 
   @override
-  String get add => 'Add';
+  String get add => 'Ajouter';
 
   @override
   String get activeChallengesLabel => 'Défis en cours';
@@ -1170,31 +1174,31 @@ class AppLocalizationsFr extends AppLocalizations {
   String get post => 'Post';
 
   @override
-  String get imageLoadFailed => 'Failed to load image';
+  String get imageLoadFailed => 'Échec chargement image';
 
   @override
-  String get comments => 'Comments';
+  String get comments => 'Commentaires';
 
   @override
-  String get addComment => 'Add a comment...';
+  String get addComment => 'Ajouter un commentaire...';
 
   @override
-  String get deletePost => 'Delete Post?';
+  String get deletePost => 'Supprimer le Post ?';
 
   @override
-  String get deletePostConfirm => 'This action cannot be undone.';
+  String get deletePostConfirm => 'Cette action ne peut pas être annulée.';
 
   @override
-  String get publish => 'Publish';
+  String get publish => 'Publier';
 
   @override
-  String get postPublished => 'Post published successfully!';
+  String get postPublished => 'Post publié avec succès !';
 
   @override
-  String get follow => 'Follow';
+  String get follow => 'Suivre';
 
   @override
-  String get noSavedPosts => 'Aucun posts enregistrés !';
+  String get noSavedPosts => 'Aucun post enregistré !';
 
   @override
   String get progress => 'Progression';
@@ -1207,4 +1211,125 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get join => 'Rejoindre';
+
+  @override
+  String get resetEmailSent => 'E-mail de réinitialisation envoyé !';
+
+  @override
+  String postPublishError(Object error) {
+    return 'Erreur publication : $error';
+  }
+
+  @override
+  String get dish => 'Plat';
+
+  @override
+  String get loadMore => 'Charger plus';
+
+  @override
+  String get activeChallenges => 'Défis actifs';
+
+  @override
+  String get allChallenges => 'Tous les défis';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get sharePost => 'Partager le Post';
+
+  @override
+  String shareUserProfile(Object username) {
+    return 'Partager le profil de $username';
+  }
+
+  @override
+  String get copy => 'Copier';
+
+  @override
+  String get copiedToClipboard => 'Copié dans le presse-papiers';
+
+  @override
+  String get errorUpdatingFollowStatus => 'Erreur mise à jour statut';
+
+  @override
+  String get noPostsAvailable => 'Aucun post disponible';
+
+  @override
+  String get validationSuccess => '✅ Validation réussie !';
+
+  @override
+  String get signIn => 'Se connecter';
+
+  @override
+  String get french => 'Français';
+
+  @override
+  String get english => 'Anglais';
+
+  @override
+  String get arabic => 'Arabe';
+
+  @override
+  String get sharePostDescription =>
+      'Vous pouvez partager ce post en prenant une capture ou en copiant le lien. Partage social bientôt disponible !';
+
+  @override
+  String get reportAction => 'Signaler';
+
+  @override
+  String get dishDetail => 'Détails du plat';
+
+  @override
+  String get restaurantPosts => 'Posts du restaurant';
+
+  @override
+  String get moreOptions => 'Plus d\'options';
+
+  @override
+  String nowFollowing(Object username) {
+    return 'Vous suivez maintenant $username';
+  }
+
+  @override
+  String unfollowed(Object username) {
+    return 'Désabonné de $username';
+  }
+
+  @override
+  String get errorUpdatingFollow => 'Erreur mise à jour statut';
+
+  @override
+  String get userNotFound => 'Utilisateur non trouvé';
+
+  @override
+  String shareProfileCheck(Object bio, Object username) {
+    return 'Découvrez @$username sur Ate !\n\n$bio';
+  }
+
+  @override
+  String shareUserProfileTitle(Object username) {
+    return 'Partager le profil de $username';
+  }
+
+  @override
+  String shareMyProfile(Object bio, Object username) {
+    return 'Découvrez mon profil sur Ate !\n\nNom d\'utilisateur: @$username\nBio: $bio';
+  }
+
+  @override
+  String get shareProfileTitle => 'Partager le profil';
+
+  @override
+  String get appVersion => 'Ate Version 1.0.0';
+
+  @override
+  String get markAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get postUnsaved => 'Post retiré des enregistrés';
+
+  @override
+  String get savedPostsHint =>
+      'Appuyez sur l\'icône signet pour enregistrer des posts ici';
 }

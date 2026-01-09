@@ -12,6 +12,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Ate';
 
   @override
+  String get appName => 'Ate';
+
+  @override
   String viewAllComments(Object count) {
     return 'View all $count comments';
   }
@@ -113,7 +116,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loading => 'Loading...';
 
   @override
-  String get error => 'Error';
+  String get error => 'An error occurred';
 
   @override
   String get comingSoon => 'Coming soon!';
@@ -246,7 +249,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get discoverRestaurants => '• Discover new restaurants';
 
   @override
-  String get darkMode => 'Dark mode';
+  String get darkMode => '• Dark mode support';
 
   @override
   String get troubleshooting => ' Troubleshooting';
@@ -372,7 +375,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dataCollectionDesc =>
-      '• Profile info\\n• Photos and posts\\n• Interaction data';
+      '• Profile info\n• Photos and posts\n• Interaction data';
 
   @override
   String get accountDeleted => 'Account deleted successfully';
@@ -1188,7 +1191,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get follow => 'Follow';
 
   @override
-  String get noSavedPosts => 'There is no saved posts !';
+  String get noSavedPosts => 'There is no saved posts!';
 
   @override
   String get progress => 'Progress';
@@ -1201,4 +1204,124 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get join => 'Join';
+
+  @override
+  String get resetEmailSent => 'Reset email sent!';
+
+  @override
+  String postPublishError(Object error) {
+    return 'Error publishing post: $error';
+  }
+
+  @override
+  String get dish => 'Dish';
+
+  @override
+  String get loadMore => 'Load More';
+
+  @override
+  String get activeChallenges => 'Active Challenges';
+
+  @override
+  String get allChallenges => 'All Challenges';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get sharePost => 'Share Post';
+
+  @override
+  String shareUserProfile(Object username) {
+    return 'Share $username\'s profile';
+  }
+
+  @override
+  String get copy => 'Copy';
+
+  @override
+  String get copiedToClipboard => 'Copied to clipboard';
+
+  @override
+  String get errorUpdatingFollowStatus => 'Error updating follow status';
+
+  @override
+  String get noPostsAvailable => 'No posts available';
+
+  @override
+  String get validationSuccess => '✅ Validation successful!';
+
+  @override
+  String get signIn => 'Sign In';
+
+  @override
+  String get french => 'French';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get arabic => 'Arabic';
+
+  @override
+  String get sharePostDescription =>
+      'You can share this post by taking a screenshot or copying the link. Social sharing features coming soon!';
+
+  @override
+  String get reportAction => 'Report';
+
+  @override
+  String get dishDetail => 'Dish Details';
+
+  @override
+  String get restaurantPosts => 'Restaurant Posts';
+
+  @override
+  String get moreOptions => 'More Options';
+
+  @override
+  String nowFollowing(Object username) {
+    return 'Now following $username';
+  }
+
+  @override
+  String unfollowed(Object username) {
+    return 'Unfollowed $username';
+  }
+
+  @override
+  String get errorUpdatingFollow => 'Error updating follow status';
+
+  @override
+  String get userNotFound => 'User not found';
+
+  @override
+  String shareProfileCheck(Object bio, Object username) {
+    return 'Check out @$username on Ate!\n\n$bio';
+  }
+
+  @override
+  String shareUserProfileTitle(Object username) {
+    return 'Share $username\'s profile';
+  }
+
+  @override
+  String shareMyProfile(Object bio, Object username) {
+    return 'Check out my profile on Ate!\n\nUsername: @$username\nBio: $bio';
+  }
+
+  @override
+  String get shareProfileTitle => 'Share Profile';
+
+  @override
+  String get appVersion => 'Ate Version 1.0.0';
+
+  @override
+  String get markAllRead => 'Mark all as read';
+
+  @override
+  String get postUnsaved => 'Post removed from saved';
+
+  @override
+  String get savedPostsHint => 'Tap the bookmark icon to save posts here';
 }
